@@ -1,0 +1,4 @@
+#pragma once
+#include "director.h"
+
+void CalcTangent(D3DXVECTOR3 v1, D3DXVECTOR3 v2, D3DXVECTOR3 v3,D3DXVECTOR2 uv1, D3DXVECTOR2 uv2, D3DXVECTOR2 uv3, D3DXVECTOR3 normal,D3DXVECTOR3 Tangent,D3DXVECTOR3 Binormal);

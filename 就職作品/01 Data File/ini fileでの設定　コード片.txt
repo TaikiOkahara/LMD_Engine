@@ -1,0 +1,56 @@
+【１】　
+XXX.iniなどのテキストファイルを作ります。
+
+【２】
+テキストファイル内に設定値を書きます。
+例）
+1//1=メッシュを表示 0=非表示
+0//1=サウンド再生 0=再生しない
+-15//カメラのZ位置
+
+【３】
+任意のソースファイル（サンプルではBase.cpp）にコードを実装します。
+
+INI g_Ini;//グローバルに宣言します。
+//
+//
+//
+INI* GetIni()
+{
+	return &g_Ini;
+}
+//
+//
+//設定パラメーター読み込み
+HRESULT LoadIni()
+{
+	SetDataDirectory();//XXX.iniがあるディレクトリにセットする関数
+	FILE* fp=fopen("game.ini","rt");
+
+	char line[MAX_PATH];
+
+	fgets(line,MAX_PATH,fp);
+	g_Ini.MeshRender=atoi(line);//1=メッシュを表示 0=非表示
+
+	fgets(line,MAX_PATH,fp);
+	g_Ini.SoundPlay=atoi(line);//1=サウンド再生 0=再生しない
+
+	fgets(line,MAX_PATH,fp);
+	g_Ini.CameraZ=atof(line);//カメラのZ位置
+
+	fclose(fp);
+	
+	return S_OK;
+}
+
+【４】
+利用する側のコードでは次のようにします。
+
+例）
+
+INI* pIni=GetIni();
+
+if(pIni->SoundPlay)
+{
+	(サウンド再生）
+}
