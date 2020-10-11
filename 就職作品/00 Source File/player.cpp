@@ -44,6 +44,7 @@ void CPlayer::Init()
 	m_OldPosition = m_Position;
 	m_OldForward = GetForward();
 	m_OldForward.y = 0;
+
 }
 //
 //
@@ -156,6 +157,7 @@ void CPlayer::Draw()
 
 
 	m_AnimModel->Draw();
+
 }
 
 void CPlayer::Imgui()

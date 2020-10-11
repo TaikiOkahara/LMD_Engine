@@ -17,13 +17,15 @@ void Game::Init() {
 	AddGameObject<CCamera>(0);
 	AddGameObject<CSceneLight>(0);
 	AddGameObject<CPointLight>(0);
-	AddGameObject<CPlayer>(1);
+
+
 	AddGameObject<CWall>(1);	//•Ç
 	AddGameObject<CPillar>(1);	//’Œ
 	AddGameObject<CFloor>(1);	//’n–Ê
 	AddGameObject<CStage>(1);	//ƒhƒA
 	AddGameObject<CTrim>(1);	//‚Â‚È‚¬–Ú
 	AddGameObject<CCeiling>(1);
+	AddGameObject<CPlayer>(1);
 }
 
 void Game::UnInit() {

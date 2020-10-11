@@ -1,4 +1,4 @@
-#include "FBX_Geometry.hlsl"
+#include "Geometry.hlsl"
 
 
 Texture2D g_tex			: register(t0);

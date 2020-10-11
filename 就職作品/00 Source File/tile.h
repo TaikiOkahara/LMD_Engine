@@ -14,11 +14,12 @@ public:
 	
 
 	void Init(std::string Tex_name, std::string Nor_name,int tile_X_count, int tile_Y_count,float tile_Xsize);
-	void	Uninit();
-	void	Update();
-	void	Draw();
-	void	DrawInstanced(UINT instanceCount);
+	void Uninit();
+	void Update();
+	void Draw();
+	void DrawInstanced(UINT instanceCount);
 
+	/*D3DXVECTOR3 GetNormal() { return D3DXVECTOR3(0, 1, 0); }*/
 private:
 	std::string m_Texture_Name;
 	std::string m_NormalTexture_Name;

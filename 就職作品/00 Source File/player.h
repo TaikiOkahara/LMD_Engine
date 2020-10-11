@@ -1,11 +1,11 @@
 #pragma once
 #include "gameobject.h"
 #include "SkeletalMesh.h"
+#include "collision.h"
 
 class CPlayer : public CGameObject
 {
 private:
-	//Fbx*			m_FbxModel;
 	CAnimationModel* m_AnimModel;
 
 	ID3D11VertexShader* m_VertexShader;

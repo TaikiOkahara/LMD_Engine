@@ -30,14 +30,13 @@ void CWall::Init()
 	//シェーダー作成
 	RENDERER::CreateVertexShader(&m_pVertexShader, &m_pVertexLayout, layout, 5, "InstanceVertexShader.cso");
 	RENDERER::CreatePixelShader(&m_pPixelShader, "Tile_PixelShader.cso");
-
+	
 	
 
 	
 	D3DXVECTOR3 pos;
 	D3DXVECTOR3 rot;
-	std::vector<D3DXVECTOR3> posList;
-	std::vector<D3DXVECTOR3> rotList;
+	
 
 	//スタート地点壁
 	{
@@ -45,95 +44,95 @@ void CWall::Init()
 			pos = m_Position + D3DXVECTOR3(4 - 2.0f, 0.0f, -2.0f);
 			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
 
-			posList.push_back(pos);
-			rotList.push_back(rot);
+			m_posList.push_back(pos);
+			m_rotList.push_back(rot);
 
 			pos = m_Position + D3DXVECTOR3(-7.0f, 0.0f, -2.0f);
 			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
 
-			posList.push_back(pos);
-			rotList.push_back(rot);
+			m_posList.push_back(pos);
+			m_rotList.push_back(rot);
 		}
 		{
 			pos = m_Position + D3DXVECTOR3(4, 0.0f, -4.0f);
 			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI, 0);
 
-			posList.push_back(pos);
-			rotList.push_back(rot);
+			m_posList.push_back(pos);
+			m_rotList.push_back(rot);
 
 			pos = m_Position + D3DXVECTOR3(-9.0f, 0.0f, -4.0f);
 			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI, 0);
 
-			posList.push_back(pos);
-			rotList.push_back(rot);
+			m_posList.push_back(pos);
+			m_rotList.push_back(rot);
 
 			pos = m_Position + D3DXVECTOR3(4, 0.0f, -8.0f);
 			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI, 0);
 
-			posList.push_back(pos);
-			rotList.push_back(rot);
+			m_posList.push_back(pos);
+			m_rotList.push_back(rot);
 
 			pos = m_Position + D3DXVECTOR3(-9.0f, 0.0f, -8.0f);
 			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI, 0);
 
-			posList.push_back(pos);
-			rotList.push_back(rot);
+			m_posList.push_back(pos);
+			m_rotList.push_back(rot);
 		}
 		{
 			pos = m_Position + D3DXVECTOR3(0, 0.0f, -10.0f);
 			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
 
-			posList.push_back(pos);
-			rotList.push_back(rot);
+			m_posList.push_back(pos);
+			m_rotList.push_back(rot);
 
 			pos = m_Position + D3DXVECTOR3(4, 0.0f, -10.0f);
 			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
 
-			posList.push_back(pos);
-			rotList.push_back(rot);
+			m_posList.push_back(pos);
+			m_rotList.push_back(rot);
 
 			pos = m_Position + D3DXVECTOR3(-4.0f, 0.0f, -10.0f);
 			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
 
-			posList.push_back(pos);
-			rotList.push_back(rot);
+			m_posList.push_back(pos);
+			m_rotList.push_back(rot);
 
 			pos = m_Position + D3DXVECTOR3(-8.0f, 0.0f, -10.0f);
 			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
 
-			posList.push_back(pos);
-			rotList.push_back(rot);
+			m_posList.push_back(pos);
+			m_rotList.push_back(rot);
 		}
 		{
 			pos = m_Position + D3DXVECTOR3(2.0f, 4.0f, -8.0f);
 			rot = m_Rotation + D3DXVECTOR3(D3DX_PI/2, 0, 0);
 
-			posList.push_back(pos);
-			rotList.push_back(rot);
+			m_posList.push_back(pos);
+			m_rotList.push_back(rot);
 
 			pos = m_Position + D3DXVECTOR3(2.0f, 4.0f, -4.0f);
 			rot = m_Rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
 
-			posList.push_back(pos);
-			rotList.push_back(rot);
+			m_posList.push_back(pos);
+			m_rotList.push_back(rot);
 
 			pos = m_Position + D3DXVECTOR3(-6.0f, 4.0f, -8.0f);
 			rot = m_Rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
 
-			posList.push_back(pos);
-			rotList.push_back(rot);
+			m_posList.push_back(pos);
+			m_rotList.push_back(rot);
 
 			pos = m_Position + D3DXVECTOR3(-6.0f, 4.0f, -4.0f);
 			rot = m_Rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
 
-			posList.push_back(pos);
-			rotList.push_back(rot);
+			m_posList.push_back(pos);
+			m_rotList.push_back(rot);
 
 			pos = m_Position + D3DXVECTOR3(-2.0f, 4.0f, 0.0f);
 			rot = m_Rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
 
-			posList.push_back(pos);
-			rotList.push_back(rot);
+			m_posList.push_back(pos);
+			m_rotList.push_back(rot);
 			
 		}
 	}
@@ -143,16 +142,16 @@ void CWall::Init()
 	{
 		pos = m_Position + D3DXVECTOR3(0, 0, i * 4.0f);
 		rot = m_Rotation;
-		posList.push_back(pos);
-		rotList.push_back(rot);
+		m_posList.push_back(pos);
+		m_rotList.push_back(rot);
 	}
 	for (int i = 0; i < 7; i++)
 	{
 		pos = m_Position + D3DXVECTOR3(-5.0f, 0, i * 4.0f);
 		rot = m_Rotation + D3DXVECTOR3(0,-D3DX_PI,0);
 
-		posList.push_back(pos);
-		rotList.push_back(rot);
+		m_posList.push_back(pos);
+		m_rotList.push_back(rot);
 	}
 
 	for (int i = 0; i < 8; i++)
@@ -160,26 +159,30 @@ void CWall::Init()
 		pos = m_Position + D3DXVECTOR3(i * -4.0f + 4 * 4.0f, 0.0f, 35.0f);
 		rot = m_Rotation + D3DXVECTOR3(0,D3DX_PI/2, 0);
 
-		posList.push_back(pos);
-		rotList.push_back(rot);
+		m_posList.push_back(pos);
+		m_rotList.push_back(rot);
 	}
 
-	for (int i = 0; i < posList.size(); i++)
+	for (int i = 0; i < m_posList.size(); i++)
 	{
 
 		//　マトリクス設定
 		D3DXMATRIX world, scale, rot, trans;
 		D3DXMatrixScaling(&scale, m_Scale.x, m_Scale.y, m_Scale.z);
-		D3DXMatrixRotationYawPitchRoll(&rot, rotList[i].y, rotList[i].x, rotList[i].z);
-		D3DXMatrixTranslation(&trans, posList[i].x, posList[i].y, posList[i].z);
+		D3DXMatrixRotationYawPitchRoll(&rot, m_rotList[i].y, m_rotList[i].x, m_rotList[i].z);
+		D3DXMatrixTranslation(&trans, m_posList[i].x, m_posList[i].y, m_posList[i].z);
 		world = scale * rot * trans;
 		D3DXMatrixTranspose(&world, &world);
 
 		m_MatrixList.push_back(world);
 	}
 
-	posList.clear();
-	rotList.clear();
+	m_posList.clear();
+	m_rotList.clear();
+
+
+	m_wallCount = m_MatrixList.size();
+
 
 	InitInstance();
 	UpdateInstance();//処理速度が落ちるかもだからInitに置いてる

@@ -1,4 +1,4 @@
-#include "FBX_Geometry.hlsl"
+#include "Geometry.hlsl"
 
 Texture2D g_texColor	: register(t2);
 Texture2D g_texNormal	: register(t3);
@@ -41,14 +41,15 @@ float4 main(VS_OUT input) : SV_Target
 	//テクスチャーから情報を取り出す
 	float4 vDiffuse = g_texColor.Sample(g_samLinear, input.Tex);
 	
-	float3 vWorldNormal = g_texNormal.Sample(g_samLinear, input.Tex).xyz;
+	float4 vWorldNormal = g_texNormal.Sample(g_samLinear, input.Tex);
 	float3 vWorldPos = g_texPosition.Sample(g_samLinear, input.Tex).xyz;
 	
    
     float3 vLightVector = normalize(g_vLight).xyz;
     float NL = saturate(-dot(vWorldNormal, vLightVector));
     NL = NL * 0.9f + 0.1f;//世界観的に暗め
-
+    NL = (vWorldNormal.w == 2.0f) ? 1.0f : NL;//ライティングを行か
+    
     //float3 LightColor = float3(0.5f, 0.5f, 0.5f);
     //LightColor *= NL;
 	
@@ -62,6 +63,8 @@ float4 main(VS_OUT input) : SV_Target
 	
     
     float4 Color = vDiffuse;
+    
+    
     Color.rgb *= vDiffuse.xyz * NL;
     Color.a = vDiffuse.a;
     //アンビエント---------------------------------------------------

@@ -1,13 +1,10 @@
-#include "FBX_Geometry.hlsl"
+#include "Geometry.hlsl"
 
 
 Texture2D g_texDif		: register(t0);//Diffuseテクスチャ
 Texture2D g_texNor		: register(t1);//Normalテクスチャ
 
-//GBuffer
-Texture2D g_texColor	: register(t2);
-Texture2D g_texNormal	: register(t3);
-Texture2D g_texPosition	: register(t4);
+
 
 SamplerState g_samLinear : register(s0);
 

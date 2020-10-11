@@ -33,5 +33,6 @@ private:
 	float m_Near;
 	float m_Far;
 
+	void GetDistance(D3DXVECTOR3 RayStart, D3DXVECTOR3 RayEnd);
 };
 

@@ -66,6 +66,7 @@ void CCamera::Update()
 		m_Distance.z += 0.05f;
 	}
 	
+	//カメラとプレイヤーの間に障害物があった場合、カメラ位置を移動させる
 }
 //
 //
@@ -98,6 +99,19 @@ void CCamera::Draw()
 	eye.Eye = D3DXVECTOR4(m_Position.x, m_Position.y, m_Position.z, 0);
 	RENDERER::SetEye(eye);
 }
+
+void CCamera::GetDistance(D3DXVECTOR3 RayStart, D3DXVECTOR3 RayEnd)
+{
+	bool hit = false;
+	float dist = 0xffffffff;
+	D3DXVECTOR3 direction = RayEnd - RayStart;
+	D3DXVec3Normalize(&direction,&direction);
+
+	
+	//D3DXIntersect()
+
+}
+
 
 void CCamera::Imgui()
 {

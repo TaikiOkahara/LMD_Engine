@@ -1,4 +1,4 @@
-#include "FBX_Geometry.hlsl"
+#include "Geometry.hlsl"
 
 
 cbuffer WorldBuffer : register(b0) {
