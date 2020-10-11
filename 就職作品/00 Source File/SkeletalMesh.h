@@ -1,16 +1,12 @@
 #pragma once
-//#include <vector>
-//#include <map>
 
-//#include "director.h"
-//#include "renderer.h"
 
+#pragma warning(disable : 4819)
 #include "../05 Resource File/assimp/cimport.h"
 #include "../05 Resource File/assimp/scene.h"
 #include "../05 Resource File/assimp/postprocess.h"
 #include "../05 Resource File/assimp/matrix4x4.h"
 #pragma comment (lib,"assimp.lib")
-//#pragma comment (lib,"assimp.lib")
 
 #include "renderer.h"
 

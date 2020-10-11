@@ -11,6 +11,8 @@
 // https://github.com/ocornut/imgui
 
 #pragma once
+#pragma warning(disable : 4005)
+
 #include "imgui.h"      // IMGUI_IMPL_API
 
 struct ID3D11Device;

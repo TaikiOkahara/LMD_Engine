@@ -62,11 +62,11 @@ float4 main(VS_OUT input) : SV_Target
 	
     
     float4 Color = vDiffuse;
-    Color.rgb *= vDiffuse * NL;
+    Color.rgb *= vDiffuse.xyz * NL;
     Color.a = vDiffuse.a;
     //アンビエント---------------------------------------------------
     float4 Ambient = float4(0, 0, 0, 0);
-    Color.rgb += Ambient;
+    Color.rgb += Ambient.xyz;
     //---------------------------------------------------------------
     //スぺキュラ-----------------------------------------------------
     //float4 Specular = pow(saturate(-dot(Eye, Reflect)), 30);

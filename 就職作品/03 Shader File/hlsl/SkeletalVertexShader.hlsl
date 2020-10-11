@@ -110,11 +110,11 @@ VS_OUT main(
     
     
     output.Pos = mul(position, WVP);
-    output.WorldNormal = mul(normal, g_mWorld);
+    output.WorldNormal = mul(normal.xyz, (float3x3)g_mWorld);
     
     output.WorldPos = mul(position, g_mWorld);
-    output.WorldTangent = mul(tangent, g_mWorld);
-    output.WorldBinormal = mul(binormal, g_mWorld);
+    output.WorldTangent = mul(tangent.xyz, (float3x3)g_mWorld);
+    output.WorldBinormal = mul(binormal.xyz, (float3x3) g_mWorld);
 	
     output.Tex = Tex;
     output.LightVector = normalize(g_vLight).xyz;

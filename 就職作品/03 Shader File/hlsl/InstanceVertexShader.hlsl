@@ -69,8 +69,8 @@ VS_OUT main(
     output.WorldNormal = mul(Normal, (float3x3) world);
 	output.Pos = mul(Pos, WVP);
     output.WorldPos = mul(Pos, world);
-    output.WorldTangent = mul(Tangent, world);
-    output.WorldBinormal = mul(Binormal, world);
+    output.WorldTangent = mul(Tangent.xyz, (float3x3)world);
+    output.WorldBinormal = mul(Binormal.xyz, (float3x3)world);
 	
 	output.Tex = Tex;
 	output.LightVector = normalize(g_vLight).xyz;

@@ -141,14 +141,14 @@ void CWall::Init()
 
 	for (int i = 0; i < 7; i++)
 	{
-		pos = m_Position + D3DXVECTOR3(0, 0, i * 4);
+		pos = m_Position + D3DXVECTOR3(0, 0, i * 4.0f);
 		rot = m_Rotation;
 		posList.push_back(pos);
 		rotList.push_back(rot);
 	}
 	for (int i = 0; i < 7; i++)
 	{
-		pos = m_Position + D3DXVECTOR3(-5.0f, 0, i * 4);
+		pos = m_Position + D3DXVECTOR3(-5.0f, 0, i * 4.0f);
 		rot = m_Rotation + D3DXVECTOR3(0,-D3DX_PI,0);
 
 		posList.push_back(pos);
@@ -157,7 +157,7 @@ void CWall::Init()
 
 	for (int i = 0; i < 8; i++)
 	{
-		pos = m_Position + D3DXVECTOR3(i * -4 + 4 * 4, 0.0f, 35.0f);
+		pos = m_Position + D3DXVECTOR3(i * -4.0f + 4 * 4.0f, 0.0f, 35.0f);
 		rot = m_Rotation + D3DXVECTOR3(0,D3DX_PI/2, 0);
 
 		posList.push_back(pos);

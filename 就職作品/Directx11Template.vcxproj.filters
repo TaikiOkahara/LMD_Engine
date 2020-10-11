@@ -19,9 +19,6 @@
     <Filter Include="Manager --------------------\Director">
       <UniqueIdentifier>{1c74470e-4a23-4b26-9910-450aaf2a3cc7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Manager --------------------\Imgui">
-      <UniqueIdentifier>{e583db62-c03c-4ae5-adb5-a7391279b166}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Manager --------------------\Imput">
       <UniqueIdentifier>{e4ed265e-77a0-4f26-baed-87b2e5a4a237}</UniqueIdentifier>
     </Filter>
@@ -91,6 +88,9 @@
     <Filter Include="GameObjects----------------\PointLight">
       <UniqueIdentifier>{136ed20f-c2e5-4365-8860-2a4011aee6c4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource\Imgui">
+      <UniqueIdentifier>{e583db62-c03c-4ae5-adb5-a7391279b166}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="00 Source File\Entry.cpp">
@@ -139,7 +139,7 @@
       <Filter>GameObjects----------------\Instance</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\Imgui11.cpp">
-      <Filter>Manager --------------------\Imgui</Filter>
+      <Filter>Resource\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\SkeletalMesh.cpp">
       <Filter>Components----------------\SkeletalMesh</Filter>
@@ -160,22 +160,22 @@
       <Filter>GameObjects----------------\Stage</Filter>
     </ClCompile>
     <ClCompile Include="05 Resource File\imgui\imgui.cpp">
-      <Filter>Manager --------------------\Imgui</Filter>
+      <Filter>Resource\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="05 Resource File\imgui\imgui_demo.cpp">
-      <Filter>Manager --------------------\Imgui</Filter>
+      <Filter>Resource\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="05 Resource File\imgui\imgui_draw.cpp">
-      <Filter>Manager --------------------\Imgui</Filter>
+      <Filter>Resource\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="05 Resource File\imgui\imgui_impl_dx11.cpp">
-      <Filter>Manager --------------------\Imgui</Filter>
+      <Filter>Resource\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="05 Resource File\imgui\imgui_impl_win32.cpp">
-      <Filter>Manager --------------------\Imgui</Filter>
+      <Filter>Resource\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="05 Resource File\imgui\imgui_widgets.cpp">
-      <Filter>Manager --------------------\Imgui</Filter>
+      <Filter>Resource\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\trim.cpp">
       <Filter>GameObjects----------------\Trim</Filter>
@@ -237,7 +237,7 @@
       <Filter>GameObjects----------------\Instance</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\Imgui11.h">
-      <Filter>Manager --------------------\Imgui</Filter>
+      <Filter>Resource\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\SkeletalMesh.h">
       <Filter>Components----------------\SkeletalMesh</Filter>
@@ -258,28 +258,28 @@
       <Filter>GameObjects----------------\Stage</Filter>
     </ClInclude>
     <ClInclude Include="05 Resource File\imgui\imconfig.h">
-      <Filter>Manager --------------------\Imgui</Filter>
+      <Filter>Resource\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="05 Resource File\imgui\imgui.h">
-      <Filter>Manager --------------------\Imgui</Filter>
+      <Filter>Resource\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="05 Resource File\imgui\imgui_impl_dx11.h">
-      <Filter>Manager --------------------\Imgui</Filter>
+      <Filter>Resource\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="05 Resource File\imgui\imgui_impl_win32.h">
-      <Filter>Manager --------------------\Imgui</Filter>
+      <Filter>Resource\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="05 Resource File\imgui\imgui_internal.h">
-      <Filter>Manager --------------------\Imgui</Filter>
+      <Filter>Resource\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="05 Resource File\imgui\imstb_rectpack.h">
-      <Filter>Manager --------------------\Imgui</Filter>
+      <Filter>Resource\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="05 Resource File\imgui\imstb_textedit.h">
-      <Filter>Manager --------------------\Imgui</Filter>
+      <Filter>Resource\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="05 Resource File\imgui\imstb_truetype.h">
-      <Filter>Manager --------------------\Imgui</Filter>
+      <Filter>Resource\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\trim.h">
       <Filter>GameObjects----------------\Trim</Filter>
