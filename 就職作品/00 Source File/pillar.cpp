@@ -2,7 +2,8 @@
 #include "renderer.h"
 #include "StaticMesh.h"
 #include "pillar.h"
-
+#include "Imgui11.h"
+#include "input.h"
 
 //
 //
@@ -10,14 +11,15 @@
 void CPillar::Init()
 {
 	m_pMesh = new StaticMesh();
-
-
-	m_pMesh->LoadModel("../02 Visual File//Pillar//pillar.fbx");
+	m_pMesh->LoadModel("../02 Visual File//Pillar//Pillar5.fbx");
 	m_pMesh->LoadTexture("");
 
 	m_Position = D3DXVECTOR3(0.0f, 0.0f, 5.0f);
 	m_Rotation = D3DXVECTOR3(D3DX_PI / 2, D3DX_PI / 2, 0.0f);
-	m_Scale = D3DXVECTOR3(0.01f, 0.01f, 0.01f);
+	//m_Scale = D3DXVECTOR3(0.01f, 0.01f, 0.01f);
+	m_Scale = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
+
+	m_Collision.Init(D3DXVECTOR3(1.0f,1.0f,3.0f),D3DXVECTOR3(0,0,-1.5));
 
 
 	//　入力レイアウト生成
@@ -70,7 +72,7 @@ void CPillar::Uninit()
 	delete m_pMesh;
 
 	UninitInstance();
-
+	m_Collision.Uninit();
 
 	SAFE_RELEASE(m_pVertexShader);
 	SAFE_RELEASE(m_pPixelShader);
@@ -92,4 +94,33 @@ void CPillar::Draw()
 
 
 	m_pMesh->DrawInstanced(m_MeshCount);
+
+	if(!isEnableCollision)
+		m_Collision.DrawInstance(m_MeshCount);
+}
+
+void CPillar::Imgui()
+{
+	static bool show_pillar_window = true;
+
+	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+	if (Keyboard_IsTrigger(DIK_F1))
+		show_pillar_window = !show_pillar_window;
+
+	if (show_pillar_window)
+	{
+		ImGuiWindowFlags lw_flag = 0;
+		static bool lw_is_open;
+
+		ImGui::Begin("Pillar", &lw_is_open, lw_flag);
+
+		ImGui::Checkbox("isEnableCollision", &isEnableCollision);
+
+		int count = m_MatrixList.size();
+		ImGui::InputInt("MeshCount", &count, 1);
+	
+
+		ImGui::End();
+	}
 }

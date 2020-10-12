@@ -1,15 +1,18 @@
 #pragma once
 #include "InstanceObject.h"
+#include "collision.h"
 
 class CPillar : public CInstanceGameObject
 {
 private:
 	StaticMesh* m_pMesh = nullptr;
-
+	Collision m_Collision;
 	ID3D11VertexShader* m_pVertexShader;
 	ID3D11PixelShader* m_pPixelShader;
 
 	ID3D11InputLayout* m_pVertexLayout;
+
+	bool isEnableCollision = true;
 public:
 	CPillar() {}
 	~CPillar() {}
@@ -18,4 +21,5 @@ public:
 	void Uninit();
 	void Update();
 	void Draw();
+	void Imgui();
 };

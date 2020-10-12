@@ -18,8 +18,7 @@ cbuffer ProjectionBuffer : register(b2)
 
 
 VS_OUT main(
-float4 Pos : POSITION,
-float2 Tex : TEXCOORD0)
+float4 Pos : POSITION)
 {
     VS_OUT output = (VS_OUT) 0;
 

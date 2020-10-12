@@ -1,7 +1,8 @@
 #include "director.h"
 #include "renderer.h"
 #include "wall.h"
-
+#include "Imgui11.h"
+#include "input.h"
 
 //
 //
@@ -10,13 +11,15 @@ void CWall::Init()
 {
 	
 	m_pWall = new Tile();
-
-
 	m_pWall->Init("Wall//T_StoneWall_A.BMP", "Wall//T_StoneWall_N.BMP", 1,2, 4.0f);
 
-	m_Position = D3DXVECTOR3(0.0f, 2.0f, 0.0f);
+
+
+	m_Position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_Rotation = D3DXVECTOR3(-D3DX_PI/2, D3DX_PI/2, 0.0f);
 	m_Scale = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
+
+	m_collision.Init(D3DXVECTOR3(4, 0.1f, 8), D3DXVECTOR3(0, 0, 0));
 
 	//　入力レイアウト生成
 	D3D11_INPUT_ELEMENT_DESC layout[]{
@@ -37,98 +40,99 @@ void CWall::Init()
 	D3DXVECTOR3 pos;
 	D3DXVECTOR3 rot;
 	
+			
 
 	//スタート地点壁
 	{
 		{
-			pos = m_Position + D3DXVECTOR3(4 - 2.0f, 0.0f, -2.0f);
+			pos = D3DXVECTOR3(4 - 2.0f, 2.0f, -2.0f);
 			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
 
 			m_posList.push_back(pos);
 			m_rotList.push_back(rot);
 
-			pos = m_Position + D3DXVECTOR3(-7.0f, 0.0f, -2.0f);
-			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
-
-			m_posList.push_back(pos);
-			m_rotList.push_back(rot);
-		}
-		{
-			pos = m_Position + D3DXVECTOR3(4, 0.0f, -4.0f);
-			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI, 0);
-
-			m_posList.push_back(pos);
-			m_rotList.push_back(rot);
-
-			pos = m_Position + D3DXVECTOR3(-9.0f, 0.0f, -4.0f);
-			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI, 0);
-
-			m_posList.push_back(pos);
-			m_rotList.push_back(rot);
-
-			pos = m_Position + D3DXVECTOR3(4, 0.0f, -8.0f);
-			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI, 0);
-
-			m_posList.push_back(pos);
-			m_rotList.push_back(rot);
-
-			pos = m_Position + D3DXVECTOR3(-9.0f, 0.0f, -8.0f);
-			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI, 0);
-
-			m_posList.push_back(pos);
-			m_rotList.push_back(rot);
-		}
-		{
-			pos = m_Position + D3DXVECTOR3(0, 0.0f, -10.0f);
-			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
-
-			m_posList.push_back(pos);
-			m_rotList.push_back(rot);
-
-			pos = m_Position + D3DXVECTOR3(4, 0.0f, -10.0f);
-			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
-
-			m_posList.push_back(pos);
-			m_rotList.push_back(rot);
-
-			pos = m_Position + D3DXVECTOR3(-4.0f, 0.0f, -10.0f);
-			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
-
-			m_posList.push_back(pos);
-			m_rotList.push_back(rot);
-
-			pos = m_Position + D3DXVECTOR3(-8.0f, 0.0f, -10.0f);
+			pos = D3DXVECTOR3(-7.0f, 2.0f, -2.0f);
 			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
 
 			m_posList.push_back(pos);
 			m_rotList.push_back(rot);
 		}
 		{
-			pos = m_Position + D3DXVECTOR3(2.0f, 4.0f, -8.0f);
+			pos = D3DXVECTOR3(4, 2.0f, -4.0f);
+			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI, 0);
+
+			m_posList.push_back(pos);
+			m_rotList.push_back(rot);
+
+			pos = D3DXVECTOR3(-9.0f, 2.0f, -4.0f);
+			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI, 0);
+
+			m_posList.push_back(pos);
+			m_rotList.push_back(rot);
+
+			pos = D3DXVECTOR3(4, 2.0f, -8.0f);
+			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI, 0);
+
+			m_posList.push_back(pos);
+			m_rotList.push_back(rot);
+
+			pos = D3DXVECTOR3(-9.0f, 2.0f, -8.0f);
+			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI, 0);
+
+			m_posList.push_back(pos);
+			m_rotList.push_back(rot);
+		}
+		{
+			pos = D3DXVECTOR3(0, 2.0f, -10.0f);
+			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
+
+			m_posList.push_back(pos);
+			m_rotList.push_back(rot);
+
+			pos = D3DXVECTOR3(4, 2.0f, -10.0f);
+			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
+
+			m_posList.push_back(pos);
+			m_rotList.push_back(rot);
+
+			pos = D3DXVECTOR3(-4.0f, 2.0f, -10.0f);
+			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
+
+			m_posList.push_back(pos);
+			m_rotList.push_back(rot);
+
+			pos = D3DXVECTOR3(-8.0f, 2.0f, -10.0f);
+			rot = m_Rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
+
+			m_posList.push_back(pos);
+			m_rotList.push_back(rot);
+		}
+		{
+			pos = D3DXVECTOR3(2.0f, 6.0f, -8.0f);
 			rot = m_Rotation + D3DXVECTOR3(D3DX_PI/2, 0, 0);
 
 			m_posList.push_back(pos);
 			m_rotList.push_back(rot);
 
-			pos = m_Position + D3DXVECTOR3(2.0f, 4.0f, -4.0f);
+			pos = D3DXVECTOR3(2.0f, 6.0f, -4.0f);
 			rot = m_Rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
 
 			m_posList.push_back(pos);
 			m_rotList.push_back(rot);
 
-			pos = m_Position + D3DXVECTOR3(-6.0f, 4.0f, -8.0f);
+			pos = D3DXVECTOR3(-6.0f, 6.0f, -8.0f);
 			rot = m_Rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
 
 			m_posList.push_back(pos);
 			m_rotList.push_back(rot);
 
-			pos = m_Position + D3DXVECTOR3(-6.0f, 4.0f, -4.0f);
+			pos = D3DXVECTOR3(-6.0f, 6.0f, -4.0f);
 			rot = m_Rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
 
 			m_posList.push_back(pos);
 			m_rotList.push_back(rot);
 
-			pos = m_Position + D3DXVECTOR3(-2.0f, 4.0f, 0.0f);
+			pos = D3DXVECTOR3(-2.0f, 6.0f, 0.0f);
 			rot = m_Rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
 
 			m_posList.push_back(pos);
@@ -140,14 +144,14 @@ void CWall::Init()
 
 	for (int i = 0; i < 7; i++)
 	{
-		pos = m_Position + D3DXVECTOR3(0, 0, i * 4.0f);
+		pos = D3DXVECTOR3(0, 2.0f, i * 4.0f);
 		rot = m_Rotation;
 		m_posList.push_back(pos);
 		m_rotList.push_back(rot);
 	}
 	for (int i = 0; i < 7; i++)
 	{
-		pos = m_Position + D3DXVECTOR3(-5.0f, 0, i * 4.0f);
+		pos = D3DXVECTOR3(-5.0f, 2.0f, i * 4.0f);
 		rot = m_Rotation + D3DXVECTOR3(0,-D3DX_PI,0);
 
 		m_posList.push_back(pos);
@@ -156,7 +160,7 @@ void CWall::Init()
 
 	for (int i = 0; i < 8; i++)
 	{
-		pos = m_Position + D3DXVECTOR3(i * -4.0f + 4 * 4.0f, 0.0f, 35.0f);
+		pos = D3DXVECTOR3(i * -4.0f + 4 * 4.0f, 2.0f, 35.0f);
 		rot = m_Rotation + D3DXVECTOR3(0,D3DX_PI/2, 0);
 
 		m_posList.push_back(pos);
@@ -196,7 +200,7 @@ void CWall::Uninit()
 	delete m_pWall;
 
 	UninitInstance();
-
+	m_collision.Uninit();
 	SAFE_RELEASE(m_pVertexShader);
 	SAFE_RELEASE(m_pPixelShader);
 	SAFE_RELEASE(m_pVertexLayout);
@@ -221,4 +225,37 @@ void CWall::Draw()
 	RENDERER::m_pDeviceContext->IASetInputLayout(m_pVertexLayout);
 
 	m_pWall->DrawInstanced(m_MeshCount);
+
+	if(!isEnableCollision)
+		m_collision.DrawInstance(m_MeshCount);
+}
+
+void CWall::Imgui()
+{
+	static bool show_wall_window = true;
+
+	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+	if (Keyboard_IsTrigger(DIK_F1))
+		show_wall_window = !show_wall_window;
+
+	if (show_wall_window)
+	{
+		ImGuiWindowFlags lw_flag = 0;
+		static bool lw_is_open;
+
+		ImGui::Begin("Wall", &lw_is_open, lw_flag);
+
+		ImGui::Checkbox("isEnableCollision", &isEnableCollision);
+
+		int count = m_MatrixList.size();
+		ImGui::InputInt("MeshCount",&count , 1);
+		/*for (int i = 0; i < m_MatrixList.size(); i++)
+		{
+
+		}
+		ImGui::SliderFloat3()*/
+
+		ImGui::End();
+	}
 }

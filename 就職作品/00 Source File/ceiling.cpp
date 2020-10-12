@@ -17,8 +17,8 @@ void CCeiling::Init()
 
 	m_Position = D3DXVECTOR3(-2.5f, 4.0f, 0.5f);
 	m_Rotation = D3DXVECTOR3(D3DX_PI / 2, D3DX_PI / 2, 0.0f);
-	//m_Rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_Scale = D3DXVECTOR3(0.01f, 0.01f, 0.01f);
+	//m_Scale = D3DXVECTOR3(0.01f, 0.01f, 0.01f);
+	m_Scale = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 
 
 	//　入力レイアウト生成
