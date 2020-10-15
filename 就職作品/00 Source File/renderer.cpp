@@ -18,7 +18,7 @@ IDXGISwapChain* RENDERER::m_pSwapChain = NULL;
 ID3D11RenderTargetView* RENDERER::m_pDeferred_TexRTV = NULL;
 
 ID3D11DepthStencilView* RENDERER::m_pDeferred_DSTexDSV = NULL;
-ID3D11BlendState* RENDERER::m_pBlendState = NULL;
+ID3D11BlendState* RENDERER::m_pCommonBlendState = NULL;
 
 //ディファードレンダリング用
 ID3D11RasterizerState* RENDERER::m_pDeferredRasterizerState = NULL;
@@ -215,8 +215,8 @@ HRESULT RENDERER::Init(D3D_INIT* pcd)
 	//blendd.IndependentBlendEnable =false;
 	//blendd.AlphaToCoverageEnable=false;
 	//blendd.RenderTarget[0].BlendEnable=true;
-	//blendd.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-	//blendd.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	//blendd.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;//メッシュのレンダリングイメージ
+	//blendd.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;//レンダーターゲットサーファスのイメージ
 	//blendd.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
 	//blendd.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
 	//blendd.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
@@ -228,8 +228,27 @@ HRESULT RENDERER::Init(D3D_INIT* pcd)
 	//	return E_FAIL;
 	//}
 
-	//UINT mask=0xffffffff;
-	//m_pDeviceContext->OMSetBlendState(m_pBlendState, NULL, mask);
+	UINT mask=0xffffffff;
+	m_pDeviceContext->OMSetBlendState(m_pCommonBlendState, NULL, mask);
+
+	//アルファブレンド種類
+	/*
+	*アルファブレンド無効
+	*SrcBlend = D3D11_BLEND_ONE;//1
+	*DestBlend = D3D11_BLEND_ZERO;//0
+	*BlendOp = D3D11_BLEND_OP_ADD;//SrcBlend * 1 + DestBlend * 0
+	*線形合成
+	*SrcBlend = SrcBlendAlpha;//1
+	*DestBlend = (1 - SrcBlendAlpha);//0
+	*BlendOp = D3D11_BLEND_OP_ADD;
+	*
+	*etc...
+	*参考文献 
+	*http://maverickproj.web.fc2.com/d3d11_06.html 
+	*/
+
+
+
 
 
 	// ディファードレンダリング用サンプラーステート設定

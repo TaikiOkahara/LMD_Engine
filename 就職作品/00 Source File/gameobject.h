@@ -64,7 +64,7 @@ public:
 
 		return up;
 	}
-
+	//マトリクス設定を省略する関数
 	void SetWorldMatrix()
 	{
 		//　マトリクス設定

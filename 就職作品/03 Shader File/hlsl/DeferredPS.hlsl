@@ -1,5 +1,7 @@
 #include "Geometry.hlsl"
+#include "ConstantBuffer.hlsl"
 
+//GBuffer
 Texture2D g_texColor	: register(t2);
 Texture2D g_texNormal	: register(t3);
 Texture2D g_texPosition	: register(t4);
@@ -7,33 +9,10 @@ Texture2D g_texPosition	: register(t4);
 StructuredBuffer<float4> PointLightBuffer : register(t5);
 
 
-
 SamplerState g_samLinear : register(s0);
 SamplerState g_samDeferredLinear : register(s1);
 
-cbuffer EyeBuffer : register(b3)
-{
-    float4 g_vEye;
-}
 
-//　ポイントライト
-cbuffer PointLightBuffer : register(b4)
-{
-    float4 g_vPointLight[10];
-}
-
-//　ディレクショナルライト
-cbuffer DirectionalLightBuffer : register(b5)
-{
-    float4 g_vLight; //ライトの座標
-    //float4 g_fIntensity; //明るさ	
-
-    //matrix g_mLightView;
-}
-
-
-
-//float4 PLight(float3 vDiffuse, float3 vWorldPos, float3 vWorldNormal, float3 vLightPos, float3 vEyeVector, float3 LightColor);
 float4 PLight(float3 Pos, float4 LPos, float3 Dir, float3 Normal, float2 UV, float3 EyeVector);
 
 float4 main(VS_OUT input) : SV_Target

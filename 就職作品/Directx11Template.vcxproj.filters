@@ -343,6 +343,15 @@
     <FxCompile Include="03 Shader File\hlsl\CollisionInstanceVertexShader.hlsl">
       <Filter>Shader-----------------------</Filter>
     </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\PointLightPixelShader.hlsl">
+      <Filter>Shader-----------------------</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\PointLightVertexShader.hlsl">
+      <Filter>Shader-----------------------</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\ConstantBuffer.hlsl">
+      <Filter>Shader-----------------------</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Manual.txt">

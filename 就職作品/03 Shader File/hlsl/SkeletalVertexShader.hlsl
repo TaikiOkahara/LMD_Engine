@@ -1,20 +1,6 @@
 #include "Geometry.hlsl"
+#include "ConstantBuffer.hlsl"
 
-cbuffer WorldBuffer : register(b0)
-{
-    matrix g_mWorld;
-    matrix g_mWIT;
-}
-
-cbuffer ViewBuffer : register(b1)
-{
-    matrix g_mView;
-}
-
-cbuffer ProjectionBuffer : register(b2)
-{
-    matrix g_mProj;
-}
 
 // マテリアルバッファ
 struct MATERIAL
@@ -28,19 +14,11 @@ struct MATERIAL
 };
 
 
-//　ディレクショナルライト
-cbuffer DirectionalLightBuffer : register(b5)
-{
-    float4 g_vLight; //ライトの座標
-   // float4 g_fIntensity; //明るさ	
-	
-    //matrix g_mLightView;
-}
-
 cbuffer AnimationBuffer : register(b7)
 {
     matrix g_Animation[256];
 }
+
 
 matrix GetAnimMatrix(uint index)
 {

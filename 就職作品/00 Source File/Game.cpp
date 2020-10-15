@@ -16,7 +16,7 @@
 void Game::Init() {
 	AddGameObject<CCamera>(0);
 	AddGameObject<CSceneLight>(0);
-	AddGameObject<CPointLight>(0);
+	AddGameObject<CPointLight>(2);
 
 
 	AddGameObject<CWall>(1);	//•Ç

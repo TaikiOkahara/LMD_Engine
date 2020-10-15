@@ -11,7 +11,7 @@
 void CPillar::Init()
 {
 	m_pMesh = new StaticMesh();
-	m_pMesh->LoadModel("../02 Visual File//Pillar//Pillar5.fbx");
+	m_pMesh->LoadModel("../02 Visual File//Pillar//Pillar.fbx");
 	m_pMesh->LoadTexture("");
 
 	m_Position = D3DXVECTOR3(0.0f, 0.0f, 5.0f);

@@ -1,14 +1,8 @@
 #include "Geometry.hlsl"
+#include "ConstantBuffer.hlsl"
 
 StructuredBuffer<matrix> WorldMatrixBuffer : register(t0);
 
-cbuffer ViewBuffer : register(b1) {
-	matrix g_mView;
-}
-
-cbuffer ProjectionBuffer : register(b2){
-	matrix g_mProj;
-}
 
 // マテリアルバッファ
 struct MATERIAL{
@@ -19,17 +13,6 @@ struct MATERIAL{
 	float		Shininess;
 	float3		Dummy;//16bit境界用
 };
-
-
-
-//　ディレクショナルライト
-cbuffer DirectionalLightBuffer : register(b5){
-	float4 g_vLight;//ライトの座標
-	//float4 g_fIntensity;//明るさ	
-	
-	//matrix g_mLightView;
-}
-
 
 
 VS_OUT main(

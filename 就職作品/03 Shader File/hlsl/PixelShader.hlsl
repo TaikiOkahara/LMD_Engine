@@ -5,7 +5,6 @@ Texture2D g_texDif		: register(t0);//Diffuseテクスチャ
 Texture2D g_texNor		: register(t1);//Normalテクスチャ
 
 
-
 SamplerState g_samLinear : register(s0);
 
 

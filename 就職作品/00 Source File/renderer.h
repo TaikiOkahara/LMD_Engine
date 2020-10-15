@@ -144,13 +144,16 @@ class RENDERER
 	//======================================================
 
 
-	//í èÌ
-	static ID3D11RasterizerState* m_pCommonRasterizerState;
-	static ID3D11SamplerState* m_pCommonSamplerState;
 	
 
 
 public:
+
+	//í èÌ
+	static ID3D11RasterizerState* m_pCommonRasterizerState;
+	static ID3D11SamplerState*	m_pCommonSamplerState;
+	static ID3D11BlendState*	m_pCommonBlendState;			
+	
 	static ID3D11VertexShader*	m_pCommonVertexShader;
 	static ID3D11PixelShader*	m_pCommonPixelShader;
 	static ID3D11InputLayout*	m_pCommonVertexLayout;
@@ -162,7 +165,6 @@ public:
 
 	//static ID3D11DepthStencilState*		m_pBuckBuffer_DSTexState;
 	
-	static ID3D11BlendState*			m_pBlendState;			
 	
 	
 	

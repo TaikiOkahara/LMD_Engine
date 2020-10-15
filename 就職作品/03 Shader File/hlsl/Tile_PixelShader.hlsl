@@ -3,7 +3,7 @@
 
 Texture2D g_tex			: register(t0);
 Texture2D g_texNor		: register(t1);
-
+//GBuffer
 Texture2D g_texColor	: register(t2);
 Texture2D g_texNormal	: register(t3);
 Texture2D g_texPosition	: register(t4);
