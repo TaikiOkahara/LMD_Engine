@@ -20,15 +20,8 @@ private:
 	ID3D11InputLayout* m_pVertexLayout;
 
 
-	ID3D11RasterizerState* m_pBackCullingRasterizerState;
-	//ID3D11BlendState* m_pBackCullingBlendState;
 public:
 
-	/*CPointLight() {}
-	~CPointLight() {}*/
-
-
-	//‚±‚ÌInit‚ÍGameObjectƒNƒ‰ƒX‚ÌInit‚ÌÅŒã‚É“ü‚ê‚é
 	void Init();
 	void Uninit();
 	void Update();

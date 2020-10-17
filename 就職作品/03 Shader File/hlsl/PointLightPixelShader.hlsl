@@ -7,15 +7,13 @@ Texture2D g_texNormal : register(t3);
 Texture2D g_texPosition : register(t4);
 
 
-float4 main(VS_OUT input) : SV_Target
+float4 main(VS_LIGHT_OUT input) : SV_Target
 {
     
     int3 sampleIndices = int3(input.Pos.xy, 0);
 
     float3 normal = g_texNormal.Load(sampleIndices).xyz;
-
     float3 position = g_texPosition.Load(sampleIndices).xyz;
-
     float3 diffuse = g_texColor.Load(sampleIndices).xyz;
 
     
@@ -26,7 +24,6 @@ float4 main(VS_OUT input) : SV_Target
 
     if (dist > 1.0f)//距離
     {
-        //チェック赤色
         return float4(0.0f, 0.0f, 0.0f, 0.0f);
     }
 
@@ -42,14 +39,14 @@ float4 main(VS_OUT input) : SV_Target
     float3 color = lightAmount * lightColor * att;
 
 	//Specular calc
-    //float3 V = g_vEye.xyz - position;
-    //float3 H = normalize(L + V);
-    //float specular = pow(saturate(dot(normal, H)), 10) * att;
+    float3 V = g_vEye.xyz - position;
+    float3 H = normalize(L + V);
+    float specular = pow(saturate(dot(normal, H)), 10) * att;
 
     float3 finalDiffuse = color * diffuse;
-    //float3 finalSpecular = specular * diffuse * att;
+    float3 finalSpecular = specular * diffuse * att;
 
-    //float4 totalColor = float4(finalDiffuse + finalSpecular, 1.0f);
-    float4 totalColor = float4(finalDiffuse , 1.0f);
+    float4 totalColor = float4(finalDiffuse + finalSpecular, 1.0f);
+    //float4 totalColor = float4(finalDiffuse , 1.0f);
     return totalColor;
 }

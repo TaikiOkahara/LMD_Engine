@@ -29,13 +29,12 @@ PS_OUT main(VS_OUT input)
     bump = g_texNor.Sample(g_samLinear, input.Tex);
     bump = (bump * 2.0f) - 1.0f;
 	
-    //float3 bumpNormal;
-    //bumpNormal = (bump.x * input.WorldTangent) + (bump.y * input.WorldBinormal) + (bump.z * input.WorldNormal);
-    //bumpNormal = normalize(bumpNormal);
+    float3 bumpNormal;
+    bumpNormal = (bump.x * input.WorldTangent) + (bump.y * input.WorldBinormal) + (bump.z * input.WorldNormal);
+    bumpNormal = normalize(bumpNormal);
 	
-    //Out.vNormal = normalize(float4(bumpNormal, 0));
-    Out.vNormal = bump;//光反射しすぎて見づらかったからバンプマッピングだけにした
-    Out.vNormal = normalize(float4(bump.xyz, 0));
+    Out.vNormal = normalize(float4(bumpNormal, 0));
+    //Out.vNormal = normalize(float4(bump.xyz, 0)); //光反射しすぎて見づらかったからバンプマッピングだけにした
 	
 	//Out.vNormal = normalize(float4(input.WorldNormal, 0));
 

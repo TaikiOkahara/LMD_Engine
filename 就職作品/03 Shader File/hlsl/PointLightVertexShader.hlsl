@@ -1,14 +1,14 @@
 #include "Geometry.hlsl"
 #include "ConstantBuffer.hlsl"
 
-VS_OUT main(
+VS_LIGHT_OUT main(
 	float4 Pos		: POSITION0,
 	float4 Normal	: NORMAL0,
 	float2 Tex		: TEXCOORD0,
 	float4 Tangent	: TANGENT,
 	float4 Binormal : BINORMAL)
 {
-	VS_OUT output = (VS_OUT)0;
+    VS_LIGHT_OUT output = (VS_LIGHT_OUT) 0;
 
 
 	matrix WVP;

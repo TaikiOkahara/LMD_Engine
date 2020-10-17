@@ -9,14 +9,17 @@
 
 class Scene
 {
-	enum DRAW_FASE
+protected:
+
+	enum LAYER
 	{
-		DRAW_FASE_MAX = 3,
-		DRAW_FASE_NO_LIGHT = 2,
+		DRAW_LAYER_HIDE = 0,//非描画レイヤー
+		DRAW_LAYER_DRAW = 1,//一般的なオブジェクトレイヤー
+		DRAW_LAYER_LIGHT = 2,//ライティングレイヤー
+		DRAW_LAYER_MAX = 3,//レイヤー数
 	};
 
-protected:
-	std::list<CGameObject*> m_GameObject[DRAW_FASE::DRAW_FASE_MAX];
+	std::list<CGameObject*> m_GameObject[LAYER::DRAW_LAYER_MAX];
 
 public:	
 	Scene(){}
@@ -26,7 +29,7 @@ public:
 	virtual void Init() = 0;
 
 	virtual void UnInit() {
-		for (int i = 0; i < DRAW_FASE::DRAW_FASE_MAX; i++)
+		for (int i = 0; i < LAYER::DRAW_LAYER_MAX; i++)
 		{
 			for (CGameObject* object : m_GameObject[i])
 			{
@@ -39,7 +42,7 @@ public:
 	}
 
 	virtual void Draw() {
-		for (int i = 0; i < DRAW_FASE::DRAW_FASE_NO_LIGHT; i++)
+		for (int i = 0; i < LAYER::DRAW_LAYER_LIGHT; i++)
 		{
 			for (CGameObject* object : m_GameObject[i])
 			{
@@ -50,14 +53,14 @@ public:
 
 	virtual void DrawLighting() {
 		//Lightingパスだけ描画
-		for (CGameObject* object : m_GameObject[DRAW_FASE::DRAW_FASE_MAX - 1])
+		for (CGameObject* object : m_GameObject[LAYER::DRAW_LAYER_MAX - 1])
 		{
 			object->Draw();
 		}
 	}
 
 	virtual void Update() {
-		for (int i = 0; i < DRAW_FASE::DRAW_FASE_MAX; i++)
+		for (int i = 0; i < LAYER::DRAW_LAYER_MAX; i++)
 		{
 			for (CGameObject* object : m_GameObject[i])
 			{
@@ -72,7 +75,7 @@ public:
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
-		for (int i = 0; i < DRAW_FASE::DRAW_FASE_MAX; i++)
+		for (int i = 0; i < LAYER::DRAW_LAYER_MAX; i++)
 		{
 			for (CGameObject* object : m_GameObject[i])
 			{

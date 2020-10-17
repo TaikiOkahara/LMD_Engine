@@ -47,60 +47,6 @@ void CPointLight::Init()
 	RENDERER::CreatePixelShader(&m_pPixelShader, "PointLightPixelShader.cso");
 
 
-
-
-
-
-
-
-	//{//サンプルコンスタントバッファ
-
-	//	RENDERER::CreateStructuredBuffer(sizeof(D3DXVECTOR4), m_PointList.size(), &m_PointList[0], &m_pPointLightBuffer);
-
-
-	//	//シェーダリソースビューも作る必要がある
-	//	//また、Formatは必ずDXGI_FORMAT_UNKNOWNにしないといけない
-	//	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-	//	srvDesc.Format = DXGI_FORMAT_UNKNOWN;
-	//	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
-	//	srvDesc.Buffer.FirstElement = 0;
-	//	srvDesc.Buffer.NumElements = m_PointList.size();
-
-	//	RENDERER::m_pDevice->CreateShaderResourceView(m_pPointLightBuffer, &srvDesc, &m_pPointLightBufferSRV);
-	//	RENDERER::m_pDeviceContext->VSSetShaderResources(0, 1, &m_pPointLightBufferSRV);
-
-	//	//Rendererのバッファにセット
-	//	RENDERER::SetPointLight(m_pPointLightBuffer, m_pPointLightBufferSRV);
-	//}
-
-	//ポイントライト用バックカリングラスタライズ設定
-	D3D11_RASTERIZER_DESC rdc;
-	ZeroMemory(&rdc, sizeof(rdc));
-	rdc.CullMode = D3D11_CULL_MODE::D3D11_CULL_BACK;
-	rdc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-	rdc.DepthClipEnable = FALSE;
-	//rdc.FrontCounterClockwise = TRUE;
-	//rdc.MultisampleEnable = FALSE;
-
-	RENDERER::m_pDevice->CreateRasterizerState(&rdc, &m_pBackCullingRasterizerState);
-
-	////アルファブレンド用ブレンドステート作成
-	//D3D11_BLEND_DESC blendd;
-	//ZeroMemory(&blendd, sizeof(D3D11_BLEND_DESC));
-	//blendd.IndependentBlendEnable =false;
-	//blendd.AlphaToCoverageEnable=false;
-	//blendd.RenderTarget[0].BlendEnable=true;
-	//blendd.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;//メッシュのレンダリングイメージ
-	//blendd.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;//レンダーターゲットサーファスのイメージ
-	//blendd.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	//blendd.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;//ココ大事
-	//blendd.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;//ココ大事
-	//blendd.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	//blendd.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-	//
-	//RENDERER::m_pDevice->CreateBlendState(&blendd, &m_pBackCullingBlendState);
-
-	
 }
 
 void CPointLight::Uninit()
@@ -108,8 +54,7 @@ void CPointLight::Uninit()
 	m_pMesh->Unload();
 	delete m_pMesh;
 
-	SAFE_RELEASE(m_pBackCullingRasterizerState);
-	//SAFE_RELEASE(m_pBackCullingBlendState);
+	
 	SAFE_RELEASE(m_pVertexShader);
 	SAFE_RELEASE(m_pPixelShader);
 	SAFE_RELEASE(m_pVertexLayout);
@@ -120,27 +65,21 @@ void CPointLight::Uninit()
 void CPointLight::Update()
 {
 
-	/*D3DXVECTOR3 pos = Base::GetScene()->GetGameObject<CPlayer>(1)->GetPosition();
+	D3DXVECTOR3 pos = Base::GetScene()->GetGameObject<CPlayer>(1)->GetPosition();
 
-	m_PointLight.LightPosition[0] = D3DXVECTOR4(pos.x, pos.y, pos.z, 1);*/
-
-
-	//RENDERER::SetPointLight(m_pPointLightBuffer, m_pPointLightBufferSRV);
-	//RENDERER::m_pDeviceContext->UpdateSubresource(m_pPointLightBuffer, 0, NULL, &m_PointList[0], 0, 0);
-	RENDERER::SetPointLight(m_PointLight);
+	m_PointLight.LightPosition[0] = D3DXVECTOR4(pos.x, 0.0f, pos.z, 1);
+	m_Position = D3DXVECTOR3(pos.x, 0.0f, pos.z);
+	
 }
 
 void CPointLight::Draw()
 {
-	//UINT mask = 0xffffffff;
-	//float blend[4] = { 1,1,1,1 };
-	//RENDERER::m_pDeviceContext->OMSetBlendState(m_pBackCullingBlendState, blend, mask);
-	RENDERER::m_pDeviceContext->RSSetState(m_pBackCullingRasterizerState);
+	RENDERER::SetPointLight(m_PointLight);
 	
 	SetWorldMatrix();
-	//ピクセルシェーダだけオリジナル
+
 	RENDERER::m_pDeviceContext->VSSetShader(m_pVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);//オリジナル
+	RENDERER::m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);
 	RENDERER::m_pDeviceContext->IASetInputLayout(m_pVertexLayout);
 
 	

@@ -8,9 +8,9 @@ struct VS_OUT
     float3 WorldTangent : TANGENT;
     float3 WorldBinormal: BINORMAL;
 	float2 Tex			: TEXCOORD0;
-	float3 LightVector  : TEXCOORD1;
-	float4 LightTexCoord: TEXCOORD2;
-	float4 LightViewPos : TEXCOORD3;
+	//float3 LightVector  : TEXCOORD1;
+	//float4 LightTexCoord: TEXCOORD2;
+	//float4 LightViewPos : TEXCOORD3;
 	
 
 	float3 EyeVector	: TEXCOORD5;
@@ -21,8 +21,11 @@ struct PS_OUT
 	float4 vColor		: SV_Target0;
 	float4 vNormal		: SV_Target1;
 	float4 vPosition	: SV_Target2;
-	float4 vLighting	: SV_Target3;
-	
+};
+
+struct VS_LIGHT_OUT
+{
+    float4 Pos : SV_POSITION;
 };
 
 //struct VS_LINE_OUT

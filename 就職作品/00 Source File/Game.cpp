@@ -14,18 +14,18 @@
 #include "ceiling.h"
 #include "pointLight.h"
 void Game::Init() {
-	AddGameObject<CCamera>(0);
-	AddGameObject<CSceneLight>(0);
-	AddGameObject<CPointLight>(2);//一番最後に描画
+	AddGameObject<CCamera>(LAYER::DRAW_LAYER_HIDE);
+	AddGameObject<CSceneLight>(LAYER::DRAW_LAYER_HIDE);
+	AddGameObject<CPointLight>(LAYER::DRAW_LAYER_LIGHT);//一番最後に描画
 
 
-	//AddGameObject<CWall>(1);	//壁
-	AddGameObject<CPillar>(1);	//柱
-	AddGameObject<CFloor>(1);	//地面
-	AddGameObject<CStage>(1);	//ドア
-	AddGameObject<CTrim>(1);	//つなぎ目
-	AddGameObject<CCeiling>(1);
-	AddGameObject<CPlayer>(1);
+	AddGameObject<CWall>(LAYER::DRAW_LAYER_DRAW);	//壁
+	AddGameObject<CPillar>(LAYER::DRAW_LAYER_DRAW);	//柱
+	AddGameObject<CFloor>(LAYER::DRAW_LAYER_DRAW);	//地面
+	AddGameObject<CStage>(LAYER::DRAW_LAYER_DRAW);	//ドア
+	AddGameObject<CTrim>(LAYER::DRAW_LAYER_DRAW);	//つなぎ目
+	AddGameObject<CCeiling>(LAYER::DRAW_LAYER_DRAW);//天井
+	AddGameObject<CPlayer>(LAYER::DRAW_LAYER_DRAW);//プレイヤー
 }
 
 void Game::UnInit() {

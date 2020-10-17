@@ -134,10 +134,7 @@ class RENDERER
 	static ID3D11Texture2D* m_pPositionTexture;
 	static ID3D11RenderTargetView* m_pPosition_RTV;
 	static ID3D11ShaderResourceView* m_pPosition_SRV;
-	//ライティング
-	static ID3D11Texture2D* m_pLightingTexture;
-	static ID3D11RenderTargetView* m_pLighting_RTV;
-	static ID3D11ShaderResourceView* m_pLighting_SRV;
+
 
 
 
@@ -152,6 +149,8 @@ class RENDERER
 	static ID3D11SamplerState* m_pDeferredSamplerState;
 	static ID3D11RasterizerState* m_pDeferredRasterizerState;
 	static ID3D11BlendState* m_pDeferredBlendState;
+	//ポイントライティング
+	static ID3D11RasterizerState* m_pPointLightingRasterizerState;
 	//======================================================
 
 	//ビューポート
@@ -164,7 +163,6 @@ public:
 	//通常
 	static ID3D11RasterizerState* m_pCommonRasterizerState;
 	static ID3D11SamplerState*	m_pCommonSamplerState;
-	//static ID3D11BlendState*	m_pCommonBlendState;			
 	
 	static ID3D11VertexShader*	m_pCommonVertexShader;
 	static ID3D11PixelShader*	m_pCommonPixelShader;
@@ -205,12 +203,12 @@ public:
 	static void Clear();			//　クリア
 
 
-	static HRESULT CreateVertexShader(ID3D11VertexShader**,ID3D11InputLayout**, D3D11_INPUT_ELEMENT_DESC* ,UINT , const char* );
-	static HRESULT CreatePixelShader(ID3D11PixelShader**,const char* FileName);
-	static HRESULT CreateComputeShader(const char*, ID3D11ComputeShader**);
+	static void CreateVertexShader(ID3D11VertexShader**,ID3D11InputLayout**, D3D11_INPUT_ELEMENT_DESC* ,UINT , const char* );
+	static void CreatePixelShader(ID3D11PixelShader**,const char* FileName);
+	static void CreateComputeShader(const char*, ID3D11ComputeShader**);
+	static void CreateStructuredBuffer(UINT elementSize,UINT count,void* pInitData,ID3D11Buffer** ppBufferOut);
 
-	static HRESULT CreateStructuredBuffer(UINT elementSize,UINT count,void* pInitData,ID3D11Buffer** ppBufferOut);
-	static HRESULT Deferred();//ディファード
-	static HRESULT Lighting();//ライティング
-	static HRESULT Present();		//　画面更新
+	static void Deferred();//ディファード
+	static void Lighting();//ライティング
+	static void Present();		//　画面更新
 };

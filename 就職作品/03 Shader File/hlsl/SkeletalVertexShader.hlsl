@@ -95,7 +95,6 @@ VS_OUT main(
     output.WorldBinormal = mul(binormal.xyz, (float3x3) g_mWorld);
 	
     output.Tex = Tex;
-    output.LightVector = normalize(g_vLight).xyz;
 	//output.ShadowPos = Pos;
 
 
