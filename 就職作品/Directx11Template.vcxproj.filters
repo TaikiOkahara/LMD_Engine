@@ -94,6 +94,30 @@
     <Filter Include="Components----------------\Light">
       <UniqueIdentifier>{f8635fd1-1ad7-4af6-95fb-cafaaff1af6d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader-----------------------\Deferred">
+      <UniqueIdentifier>{c9dde9f8-0b99-4995-a1ea-ae382093f72a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader-----------------------\SkeletalMesh">
+      <UniqueIdentifier>{ff176b75-d86f-436b-8359-2e9a43a1e84c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader-----------------------\Tile">
+      <UniqueIdentifier>{825af0dd-0d00-4b4f-bcf5-ad5d875dee41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader-----------------------\Collision">
+      <UniqueIdentifier>{141d87be-5ad7-401d-8e9f-b165e9f8fb00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader-----------------------\Common">
+      <UniqueIdentifier>{506b95e9-c417-4ec3-bf28-7fcba7449338}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader-----------------------\Compute">
+      <UniqueIdentifier>{92d61dcc-ba22-4515-b38d-62333861fa7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader-----------------------\Resource">
+      <UniqueIdentifier>{a0ca34f4-5f31-4b87-8266-1c7893b1dee8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader-----------------------\PointLight">
+      <UniqueIdentifier>{0d7e117b-4b72-4703-9a9a-e6ee12950481}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="00 Source File\Entry.cpp">
@@ -301,56 +325,56 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="03 Shader File\hlsl\PixelShader.hlsl">
-      <Filter>Shader-----------------------</Filter>
-    </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\VertexShader.hlsl">
-      <Filter>Shader-----------------------</Filter>
-    </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\Tile_PixelShader.hlsl">
-      <Filter>Shader-----------------------</Filter>
-    </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\Tile_VertexShader.hlsl">
-      <Filter>Shader-----------------------</Filter>
-    </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\DeferredVS.hlsl">
-      <Filter>Shader-----------------------</Filter>
+    <FxCompile Include="03 Shader File\hlsl\ConstantBuffer.hlsl">
+      <Filter>Shader-----------------------\Resource</Filter>
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\DeferredPS.hlsl">
-      <Filter>Shader-----------------------</Filter>
+      <Filter>Shader-----------------------\Deferred</Filter>
     </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\SkeletalVertexShader.hlsl">
-      <Filter>Shader-----------------------</Filter>
+    <FxCompile Include="03 Shader File\hlsl\DeferredVS.hlsl">
+      <Filter>Shader-----------------------\Deferred</Filter>
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\SkeletalPixelShader.hlsl">
-      <Filter>Shader-----------------------</Filter>
+      <Filter>Shader-----------------------\SkeletalMesh</Filter>
     </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\InstanceVertexShader.hlsl">
-      <Filter>Shader-----------------------</Filter>
+    <FxCompile Include="03 Shader File\hlsl\SkeletalVertexShader.hlsl">
+      <Filter>Shader-----------------------\SkeletalMesh</Filter>
     </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\InstanceComputeShader.hlsl">
-      <Filter>Shader-----------------------</Filter>
+    <FxCompile Include="03 Shader File\hlsl\Tile_PixelShader.hlsl">
+      <Filter>Shader-----------------------\Tile</Filter>
     </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\Geometry.hlsl">
-      <Filter>Shader-----------------------</Filter>
+    <FxCompile Include="03 Shader File\hlsl\Tile_VertexShader.hlsl">
+      <Filter>Shader-----------------------\Tile</Filter>
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\CollisionVertexShader.hlsl">
-      <Filter>Shader-----------------------</Filter>
+      <Filter>Shader-----------------------\Collision</Filter>
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\CollisionPixelShader.hlsl">
-      <Filter>Shader-----------------------</Filter>
+      <Filter>Shader-----------------------\Collision</Filter>
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\CollisionInstanceVertexShader.hlsl">
-      <Filter>Shader-----------------------</Filter>
+      <Filter>Shader-----------------------\Collision</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\VertexShader.hlsl">
+      <Filter>Shader-----------------------\Common</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\PixelShader.hlsl">
+      <Filter>Shader-----------------------\Common</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\InstanceComputeShader.hlsl">
+      <Filter>Shader-----------------------\Compute</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\Geometry.hlsl">
+      <Filter>Shader-----------------------\Resource</Filter>
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\PointLightPixelShader.hlsl">
-      <Filter>Shader-----------------------</Filter>
+      <Filter>Shader-----------------------\PointLight</Filter>
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\PointLightVertexShader.hlsl">
-      <Filter>Shader-----------------------</Filter>
+      <Filter>Shader-----------------------\PointLight</Filter>
     </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\ConstantBuffer.hlsl">
-      <Filter>Shader-----------------------</Filter>
+    <FxCompile Include="03 Shader File\hlsl\InstanceVertexShader.hlsl">
+      <Filter>Shader-----------------------\Common</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

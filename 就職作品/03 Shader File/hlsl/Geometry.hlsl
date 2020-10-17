@@ -21,6 +21,7 @@ struct PS_OUT
 	float4 vColor		: SV_Target0;
 	float4 vNormal		: SV_Target1;
 	float4 vPosition	: SV_Target2;
+	float4 vLighting	: SV_Target3;
 	
 };
 

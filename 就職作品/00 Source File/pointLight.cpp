@@ -33,6 +33,25 @@ void CPointLight::Init()
 	//m_Scale = D3DXVECTOR3(0.01f, 0.01f, 0.01f);
 	m_Scale = D3DXVECTOR3(100.0f, 100.0f, 100.0f);
 
+	//　入力レイアウト生成
+	D3D11_INPUT_ELEMENT_DESC layout[]{
+	{ "POSITION",		0, DXGI_FORMAT_R32G32B32_FLOAT,	0,							   0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "NORMAL",			0, DXGI_FORMAT_R32G32B32_FLOAT,	0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "TEXCOORD",		0, DXGI_FORMAT_R32G32_FLOAT,	0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "TANGENT",		0, DXGI_FORMAT_R32G32B32_FLOAT,	0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "BINORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,	0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 } };
+
+
+	//シェーダー作成
+	RENDERER::CreateVertexShader(&m_pVertexShader, &m_pVertexLayout, layout, 5, "PointLightVertexShader.cso");
+	RENDERER::CreatePixelShader(&m_pPixelShader, "PointLightPixelShader.cso");
+
+
+
+
+
+
+
 
 	//{//サンプルコンスタントバッファ
 
@@ -59,7 +78,8 @@ void CPointLight::Init()
 	ZeroMemory(&rdc, sizeof(rdc));
 	rdc.CullMode = D3D11_CULL_MODE::D3D11_CULL_BACK;
 	rdc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-	rdc.FrontCounterClockwise = TRUE;
+	rdc.DepthClipEnable = FALSE;
+	//rdc.FrontCounterClockwise = TRUE;
 	//rdc.MultisampleEnable = FALSE;
 
 	RENDERER::m_pDevice->CreateRasterizerState(&rdc, &m_pBackCullingRasterizerState);
@@ -70,8 +90,8 @@ void CPointLight::Init()
 	blendd.IndependentBlendEnable =false;
 	blendd.AlphaToCoverageEnable=false;
 	blendd.RenderTarget[0].BlendEnable=true;
-	blendd.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;//メッシュのレンダリングイメージ
-	blendd.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;//レンダーターゲットサーファスのイメージ
+	blendd.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;//メッシュのレンダリングイメージ
+	blendd.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;//レンダーターゲットサーファスのイメージ
 	blendd.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
 	blendd.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;//ココ大事
 	blendd.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;//ココ大事
@@ -90,6 +110,9 @@ void CPointLight::Uninit()
 
 	SAFE_RELEASE(m_pBackCullingRasterizerState);
 	SAFE_RELEASE(m_pBackCullingBlendState);
+	SAFE_RELEASE(m_pVertexShader);
+	SAFE_RELEASE(m_pPixelShader);
+	SAFE_RELEASE(m_pVertexLayout);
 	SAFE_RELEASE(m_pPointLightBuffer);
 	SAFE_RELEASE(m_pPointLightBufferSRV);
 }
@@ -109,20 +132,20 @@ void CPointLight::Update()
 
 void CPointLight::Draw()
 {
-	SetWorldMatrix();
-
-	RENDERER::m_pDeviceContext->VSSetShader(RENDERER::m_pCommonVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->PSSetShader(RENDERER::m_pCommonPixelShader, NULL, 0);
-	RENDERER::m_pDeviceContext->IASetInputLayout(RENDERER::m_pCommonVertexLayout);
-
-	RENDERER::m_pDeviceContext->RSSetState(m_pBackCullingRasterizerState);
 	UINT mask = 0xffffffff;
-	RENDERER::m_pDeviceContext->OMSetBlendState(m_pBackCullingBlendState, NULL, mask);
+	float blend[4] = { 1,1,1,1 };
+	RENDERER::m_pDeviceContext->OMSetBlendState(m_pBackCullingBlendState, blend, mask);
+	RENDERER::m_pDeviceContext->RSSetState(m_pBackCullingRasterizerState);
+	
+	SetWorldMatrix();
+	//ピクセルシェーダだけオリジナル
+	RENDERER::m_pDeviceContext->VSSetShader(m_pVertexShader, NULL, 0);
+	RENDERER::m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);//オリジナル
+	RENDERER::m_pDeviceContext->IASetInputLayout(m_pVertexLayout);
+
+	
 	m_pMesh->Draw();
 
-	//通常のブレンドとラスタライザに戻す
-	RENDERER::m_pDeviceContext->RSSetState(RENDERER::m_pCommonRasterizerState);
-	RENDERER::m_pDeviceContext->OMSetBlendState(RENDERER::m_pCommonBlendState, NULL, mask);
 }
 
 void CPointLight::Imgui()

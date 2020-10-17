@@ -5,7 +5,7 @@
 #pragma once
 
 
-#define		LIGHT_NUM		(10)
+#define		LIGHT_NUM		(10)	//ライトの数を有限にする
 
 
 
@@ -17,6 +17,12 @@ struct VERTEX_3D
 	
 	D3DXVECTOR3 Tangent;
 	D3DXVECTOR3 Binormal;
+};
+
+struct DEFERRED_VERTEX
+{
+	D3DXVECTOR3 Pos;
+	D3DXVECTOR2 TexturePos;
 };
 
 struct ANIMVERTEX_3D
@@ -128,6 +134,10 @@ class RENDERER
 	static ID3D11Texture2D* m_pPositionTexture;
 	static ID3D11RenderTargetView* m_pPosition_RTV;
 	static ID3D11ShaderResourceView* m_pPosition_SRV;
+	//ライティング
+	static ID3D11Texture2D* m_pLightingTexture;
+	static ID3D11RenderTargetView* m_pLighting_RTV;
+	static ID3D11ShaderResourceView* m_pLighting_SRV;
 
 
 
@@ -143,9 +153,10 @@ class RENDERER
 	static ID3D11RasterizerState* m_pDeferredRasterizerState;
 	//======================================================
 
-
-	
-
+	//ビューポート
+	static D3D11_VIEWPORT m_Vp;
+	//デプスステンシルステート
+	static ID3D11DepthStencilState* m_pBuckBuffer_DSTexState;
 
 public:
 
@@ -198,6 +209,7 @@ public:
 	static HRESULT CreateComputeShader(const char*, ID3D11ComputeShader**);
 
 	static HRESULT CreateStructuredBuffer(UINT elementSize,UINT count,void* pInitData,ID3D11Buffer** ppBufferOut);
-	static HRESULT Deferred();
+	static HRESULT Deferred();//ディファード
+	static HRESULT Lighting();//ライティング
 	static HRESULT Present();		//　画面更新
 };

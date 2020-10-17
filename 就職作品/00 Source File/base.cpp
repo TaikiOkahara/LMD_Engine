@@ -39,14 +39,16 @@ void Base::MainLoop()
 	
 	
 	m_Scene->Draw();
-
 	/*RENDERER::OutLineClear();
 	g_Scene.Draw();*/
 	
 	
 	RENDERER::Deferred();
 
-	m_Scene->Imgui();
+	RENDERER::Lighting();
+	m_Scene->DrawLighting();
+
+	//m_Scene->Imgui();
 
 	//FixFPS60();
 	RENDERER::Present();

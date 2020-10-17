@@ -1,17 +1,22 @@
 #pragma once
-//#include <list>
-//#include <vector>
 
 #include "director.h"
-//#include "renderer.h"
 #include "gameobject.h"
 #include "Imgui11.h"
 
 
+
+
 class Scene
 {
+	enum DRAW_FASE
+	{
+		DRAW_FASE_MAX = 3,
+		DRAW_FASE_NO_LIGHT = 2,
+	};
+
 protected:
-	std::list<CGameObject*> m_GameObject[3];
+	std::list<CGameObject*> m_GameObject[DRAW_FASE::DRAW_FASE_MAX];
 
 public:	
 	Scene(){}
@@ -21,7 +26,7 @@ public:
 	virtual void Init() = 0;
 
 	virtual void UnInit() {
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < DRAW_FASE::DRAW_FASE_MAX; i++)
 		{
 			for (CGameObject* object : m_GameObject[i])
 			{
@@ -34,7 +39,7 @@ public:
 	}
 
 	virtual void Draw() {
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < DRAW_FASE::DRAW_FASE_NO_LIGHT; i++)
 		{
 			for (CGameObject* object : m_GameObject[i])
 			{
@@ -43,8 +48,16 @@ public:
 		}
 	}
 
+	virtual void DrawLighting() {
+		//LightingƒpƒX‚¾‚¯•`‰æ
+		for (CGameObject* object : m_GameObject[DRAW_FASE::DRAW_FASE_MAX - 1])
+		{
+			object->Draw();
+		}
+	}
+
 	virtual void Update() {
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < DRAW_FASE::DRAW_FASE_MAX; i++)
 		{
 			for (CGameObject* object : m_GameObject[i])
 			{
@@ -59,7 +72,7 @@ public:
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < DRAW_FASE::DRAW_FASE_MAX; i++)
 		{
 			for (CGameObject* object : m_GameObject[i])
 			{

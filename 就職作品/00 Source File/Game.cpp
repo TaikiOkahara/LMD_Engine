@@ -16,10 +16,10 @@
 void Game::Init() {
 	AddGameObject<CCamera>(0);
 	AddGameObject<CSceneLight>(0);
-	AddGameObject<CPointLight>(2);
+	AddGameObject<CPointLight>(2);//àÍî‘ç≈å„Ç…ï`âÊ
 
 
-	AddGameObject<CWall>(1);	//ï«
+	//AddGameObject<CWall>(1);	//ï«
 	AddGameObject<CPillar>(1);	//íå
 	AddGameObject<CFloor>(1);	//ínñ 
 	AddGameObject<CStage>(1);	//ÉhÉA

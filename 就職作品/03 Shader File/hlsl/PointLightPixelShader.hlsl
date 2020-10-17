@@ -1,51 +1,51 @@
 #include "Geometry.hlsl"
+#include "ConstantBuffer.hlsl"
+
+//GBuffer
+Texture2D g_texColor : register(t2);
+Texture2D g_texNormal : register(t3);
+Texture2D g_texPosition : register(t4);
 
 
-Texture2D g_texDif		: register(t0);//Diffuseテクスチャ
-Texture2D g_texNor		: register(t1);//Normalテクスチャ
-
-
-
-SamplerState g_samLinear : register(s0);
-
-
-
-PS_OUT main(VS_OUT input)
+float4 main(VS_OUT input) : SV_Target
 {
-	PS_OUT Out = (PS_OUT)0;
+    
+    int3 sampleIndices = int3(input.Pos.xy, 0);
 
-	//カラーテクスチャーへ出力 
-    Out.vColor = g_texDif.Sample(g_samLinear, input.Tex);//+float4(0.01, 0.01, 0.01, 0);
-  
-	
-	//座標テクスチャ―へ出力
-    Out.vPosition = input.WorldPos;
-	
-	//ワールド法線テクスチャーへ出力
-	//float3 vNormal = input.WorldNormal;
-    //vNormal = vNormal * 0.5 + 0.5;
-	
-    float4 bump;
-	bump = g_texNor.Sample(g_samLinear, input.Tex);
-    bump = (bump * 2.0f) - 1.0f;
-	
-    float3 bumpNormal;
-    bumpNormal = (bump.x * input.WorldTangent) + (bump.y * input.WorldBinormal) + (bump.z * input.WorldNormal);
-    bumpNormal = normalize(bumpNormal);
-	
-	//Out.vNormal = normalize(float4(bumpNormal, 0));
-    Out.vNormal = bump;//シンプルなバンプマッピング
-	
-	//float  NL = saturate(dot(input.WorldNormal, input.LightVector));
-	//NL = NL * 0.9f + 0.1f;
-	//Out.vColor *= NL;
+    float3 normal = g_texNormal.Load(sampleIndices).xyz;
 
+    float3 position = g_texPosition.Load(sampleIndices).xyz;
 
-	
+    float3 diffuse = g_texColor.Load(sampleIndices).xyz;
 
-	//ワールド座標テクスチャーへ出力
-	//Out.vPosition = input.ShadowPos;
+    return float4(diffuse, 1);
+    //今は1つだけ
+    float3 lpos  = float3(-2.5, 0.0f, 5.0f);
+    float3 L = lpos - position;
+    float dist = length(L);
 
+    if (dist > 2.0f)//距離
+    {
+        //チェック赤色
+        return float4(0.0f, 0.0f, 0.0f, 0.0f);
+    }
 
-	return Out;
+    L /= dist;
+
+    float att = max(0.0f, 1.0f - (dist / 2.0f));
+
+    float lightAmount = saturate(dot(normal, L));
+    float3 lightColor = float3(1, 1, 1);
+    float3 color = lightAmount * lightColor * att;
+
+	//Specular calc
+    float3 V = g_vEye.xyz - position;
+    float3 H = normalize(L + V);
+    float specular = pow(saturate(dot(normal, H)), 10) * att;
+
+    float3 finalDiffuse = color * diffuse;
+    float3 finalSpecular = specular * diffuse * att;
+
+    float4 totalColor = float4(finalDiffuse + finalSpecular, 1.0f);
+    return totalColor;
 }

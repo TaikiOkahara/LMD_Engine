@@ -5,9 +5,7 @@
 Texture2D g_texColor	: register(t2);
 Texture2D g_texNormal	: register(t3);
 Texture2D g_texPosition	: register(t4);
-
-StructuredBuffer<float4> PointLightBuffer : register(t5);
-
+Texture2D g_texLighting : register(t5);
 
 SamplerState g_samLinear : register(s0);
 SamplerState g_samDeferredLinear : register(s1);
@@ -18,14 +16,13 @@ float4 PLight(float3 Pos, float4 LPos, float3 Dir, float3 Normal, float2 UV, flo
 float4 main(VS_OUT input) : SV_Target
 {
 	//テクスチャーから情報を取り出す
-	float4 vDiffuse = g_texColor.Sample(g_samLinear, input.Tex);
-	
-	float4 vWorldNormal = g_texNormal.Sample(g_samLinear, input.Tex);
-	float3 vWorldPos = g_texPosition.Sample(g_samLinear, input.Tex).xyz;
-	
+    float4 vDiffuse = g_texColor.Sample(g_samDeferredLinear, input.Tex);	
+    float4 vWorldNormal = g_texNormal.Sample(g_samDeferredLinear, input.Tex);
+    float3 vWorldPos = g_texPosition.Sample(g_samDeferredLinear, input.Tex).xyz;
+    float3 vLighting = g_texLighting.Sample(g_samDeferredLinear, input.Tex).xyz;
    
     float3 vLightVector = normalize(g_vLight).xyz;
-    float NL = saturate(-dot(vWorldNormal, vLightVector));
+    float NL = saturate(-dot(vWorldNormal.xyz, vLightVector));
     NL = NL * 0.9f + 0.1f;//世界観的に暗め
     NL = (vWorldNormal.w == 2.0f) ? 1.0f : NL;//ライティングを行か
     
@@ -61,8 +58,8 @@ float4 main(VS_OUT input) : SV_Target
     //Color.rgb += Rim;
     //---------------------------------------------------------------
 	
-
-    //return Color;
+    return Color;
+    //return float4(vLighting, 1);
     float4 lightColor = float4(1, 1, 1, 1);
     
     float4 lightpos = g_vPointLight[0];

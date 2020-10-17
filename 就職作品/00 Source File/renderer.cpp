@@ -44,6 +44,10 @@ ID3D11Buffer* RENDERER::m_pAnimationMatrixBuffer = NULL;
 ID3D11Buffer* RENDERER::m_pPointLightBuffer = NULL;
 ID3D11ShaderResourceView* RENDERER::m_pPointLightBufferSRV = NULL;
 
+//ビューポート
+D3D11_VIEWPORT RENDERER::m_Vp;
+//デプスステンシルステート
+ID3D11DepthStencilState* RENDERER::m_pBuckBuffer_DSTexState = NULL;
 
 //ID3D11Buffer* RENDERER::m_ComputeBufferIn = NULL;
 //ID3D11Buffer* RENDERER::m_ComputeBufferOut = NULL;
@@ -52,16 +56,23 @@ ID3D11ShaderResourceView* RENDERER::m_pPointLightBufferSRV = NULL;
 //ID3D11ShaderResourceView* RENDERER::m_pComput_SRV = NULL;
 //ID3D11UnorderedAccessView* RENDERER::m_pCompute_UAV = NULL;
 //===============================================
+//GBuffer --------------------------------------------
+//カラー
 ID3D11Texture2D* RENDERER::m_pColorTexture = NULL;
 ID3D11RenderTargetView* RENDERER::m_pColor_RTV = NULL;
 ID3D11ShaderResourceView* RENDERER::m_pColor_SRV = NULL;
+//ノーマル
 ID3D11Texture2D* RENDERER::m_pNormalTexture = NULL;
 ID3D11RenderTargetView* RENDERER::m_pNormal_RTV = NULL;
 ID3D11ShaderResourceView* RENDERER::m_pNormal_SRV = NULL;
+//ポジション
 ID3D11Texture2D* RENDERER::m_pPositionTexture = NULL;
 ID3D11RenderTargetView* RENDERER::m_pPosition_RTV = NULL;
 ID3D11ShaderResourceView* RENDERER::m_pPosition_SRV = NULL;
-
+//ライティング
+ID3D11Texture2D* RENDERER::m_pLightingTexture = NULL;
+ID3D11RenderTargetView* RENDERER::m_pLighting_RTV = NULL;
+ID3D11ShaderResourceView* RENDERER::m_pLighting_SRV = NULL;
 
 ID3D11InputLayout* RENDERER::m_pDeferredVertexLayout = NULL;
 
@@ -162,30 +173,32 @@ HRESULT RENDERER::Init(D3D_INIT* pcd)
 	
 	//------------------------------------------------------------------------------------------
 	//震度ステンシルステートを作成
-	/*
+	
 	D3D11_DEPTH_STENCIL_DESC dc;
 	ZeroMemory(&dc,sizeof(dc));
 	dc.DepthEnable=true;
-	dc.DepthWriteMask=D3D11_DEPTH_WRITE_MASK_ALL;
-	dc.DepthFunc=D3D11_COMPARISON_LESS;
-	dc.StencilEnable=false;
+	dc.DepthWriteMask= D3D11_DEPTH_WRITE_MASK_ZERO;
+	//dc.DepthWriteMask=D3D11_DEPTH_WRITE_MASK_ALL;
+	dc.DepthFunc= D3D11_COMPARISON_LESS_EQUAL;
+	//dc.DepthFunc=D3D11_COMPARISON_LESS;
+	//dc.StencilEnable=false;
 	if(FAILED(m_pDevice->CreateDepthStencilState(&dc,&m_pBuckBuffer_DSTexState)))
 	{
 		return E_FAIL;
 	}
 	//深度ステンシルステートを適用
-	m_pDeviceContext->OMSetDepthStencilState(m_pBuckBuffer_DSTexState,NULL);
-	*/
+	//m_pDeviceContext->OMSetDepthStencilState(m_pBuckBuffer_DSTexState,NULL);
+	
 
 	//ビューポートの設定
-	D3D11_VIEWPORT vp;
-	vp.Width = WINDOW_WIDTH;
-	vp.Height = WINDOW_HEIGHT;
-	vp.MinDepth = 0.0f;
-	vp.MaxDepth = 1.0f;
-	vp.TopLeftX = 0;
-	vp.TopLeftY = 0;
-	m_pDeviceContext->RSSetViewports( 1, &vp );
+	
+	m_Vp.Width = WINDOW_WIDTH;
+	m_Vp.Height = WINDOW_HEIGHT;
+	m_Vp.MinDepth = 0.0f;
+	m_Vp.MaxDepth = 1.0f;
+	m_Vp.TopLeftX = 0;
+	m_Vp.TopLeftY = 0;
+	m_pDeviceContext->RSSetViewports( 1, &m_Vp);
 
 	//ディファードレンダリング用ラスタライズ設定
 	D3D11_RASTERIZER_DESC rdc;
@@ -193,6 +206,7 @@ HRESULT RENDERER::Init(D3D_INIT* pcd)
 	rdc.CullMode= D3D11_CULL_MODE::D3D11_CULL_NONE;
 	rdc.FillMode= D3D11_FILL_MODE::D3D11_FILL_SOLID;
 	rdc.FrontCounterClockwise = TRUE;
+	rdc.DepthClipEnable = FALSE;
 	//rdc.MultisampleEnable = FALSE;
 
 	m_pDevice->CreateRasterizerState(&rdc,&m_pDeferredRasterizerState);
@@ -228,8 +242,9 @@ HRESULT RENDERER::Init(D3D_INIT* pcd)
 	//	return E_FAIL;
 	//}
 
-	UINT mask=0xffffffff;
-	m_pDeviceContext->OMSetBlendState(m_pCommonBlendState, NULL, mask);
+
+	/*UINT mask=0xffffffff;
+	m_pDeviceContext->OMSetBlendState(m_pCommonBlendState, NULL, mask);*/
 
 	//アルファブレンド種類
 	/*
@@ -292,19 +307,22 @@ HRESULT RENDERER::Init(D3D_INIT* pcd)
 	//ポジションマップ用テクスチャーとそのレンダーターゲットビュー、シェーダーリソースビューの作成	
 	CreateRenderFormat(DXGI_FORMAT::DXGI_FORMAT_R32G32B32A32_FLOAT, &m_pPositionTexture, &m_pPosition_RTV, &m_pPosition_SRV);
 
+	//ライティング用テクスチャーとそのレンダーターゲットビュー、シェーダーリソースビューの作成	
+	CreateRenderFormat(DXGI_FORMAT::DXGI_FORMAT_R32G32B32A32_FLOAT, &m_pLightingTexture, &m_pLighting_RTV, &m_pLighting_SRV);
+
 	
 
 	//スクリーンサイズのポリゴン用　バーテックスバッファーを作成
-	VERTEX_3D VertexData[] ={
-		D3DXVECTOR3(-1,-1,0),D3DXVECTOR3(0,0,-1),D3DXVECTOR2(0,1),D3DXVECTOR3(0,0,0),D3DXVECTOR3(0,0,0),
-		D3DXVECTOR3(-1, 1,0),D3DXVECTOR3(0,0,-1),D3DXVECTOR2(0,0),D3DXVECTOR3(0,0,0),D3DXVECTOR3(0,0,0),
-		D3DXVECTOR3( 1,-1,0),D3DXVECTOR3(0,0,-1),D3DXVECTOR2(1,1),D3DXVECTOR3(0,0,0),D3DXVECTOR3(0,0,0),
-		D3DXVECTOR3( 1, 1,0),D3DXVECTOR3(0,0,-1),D3DXVECTOR2(1,0),D3DXVECTOR3(0,0,0),D3DXVECTOR3(0,0,0),
+	DEFERRED_VERTEX VertexData[] ={
+		D3DXVECTOR3(-1,-1,0),D3DXVECTOR2(0,1),
+		D3DXVECTOR3(-1, 1,0),D3DXVECTOR2(0,0),
+		D3DXVECTOR3( 1,-1,0),D3DXVECTOR2(1,1),
+		D3DXVECTOR3( 1, 1,0),D3DXVECTOR2(1,0)
 	};
 
 	D3D11_BUFFER_DESC bd;
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(VERTEX_3D) * 4;
+	bd.ByteWidth = sizeof(DEFERRED_VERTEX) * 4;
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;
@@ -322,11 +340,8 @@ HRESULT RENDERER::Init(D3D_INIT* pcd)
 
 	//　入力レイアウト生成
 	D3D11_INPUT_ELEMENT_DESC layout[]{
-	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0,	 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "NORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TANGENT",	0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },};
-
+	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,	0,0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,	0,D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 } };
 	
 	CreateVertexShader(&m_pVS_Deferred, &m_pDeferredVertexLayout,layout, ARRAYSIZE(layout), "DeferredVS.cso");
 	CreatePixelShader(&m_pPS_Deferred, "DeferredPS.cso");
@@ -353,55 +368,6 @@ HRESULT RENDERER::Init(D3D_INIT* pcd)
 	CreateConstantBuffers();
 
 
-
-	//int ComSample[5] = { 0,1,2,3,4 };
-	////StructuredBufferとして扱うときはMiscFlagにD3D11_RESOURCE_MISC_BUFFER_STRUCTUREDを指定する必要がある
-	//buffer_desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-	////構造体のサイズも一緒に設定すること
-	//buffer_desc.StructureByteStride = sizeof(int);
-	////後は他のバッファと同じ
-	//buffer_desc.ByteWidth = sizeof(int) * 5;
-	//buffer_desc.Usage = D3D11_USAGE_DEFAULT;
-	//buffer_desc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
-
-	//
-	//D3D11_SUBRESOURCE_DATA initData;
-	//initData.pSysMem = &ComSample[0];
-	////バッファ作成
-	//m_pDevice->CreateBuffer(&buffer_desc, &initData, &m_ComputeBufferIn);
-	//m_pDevice->CreateBuffer(&buffer_desc, NULL, &m_ComputeBufferOut);
-	////m_pDeviceContext->CSSetConstantBuffers()
-	//D3D11_BUFFER_DESC com_desc;
-	//memset(&com_desc, 0, sizeof(com_desc));
-	//m_ComputeBufferIn->GetDesc(&com_desc);
-
-	//D3D11_SHADER_RESOURCE_VIEW_DESC com_srvDesc;
-	//memset(&com_srvDesc, 0, sizeof(com_srvDesc));
-	//com_srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
-	//com_srvDesc.BufferEx.FirstElement = 0;
-
-	//com_srvDesc.Format = DXGI_FORMAT_UNKNOWN;
-	//com_srvDesc.Buffer.NumElements = com_desc.ByteWidth / com_desc.StructureByteStride;
-	//m_pDevice->CreateShaderResourceView(m_ComputeBufferIn, &com_srvDesc, &m_pComput_SRV);
-
-
-
-
-	//memset(&com_desc, 0, sizeof(com_desc));
-	//m_ComputeBufferOut->GetDesc(&com_desc);
-	//D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
-	//memset(&uavDesc, 0, sizeof(uavDesc));
-	//uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
-	//uavDesc.Buffer.FirstElement = 0;
-	//uavDesc.Format = DXGI_FORMAT_UNKNOWN;
-	//uavDesc.Buffer.NumElements = com_desc.ByteWidth / com_desc.StructureByteStride;
-	//m_pDevice->CreateUnorderedAccessView(m_ComputeBufferOut, &uavDesc, &m_pCompute_UAV);
-
-	//// コンピュートシェーダを走らせる.
-	//ID3D11ShaderResourceView* pSRVs = m_pComput_SRV;
-	//m_pDeviceContext->CSSetShader(m_pComputeShader, nullptr, 0);
-	//m_pDeviceContext->CSSetShaderResources(0, 1, &pSRVs);
-	//m_pDeviceContext->CSSetUnorderedAccessViews(0, 1, &m_pCompute_UAV, nullptr);
 
 
 	//　マテリアル設定
@@ -439,6 +405,9 @@ void RENDERER::Uninit()
 	SAFE_RELEASE(m_pScreenPolyVB);
 	SAFE_RELEASE(m_pDepthStencil);
 
+	SAFE_RELEASE(m_pBuckBuffer_DSTexState);
+
+	//GBuffer
 	SAFE_RELEASE(m_pPosition_SRV);
 	SAFE_RELEASE(m_pPosition_RTV);
 	SAFE_RELEASE(m_pPositionTexture);
@@ -448,6 +417,10 @@ void RENDERER::Uninit()
 	SAFE_RELEASE(m_pColor_SRV);
 	SAFE_RELEASE(m_pColor_RTV);
 	SAFE_RELEASE(m_pColorTexture);
+	SAFE_RELEASE(m_pLightingTexture);
+	SAFE_RELEASE(m_pLighting_SRV);
+	SAFE_RELEASE(m_pLighting_RTV);
+
 
 	SAFE_RELEASE(m_pDeferred_DSTexDSV);
 	SAFE_RELEASE(m_pDeferred_TexRTV);
@@ -460,7 +433,7 @@ void RENDERER::Uninit()
 	SAFE_RELEASE(m_pCommonVertexShader);
 	SAFE_RELEASE(m_pCommonSamplerState);
 	SAFE_RELEASE(m_pCommonRasterizerState);
-	
+	SAFE_RELEASE(m_pCommonBlendState);
 
 	SAFE_RELEASE(m_pSwapChain);
 	SAFE_RELEASE(m_pDeviceContext);
@@ -474,14 +447,8 @@ void RENDERER::Clear()
 	//ビューポートの設定
 	//m_pDeviceContext->VSSetShader(m_VertexShader, NULL, 0);
 	//m_pDeviceContext->PSSetShader(m_PixelShader, NULL, 0);
-	D3D11_VIEWPORT vp;
-	vp.Width = WINDOW_WIDTH;
-	vp.Height = WINDOW_HEIGHT;
-	vp.MinDepth = 0.0f;
-	vp.MaxDepth = 1.0f;
-	vp.TopLeftX = 0;
-	vp.TopLeftY = 0;
-	m_pDeviceContext->RSSetViewports(1, &vp);
+	
+	m_pDeviceContext->RSSetViewports(1, &m_Vp);
 
 
 	m_pDeviceContext->RSSetState(m_pCommonRasterizerState);
@@ -490,21 +457,21 @@ void RENDERER::Clear()
 	//m_pDeviceContext->IASetInputLayout(m_VertexLayout);
 
 	//全てのテクスチャーをレンダーターゲットにセット
-	ID3D11RenderTargetView* pViews[3];
+	ID3D11RenderTargetView* pViews[4];
 	pViews[0] = m_pColor_RTV;
 	pViews[1] = m_pNormal_RTV;
 	pViews[2] = m_pPosition_RTV;
+	pViews[3] = m_pLighting_RTV;
 	//pViews[3] = m_pOutline_RTV;
 
-	m_pDeviceContext->OMSetRenderTargets(3, pViews, m_pDeferred_DSTexDSV);//深度ステンシルビューは全てに共通の1つだけを使う
+	m_pDeviceContext->OMSetRenderTargets(4, pViews, m_pDeferred_DSTexDSV);//深度ステンシルビューは全てに共通の1つだけを使う
 	//クリア
-	//float ClearColor[4] = { 0.0f,0.0f,0.0f,1.0f };
-	float ClearColor[4] = { 0.5f,0.7f,1.0f,1.0f };
+	float ClearColor[4] = { 0,0,0,1 };
 
 	m_pDeviceContext->ClearRenderTargetView(m_pColor_RTV, ClearColor);
 	m_pDeviceContext->ClearRenderTargetView(m_pNormal_RTV, ClearColor);
 	m_pDeviceContext->ClearRenderTargetView(m_pPosition_RTV, ClearColor);
-	
+	m_pDeviceContext->ClearRenderTargetView(m_pLighting_RTV, ClearColor);
 
 	m_pDeviceContext->ClearDepthStencilView(m_pDeferred_DSTexDSV, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
@@ -518,24 +485,20 @@ HRESULT RENDERER::Deferred()
 	//使用するシェーダーは、テクスチャーを参照するシェーダー	
 	m_pDeviceContext->VSSetShader(m_pVS_Deferred, NULL, 0);
 	m_pDeviceContext->PSSetShader(m_pPS_Deferred, NULL, 0);
-	//ビューポートの設定
-	D3D11_VIEWPORT vp;
-	vp.Width = WINDOW_WIDTH;
-	vp.Height = WINDOW_HEIGHT;
-	vp.MinDepth = 0.0f;
-	vp.MaxDepth = 1.0f;
-	vp.TopLeftX = 0;
-	vp.TopLeftY = 0;
-	m_pDeviceContext->RSSetViewports(1, &vp);
-
 	m_pDeviceContext->IASetInputLayout(m_pDeferredVertexLayout);
+	//ビューポートの設定
+	m_pDeviceContext->RSSetViewports(1, &m_Vp);
+
 	//レンダーターゲットを通常に戻す
 	m_pDeviceContext->OMSetRenderTargets(1, &m_pDeferred_TexRTV, m_pDeferred_DSTexDSV);
+	//ブレンドステート
+	UINT mask = 0xffffffff;
+	//m_pDeviceContext->OMSetBlendState(m_pCommonBlendState, NULL, mask);
 
 	m_pDeviceContext->RSSetState(m_pDeferredRasterizerState);
 	m_pDeviceContext->PSSetSamplers(1, 1, &m_pDeferredSamplerState);
 	//クリア
-	float ClearColor[4] = { 0,1,0,1 };
+	float ClearColor[4] = { 0,0,0,1 };
 	m_pDeviceContext->ClearRenderTargetView(m_pDeferred_TexRTV, ClearColor);
 	m_pDeviceContext->ClearDepthStencilView(m_pDeferred_DSTexDSV, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
@@ -543,12 +506,11 @@ HRESULT RENDERER::Deferred()
 	m_pDeviceContext->PSSetShaderResources(2, 1, &m_pColor_SRV);
 	m_pDeviceContext->PSSetShaderResources(3, 1, &m_pNormal_SRV);
 	m_pDeviceContext->PSSetShaderResources(4, 1, &m_pPosition_SRV);
-	//ポイントライトバッファセット
-	//m_pDeviceContext->PSSetShaderResources(5, 1, &m_pPointLightBufferSRV);
+	m_pDeviceContext->PSSetShaderResources(5, 1, &m_pLighting_SRV);
 
 	//スクリーンサイズのポリゴンをレンダー
 	m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-	UINT stride = sizeof(VERTEX_3D);
+	UINT stride = sizeof(DEFERRED_VERTEX);
 	UINT offset = 0;
 	m_pDeviceContext->IASetVertexBuffers(0, 1, &m_pScreenPolyVB, &stride, &offset);
 
@@ -558,9 +520,33 @@ HRESULT RENDERER::Deferred()
 }
 //
 //
+//ライティング
+HRESULT RENDERER::Lighting()
+{
+
+	//レンダーターゲットを通常に戻す
+	//m_pDeviceContext->OMSetRenderTargets(1, &m_pDeferred_TexRTV, m_pDeferred_DSTexDSV);
+
+	//float ClearColor[4] = { 0,0,0,1};
+
+	//m_pDeviceContext->ClearRenderTargetView(m_pDeferred_TexRTV, ClearColor);
+	//m_pDeviceContext->ClearDepthStencilView(m_pDeferred_DSTexDSV, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+	m_pDeviceContext->OMSetDepthStencilState(m_pBuckBuffer_DSTexState,NULL);
+
+	return S_OK;
+}
+//
+//
 //　画面更新
 HRESULT RENDERER::Present()
 {
+	float blend[4] = { 1,1,1,1 };
+	m_pDeviceContext->RSSetState(NULL);
+	m_pDeviceContext->OMSetBlendState(NULL, blend, 0xFFFFFFFF);
+	m_pDeviceContext->OMSetDepthStencilState(NULL, 0);
+
+
 	m_pSwapChain->Present(1,0);//画面更新（バックバッファをフロントバッファに）
 	return S_OK;
 }
