@@ -18,11 +18,13 @@ IDXGISwapChain* RENDERER::m_pSwapChain = NULL;
 ID3D11RenderTargetView* RENDERER::m_pDeferred_TexRTV = NULL;
 
 ID3D11DepthStencilView* RENDERER::m_pDeferred_DSTexDSV = NULL;
-ID3D11BlendState* RENDERER::m_pCommonBlendState = NULL;
+//ID3D11BlendState* RENDERER::m_pCommonBlendState = NULL;
 
 //ディファードレンダリング用
 ID3D11RasterizerState* RENDERER::m_pDeferredRasterizerState = NULL;
 ID3D11SamplerState* RENDERER::m_pDeferredSamplerState = NULL;
+ID3D11BlendState* RENDERER::m_pDeferredBlendState = NULL;
+
 //通常
 ID3D11SamplerState* RENDERER::m_pCommonSamplerState = NULL;
 ID3D11RasterizerState* RENDERER::m_pCommonRasterizerState = NULL;
@@ -242,7 +244,24 @@ HRESULT RENDERER::Init(D3D_INIT* pcd)
 	//	return E_FAIL;
 	//}
 
+	//アルファブレンド用ブレンドステート作成
+	D3D11_BLEND_DESC dblend;
+	ZeroMemory(&dblend, sizeof(D3D11_BLEND_DESC));
+	dblend.IndependentBlendEnable = false;
+	dblend.AlphaToCoverageEnable = false;
+	dblend.RenderTarget[0].BlendEnable = true;
+	dblend.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;//メッシュのレンダリングイメージ
+	dblend.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;//レンダーターゲットサーファスのイメージ
+	dblend.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	dblend.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	dblend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+	dblend.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	dblend.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
+	if (FAILED(m_pDevice->CreateBlendState(&dblend, &m_pDeferredBlendState)))
+	{
+		return E_FAIL;
+	}
 	/*UINT mask=0xffffffff;
 	m_pDeviceContext->OMSetBlendState(m_pCommonBlendState, NULL, mask);*/
 
@@ -427,13 +446,14 @@ void RENDERER::Uninit()
 	SAFE_RELEASE(m_pDeferredVertexLayout);
 	SAFE_RELEASE(m_pDeferredSamplerState);
 	SAFE_RELEASE(m_pDeferredRasterizerState);
+	SAFE_RELEASE(m_pDeferredBlendState);
 
 	SAFE_RELEASE(m_pCommonVertexLayout);
 	SAFE_RELEASE(m_pCommonPixelShader);
 	SAFE_RELEASE(m_pCommonVertexShader);
 	SAFE_RELEASE(m_pCommonSamplerState);
 	SAFE_RELEASE(m_pCommonRasterizerState);
-	SAFE_RELEASE(m_pCommonBlendState);
+	//SAFE_RELEASE(m_pCommonBlendState);
 
 	SAFE_RELEASE(m_pSwapChain);
 	SAFE_RELEASE(m_pDeviceContext);
@@ -447,6 +467,7 @@ void RENDERER::Clear()
 	//ビューポートの設定
 	//m_pDeviceContext->VSSetShader(m_VertexShader, NULL, 0);
 	//m_pDeviceContext->PSSetShader(m_PixelShader, NULL, 0);
+	//m_pDeviceContext->IASetInputLayout(m_VertexLayout);
 	
 	m_pDeviceContext->RSSetViewports(1, &m_Vp);
 
@@ -454,7 +475,6 @@ void RENDERER::Clear()
 	m_pDeviceContext->RSSetState(m_pCommonRasterizerState);
 	m_pDeviceContext->PSSetSamplers(0, 1, &m_pCommonSamplerState);
 
-	//m_pDeviceContext->IASetInputLayout(m_VertexLayout);
 
 	//全てのテクスチャーをレンダーターゲットにセット
 	ID3D11RenderTargetView* pViews[4];
@@ -491,12 +511,16 @@ HRESULT RENDERER::Deferred()
 
 	//レンダーターゲットを通常に戻す
 	m_pDeviceContext->OMSetRenderTargets(1, &m_pDeferred_TexRTV, m_pDeferred_DSTexDSV);
+	//デプスステンシルステート	
+	m_pDeviceContext->OMSetDepthStencilState(m_pBuckBuffer_DSTexState, NULL);
+
 	//ブレンドステート
 	UINT mask = 0xffffffff;
-	//m_pDeviceContext->OMSetBlendState(m_pCommonBlendState, NULL, mask);
+	float blend[4] = { 1,1,1,1 };
+	m_pDeviceContext->OMSetBlendState(m_pDeferredBlendState, blend, mask);
 
 	m_pDeviceContext->RSSetState(m_pDeferredRasterizerState);
-	m_pDeviceContext->PSSetSamplers(1, 1, &m_pDeferredSamplerState);
+	//m_pDeviceContext->PSSetSamplers(1, 1, &m_pDeferredSamplerState);
 	//クリア
 	float ClearColor[4] = { 0,0,0,1 };
 	m_pDeviceContext->ClearRenderTargetView(m_pDeferred_TexRTV, ClearColor);
@@ -532,7 +556,6 @@ HRESULT RENDERER::Lighting()
 	//m_pDeviceContext->ClearRenderTargetView(m_pDeferred_TexRTV, ClearColor);
 	//m_pDeviceContext->ClearDepthStencilView(m_pDeferred_DSTexDSV, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-	m_pDeviceContext->OMSetDepthStencilState(m_pBuckBuffer_DSTexState,NULL);
 
 	return S_OK;
 }

@@ -18,7 +18,7 @@ void CPointLight::Init()
 			m_PointList.push_back(&pos);
 
 		}*/
-		D3DXVECTOR4 pos = D3DXVECTOR4(-2.5, 2.0f, 5.0f, 3);
+		D3DXVECTOR4 pos = D3DXVECTOR4(-2.5, 0.0f, 5.0f, 3);
 
 
 		//m_PointList.push_back(pos);//wは光の強さ
@@ -28,7 +28,7 @@ void CPointLight::Init()
 	m_pMesh->LoadModel("../02 Visual File//UV.fbx");
 	//m_pMesh->LoadTexture("");
 
-	m_Position = D3DXVECTOR3(0.0f, 1.0f, 4.0f);
+	m_Position = D3DXVECTOR3(-2.5f, 0.0f, 5.0f);
 	m_Rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	//m_Scale = D3DXVECTOR3(0.01f, 0.01f, 0.01f);
 	m_Scale = D3DXVECTOR3(100.0f, 100.0f, 100.0f);
@@ -84,21 +84,21 @@ void CPointLight::Init()
 
 	RENDERER::m_pDevice->CreateRasterizerState(&rdc, &m_pBackCullingRasterizerState);
 
-	//アルファブレンド用ブレンドステート作成
-	D3D11_BLEND_DESC blendd;
-	ZeroMemory(&blendd, sizeof(D3D11_BLEND_DESC));
-	blendd.IndependentBlendEnable =false;
-	blendd.AlphaToCoverageEnable=false;
-	blendd.RenderTarget[0].BlendEnable=true;
-	blendd.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;//メッシュのレンダリングイメージ
-	blendd.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;//レンダーターゲットサーファスのイメージ
-	blendd.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	blendd.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;//ココ大事
-	blendd.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;//ココ大事
-	blendd.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	blendd.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-	
-	RENDERER::m_pDevice->CreateBlendState(&blendd, &m_pBackCullingBlendState);
+	////アルファブレンド用ブレンドステート作成
+	//D3D11_BLEND_DESC blendd;
+	//ZeroMemory(&blendd, sizeof(D3D11_BLEND_DESC));
+	//blendd.IndependentBlendEnable =false;
+	//blendd.AlphaToCoverageEnable=false;
+	//blendd.RenderTarget[0].BlendEnable=true;
+	//blendd.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;//メッシュのレンダリングイメージ
+	//blendd.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;//レンダーターゲットサーファスのイメージ
+	//blendd.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	//blendd.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;//ココ大事
+	//blendd.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;//ココ大事
+	//blendd.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	//blendd.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	//
+	//RENDERER::m_pDevice->CreateBlendState(&blendd, &m_pBackCullingBlendState);
 
 	
 }
@@ -109,7 +109,7 @@ void CPointLight::Uninit()
 	delete m_pMesh;
 
 	SAFE_RELEASE(m_pBackCullingRasterizerState);
-	SAFE_RELEASE(m_pBackCullingBlendState);
+	//SAFE_RELEASE(m_pBackCullingBlendState);
 	SAFE_RELEASE(m_pVertexShader);
 	SAFE_RELEASE(m_pPixelShader);
 	SAFE_RELEASE(m_pVertexLayout);
@@ -132,9 +132,9 @@ void CPointLight::Update()
 
 void CPointLight::Draw()
 {
-	UINT mask = 0xffffffff;
-	float blend[4] = { 1,1,1,1 };
-	RENDERER::m_pDeviceContext->OMSetBlendState(m_pBackCullingBlendState, blend, mask);
+	//UINT mask = 0xffffffff;
+	//float blend[4] = { 1,1,1,1 };
+	//RENDERER::m_pDeviceContext->OMSetBlendState(m_pBackCullingBlendState, blend, mask);
 	RENDERER::m_pDeviceContext->RSSetState(m_pBackCullingRasterizerState);
 	
 	SetWorldMatrix();

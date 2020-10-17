@@ -21,7 +21,7 @@ private:
 
 
 	ID3D11RasterizerState* m_pBackCullingRasterizerState;
-	ID3D11BlendState* m_pBackCullingBlendState;
+	//ID3D11BlendState* m_pBackCullingBlendState;
 public:
 
 	/*CPointLight() {}

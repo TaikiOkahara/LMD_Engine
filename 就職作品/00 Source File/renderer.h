@@ -151,6 +151,7 @@ class RENDERER
 	static ID3D11Texture2D* m_pDepthStencil;
 	static ID3D11SamplerState* m_pDeferredSamplerState;
 	static ID3D11RasterizerState* m_pDeferredRasterizerState;
+	static ID3D11BlendState* m_pDeferredBlendState;
 	//======================================================
 
 	//ビューポート
@@ -163,7 +164,7 @@ public:
 	//通常
 	static ID3D11RasterizerState* m_pCommonRasterizerState;
 	static ID3D11SamplerState*	m_pCommonSamplerState;
-	static ID3D11BlendState*	m_pCommonBlendState;			
+	//static ID3D11BlendState*	m_pCommonBlendState;			
 	
 	static ID3D11VertexShader*	m_pCommonVertexShader;
 	static ID3D11PixelShader*	m_pCommonPixelShader;
