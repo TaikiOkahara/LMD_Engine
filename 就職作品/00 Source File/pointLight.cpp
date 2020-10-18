@@ -8,30 +8,31 @@
 
 void CPointLight::Init()
 {
+	m_pMesh = new StaticMesh();
+	m_pMesh->LoadModel("../02 Visual File//UV.fbx");
+	
+	m_Position = D3DXVECTOR3(-2.5f, 0.0f, 5.0f);
+	m_Rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_Scale = D3DXVECTOR3(100.0f, 100.0f, 100.0f);
+
 	{
 
 
-		/*for (int i = 0; i < 3; i++)
-		{
-			D3DXVECTOR4 pos;
-			pos = D3DXVECTOR4(0, 3, i * 3,1);
-			m_PointList.push_back(&pos);
-
-		}*/
-		D3DXVECTOR4 pos = D3DXVECTOR4(-2.5, 0.0f, 5.0f, 3);
 
 
-		//m_PointList.push_back(pos);//wは光の強さ
-		m_PointLight.LightPosition[0] = pos;
+		//m_PointLight.Position[0] = D3DXVECTOR3(-2.5f, 0.0f, 5.0f);
+
+		//for (int i = 0; i < 3; i++)
+		//{
+		//	D3DXMatrixTranslation(&trans, -2.5f, 0.0f, 2.0f + i * 2);
+		//	world = scale * trans;
+		//	D3DXMatrixTranspose(&world, &world);
+
+		//	//m_MatrixList.push_back(world);
+		//}
+
+		
 	}
-	m_pMesh = new StaticMesh();
-	m_pMesh->LoadModel("../02 Visual File//UV.fbx");
-	//m_pMesh->LoadTexture("");
-
-	m_Position = D3DXVECTOR3(-2.5f, 0.0f, 5.0f);
-	m_Rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	//m_Scale = D3DXVECTOR3(0.01f, 0.01f, 0.01f);
-	m_Scale = D3DXVECTOR3(100.0f, 100.0f, 100.0f);
 
 	//　入力レイアウト生成
 	D3D11_INPUT_ELEMENT_DESC layout[]{
@@ -46,7 +47,11 @@ void CPointLight::Init()
 	RENDERER::CreateVertexShader(&m_pVertexShader, &m_pVertexLayout, layout, 5, "PointLightVertexShader.cso");
 	RENDERER::CreatePixelShader(&m_pPixelShader, "PointLightPixelShader.cso");
 
+	//InitInstance();
+	//UpdateInstance();//視錐台カリングを行う場合入れる
 
+	m_PointLight.Color[0] = D3DXVECTOR4(1, 1, 1, 1);
+	m_PointLight.CalcInfo[0] = D3DXVECTOR4(1, 1, 1, 10);
 }
 
 void CPointLight::Uninit()
@@ -54,6 +59,7 @@ void CPointLight::Uninit()
 	m_pMesh->Unload();
 	delete m_pMesh;
 
+	//UninitInstance();
 	
 	SAFE_RELEASE(m_pVertexShader);
 	SAFE_RELEASE(m_pPixelShader);
@@ -65,26 +71,40 @@ void CPointLight::Uninit()
 void CPointLight::Update()
 {
 
-	D3DXVECTOR3 pos = Base::GetScene()->GetGameObject<CPlayer>(1)->GetPosition();
+	CPlayer* player = Base::GetScene()->GetGameObject<CPlayer>(1);
 
-	m_PointLight.LightPosition[0] = D3DXVECTOR4(pos.x, 0.0f, pos.z, 1);
-	m_Position = D3DXVECTOR3(pos.x, 0.0f, pos.z);
+	m_Position = player->GetPosition() +  player->GetForward() * 3.0f;
+	m_Position.y = 0.0f;
 	
 }
 
 void CPointLight::Draw()
 {
-	RENDERER::SetPointLight(m_PointLight);
+	//RENDERER::SetPointLight(m_PointLight);
 	
-	SetWorldMatrix();
-
+	//DrawInstance();
+	//SetWorldMatrix();
 	RENDERER::m_pDeviceContext->VSSetShader(m_pVertexShader, NULL, 0);
 	RENDERER::m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);
 	RENDERER::m_pDeviceContext->IASetInputLayout(m_pVertexLayout);
 
+	//　マトリクス設定
+	D3DXMATRIX world, scale, rot, trans;
+	D3DXMatrixScaling(&scale, m_Scale.x, m_Scale.y, m_Scale.z);
+	D3DXMatrixRotationYawPitchRoll(&rot, m_Rotation.y, m_Rotation.x, m_Rotation.z);
+	D3DXMatrixTranslation(&trans, m_Position.x, m_Position.y, m_Position.z);
+	world = scale * rot * trans;
+	RENDERER::SetWorldMatrix(world);
+
+	RENDERER::SetPointLight(m_PointLight);
+	
+	
+	
+
+
 	
 	m_pMesh->Draw();
-
+	//m_pMesh->DrawInstanced(m_MeshCount);
 }
 
 void CPointLight::Imgui()
@@ -103,12 +123,25 @@ void CPointLight::Imgui()
 
 		ImGui::Begin("Light", &lw_is_open, lw_flag);
 
-		for (int i = 0; i < 1; i++)
+		/*for (int i = 0; i < 1; i++)
 		{
 			D3DXVECTOR3 pos = D3DXVECTOR3(m_PointLight.LightPosition[i].x, m_PointLight.LightPosition[i].y, m_PointLight.LightPosition[i].z);
 			ImGui::InputFloat3("Position", pos, 1);
-		}
+		}*/
+		for (int i = 0; i < 1; i++)
+		{
+			D3DXVECTOR3 pos;
+			pos = m_Position;
+			ImGui::InputFloat3("Position", pos, 1);
+			ImGui::SliderFloat3("Color", &m_PointLight.Color[0].x, 0.0f, 1.0f);
 
+			ImGui::SliderFloat("x : ", &m_PointLight.CalcInfo[0].x,0.0f,1.0f);
+			ImGui::SliderFloat("y : ", &m_PointLight.CalcInfo[0].y,0.0f,1.0f);
+			ImGui::SliderFloat("z : ", &m_PointLight.CalcInfo[0].z,0.0f,1.0f);
+			ImGui::SliderFloat("Specular", &m_PointLight.CalcInfo[0].w, 0.0f, 30.0f);
+			//ImGui::InputFloat("input float", &f0, 0.01f, 1.0f, "%.3f");
+
+		}
 
 		ImGui::End();
 	}

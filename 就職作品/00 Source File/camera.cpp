@@ -133,7 +133,7 @@ void CCamera::Imgui()
 		
 		ImGui::InputFloat3("Position", m_Position, 1);
 		ImGui::InputFloat3("Rotation", m_Rotation, 1);
-		ImGui::InputFloat("Target", m_Target, 1);
+		ImGui::InputFloat3("Target", m_Target, 1);
 		ImGui::InputFloat3("Distance", m_Distance, 1);
 
 		ImGui::End();

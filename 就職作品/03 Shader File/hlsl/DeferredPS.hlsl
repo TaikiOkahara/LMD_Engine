@@ -39,6 +39,7 @@ float4 main(VS_OUT input) : SV_Target
     Reflect = normalize(Reflect);
 	
     
+    
     float4 Color = vDiffuse;
     
     
@@ -62,22 +63,27 @@ float4 main(VS_OUT input) : SV_Target
     return Color;
     
     
-    float4 lightColor = float4(1, 1, 1, 1);
+    //float4 lightColor = float4(1, 1, 1, 1);
     
-    float4 lightpos = g_vPointLight[0];
-    float Distance = length(lightpos.xyz - vWorldPos);
-    float3 lightDir = normalize(lightpos.xyz - vWorldPos);
-    float attenution = 1.0f / length(lightDir);
+    //float4 lightpos = g_vPointLight[0];
+    //float Distance = length(lightpos.xyz - vWorldPos);
+    //float3 lightDir = normalize(lightpos.xyz - vWorldPos);
+    //float attenution = 1.0f / length(lightDir);
+    
+    
+    
+    
+    
    
 	//ライト強度を反映
     //Color *= 1;
 	//減衰
     //Color *= 1.0 / (0 + 0 * Distance + 0.1 * Distance * Distance); // att= 1/0 / (a+b*d+c*d^2) d:距離 a,b,c：定数
     //a：一定減衰係数　b：線形減衰係数　c：２次減衰係数
-    //return Color;
+   
     //--------------------------------
-    //float4 FinalColor;
-    Color += PLight(vWorldPos, lightpos, lightDir, vWorldNormal.xyz, input.Tex, Eye);
+    
+    //Color += PLight(vWorldPos, lightpos, lightDir, vWorldNormal.xyz, input.Tex, Eye);
     
     //--------------------------------
     

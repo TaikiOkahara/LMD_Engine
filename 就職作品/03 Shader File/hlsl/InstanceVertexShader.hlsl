@@ -4,15 +4,7 @@
 StructuredBuffer<matrix> WorldMatrixBuffer : register(t0);
 
 
-// マテリアルバッファ
-struct MATERIAL{
-	float4		Ambient;
-	float4		Diffuse;
-	float4		Specular;
-	float4		Emission;
-	float		Shininess;
-	float3		Dummy;//16bit境界用
-};
+
 
 
 VS_OUT main(

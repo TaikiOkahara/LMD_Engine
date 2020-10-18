@@ -1,12 +1,12 @@
 #pragma once
-#include "gameobject.h"
+#include "GameObject.h"
 
 class CPointLight : public CGameObject
 {
 private:
 
 	//std::vector<D3DXVECTOR4> m_PointList;
-	POINTLIGHT m_PointLight;
+	POINTLIGHT m_PointLight;//ポイントライト追加情報
 	StaticMesh* m_pMesh = nullptr;
 
 	//int m_PointCount;

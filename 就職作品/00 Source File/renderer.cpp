@@ -40,13 +40,12 @@ ID3D11Buffer* RENDERER::m_pWorldBuffer = NULL;
 ID3D11Buffer* RENDERER::m_pViewBuffer = NULL;
 ID3D11Buffer* RENDERER::m_pProjectionBuffer = NULL;
 ID3D11Buffer* RENDERER::m_pMaterialBuffer = NULL;
-ID3D11Buffer* RENDERER::m_pDLightBuffer = NULL;
-ID3D11Buffer* RENDERER::m_pPLightBuffer = NULL;
+ID3D11Buffer* RENDERER::m_pDirectionalLightBuffer = NULL;
+ID3D11Buffer* RENDERER::m_pPointLightBuffer = NULL;
 ID3D11Buffer* RENDERER::m_pEyeBuffer = NULL;
 //構造体バッファ
 ID3D11Buffer* RENDERER::m_pAnimationMatrixBuffer = NULL;
-ID3D11Buffer* RENDERER::m_pPointLightBuffer = NULL;
-ID3D11ShaderResourceView* RENDERER::m_pPointLightBufferSRV = NULL;
+//ID3D11ShaderResourceView* RENDERER::m_pPointLightBufferSRV = NULL;
 
 //ビューポート
 D3D11_VIEWPORT RENDERER::m_Vp;
@@ -387,16 +386,15 @@ void RENDERER::Uninit()
 {
 	//　動的メモリ開放
 	SAFE_RELEASE(m_pEyeBuffer);
-	SAFE_RELEASE(m_pPLightBuffer);
-	SAFE_RELEASE(m_pDLightBuffer);
+	SAFE_RELEASE(m_pPointLightBuffer);
+	SAFE_RELEASE(m_pDirectionalLightBuffer);
 	SAFE_RELEASE(m_pMaterialBuffer);
 	SAFE_RELEASE(m_pProjectionBuffer);
 	SAFE_RELEASE(m_pViewBuffer);
 	SAFE_RELEASE(m_pWorldBuffer);
 	SAFE_RELEASE(m_pAnimationMatrixBuffer);
 
-	SAFE_RELEASE(m_pPointLightBuffer);
-	SAFE_RELEASE(m_pPointLightBufferSRV);
+	//SAFE_RELEASE(m_pPointLightBufferSRV);
 
 
 	SAFE_RELEASE(m_pPS_Deferred);
@@ -654,16 +652,10 @@ void RENDERER::SetDirectionalLight(D3DXVECTOR4 Light, D3DXMATRIX ViewMatrix)
 
 
 
-	m_pDeviceContext->UpdateSubresource(m_pDLightBuffer, 0, NULL, &Set, 0, 0);
+	m_pDeviceContext->UpdateSubresource(m_pDirectionalLightBuffer, 0, NULL, &Set, 0, 0);
 
 }
-//
-void RENDERER::SetPointLight(POINTLIGHT Light)
-{
 
-	m_pDeviceContext->UpdateSubresource(m_pPLightBuffer, 0, NULL, &Light, 0, 0);
-
-}
 
 void RENDERER::SetEye(EYE Eye)
 {
@@ -676,10 +668,10 @@ void RENDERER::SetAnimationMatrix(ANIMATIONMATRIX Animation)
 	m_pDeviceContext->UpdateSubresource(m_pAnimationMatrixBuffer, 0, NULL, &animation, 0, 0);
 }
 
-void RENDERER::SetPointLight(ID3D11Buffer* m_pBuffer, ID3D11ShaderResourceView* m_pBufferSRV)
+void RENDERER::SetPointLight(POINTLIGHT light)
 {
-	m_pPLightBuffer = m_pBuffer;
-	m_pPointLightBufferSRV = m_pBufferSRV;
+	POINTLIGHT set = light;
+	m_pDeviceContext->UpdateSubresource(m_pPointLightBuffer, 0, NULL, &set, 0, 0);
 }
 
 
@@ -865,15 +857,16 @@ void RENDERER::CreateConstantBuffers()
 	m_pDeviceContext->VSSetConstantBuffers(3, 1, &m_pEyeBuffer);
 	m_pDeviceContext->PSSetConstantBuffers(3, 1, &m_pEyeBuffer);
 
-	buffer_desc.ByteWidth = sizeof(POINTLIGHT);
-	m_pDevice->CreateBuffer(&buffer_desc, NULL, &m_pPLightBuffer);
-	m_pDeviceContext->VSSetConstantBuffers(4, 1, &m_pPLightBuffer);
-	m_pDeviceContext->PSSetConstantBuffers(4, 1, &m_pPLightBuffer);
 
 	buffer_desc.ByteWidth = sizeof(DIRECTIONALLIGHT);
-	m_pDevice->CreateBuffer(&buffer_desc, NULL, &m_pDLightBuffer);
-	m_pDeviceContext->VSSetConstantBuffers(5, 1, &m_pDLightBuffer);
-	m_pDeviceContext->PSSetConstantBuffers(5, 1, &m_pDLightBuffer);
+	m_pDevice->CreateBuffer(&buffer_desc, NULL, &m_pDirectionalLightBuffer);
+	m_pDeviceContext->VSSetConstantBuffers(4, 1, &m_pDirectionalLightBuffer);
+	m_pDeviceContext->PSSetConstantBuffers(4, 1, &m_pDirectionalLightBuffer);
+
+	buffer_desc.ByteWidth = sizeof(POINTLIGHT);
+	m_pDevice->CreateBuffer(&buffer_desc, NULL, &m_pPointLightBuffer);
+	m_pDeviceContext->VSSetConstantBuffers(5, 1, &m_pPointLightBuffer);
+	m_pDeviceContext->PSSetConstantBuffers(5, 1, &m_pPointLightBuffer);
 
 	//Pixel
 	buffer_desc.ByteWidth = sizeof(MATERIAL);

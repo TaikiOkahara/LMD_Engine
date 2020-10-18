@@ -18,11 +18,11 @@ float4 main(VS_LIGHT_OUT input) : SV_Target
 
     
     //今は1つだけ
-    float3 lpos  = g_vPointLight[0].xyz;
+    float3 lpos  = input.LightPos;
     float3 L = lpos - position;
     float dist = length(L);
 
-    if (dist > 1.0f)//距離
+    if (dist > input.LightRange.x)//距離
     {
         return float4(0.0f, 0.0f, 0.0f, 0.0f);
     }
@@ -30,18 +30,24 @@ float4 main(VS_LIGHT_OUT input) : SV_Target
     //点光源の方向を正規化
     L /= dist; //L = normalize(L)と同じ
 
-    float att = max(0.0f, 1.0f - (dist / 1.0f));
-
-    //float lightAmount = saturate(dot(normal, L));
-    float lightAmount = (dot(normal, L) + 1.0f)/2.0f;
+    //float att = max(0.0f, 1.0f - (dist / input.LightRange.x));
+    // att= 1/0 / (a+b*d+c*d^2) d:距離 a,b,c：定数
+    //a：一定減衰係数　b：線形減衰係数　c：２次減衰係数
+    float att = 1.0 / (g_vPoint[0].x + g_vPoint[0].y * dist + g_vPoint[0].z * dist * dist);
     
-    float3 lightColor = float3(1, 1, 1);
+    float lightAmount = saturate(dot(normal, L));
+    //float lightAmount = (dot(normal, L) + 1.0f)/2.0f;
+    
+    float3 lightColor = g_vPointColor[0].xyz;
     float3 color = lightAmount * lightColor * att;
 
+    
+    
 	//Specular calc
     float3 V = g_vEye.xyz - position;
     float3 H = normalize(L + V);
-    float specular = pow(saturate(dot(normal, H)), 10) * att;
+    float inputSpecularValue = g_vPoint[0].w;
+    float specular = pow(saturate(dot(normal, H)), inputSpecularValue) * att;
 
     float3 finalDiffuse = color * diffuse;
     float3 finalSpecular = specular * diffuse * att;

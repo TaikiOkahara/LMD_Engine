@@ -58,6 +58,8 @@ void CInstanceGameObject::InitInstance()
         assert(SUCCEEDED(hr));
 
     }
+
+    m_MeshCount = m_MatrixList.size();
 }
 
 void CInstanceGameObject::UninitInstance()
@@ -73,6 +75,9 @@ void CInstanceGameObject::UninitInstance()
 
 void CInstanceGameObject::UpdateInstance()
 {
+
+    //視錐台カリング用コンピュートシェーディング
+    /*
     RENDERER::m_pDeviceContext->CSSetShader(m_pComputeShader, nullptr, 0);
     RENDERER::m_pDeviceContext->CSSetShaderResources(0, 1, &m_pMatrixBufferSRV);
 
@@ -97,6 +102,7 @@ void CInstanceGameObject::UpdateInstance()
         m_MeshCount = pData[0];
         RENDERER::m_pDeviceContext->Unmap(m_pCounterBuffer, 0);
     }
+    */
 }
 
 void CInstanceGameObject::DrawInstance()

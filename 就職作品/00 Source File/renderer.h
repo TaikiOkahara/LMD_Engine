@@ -5,7 +5,7 @@
 #pragma once
 
 
-#define		LIGHT_NUM		(10)	//ライトの数を有限にする
+#define		LIGHT_NUM		(128)	//ライトの数を有限にする
 
 
 
@@ -58,19 +58,23 @@ struct DIRECTIONALLIGHT
 	//D3DXMATRIX LightView;//シャドウマップ作成用
 };
 
-struct P_LIGHT
-{
-	D3DXVECTOR4 g_vLightPos[LIGHT_NUM];
-	D3DXVECTOR4 g_fIntensity[LIGHT_NUM];
-	D3DXVECTOR4 g_fRange[LIGHT_NUM];
-	D3DXVECTOR4 g_fAttRate[LIGHT_NUM];
-	D3DXVECTOR4 g_fNumLight = D3DXVECTOR4(LIGHT_NUM, 0, 0, 1);
-
-};
-
 struct POINTLIGHT
 {
-	D3DXVECTOR4 LightPosition[LIGHT_NUM];//wは光の強さ
+	//座標情報はワールドマトリクスとして設定しているのので、追加情報のみ入れる
+
+
+	//FLOAT Intensity[LIGHT_NUM];//光の強さ
+	//FLOAT Range[LIGHT_NUM];//光の範囲
+	//FLOAT Attenuation[LIGHT_NUM];//減衰度
+
+	//D3DXVECTOR3 Color[LIGHT_NUM];//色
+
+	D3DXVECTOR4 Color[LIGHT_NUM];
+	D3DXVECTOR4 CalcInfo[LIGHT_NUM];
+
+
+	//D3DXVECTOR2 dummy;
+	//D3DXVECTOR4 Dummy;
 };
 
 struct EYE
@@ -105,15 +109,14 @@ class RENDERER
 	static ID3D11Buffer* m_pViewBuffer;
 	static ID3D11Buffer* m_pProjectionBuffer;
 	static ID3D11Buffer* m_pMaterialBuffer;
-	static ID3D11Buffer* m_pDLightBuffer;
-	static ID3D11Buffer* m_pPLightBuffer;
+	static ID3D11Buffer* m_pDirectionalLightBuffer;
+	static ID3D11Buffer* m_pPointLightBuffer;
 	static ID3D11Buffer* m_pEyeBuffer;
 	static ID3D11Buffer* m_pAnimationMatrixBuffer;
 
 	//構造体バッファ
 	//ポイントライト
-	static ID3D11Buffer* m_pPointLightBuffer;
-	static ID3D11ShaderResourceView* m_pPointLightBufferSRV;
+	//static ID3D11ShaderResourceView* m_pPointLightBufferSRV;
 
 	//static ID3D11Buffer* m_ComputeBufferIn;
 	//static ID3D11Buffer* m_ComputeBufferOut;
@@ -189,7 +192,7 @@ public:
 	static void SetAnimationMatrix(ANIMATIONMATRIX Animation);
 
 	static void SetDirectionalLight(D3DXVECTOR4 Light,D3DXMATRIX matrix);
-	static void SetPointLight(POINTLIGHT Light);
+	static void SetPointLight(POINTLIGHT light);
 	static void SetEye(EYE Eye);
 	static void SetPointLight(ID3D11Buffer*,ID3D11ShaderResourceView*);
 	

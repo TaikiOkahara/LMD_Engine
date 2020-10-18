@@ -94,11 +94,9 @@ void CSceneLight::Draw()
 	LightVector.w = 0.0f;
 	D3DXVec4Normalize(&LightVector, &LightVector);
 	LightVector.w = 1.0f;
-	//Light::SetDirectionalLight(LightVector, 1.0f);
 
 
 	RENDERER::SetDirectionalLight(LightVector, LightView);
-	//RENDERER::SetPLight(Light::GetPointData());
 	
 
 }

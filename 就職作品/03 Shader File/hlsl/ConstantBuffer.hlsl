@@ -19,20 +19,29 @@ cbuffer EyeBuffer : register(b3)
     float4 g_vEye;
 }
 
-//　ポイントライト
-cbuffer PointLightBuffer : register(b4)
-{
-    float4 g_vPointLight[10];
-}
-
 
 //　ディレクショナルライト
-cbuffer DirectionalLightBuffer : register(b5)
+cbuffer DirectionalLightBuffer : register(b4)
 {
     float4 g_vLight; //ライトの座標
 	//float4 g_fIntensity;//明るさ	
 	
 	//matrix g_mLightView;
+}
+
+#define LIGHT_NUM (128)
+cbuffer PointLightBuffer : register(b5)
+{
+    //float g_vPointIntensity[LIGHT_NUM];
+    //float g_vPointRange[LIGHT_NUM];
+    //float g_vPointAttenuation[LIGHT_NUM];
+    //float3 g_vPointColor[LIGHT_NUM];
+    
+    
+    float4 g_vPointColor[LIGHT_NUM];//xyzは色、wは光の強さ
+    float4 g_vPoint[LIGHT_NUM];//xは光の範囲yは減衰度,zwはダミー
+    
+    //float2 dummy;
 }
 
 //
