@@ -7,12 +7,11 @@ class CWall : public CInstanceGameObject
 {
 private:
 	Tile* m_pWall = nullptr;
-	int m_wallCount = 0;
-	Collision m_collision;
+	//int m_wallCount = 0;
+	//Collision m_collision;
 	bool isEnableCollision = true;
 
-	std::vector<D3DXVECTOR3> m_posList;
-	std::vector<D3DXVECTOR3> m_rotList;
+	
 
 	ID3D11VertexShader* m_pVertexShader;
 	ID3D11PixelShader* m_pPixelShader;
@@ -26,5 +25,8 @@ public:
 	void Update();
 	void Draw();
 	void Imgui();
-	int GetWallCount() { return m_wallCount; }
+	
+
+
+	
 };

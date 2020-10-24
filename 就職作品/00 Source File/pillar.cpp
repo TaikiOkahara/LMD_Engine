@@ -35,31 +35,26 @@ void CPillar::Init()
 	RENDERER::CreateVertexShader(&m_pVertexShader, &m_pVertexLayout, layout, 5, "InstanceVertexShader.cso");
 	RENDERER::CreatePixelShader(&m_pPixelShader, "PixelShader.cso");
 
-	D3DXMATRIX world, scale, rot, trans;
-	D3DXMatrixScaling(&scale, m_Scale.x, m_Scale.y, m_Scale.z);
-	D3DXMatrixRotationYawPitchRoll(&rot, m_Rotation.y, m_Rotation.x, m_Rotation.z);
+	
 
+	VECTOR vector;
+	
+	vector.scale = m_Scale;
 	for (int i = 0; i < 5; i++)
 	{
 
-		//　マトリクス設定
-
-		D3DXMatrixRotationYawPitchRoll(&rot, m_Rotation.y, m_Rotation.x, m_Rotation.z);
-		D3DXMatrixTranslation(&trans, m_Position.x -0.5f, m_Position.y, m_Position.z + i * 5);
-		world = scale * rot * trans;
-		D3DXMatrixTranspose(&world, &world);
-
-		m_MatrixList.push_back(world);
+		////　マトリクス設定
+		vector.position = D3DXVECTOR3(m_Position.x - 0.5f, m_Position.y, m_Position.z + i * 5);
+		vector.rotation = m_Rotation;
+		m_Vector.push_back(vector);
 	}
 	for (int i = 0; i < 5; i++)
 	{
+		vector.position = D3DXVECTOR3(m_Position.x - 4.5f, m_Position.y, m_Position.z + i * 5);
+		vector.rotation = D3DXVECTOR3(m_Rotation.x, m_Rotation.y - D3DX_PI, m_Rotation.z);
 
-		D3DXMatrixRotationYawPitchRoll(&rot, m_Rotation.y - D3DX_PI, m_Rotation.x, m_Rotation.z);
-		D3DXMatrixTranslation(&trans, m_Position.x - 4.5f, m_Position.y, m_Position.z + i * 5);
-		world = scale * rot * trans;
-		D3DXMatrixTranspose(&world, &world);
+		m_Vector.push_back(vector);
 
-		m_MatrixList.push_back(world);
 	}
 
 	InitInstance();
@@ -117,7 +112,7 @@ void CPillar::Imgui()
 
 		ImGui::Checkbox("isEnableCollision", &isEnableCollision);
 
-		int count = m_MatrixList.size();
+		int count = m_MeshCount;
 		ImGui::InputInt("MeshCount", &count, 1);
 	
 

@@ -3,7 +3,7 @@
 =============================================================*/
 #pragma once
 #include "gameobject.h"
-
+#include "InstanceObject.h"
 //
 //
 //
@@ -22,7 +22,7 @@ public:
 
 
 private:
-
+	
 	D3DXVECTOR3 m_Target;
 	D3DXVECTOR3 m_Distance;
 
@@ -33,6 +33,8 @@ private:
 	float m_Near;
 	float m_Far;
 
-	void GetDistance(D3DXVECTOR3 RayStart, D3DXVECTOR3 RayEnd);
+
+	
+	D3DXVECTOR3 RayIntersect(CInstanceGameObject* object);
 };
 

@@ -15,10 +15,13 @@ void CPointLight::Init()
 	m_Rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_Scale = D3DXVECTOR3(100.0f, 100.0f, 100.0f);
 
+	posList = new D3DXVECTOR3[128];
 	{
 
 
-
+		posList[0] = D3DXVECTOR3(-2.5f, 0.0f, 5.0f);
+		m_PointLight.Color[0] = D3DXVECTOR4(1,1,1, 1);
+		m_PointLight.CalcInfo[0] = D3DXVECTOR4(1, 1, 1, 10);
 
 		//m_PointLight.Position[0] = D3DXVECTOR3(-2.5f, 0.0f, 5.0f);
 
@@ -50,12 +53,13 @@ void CPointLight::Init()
 	//InitInstance();
 	//UpdateInstance();//視錐台カリングを行う場合入れる
 
-	m_PointLight.Color[0] = D3DXVECTOR4(1, 1, 1, 1);
-	m_PointLight.CalcInfo[0] = D3DXVECTOR4(1, 1, 1, 10);
+
 }
 
 void CPointLight::Uninit()
 {
+	delete[] posList;
+
 	m_pMesh->Unload();
 	delete m_pMesh;
 
@@ -88,22 +92,33 @@ void CPointLight::Draw()
 	RENDERER::m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);
 	RENDERER::m_pDeviceContext->IASetInputLayout(m_pVertexLayout);
 
-	//　マトリクス設定
-	D3DXMATRIX world, scale, rot, trans;
-	D3DXMatrixScaling(&scale, m_Scale.x, m_Scale.y, m_Scale.z);
-	D3DXMatrixRotationYawPitchRoll(&rot, m_Rotation.y, m_Rotation.x, m_Rotation.z);
-	D3DXMatrixTranslation(&trans, m_Position.x, m_Position.y, m_Position.z);
-	world = scale * rot * trans;
-	RENDERER::SetWorldMatrix(world);
-
 	RENDERER::SetPointLight(m_PointLight);
 	
 	
+	//　マトリクス設定
+	D3DXMATRIX world, scale, rot, trans;
+	D3DXMatrixRotationYawPitchRoll(&rot, m_Rotation.y, m_Rotation.x, m_Rotation.z);
+
+
+	for (int i = 0; i < 128; i++)
+	{
+		D3DXMatrixScaling(&scale, m_Scale.x, m_Scale.y, i);//xに本当のサイズを入れる、zにインデックス番号を入れる
+
+		D3DXMatrixTranslation(&trans, posList[i].x, posList[i].y, posList[i].z);
+		world = scale * rot * trans;
+		RENDERER::SetWorldMatrix(world);
+		
+		
+		m_pMesh->Draw();
+	}
+
+
+	
+	
 	
 
 
 	
-	m_pMesh->Draw();
 	//m_pMesh->DrawInstanced(m_MeshCount);
 }
 

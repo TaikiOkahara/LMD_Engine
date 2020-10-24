@@ -35,19 +35,16 @@ void CStage::Init()
 	RENDERER::CreateVertexShader(&m_pVertexShader, &m_pVertexLayout, layout, 5, "InstanceVertexShader.cso");
 	RENDERER::CreatePixelShader(&m_pPixelShader, "Tile_PixelShader.cso");
 
-	D3DXMATRIX world, scale, rot, trans;
-	D3DXMatrixScaling(&scale, m_Scale.x, m_Scale.y, m_Scale.z);
-	D3DXMatrixRotationYawPitchRoll(&rot, m_Rotation.y, m_Rotation.x, m_Rotation.z);
+	
 
+	
 	{
-		//Å@è∞
-		D3DXMatrixRotationYawPitchRoll(&rot, m_Rotation.y, m_Rotation.x, m_Rotation.z);
-		D3DXMatrixTranslation(&trans, m_Position.x, m_Position.y, m_Position.z);
-		world = scale * rot * trans;
-		D3DXMatrixTranspose(&world, &world);
-
-		m_MatrixList.push_back(world);
-
+		////Å@è∞
+		VECTOR vector;
+		vector.rotation = m_Rotation;
+		vector.scale = m_Scale;
+		vector.position = m_Position;
+		m_Vector.push_back(vector);
 	}
 
 	InitInstance();

@@ -11,7 +11,24 @@ void Collision::Init(D3DXVECTOR3 size, D3DXVECTOR3 center)
 	ySize = size.y/2;
 	zSize = size.z/2;
 
-	
+	{
+
+		
+
+		m_pVertex = new D3DXVECTOR3[8];
+
+		m_pVertex[0] = D3DXVECTOR3(-xSize, ySize,-zSize);
+		m_pVertex[1] = D3DXVECTOR3( xSize, ySize,-zSize);
+		m_pVertex[2] = D3DXVECTOR3( xSize,-ySize,-zSize);
+		m_pVertex[3] = D3DXVECTOR3(-xSize,-ySize,-zSize);
+		m_pVertex[4] = D3DXVECTOR3(-xSize, ySize, zSize);
+		m_pVertex[5] = D3DXVECTOR3( xSize, ySize, zSize);
+		m_pVertex[6] = D3DXVECTOR3( xSize,-ySize, zSize);
+		m_pVertex[7] = D3DXVECTOR3(-xSize,-ySize, zSize);
+
+
+		
+	}
 	{
 		vertex[0].pos = D3DXVECTOR3(-xSize, ySize, -zSize);
 		vertex[1].pos = D3DXVECTOR3( xSize, ySize, -zSize);
@@ -85,6 +102,8 @@ void Collision::Init(D3DXVECTOR3 size, D3DXVECTOR3 center)
 
 void Collision::Uninit()
 {
+	delete[] m_pVertex;
+	
 	SAFE_RELEASE(m_pVertexBuffer);
 	SAFE_RELEASE(m_pInstanceVertexShader);
 	SAFE_RELEASE(m_pVertexShader);

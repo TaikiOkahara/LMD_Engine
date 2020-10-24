@@ -4,9 +4,6 @@
     <Filter Include="Manager --------------------">
       <UniqueIdentifier>{9f827aed-ca33-486b-a465-6edef8c8cd74}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Manager --------------------\Graphic">
-      <UniqueIdentifier>{4349bfc7-f47e-4607-90d0-2ad602b52286}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Manager --------------------\Bass">
       <UniqueIdentifier>{6a8f36ea-cf58-4886-9c18-11fa4d6e80c9}</UniqueIdentifier>
     </Filter>
@@ -118,6 +115,12 @@
     <Filter Include="Shader-----------------------\PointLight">
       <UniqueIdentifier>{0d7e117b-4b72-4703-9a9a-e6ee12950481}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NewFilter1">
+      <UniqueIdentifier>{daa1a2cc-04a5-46d7-843a-8b0c718c50d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager --------------------\Calculation">
+      <UniqueIdentifier>{4349bfc7-f47e-4607-90d0-2ad602b52286}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="00 Source File\Entry.cpp">
@@ -157,7 +160,7 @@
       <Filter>Manager --------------------\Window</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\makeTangent.cpp">
-      <Filter>Manager --------------------\Graphic</Filter>
+      <Filter>Manager --------------------\Calculation</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\tile.cpp">
       <Filter>Components----------------\Tile</Filter>
@@ -255,7 +258,7 @@
       <Filter>Manager --------------------\Window</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\makeTangent.h">
-      <Filter>Manager --------------------\Graphic</Filter>
+      <Filter>Manager --------------------\Calculation</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\gameobject.h">
       <Filter>GameObjects----------------</Filter>

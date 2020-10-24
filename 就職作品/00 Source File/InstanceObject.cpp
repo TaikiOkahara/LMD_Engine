@@ -5,10 +5,32 @@ void CInstanceGameObject::InitInstance()
 {
     RENDERER::CreateComputeShader("InstanceComputeShader.cso", &m_pComputeShader);
 
+    
+    std::vector<D3DXMATRIX> matrix;
+
+    m_MeshCount = m_Vector.size();
+    
+    for (int i = 0; i < m_MeshCount; i++)
+    {
+
+        //　マトリクス設定
+        D3DXMATRIX world, scale, rot, trans;
+        D3DXMatrixScaling(&scale, m_Vector[i].scale.x, m_Vector[i].scale.y, m_Vector[i].scale.z);
+        D3DXMatrixRotationYawPitchRoll(&rot, m_Vector[i].rotation.y, m_Vector[i].rotation.x, m_Vector[i].rotation.z);
+        D3DXMatrixTranslation(&trans, m_Vector[i].position.x, m_Vector[i].position.y, m_Vector[i].position.z);
+        world = scale * rot * trans;
+        D3DXMatrixTranspose(&world, &world);
+
+        matrix.push_back(world);
+    }
+
+
+
+
 
     {//マトリクス構造体バッファ
 
-        RENDERER::CreateStructuredBuffer(sizeof(D3DXMATRIX), m_MatrixList.size(), &m_MatrixList[0], &m_pMatrixBuffer);
+        RENDERER::CreateStructuredBuffer(sizeof(D3DXMATRIX), m_MeshCount, &matrix[0], &m_pMatrixBuffer);
 
 
         //シェーダリソースビューも作る必要がある
@@ -17,7 +39,7 @@ void CInstanceGameObject::InitInstance()
         srvDesc.Format = DXGI_FORMAT_UNKNOWN;
         srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
         srvDesc.Buffer.FirstElement = 0;
-        srvDesc.Buffer.NumElements = m_MatrixList.size();
+        srvDesc.Buffer.NumElements = m_MeshCount;
 
         RENDERER::m_pDevice->CreateShaderResourceView(m_pMatrixBuffer, &srvDesc, &m_pMatrixBufferSRV);
 
@@ -31,7 +53,7 @@ void CInstanceGameObject::InitInstance()
         D3D11_BUFFER_DESC desc = {};
         desc.BindFlags = D3D11_BIND_UNORDERED_ACCESS;
         desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-        desc.ByteWidth = sizeof(UINT) * m_MatrixList.size();//インデックスリスト
+        desc.ByteWidth = sizeof(UINT) * m_MeshCount;//インデックスリスト
         desc.StructureByteStride = sizeof(UINT);
         desc.Usage = D3D11_USAGE_DEFAULT;
         auto hr = RENDERER::m_pDevice->CreateBuffer(&desc, nullptr, &m_pIndexBuffer);
@@ -41,7 +63,7 @@ void CInstanceGameObject::InitInstance()
         uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
         uavDesc.Format = DXGI_FORMAT_UNKNOWN;
         uavDesc.Buffer.FirstElement = 0;
-        uavDesc.Buffer.NumElements = m_MatrixList.size();
+        uavDesc.Buffer.NumElements = m_MeshCount;
         uavDesc.Buffer.Flags = D3D11_BUFFER_UAV_FLAG_APPEND;
         hr = RENDERER::m_pDevice->CreateUnorderedAccessView(m_pIndexBuffer, &uavDesc, &m_pIndexBufferUAV);
         assert(SUCCEEDED(hr));
@@ -59,7 +81,8 @@ void CInstanceGameObject::InitInstance()
 
     }
 
-    m_MeshCount = m_MatrixList.size();
+    //m_Vector.clear();
+    matrix.clear();
 }
 
 void CInstanceGameObject::UninitInstance()

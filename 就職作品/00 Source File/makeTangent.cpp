@@ -35,8 +35,17 @@ void CalcTangent(D3DXVECTOR3 v1, D3DXVECTOR3 v2, D3DXVECTOR3 v3,
 
 	//float w = (D3DXVec3Dot(&BiNormal, &bitangent) >= 0.0f) ? 1.0f : -1.0f;
 
-
+	
 	Tangent = tangent;
 	Binormal = BiNormal;
 	//return D3DXVECTOR4(tangent.x, tangent.y, tangent.z, w);
+}
+
+
+float VectorCross(D3DXVECTOR3 p1, D3DXVECTOR3 p2, D3DXVECTOR3 p3)
+{
+	//float ret = 
+	//(p1.x * p2.y * p3.z) + (p1.y * p2.z * p3.x) + (p1.z * p2.x * p3.y)
+	//	- (p1.x * p2.z * p3.y) - (p1.y * p2.x * p3.z) - (p1.z * p2.y * p3.x);
+	return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
 }

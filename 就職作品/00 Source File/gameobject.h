@@ -18,6 +18,7 @@ public:
 
 	D3DXVECTOR3 GetPosition() { return m_Position; }
 	D3DXVECTOR3 GetRotation() { return m_Rotation; }
+	D3DXVECTOR3 GetScale()	  { return m_Scale; }
 
 	D3DXVECTOR3 GetForward()
 	{
@@ -80,6 +81,21 @@ public:
 		m_Destroy = true;
 	}
 
+	//マトリクスを取得する関数（Instanceだと配列の先頭を渡す）
+	//virtual D3DXMATRIX* GetWorldMatrix()
+	//{
+	//	//　マトリクス設定
+	//	D3DXMATRIX scale, rot, trans;
+	//	D3DXMatrixScaling(&scale, m_Scale.x, m_Scale.y, m_Scale.z);
+	//	D3DXMatrixRotationYawPitchRoll(&rot, m_Rotation.y, m_Rotation.x, m_Rotation.z);
+	//	D3DXMatrixTranslation(&trans, m_Position.x, m_Position.y, m_Position.z);
+	//	m_WorldMatrix = scale * rot * trans;
+	//	D3DXMatrixTranspose(&m_WorldMatrix,&m_WorldMatrix);
+
+	//	return &m_WorldMatrix;
+
+	//}
+
 	bool Destroy()
 	{
 		if (m_Destroy)
@@ -100,6 +116,7 @@ protected:
 	D3DXVECTOR3		m_Scale;
 	D3DXQUATERNION  m_Quaternion;
 	bool			m_Destroy = false;
+	D3DXMATRIX		m_WorldMatrix;
 
 };
 

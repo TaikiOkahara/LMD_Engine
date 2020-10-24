@@ -9,6 +9,10 @@ private:
 		D3DXVECTOR3 pos;
 	};
 
+	D3DXVECTOR3* m_pVertex;//—§•û‘Ì‚È‚Ì‚Å8’¸“_
+	
+
+
 	ID3D11Buffer* m_pVertexBuffer = nullptr;
 	ID3D11VertexShader* m_pVertexShader = nullptr;
 	ID3D11VertexShader* m_pInstanceVertexShader = nullptr;
@@ -24,4 +28,10 @@ public:
 	void Update();
 	void DrawInstance(UINT instanceCount);
 
+
+	D3DXVECTOR3* GetVertex()
+	{
+		return m_pVertex;
+	}
+	
 };

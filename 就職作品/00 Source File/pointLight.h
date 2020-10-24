@@ -9,6 +9,7 @@ private:
 	POINTLIGHT m_PointLight;//ポイントライト追加情報
 	StaticMesh* m_pMesh = nullptr;
 
+	D3DXVECTOR3* posList;
 	//int m_PointCount;
 
 	//構造体バッファとビュー

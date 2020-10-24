@@ -12,15 +12,18 @@ VS_LIGHT_OUT main(
 {
     VS_LIGHT_OUT output = (VS_LIGHT_OUT) 0;
 
-    
+    output.LightIndex = g_mWorld._33;
+
+    matrix world = g_mWorld;
+    world._33 = world._22 = world._11;
 
 	matrix WVP;
-    WVP = mul(g_mWorld, g_mView);
+    WVP = mul(world, g_mView);
 	WVP = mul(WVP, g_mProj);
 
 	output.Pos = mul(Pos, WVP);
-    output.LightPos = float3(g_mWorld._41, g_mWorld._42, g_mWorld._43); //マトリクスから位置座標を取得
-    output.LightRange = float3(g_mWorld._11/100, g_mWorld._22/100, g_mWorld._33/100);
+    output.LightPos = float3(world._41, world._42, world._43); //マトリクスから位置座標を取得
+    output.LightRange = float3(world._11 / 100, world._22 / 100, world._33 / 100);
 	
 	return output;
 

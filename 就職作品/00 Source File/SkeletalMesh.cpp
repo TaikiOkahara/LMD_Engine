@@ -3,7 +3,7 @@
 #include "SkeletalMesh.h"
 #include <fstream>
 
-void CAnimationModel::LoadModel(const char* FileName)
+void CAnimationModel::LoadModel(const char* FileName, D3DXVECTOR3 pos)
 {
 	const std::string modelPath(FileName);
 
@@ -41,7 +41,7 @@ void CAnimationModel::LoadModel(const char* FileName)
 
 			for (unsigned int v = 0; v < mesh->mNumVertices; v++)
 			{
-				vertex[v].Position = D3DXVECTOR3(mesh->mVertices[v].x, mesh->mVertices[v].y, mesh->mVertices[v].z);
+				vertex[v].Position = D3DXVECTOR3(mesh->mVertices[v].x, mesh->mVertices[v].y, mesh->mVertices[v].z) + pos;
 				vertex[v].Normal = D3DXVECTOR3(mesh->mNormals[v].x, mesh->mNormals[v].y, mesh->mNormals[v].z);
 				vertex[v].TexturePos = D3DXVECTOR2(mesh->mTextureCoords[0][v].x, mesh->mTextureCoords[0][v].y);//[0]はテクスチャ番号
 				vertex[v].Tangent = D3DXVECTOR3(mesh->mTangents[v].x, mesh->mTangents[v].y, mesh->mTangents[v].z);
@@ -289,161 +289,7 @@ void CAnimationModel::Update(const char* AnimationName,int Frame)
 
 
 		RENDERER::SetAnimationMatrix(m_AnimationMatrix);
-		/*D3D11_MAPPED_SUBRESOURCE ms;
-		RENDERER::m_pDeviceContext->Map(m_VertexBuffer[m], 0, D3D11_MAP_WRITE_DISCARD, 0, &ms);*/
-
-		//ANIMVERTEX_3D* vertex = (ANIMVERTEX_3D*)ms.pData;
-
-		//for (unsigned int v = 0; v < mesh->mNumVertices; v++)
-		//{
-		//	DEFORM_ANIMVERTEX* deformVertex = &m_DeformVertex[m][v];
-
-		//	aiMatrix4x4 matrix[4];
-		//	aiMatrix4x4 outMatrix;
-		//	matrix[0] = m_Bone[deformVertex->BoneName[0]].Matrix;
-		//	matrix[1] = m_Bone[deformVertex->BoneName[1]].Matrix;
-		//	matrix[2] = m_Bone[deformVertex->BoneName[2]].Matrix;
-		//	matrix[3] = m_Bone[deformVertex->BoneName[3]].Matrix;
-
-		//	//ウェイトを考慮してマトリクスを算出
-		//	{
-		//		outMatrix.a1 =
-		//			matrix[0].a1 * deformVertex->BoneWeight[0]
-		//			+ matrix[1].a1 * deformVertex->BoneWeight[1]
-		//			+ matrix[2].a1 * deformVertex->BoneWeight[2]
-		//			+ matrix[3].a1 * deformVertex->BoneWeight[3];
-
-		//		outMatrix.a2 =
-		//			matrix[0].a2 * deformVertex->BoneWeight[0]
-		//			+ matrix[1].a2 * deformVertex->BoneWeight[1]
-		//			+ matrix[2].a2 * deformVertex->BoneWeight[2]
-		//			+ matrix[3].a2 * deformVertex->BoneWeight[3];
-
-		//		outMatrix.a3 =
-		//			matrix[0].a3 * deformVertex->BoneWeight[0]
-		//			+ matrix[1].a3 * deformVertex->BoneWeight[1]
-		//			+ matrix[2].a3 * deformVertex->BoneWeight[2]
-		//			+ matrix[3].a3 * deformVertex->BoneWeight[3];
-
-		//		outMatrix.a4 =
-		//			matrix[0].a4 * deformVertex->BoneWeight[0]
-		//			+ matrix[1].a4 * deformVertex->BoneWeight[1]
-		//			+ matrix[2].a4 * deformVertex->BoneWeight[2]
-		//			+ matrix[3].a4 * deformVertex->BoneWeight[3];
-
-		//		outMatrix.b1 =
-		//			matrix[0].b1 * deformVertex->BoneWeight[0]
-		//			+ matrix[1].b1 * deformVertex->BoneWeight[1]
-		//			+ matrix[2].b1 * deformVertex->BoneWeight[2]
-		//			+ matrix[3].b1 * deformVertex->BoneWeight[3];
-
-		//		outMatrix.b2 =
-		//			matrix[0].b2 * deformVertex->BoneWeight[0]
-		//			+ matrix[1].b2 * deformVertex->BoneWeight[1]
-		//			+ matrix[2].b2 * deformVertex->BoneWeight[2]
-		//			+ matrix[3].b2 * deformVertex->BoneWeight[3];
-
-		//		outMatrix.b3 =
-		//			matrix[0].b3 * deformVertex->BoneWeight[0]
-		//			+ matrix[1].b3 * deformVertex->BoneWeight[1]
-		//			+ matrix[2].b3 * deformVertex->BoneWeight[2]
-		//			+ matrix[3].b3 * deformVertex->BoneWeight[3];
-
-		//		outMatrix.b4 =
-		//			matrix[0].b4 * deformVertex->BoneWeight[0]
-		//			+ matrix[1].b4 * deformVertex->BoneWeight[1]
-		//			+ matrix[2].b4 * deformVertex->BoneWeight[2]
-		//			+ matrix[3].b4 * deformVertex->BoneWeight[3];
-
-		//		outMatrix.c1 =
-		//			matrix[0].c1 * deformVertex->BoneWeight[0]
-		//			+ matrix[1].c1 * deformVertex->BoneWeight[1]
-		//			+ matrix[2].c1 * deformVertex->BoneWeight[2]
-		//			+ matrix[3].c1 * deformVertex->BoneWeight[3];
-
-		//		outMatrix.c2 =
-		//			matrix[0].c2 * deformVertex->BoneWeight[0]
-		//			+ matrix[1].c2 * deformVertex->BoneWeight[1]
-		//			+ matrix[2].c2 * deformVertex->BoneWeight[2]
-		//			+ matrix[3].c2 * deformVertex->BoneWeight[3];
-
-		//		outMatrix.c3 =
-		//			matrix[0].c3 * deformVertex->BoneWeight[0]
-		//			+ matrix[1].c3 * deformVertex->BoneWeight[1]
-		//			+ matrix[2].c3 * deformVertex->BoneWeight[2]
-		//			+ matrix[3].c3 * deformVertex->BoneWeight[3];
-
-		//		outMatrix.c4 =
-		//			matrix[0].c4 * deformVertex->BoneWeight[0]
-		//			+ matrix[1].c4 * deformVertex->BoneWeight[1]
-		//			+ matrix[2].c4 * deformVertex->BoneWeight[2]
-		//			+ matrix[3].c4 * deformVertex->BoneWeight[3];
-
-		//		outMatrix.d1 =
-		//			matrix[0].d1 * deformVertex->BoneWeight[0]
-		//			+ matrix[1].d1 * deformVertex->BoneWeight[1]
-		//			+ matrix[2].d1 * deformVertex->BoneWeight[2]
-		//			+ matrix[3].d1 * deformVertex->BoneWeight[3];
-
-		//		outMatrix.d2 =
-		//			matrix[0].d2 * deformVertex->BoneWeight[0]
-		//			+ matrix[1].d2 * deformVertex->BoneWeight[1]
-		//			+ matrix[2].d2 * deformVertex->BoneWeight[2]
-		//			+ matrix[3].d2 * deformVertex->BoneWeight[3];
-
-		//		outMatrix.d3 =
-		//			matrix[0].d3 * deformVertex->BoneWeight[0]
-		//			+ matrix[1].d3 * deformVertex->BoneWeight[1]
-		//			+ matrix[2].d3 * deformVertex->BoneWeight[2]
-		//			+ matrix[3].d3 * deformVertex->BoneWeight[3];
-
-		//		outMatrix.d4 =
-		//			matrix[0].d4 * deformVertex->BoneWeight[0]
-		//			+ matrix[1].d4 * deformVertex->BoneWeight[1]
-		//			+ matrix[2].d4 * deformVertex->BoneWeight[2]
-		//			+ matrix[3].d4 * deformVertex->BoneWeight[3];
-		//	}
-
-		//	deformVertex->Posistion = mesh->mVertices[v];
-		//	deformVertex->Posistion *= outMatrix;
-
-		//	//法線変換用に移動した成分を削除
-		//	outMatrix.a4 = 0.0f;
-		//	outMatrix.b4 = 0.0f;
-		//	outMatrix.c4 = 0.0f;
-
-		//	deformVertex->Normal = mesh->mNormals[v];
-		//	deformVertex->Normal *= outMatrix;
-		//	
-		//	deformVertex->Tangent = mesh->mTangents[v];
-		//	deformVertex->Tangent *= outMatrix;
-
-		//	deformVertex->BiNormal = mesh->mBitangents[v];
-		//	deformVertex->BiNormal *= outMatrix;
-
-		//	//頂点バッファへ書き込み
-		//	vertex[v].Position.x = deformVertex->Posistion.x;
-		//	vertex[v].Position.y = deformVertex->Posistion.y;
-		//	vertex[v].Position.z = deformVertex->Posistion.z;
-
-		//	vertex[v].Normal.x = deformVertex->Normal.x;
-		//	vertex[v].Normal.y = deformVertex->Normal.y;
-		//	vertex[v].Normal.z = deformVertex->Normal.z;
-
-		//	vertex[v].TexturePos.x = mesh->mTextureCoords[0][v].x;
-		//	vertex[v].TexturePos.y = mesh->mTextureCoords[0][v].y;
-
-		//	vertex[v].Tangent.x = deformVertex->Tangent.x;
-		//	vertex[v].Tangent.y = deformVertex->Tangent.y;
-		//	vertex[v].Tangent.z = deformVertex->Tangent.z;
-
-		//	vertex[v].Binormal.x = deformVertex->BiNormal.x;
-		//	vertex[v].Binormal.y = deformVertex->BiNormal.y;
-		//	vertex[v].Binormal.z = deformVertex->BiNormal.z;
-
-
-		//}
-		//RENDERER::m_pDeviceContext->Unmap(m_VertexBuffer[m], 0);
+		
 	}
 
 }
@@ -467,15 +313,25 @@ void CAnimationModel::Draw()
 		aiMaterial* material = m_AiScene->mMaterials[mesh->mMaterialIndex];
 
 		//テクスチャ設定
-		//aiString path;
-		//material->GetTexture(aiTextureType_DIFFUSE, 0, &path);
-		if (m_Texture["Diffuse"]){
+		aiString path;
+		material->GetTexture(aiTextureType_DIFFUSE, 0, &path);
+		/*if (m_Texture["Diffuse"]){
 			RENDERER::m_pDeviceContext->PSSetShaderResources(0, 1, &m_Texture["Diffuse"]);
 		}
 		if (m_Texture["Normal"]) {
 			RENDERER::m_pDeviceContext->PSSetShaderResources(1, 1, &m_Texture["Normal"]);
+		}*/
+		//Diffuse
+		material->GetTexture(aiTextureType_DIFFUSE, 0, &path);
+		if (m_Texture[path.data]) {
+			RENDERER::m_pDeviceContext->PSSetShaderResources(0, 1, &m_Texture[path.data]);
 		}
-		
+		path.Clear();
+		//Normal
+		material->GetTexture(aiTextureType_NORMALS, 0, &path);
+		if (m_Texture[path.data]) {
+			RENDERER::m_pDeviceContext->PSSetShaderResources(1, 1, &m_Texture[path.data]);
+		}
 
 
 		//　頂点バッファ設定
@@ -562,15 +418,129 @@ void CAnimationModel::UpdateBoneMatrix(aiNode* node, aiMatrix4x4 matrix)
 		UpdateBoneMatrix(node->mChildren[n], worldMatrix);
 	}
 }
-
 //　テクスチャ読み込み
+
 void CAnimationModel::LoadTexture(std::string file_name)
 {
-	//std::string mat_file = FindFile("02 Visual File", file_name, ".ini");
+	//テクスチャ読み込み
+	{
+		for (unsigned int m = 0; m < m_AiScene->mNumMaterials; m++)
+		{
+			aiString pathD;
+			aiString pathN;
+
+			//Diffuse
+			if (m_AiScene->mMaterials[m]->GetTexture(aiTextureType_DIFFUSE, 0, &pathD)
+				== AI_SUCCESS)
+			{
+				if (pathD.data[0] == '*')
+				{
+					//FBXファイル内から読み込み
+					if (m_Texture[pathD.data] == NULL)
+					{
+						ID3D11ShaderResourceView* texture;
+						int id = atoi(&pathD.data[1]);
+
+						D3DX11CreateShaderResourceViewFromMemory(
+							RENDERER::m_pDevice,
+							(const unsigned char*)m_AiScene->mTextures[id]->pcData,
+							m_AiScene->mTextures[id]->mWidth,
+							NULL,
+							NULL,
+							&texture,
+							NULL);
+
+						m_Texture[pathD.data] = texture;
+					}
+				}
+				else
+				{
+					//外部ファイルから読み込み
+
+					//テクスチャの数分テクスチャ名読み込み
+
+					std::string textureName;
+
+					//SetVisualDirectory();
+					//textureName = str;
+
+					ID3D11ShaderResourceView* texture;
+					//std::string texturename;
+					textureName = file_name;
+					textureName += "//";
+					textureName += pathD.data;
+
+					D3DX11CreateShaderResourceViewFromFile(RENDERER::m_pDevice, textureName.c_str(), NULL, NULL, &texture, NULL);
+
+					m_Texture[pathD.data] = texture;
+
+				}
+			}
+			else
+			{
+				m_Texture[pathD.data] = NULL;
+			}
+
+			//Normal
+			if (m_AiScene->mMaterials[m]->GetTexture(aiTextureType_NORMALS, 0, &pathN)
+				== AI_SUCCESS)
+			{
+				if (pathN.data[0] == '*')
+				{
+					//FBXファイル内から読み込み
+					if (m_Texture[pathN.data] == NULL)
+					{
+						ID3D11ShaderResourceView* texture;
+						int id = atoi(&pathN.data[1]);
+
+						D3DX11CreateShaderResourceViewFromMemory(
+							RENDERER::m_pDevice,
+							(const unsigned char*)m_AiScene->mTextures[id]->pcData,
+							m_AiScene->mTextures[id]->mWidth,
+							NULL,
+							NULL,
+							&texture,
+							NULL);
+
+						m_Texture[pathN.data] = texture;
+					}
+				}
+				else
+				{
+					//外部ファイルから読み込み
+
+					//テクスチャの数分テクスチャ名読み込み
+
+					std::string textureName;
+
+					//SetVisualDirectory();
+					//textureName = str;
+
+					ID3D11ShaderResourceView* texture;
+
+					textureName = file_name;
+					textureName += "//";
+					textureName += pathN.data;
+
+					D3DX11CreateShaderResourceViewFromFile(RENDERER::m_pDevice, textureName.c_str(), NULL, NULL, &texture, NULL);
+
+					m_Texture[pathN.data] = texture;
+				}
+			}
+			else
+			{
+				m_Texture[pathN.data] = NULL;
+			}
+		}
+	}
+}
+
+#ifdef DEBUG
 
 
-	//SetVisualDirectory(file_name);
-	//TEXTUREINI Texture;
+void CAnimationModel::LoadTexture(std::string file_name)
+{
+	
 
 	//SetVisualDirectory();
 	std::ifstream ifs(file_name);
@@ -660,3 +630,5 @@ void CAnimationModel::LoadTexture(std::string file_name)
 	}
 
 }
+
+#endif // DEBUG

@@ -57,7 +57,7 @@ private:
 
 	ANIMATIONMATRIX m_AnimationMatrix;
 public:
-	void LoadModel(const char* FileName);
+	void LoadModel(const char* FileName,D3DXVECTOR3 pos);
 	void LoadTexture(std::string file_name);
 	void LoadAnimation(const char* FileName, const char* AnimationName);
 

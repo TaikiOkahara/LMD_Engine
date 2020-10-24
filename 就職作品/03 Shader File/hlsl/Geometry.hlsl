@@ -28,6 +28,8 @@ struct VS_LIGHT_OUT
     float4 Pos			: SV_POSITION;
     float3 LightPos		: TEXCOORD0;
     float3 LightRange	: TEXCOORD1;
+    uint   LightIndex	: TEXCOORD2;
+	
 };
 
 //struct VS_LINE_OUT
