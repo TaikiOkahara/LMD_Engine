@@ -2,6 +2,7 @@
 //#include "BASE.h"
 #include "director.h"
 #include "renderer.h"
+#include "collision.h"
 
 class CGameObject
 {
@@ -80,22 +81,6 @@ public:
 	{
 		m_Destroy = true;
 	}
-
-	//マトリクスを取得する関数（Instanceだと配列の先頭を渡す）
-	//virtual D3DXMATRIX* GetWorldMatrix()
-	//{
-	//	//　マトリクス設定
-	//	D3DXMATRIX scale, rot, trans;
-	//	D3DXMatrixScaling(&scale, m_Scale.x, m_Scale.y, m_Scale.z);
-	//	D3DXMatrixRotationYawPitchRoll(&rot, m_Rotation.y, m_Rotation.x, m_Rotation.z);
-	//	D3DXMatrixTranslation(&trans, m_Position.x, m_Position.y, m_Position.z);
-	//	m_WorldMatrix = scale * rot * trans;
-	//	D3DXMatrixTranspose(&m_WorldMatrix,&m_WorldMatrix);
-
-	//	return &m_WorldMatrix;
-
-	//}
-
 	bool Destroy()
 	{
 		if (m_Destroy)
@@ -110,13 +95,15 @@ public:
 			return false;
 		}
 	}
+
+	Collision* GetCollision() { return &m_Collision; }
 protected:
-	D3DXVECTOR3		m_Position;
-	D3DXVECTOR3		m_Rotation;//Pitch,Yaw,Roll
-	D3DXVECTOR3		m_Scale;
+	D3DXVECTOR3		m_Position = D3DXVECTOR3(0,0,0);
+	D3DXVECTOR3		m_Rotation = D3DXVECTOR3(0, 0, 0);//Pitch,Yaw,Roll
+	D3DXVECTOR3		m_Scale = D3DXVECTOR3(1, 1, 1);
 	D3DXQUATERNION  m_Quaternion;
 	bool			m_Destroy = false;
 	D3DXMATRIX		m_WorldMatrix;
-
+	Collision m_Collision;
 };
 

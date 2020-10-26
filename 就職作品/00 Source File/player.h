@@ -2,6 +2,7 @@
 #include "gameobject.h"
 #include "SkeletalMesh.h"
 #include "collision.h"
+#include "InstanceObject.h"
 
 class CPlayer : public CGameObject
 {
@@ -13,6 +14,9 @@ private:
 
 	ID3D11InputLayout* m_VertexLayout;
 
+	D3DXVECTOR3 RayIntersect(CInstanceGameObject* object,int index);
+	FLOAT LenOBBToPoint(CInstanceGameObject& obj, D3DXVECTOR3& p,float length);
+	float m_hit;
 	int m_Frame = 0;
 	D3DXVECTOR3 m_OldPosition;
 	D3DXVECTOR3 m_OldForward;

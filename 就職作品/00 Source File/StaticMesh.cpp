@@ -39,7 +39,7 @@ void StaticMesh::LoadModel(const char* FileName)
 
 			for (unsigned int v = 0; v < mesh->mNumVertices; v++)
 			{
-				vertex[v].Position = D3DXVECTOR3(mesh->mVertices[v].x, mesh->mVertices[v].y, mesh->mVertices[v].z) /100;//スケール調整
+				vertex[v].Position = D3DXVECTOR3(mesh->mVertices[v].x, mesh->mVertices[v].y, mesh->mVertices[v].z);//スケール調整
 				vertex[v].Normal = D3DXVECTOR3(mesh->mNormals[v].x, mesh->mNormals[v].y, mesh->mNormals[v].z);
 				vertex[v].TexturePos = D3DXVECTOR2(mesh->mTextureCoords[0][v].x, mesh->mTextureCoords[0][v].y);//[0]はテクスチャ番号
 				vertex[v].Tangent = D3DXVECTOR3(mesh->mTangents[v].x, mesh->mTangents[v].y, mesh->mTangents[v].z);
@@ -183,11 +183,11 @@ void StaticMesh::DrawInstanced(UINT instanceCount)
 	RENDERER::m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//　マテリアル設定
-	MATERIAL material;
-	ZeroMemory(&material, sizeof(material));
-	material.Diffuse = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
-	material.Ambient = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
-	RENDERER::SetMaterial(material);
+	MATERIAL mat;
+	ZeroMemory(&mat, sizeof(mat));
+	mat.Diffuse = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+	mat.Ambient = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+	RENDERER::SetMaterial(mat);
 
 	for (unsigned int m = 0; m < m_AiScene->mNumMeshes; m++)
 	{

@@ -50,7 +50,7 @@ void Base::MainLoop()
 
 	m_Scene->Imgui();
 
-	//FixFPS60();
+
 	RENDERER::Present();
 }
 //

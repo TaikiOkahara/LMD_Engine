@@ -69,12 +69,7 @@ public:
 		}
 	}
 
-	virtual void Imgui() {
-
-		// IMGUIÅ@Frame start
-		ImGui_ImplDX11_NewFrame();
-		ImGui_ImplWin32_NewFrame();
-		ImGui::NewFrame();
+	virtual void Imgui() {	
 		for (int i = 0; i < LAYER::DRAW_LAYER_MAX; i++)
 		{
 			for (CGameObject* object : m_GameObject[i])
@@ -82,12 +77,6 @@ public:
 				object->Imgui();
 			}
 		}
-
-		ImGui::EndFrame();
-
-		ImGui::Render();
-		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-		//ImGui::set
 	}
 	
 	template <typename T>

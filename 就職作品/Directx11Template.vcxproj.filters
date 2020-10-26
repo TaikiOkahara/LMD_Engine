@@ -159,9 +159,6 @@
     <ClCompile Include="00 Source File\window.cpp">
       <Filter>Manager --------------------\Window</Filter>
     </ClCompile>
-    <ClCompile Include="00 Source File\makeTangent.cpp">
-      <Filter>Manager --------------------\Calculation</Filter>
-    </ClCompile>
     <ClCompile Include="00 Source File\tile.cpp">
       <Filter>Components----------------\Tile</Filter>
     </ClCompile>
@@ -219,6 +216,9 @@
     <ClCompile Include="00 Source File\collision.cpp">
       <Filter>Components----------------\Collision</Filter>
     </ClCompile>
+    <ClCompile Include="00 Source File\calculation.cpp">
+      <Filter>Manager --------------------\Calculation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="00 Source File\Scene.h">
@@ -256,9 +256,6 @@
     </ClInclude>
     <ClInclude Include="00 Source File\window.h">
       <Filter>Manager --------------------\Window</Filter>
-    </ClInclude>
-    <ClInclude Include="00 Source File\makeTangent.h">
-      <Filter>Manager --------------------\Calculation</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\gameobject.h">
       <Filter>GameObjects----------------</Filter>
@@ -325,6 +322,9 @@
     </ClInclude>
     <ClInclude Include="00 Source File\collision.h">
       <Filter>Components----------------\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\calculation.h">
+      <Filter>Manager --------------------\Calculation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

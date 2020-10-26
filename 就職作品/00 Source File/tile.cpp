@@ -2,7 +2,7 @@
 #include "director.h"
 #include "tile.h"
 #include "Scene.h"
-#include "makeTangent.h"
+#include "calculation.h"
 
 // マクロ定義
 //#define BLOCK_XY	50	//ブロックの数

@@ -100,14 +100,14 @@ void CInstanceGameObject::UpdateInstance()
 {
 
     //視錐台カリング用コンピュートシェーディング
-    /*
+    
     RENDERER::m_pDeviceContext->CSSetShader(m_pComputeShader, nullptr, 0);
-    RENDERER::m_pDeviceContext->CSSetShaderResources(0, 1, &m_pMatrixBufferSRV);
+    
+    //RENDERER::m_pDeviceContext->CSSetShaderResources(0, 1, &m_pMatrixBufferSRV);
 
 
-
-    RENDERER::m_pDeviceContext->CSSetUnorderedAccessViews(0, 1, &m_pIndexBufferUAV, nullptr);
-    RENDERER::m_pDeviceContext->Dispatch(m_MatrixList.size(), 1, 1);
+    RENDERER::m_pDeviceContext->CSSetUnorderedAccessViews(0, 1, &m_pIndexBufferUAV,0);
+    RENDERER::m_pDeviceContext->Dispatch(m_MeshCount, 1, 1);
 
     //インデックス数をCPU側で取得する
     RENDERER::m_pDeviceContext->CopyStructureCount(m_pCounterBuffer, 0, m_pIndexBufferUAV);
@@ -120,12 +120,12 @@ void CInstanceGameObject::UpdateInstance()
     //インデックス数取得
     hr = RENDERER::m_pDeviceContext->Map(m_pCounterBuffer, 0, D3D11_MAP_READ, 0, &mapped);
     if (SUCCEEDED(hr)) {
-        auto* pData = static_cast<UINT*>(mapped.pData);
+        auto pData = static_cast<UINT*>(mapped.pData);
 
         m_MeshCount = pData[0];
         RENDERER::m_pDeviceContext->Unmap(m_pCounterBuffer, 0);
     }
-    */
+    
 }
 
 void CInstanceGameObject::DrawInstance()

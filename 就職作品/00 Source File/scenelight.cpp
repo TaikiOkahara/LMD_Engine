@@ -10,20 +10,9 @@
 //
 void CSceneLight::Init()
 {
-	//Light::Init();
-
-	
-	m_DL_Intensity = D3DXVECTOR4(1, 0, 0, 0);
-	//g_DLight.Eye = D3DXVECTOR4(0, 0, 0, 0);
-
-
-	//Light::SetDirectionalLight(D3DXVECTOR4(0, -1,0, 0), 1.0f);
 	
 	
-	m_PL = D3DXVECTOR3(0.1f, 1.5f, 1.5f);
-	//Light::SetPointLight(&m_PL, &m_PL_Intensity, &m_PL_Range, &m_PL_Rate);
-
-	
+	//m_DL_Intensity = D3DXVECTOR4(1, 0, 0, 0);
 	
 
 	m_Position = D3DXVECTOR3(0.0f,0.0f, 0.0f);
@@ -37,9 +26,7 @@ void CSceneLight::Init()
 //
 void CSceneLight::Uninit()
 {
-	//Light::Uninit();
 
-	
 }
 //
 //
@@ -65,8 +52,6 @@ void CSceneLight::Update()
 		m_Rotation.x += 0.1f;
 	}
 
-
-	//Light::Update();
 
 }
 //
@@ -104,10 +89,6 @@ void CSceneLight::Draw()
 void CSceneLight::Imgui()
 {
 	static bool show_main_window = true;
-	//static bool show_another_window = true;
-	
-
-	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 	if (Keyboard_IsTrigger(DIK_F1))
 		show_main_window = !show_main_window;
@@ -115,40 +96,14 @@ void CSceneLight::Imgui()
 
 	if (show_main_window)
 	{
-		static float f1 = 0.0f;
-		static int counter1 = 0;
-		static int radio = 0;
 
 		ImGuiWindowFlags flag = 0;
 
-		
 
 		static bool is_open = true;
 
 		ImGui::Begin("DirectionalLight", &is_open, flag);
-
-		
-
-		//ImGui::SliderFloat2("CursorPoint",(float)poi.x,(float)poi.y);               // Display some text (you can use a format strings too)
-
-		//CSceneLight* light = Base::GetScene()->GetGameObject<CSceneLight>(0);
-
 		ImGui::InputFloat3("LightDirection", m_Rotation, 1);
-
-
-		ImGui::Checkbox("Open/Close", &is_open);      // チェックボックスがクリックされるとis_openが反転し、trueならチェックマークが表示されます。
-		//ImGui::Checkbox("Trigger", &show_another_window);
-
-		ImGui::SliderFloat("float", &f1, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-		ImGui::RadioButton("RadioButton 0", &radio, 0); ImGui::SameLine();
-		ImGui::RadioButton("RadioButton 1", &radio, 1); ImGui::SameLine();
-		ImGui::RadioButton("RadioButton 2", &radio, 2);
-
-		if (ImGui::Button("Button"))	// "Button"が押されるとtrueになる
-			counter1++;
-
 
 		/*
 			"##1" や "##2" のような文字列を入れることで互いを区別できるようになり、チェックボックスをクリックしても別のウィンドウの開閉ができるようになります。
@@ -157,12 +112,6 @@ void CSceneLight::Imgui()
 
 		*/
 
-		ImGui::SameLine(); // 次に書くUIパーツを現在と同じ行に配置します。
-
-		ImGui::Text("counter = %d", counter1);
-
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();
-
 	}
 }

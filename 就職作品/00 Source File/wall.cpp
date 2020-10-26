@@ -21,7 +21,7 @@ void CWall::Init()
 	m_Scale = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 
 	m_Collision.Init(D3DXVECTOR3(4, 0.1f, 8), D3DXVECTOR3(0, 0, 0));
-	//m_collision.Init(D3DXVECTOR3(4, 4, 4), D3DXVECTOR3(0, 0, 0));
+	//m_Collision.Init(D3DXVECTOR3(4, 4, 4), D3DXVECTOR3(0, 0, 0));
 
 	//　入力レイアウト生成
 	D3D11_INPUT_ELEMENT_DESC layout[]{
@@ -160,9 +160,6 @@ void CWall::Init()
 	}
 	
 
-
-
-	//m_wallCount = m_MeshCount;
 
 
 	InitInstance();

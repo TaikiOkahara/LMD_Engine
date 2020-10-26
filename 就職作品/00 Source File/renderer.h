@@ -62,19 +62,8 @@ struct POINTLIGHT
 {
 	//座標情報はワールドマトリクスとして設定しているのので、追加情報のみ入れる
 
-
-	//FLOAT Intensity[LIGHT_NUM];//光の強さ
-	//FLOAT Range[LIGHT_NUM];//光の範囲
-	//FLOAT Attenuation[LIGHT_NUM];//減衰度
-
-	//D3DXVECTOR3 Color[LIGHT_NUM];//色
-
 	D3DXVECTOR4 Color[LIGHT_NUM];
-	D3DXVECTOR4 CalcInfo[LIGHT_NUM];
-
-
-	//D3DXVECTOR2 dummy;
-	//D3DXVECTOR4 Dummy;
+	D3DXVECTOR4 CalcInfo[LIGHT_NUM];//色以外の情報
 };
 
 struct EYE
@@ -114,16 +103,7 @@ class RENDERER
 	static ID3D11Buffer* m_pEyeBuffer;
 	static ID3D11Buffer* m_pAnimationMatrixBuffer;
 
-	//構造体バッファ
-	//ポイントライト
-	//static ID3D11ShaderResourceView* m_pPointLightBufferSRV;
-
-	//static ID3D11Buffer* m_ComputeBufferIn;
-	//static ID3D11Buffer* m_ComputeBufferOut;
-	//static ID3D11ComputeShader* m_pComputeShader;
-	//static ID3D11ShaderResourceView* m_pCompute_SRV;
-	//static ID3D11ShaderResourceView* m_pComput_SRVOut;
-	//static ID3D11UnorderedAccessView* m_pCompute_UAV;
+	
 	//======================================================
 	//ランバート
 	static ID3D11Texture2D* m_pColorTexture;
@@ -176,11 +156,6 @@ public:
 
 	
 
-	//static ID3D11DepthStencilState*		m_pBuckBuffer_DSTexState;
-	
-	
-	
-	
 	
 
 	static void SetDepthEnable(bool Enable);

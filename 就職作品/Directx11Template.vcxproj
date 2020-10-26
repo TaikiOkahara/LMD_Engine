@@ -38,7 +38,7 @@
     <ClCompile Include="00 Source File\floor.cpp" />
     <ClCompile Include="00 Source File\input.cpp" />
     <ClCompile Include="00 Source File\light.cpp" />
-    <ClCompile Include="00 Source File\makeTangent.cpp" />
+    <ClCompile Include="00 Source File\calculation.cpp" />
     <ClCompile Include="00 Source File\player.cpp" />
     <ClCompile Include="00 Source File\scenelight.cpp" />
     <ClCompile Include="00 Source File\sound.cpp" />
@@ -59,7 +59,7 @@
     <ClInclude Include="00 Source File\camera.h" />
     <ClInclude Include="00 Source File\Game.h" />
     <ClInclude Include="00 Source File\InstanceObject.h" />
-    <ClInclude Include="00 Source File\makeTangent.h" />
+    <ClInclude Include="00 Source File\calculation.h" />
     <ClInclude Include="00 Source File\pillar.h" />
     <ClInclude Include="00 Source File\pointLight.h" />
     <ClInclude Include="00 Source File\SkeletalMesh.h" />

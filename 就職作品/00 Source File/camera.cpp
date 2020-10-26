@@ -10,7 +10,7 @@
 #include "wall.h"
 #include "pillar.h"
 #include "Imgui11.h"
-#include "makeTangent.h"
+#include "calculation.h"
 
 //　初期化
 void CCamera::Init()
@@ -84,11 +84,16 @@ void CCamera::Update()
 
 
 
+
 	//カメラとプレイヤーの間に障害物があった場合、カメラ位置を移動させる
-	CWall* wall = Base::GetScene()->GetGameObject<CWall>(1);
-	m_Position = RayIntersect(wall);
-	CPillar* pillar = Base::GetScene()->GetGameObject<CPillar>(1);
-	m_Position = RayIntersect(pillar);
+	if (m_CameraControl)
+	{
+		CWall* wall = Base::GetScene()->GetGameObject<CWall>(1);
+		m_Position = RayIntersect(wall);
+		CPillar* pillar = Base::GetScene()->GetGameObject<CPillar>(1);
+		m_Position = RayIntersect(pillar);
+
+	}
 }
 //
 //
@@ -115,43 +120,6 @@ void CCamera::Draw()
 }
 
 
-float Det(D3DXVECTOR3 vector0, D3DXVECTOR3 vector1, D3DXVECTOR3 vector2)
-{
-	return (
-		    (vector0.x * vector1.y * vector2.z)
-		  + (vector0.y * vector1.z * vector2.x)
-		  + (vector0.z * vector1.x * vector2.y)
-		  - (vector0.x * vector1.z * vector2.y)
-		  - (vector0.y * vector1.x * vector2.z)
-		  - (vector0.z * vector1.y * vector2.x));
-}
-
-bool CulcRay(D3DXVECTOR3 origin,D3DXVECTOR3 ray,D3DXVECTOR3 v0,D3DXVECTOR3 edge1, D3DXVECTOR3 edge2) 
-{
-	float denominator = Det(edge1, edge2, ray);
-
-	// レイが平面と平行でないかチェック
-	if (denominator <= 0) {
-		return false;
-	}
-
-	D3DXVECTOR3 d = origin - v0;
-
-	float u = Det(d, edge2, ray) / denominator;
-
-	if ((u >= 0) && (u <= 1))
-	{
-		float v = Det(edge1, d, ray) / denominator;
-		if ((v >= 0) && (u + v <= 1))
-		{
-			float t = Det(edge1, edge2, d) / denominator;
-
-			return true;
-		}
-
-	}
-	return false;
-}
 
 
 D3DXVECTOR3 CCamera::RayIntersect(CInstanceGameObject* object)
@@ -339,14 +307,16 @@ D3DXVECTOR3 CCamera::RayIntersect(CInstanceGameObject* object)
 
 void CCamera::Imgui()
 {
-	static bool show_camera_winow = true;
+	static bool show = true;
+
+	
 
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 	if (Keyboard_IsTrigger(DIK_F1))
-		show_camera_winow = !show_camera_winow;
+		show = !show;
 
-	if (show_camera_winow)
+	if (show)
 	{
 		ImGuiWindowFlags lw_flag = 0;
 		static bool lw_is_open;
@@ -355,7 +325,9 @@ void CCamera::Imgui()
 
 		/*if(hit)
 			ImGui::InputFloat3("hit!!", hitpos,1);*/
-		
+		ImGui::Checkbox("CameraControl", &m_CameraControl);
+
+
 		ImGui::InputFloat3("Position", m_Position, 1);
 		ImGui::InputFloat3("Rotation", m_Rotation, 1);
 		ImGui::InputFloat3("Target", m_Target, 1);

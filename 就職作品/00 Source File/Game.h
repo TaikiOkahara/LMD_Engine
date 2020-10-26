@@ -10,6 +10,5 @@ public:
 	void Init();
 	void UnInit();
 	void Update();
-
-	void Imgui_In();
+	void Imgui();
 };

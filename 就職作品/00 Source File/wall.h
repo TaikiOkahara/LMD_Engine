@@ -7,12 +7,10 @@ class CWall : public CInstanceGameObject
 {
 private:
 	Tile* m_pWall = nullptr;
-	//int m_wallCount = 0;
-	//Collision m_collision;
+	
 	bool isEnableCollision = true;
 
 	
-
 	ID3D11VertexShader* m_pVertexShader;
 	ID3D11PixelShader* m_pPixelShader;
 	ID3D11InputLayout* m_pVertexLayout;
@@ -25,8 +23,5 @@ public:
 	void Update();
 	void Draw();
 	void Imgui();
-	
-
-
 	
 };

@@ -33,7 +33,7 @@ private:
 	float m_Near;
 	float m_Far;
 
-
+	bool m_CameraControl = true;
 	
 	D3DXVECTOR3 RayIntersect(CInstanceGameObject* object);
 };
