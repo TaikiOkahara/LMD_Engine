@@ -8,8 +8,8 @@
 #include "Imgui11.h"
 #include "input.h"
 
-#include "Scene.h"
-#include "Game.h"
+#include "scene.h"
+#include "game.h"
 
 static HINSTANCE	m_hInstance;
 static WINDOW*		m_pWindow;
@@ -20,7 +20,7 @@ static HWND			m_hWnd;
 
 
 //Scene g_Scene;
-Scene* Base::m_Scene = nullptr;
+CScene* Base::m_Scene = nullptr;
 
 //
 //　メインループ
@@ -39,14 +39,23 @@ void Base::MainLoop()
 	
 	
 	m_Scene->Draw();
-	/*RENDERER::OutLineClear();
-	g_Scene.Draw();*/
 	
-	//Deferred
+	
+	
 	RENDERER::Deferred();
-	//PointLighting
-	RENDERER::Lighting();
-	m_Scene->DrawLighting();
+
+	if (RENDERER::toggleDirectional)
+	{
+
+		RENDERER::DirectionlLighting();
+	}
+
+	if (RENDERER::togglePoint)
+	{
+		RENDERER::PointLighting();
+		m_Scene->DrawLighting();
+	}
+	
 
 	m_Scene->Imgui();
 

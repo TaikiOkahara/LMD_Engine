@@ -65,9 +65,8 @@ void CPlayer::Uninit()
 void CPlayer::Update()
 {
 
-	Scene* scene = Base::GetScene();
 
-	CCamera* camera = scene->GetGameObject<CCamera>(0);
+	CCamera* camera = Base::GetScene()->GetGameObject<CCamera>(0);
 
 	D3DXVECTOR3 cameraright = camera->GetRight();
 	cameraright.y = 0;
@@ -162,6 +161,13 @@ void CPlayer::Draw()
 	D3DXMatrixRotationYawPitchRoll(&rot, m_Rotation.y + D3DX_PI, m_Rotation.x, m_Rotation.z);
 	D3DXMatrixTranslation(&trans, m_Position.x, m_Position.y, m_Position.z);
 	world = scale * rot * trans;
+
+	//‰e
+	/*D3DXMATRIX shadow;
+	D3DXPLANE plane;
+	D3DXPlaneFromPointNormal(&plane, &D3DXVECTOR3(0, 0.01f, 0), &D3DXVECTOR3(0, 1, 0));
+	D3DXMatrixShadow(&shadow, &D3DXVECTOR4(-5, 5, 0, 1), &plane);
+	world = world * shadow;*/
 
 	RENDERER::SetWorldMatrix(world);
 

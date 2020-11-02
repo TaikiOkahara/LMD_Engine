@@ -7,7 +7,7 @@
 
 
 
-class Scene
+class CScene
 {
 protected:
 
@@ -22,8 +22,8 @@ protected:
 	std::list<CGameObject*> m_GameObject[LAYER::DRAW_LAYER_MAX];
 
 public:	
-	Scene(){}
-	virtual ~Scene(){}
+	CScene(){}
+	virtual ~CScene(){}
 
 
 	virtual void Init() = 0;

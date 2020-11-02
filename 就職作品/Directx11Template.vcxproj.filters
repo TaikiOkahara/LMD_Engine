@@ -4,74 +4,14 @@
     <Filter Include="Manager --------------------">
       <UniqueIdentifier>{9f827aed-ca33-486b-a465-6edef8c8cd74}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Manager --------------------\Bass">
-      <UniqueIdentifier>{6a8f36ea-cf58-4886-9c18-11fa4d6e80c9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Manager --------------------\Director">
-      <UniqueIdentifier>{1c74470e-4a23-4b26-9910-450aaf2a3cc7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Manager --------------------\Imput">
-      <UniqueIdentifier>{e4ed265e-77a0-4f26-baed-87b2e5a4a237}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Manager --------------------\Window">
-      <UniqueIdentifier>{31bbf7e1-d6ea-4b4c-9154-db52b3c93dc9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Manager --------------------\Renderer">
-      <UniqueIdentifier>{09c167d3-f0c7-40d5-8724-df8043bc988a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Components----------------">
       <UniqueIdentifier>{f47c4ffa-90f2-4a5e-80cd-7eb731cb4197}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Components----------------\Sound">
-      <UniqueIdentifier>{1f280500-ed22-464a-9c29-be3efab2f85a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Components----------------\UI">
       <UniqueIdentifier>{f2f0620f-a5ac-4400-acd5-6f750f66d23a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Components----------------\Tile">
-      <UniqueIdentifier>{907eec73-59d5-4286-b88c-8d4d6ac41511}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameObjects----------------">
       <UniqueIdentifier>{79cc2763-b9e8-4aa3-bcdb-5dc4e88d6546}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameObjects----------------\Floor">
-      <UniqueIdentifier>{8b54d1aa-08c6-4aff-ab5e-dc30ca29d8c3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameObjects----------------\Player">
-      <UniqueIdentifier>{42be0302-10c7-4e81-9fd7-cfa21b77fd70}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameObjects----------------\SceneLight">
-      <UniqueIdentifier>{960b2378-7fd4-4347-b32a-c5690f643334}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameObjects----------------\Camera">
-      <UniqueIdentifier>{5a077b90-cb47-4b00-bbbe-2389fbb0b973}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameObjects----------------\Instance">
-      <UniqueIdentifier>{a9716659-2694-434a-af3d-de31d26af1cc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Components----------------\StaticMesh">
-      <UniqueIdentifier>{07fe6679-952d-4053-9b63-cebb80ba4b63}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Components----------------\SkeletalMesh">
-      <UniqueIdentifier>{d2e29390-cee8-4641-8e88-0635d2f34e49}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameObjects----------------\Stage">
-      <UniqueIdentifier>{ed3ff828-0f7c-49b6-abc5-be9c9c41ab22}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameObjects----------------\Wall">
-      <UniqueIdentifier>{c9a0be23-5867-49fb-8a4b-24234641b81d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameObjects----------------\Pillar">
-      <UniqueIdentifier>{adf17b72-e957-4611-a06a-8594b18ef507}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameObjects----------------\Trim">
-      <UniqueIdentifier>{2bb3750b-205b-45f0-a8fa-d8118524bfb9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameObjects----------------\Ceiling">
-      <UniqueIdentifier>{0b04c34a-9cb9-4ea1-a323-196e4f8b10fd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameObjects----------------\PointLight">
-      <UniqueIdentifier>{136ed20f-c2e5-4365-8860-2a4011aee6c4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Scene -----------------------">
       <UniqueIdentifier>{0cd947bb-1584-44c3-9428-27cf91f4d3a2}</UniqueIdentifier>
@@ -79,47 +19,110 @@
     <Filter Include="Shader-----------------------">
       <UniqueIdentifier>{593abaa5-9fc7-44a8-a38f-70210a607c91}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource--------------------">
-      <UniqueIdentifier>{34840016-615e-441d-945c-eb4e919c558e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource--------------------\Imgui">
-      <UniqueIdentifier>{e583db62-c03c-4ae5-adb5-a7391279b166}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Components----------------\Collision">
+    <Filter Include="Components----------------\collision">
       <UniqueIdentifier>{ef34e6cf-c5c3-4a35-9ac6-da9f1e98582e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Components----------------\Light">
+    <Filter Include="Components----------------\light">
       <UniqueIdentifier>{f8635fd1-1ad7-4af6-95fb-cafaaff1af6d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shader-----------------------\Deferred">
-      <UniqueIdentifier>{c9dde9f8-0b99-4995-a1ea-ae382093f72a}</UniqueIdentifier>
+    <Filter Include="Components----------------\skeletalMesh">
+      <UniqueIdentifier>{d2e29390-cee8-4641-8e88-0635d2f34e49}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shader-----------------------\SkeletalMesh">
-      <UniqueIdentifier>{ff176b75-d86f-436b-8359-2e9a43a1e84c}</UniqueIdentifier>
+    <Filter Include="Components----------------\sound">
+      <UniqueIdentifier>{1f280500-ed22-464a-9c29-be3efab2f85a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shader-----------------------\Tile">
-      <UniqueIdentifier>{825af0dd-0d00-4b4f-bcf5-ad5d875dee41}</UniqueIdentifier>
+    <Filter Include="Components----------------\staticMesh">
+      <UniqueIdentifier>{07fe6679-952d-4053-9b63-cebb80ba4b63}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shader-----------------------\Collision">
+    <Filter Include="Components----------------\tile">
+      <UniqueIdentifier>{907eec73-59d5-4286-b88c-8d4d6ac41511}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects----------------\camera">
+      <UniqueIdentifier>{5a077b90-cb47-4b00-bbbe-2389fbb0b973}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects----------------\ceiling">
+      <UniqueIdentifier>{0b04c34a-9cb9-4ea1-a323-196e4f8b10fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects----------------\floor">
+      <UniqueIdentifier>{8b54d1aa-08c6-4aff-ab5e-dc30ca29d8c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects----------------\instance">
+      <UniqueIdentifier>{a9716659-2694-434a-af3d-de31d26af1cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects----------------\chandelier">
+      <UniqueIdentifier>{47202e28-53ba-464c-9d1c-72cd6a06a22d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects----------------\pillar">
+      <UniqueIdentifier>{adf17b72-e957-4611-a06a-8594b18ef507}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects----------------\player">
+      <UniqueIdentifier>{42be0302-10c7-4e81-9fd7-cfa21b77fd70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects----------------\pointLight">
+      <UniqueIdentifier>{136ed20f-c2e5-4365-8860-2a4011aee6c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects----------------\sceneLight">
+      <UniqueIdentifier>{960b2378-7fd4-4347-b32a-c5690f643334}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects----------------\stage">
+      <UniqueIdentifier>{ed3ff828-0f7c-49b6-abc5-be9c9c41ab22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects----------------\trim">
+      <UniqueIdentifier>{2bb3750b-205b-45f0-a8fa-d8118524bfb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects----------------\wall">
+      <UniqueIdentifier>{c9a0be23-5867-49fb-8a4b-24234641b81d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager --------------------\bass">
+      <UniqueIdentifier>{6a8f36ea-cf58-4886-9c18-11fa4d6e80c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager --------------------\calculation">
+      <UniqueIdentifier>{4349bfc7-f47e-4607-90d0-2ad602b52286}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager --------------------\director">
+      <UniqueIdentifier>{1c74470e-4a23-4b26-9910-450aaf2a3cc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager --------------------\imput">
+      <UniqueIdentifier>{e4ed265e-77a0-4f26-baed-87b2e5a4a237}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager --------------------\renderer">
+      <UniqueIdentifier>{09c167d3-f0c7-40d5-8724-df8043bc988a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager --------------------\window">
+      <UniqueIdentifier>{31bbf7e1-d6ea-4b4c-9154-db52b3c93dc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader-----------------------\collision">
       <UniqueIdentifier>{141d87be-5ad7-401d-8e9f-b165e9f8fb00}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shader-----------------------\Common">
+    <Filter Include="Shader-----------------------\common">
       <UniqueIdentifier>{506b95e9-c417-4ec3-bf28-7fcba7449338}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shader-----------------------\Compute">
+    <Filter Include="Shader-----------------------\compute">
       <UniqueIdentifier>{92d61dcc-ba22-4515-b38d-62333861fa7e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shader-----------------------\Resource">
-      <UniqueIdentifier>{a0ca34f4-5f31-4b87-8266-1c7893b1dee8}</UniqueIdentifier>
+    <Filter Include="Shader-----------------------\deferred">
+      <UniqueIdentifier>{c9dde9f8-0b99-4995-a1ea-ae382093f72a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shader-----------------------\PointLight">
+    <Filter Include="Shader-----------------------\pointLight">
       <UniqueIdentifier>{0d7e117b-4b72-4703-9a9a-e6ee12950481}</UniqueIdentifier>
     </Filter>
-    <Filter Include="NewFilter1">
-      <UniqueIdentifier>{daa1a2cc-04a5-46d7-843a-8b0c718c50d2}</UniqueIdentifier>
+    <Filter Include="Shader-----------------------\directionalLight">
+      <UniqueIdentifier>{e350811c-0a61-4e3f-a397-3c92267c8773}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Manager --------------------\Calculation">
-      <UniqueIdentifier>{4349bfc7-f47e-4607-90d0-2ad602b52286}</UniqueIdentifier>
+    <Filter Include="Shader-----------------------\resource">
+      <UniqueIdentifier>{a0ca34f4-5f31-4b87-8266-1c7893b1dee8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader-----------------------\skeletalMesh">
+      <UniqueIdentifier>{ff176b75-d86f-436b-8359-2e9a43a1e84c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader-----------------------\tile">
+      <UniqueIdentifier>{825af0dd-0d00-4b4f-bcf5-ad5d875dee41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager --------------------\resource">
+      <UniqueIdentifier>{34840016-615e-441d-945c-eb4e919c558e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager --------------------\resource\Imgui">
+      <UniqueIdentifier>{e583db62-c03c-4ae5-adb5-a7391279b166}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -127,262 +130,265 @@
       <Filter>Manager --------------------</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\camera.cpp">
-      <Filter>GameObjects----------------\Camera</Filter>
+      <Filter>GameObjects----------------\camera</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\light.cpp">
-      <Filter>Components----------------\Light</Filter>
+      <Filter>Components----------------\light</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\sound.cpp">
-      <Filter>Components----------------\Sound</Filter>
+      <Filter>Components----------------\sound</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\floor.cpp">
-      <Filter>GameObjects----------------\Floor</Filter>
+      <Filter>GameObjects----------------\floor</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\player.cpp">
-      <Filter>GameObjects----------------\Player</Filter>
+      <Filter>GameObjects----------------\player</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\scenelight.cpp">
-      <Filter>GameObjects----------------\SceneLight</Filter>
+      <Filter>GameObjects----------------\sceneLight</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\base.cpp">
-      <Filter>Manager --------------------\Bass</Filter>
+      <Filter>Manager --------------------\bass</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\director.cpp">
-      <Filter>Manager --------------------\Director</Filter>
+      <Filter>Manager --------------------\director</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\renderer.cpp">
-      <Filter>Manager --------------------\Renderer</Filter>
+      <Filter>Manager --------------------\renderer</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\input.cpp">
-      <Filter>Manager --------------------\Imput</Filter>
+      <Filter>Manager --------------------\imput</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\window.cpp">
-      <Filter>Manager --------------------\Window</Filter>
+      <Filter>Manager --------------------\window</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\tile.cpp">
-      <Filter>Components----------------\Tile</Filter>
+      <Filter>Components----------------\tile</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\InstanceObject.cpp">
-      <Filter>GameObjects----------------\Instance</Filter>
+      <Filter>GameObjects----------------\instance</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\Imgui11.cpp">
-      <Filter>Resource--------------------\Imgui</Filter>
+      <Filter>Manager --------------------\resource\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\SkeletalMesh.cpp">
-      <Filter>Components----------------\SkeletalMesh</Filter>
+      <Filter>Components----------------\skeletalMesh</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\StaticMesh.cpp">
-      <Filter>Components----------------\StaticMesh</Filter>
-    </ClCompile>
-    <ClCompile Include="00 Source File\Game.cpp">
-      <Filter>Scene -----------------------</Filter>
+      <Filter>Components----------------\staticMesh</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\wall.cpp">
-      <Filter>GameObjects----------------\Wall</Filter>
+      <Filter>GameObjects----------------\wall</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\pillar.cpp">
-      <Filter>GameObjects----------------\Pillar</Filter>
+      <Filter>GameObjects----------------\pillar</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\stage.cpp">
-      <Filter>GameObjects----------------\Stage</Filter>
+      <Filter>GameObjects----------------\stage</Filter>
     </ClCompile>
     <ClCompile Include="05 Resource File\imgui\imgui.cpp">
-      <Filter>Resource--------------------\Imgui</Filter>
+      <Filter>Manager --------------------\resource\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="05 Resource File\imgui\imgui_demo.cpp">
-      <Filter>Resource--------------------\Imgui</Filter>
+      <Filter>Manager --------------------\resource\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="05 Resource File\imgui\imgui_draw.cpp">
-      <Filter>Resource--------------------\Imgui</Filter>
+      <Filter>Manager --------------------\resource\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="05 Resource File\imgui\imgui_impl_dx11.cpp">
-      <Filter>Resource--------------------\Imgui</Filter>
+      <Filter>Manager --------------------\resource\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="05 Resource File\imgui\imgui_impl_win32.cpp">
-      <Filter>Resource--------------------\Imgui</Filter>
+      <Filter>Manager --------------------\resource\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="05 Resource File\imgui\imgui_widgets.cpp">
-      <Filter>Resource--------------------\Imgui</Filter>
+      <Filter>Manager --------------------\resource\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\trim.cpp">
-      <Filter>GameObjects----------------\Trim</Filter>
+      <Filter>GameObjects----------------\trim</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\ceiling.cpp">
-      <Filter>GameObjects----------------\Ceiling</Filter>
+      <Filter>GameObjects----------------\ceiling</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\pointLight.cpp">
-      <Filter>GameObjects----------------\PointLight</Filter>
+      <Filter>GameObjects----------------\pointLight</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\collision.cpp">
-      <Filter>Components----------------\Collision</Filter>
+      <Filter>Components----------------\collision</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\calculation.cpp">
-      <Filter>Manager --------------------\Calculation</Filter>
+      <Filter>Manager --------------------\calculation</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\game.cpp">
+      <Filter>Scene -----------------------</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="00 Source File\Scene.h">
-      <Filter>Scene -----------------------</Filter>
-    </ClInclude>
     <ClInclude Include="00 Source File\camera.h">
-      <Filter>GameObjects----------------\Camera</Filter>
+      <Filter>GameObjects----------------\camera</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\light.h">
-      <Filter>Components----------------\Light</Filter>
+      <Filter>Components----------------\light</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\sound.h">
-      <Filter>Components----------------\Sound</Filter>
+      <Filter>Components----------------\sound</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\floor.h">
-      <Filter>GameObjects----------------\Floor</Filter>
+      <Filter>GameObjects----------------\floor</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\player.h">
-      <Filter>GameObjects----------------\Player</Filter>
+      <Filter>GameObjects----------------\player</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\scenelight.h">
-      <Filter>GameObjects----------------\SceneLight</Filter>
+      <Filter>GameObjects----------------\sceneLight</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\base.h">
-      <Filter>Manager --------------------\Bass</Filter>
+      <Filter>Manager --------------------\bass</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\director.h">
-      <Filter>Manager --------------------\Director</Filter>
+      <Filter>Manager --------------------\director</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\renderer.h">
-      <Filter>Manager --------------------\Renderer</Filter>
+      <Filter>Manager --------------------\renderer</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\input.h">
-      <Filter>Manager --------------------\Imput</Filter>
+      <Filter>Manager --------------------\imput</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\window.h">
-      <Filter>Manager --------------------\Window</Filter>
+      <Filter>Manager --------------------\window</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\gameobject.h">
       <Filter>GameObjects----------------</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\tile.h">
-      <Filter>Components----------------\Tile</Filter>
+      <Filter>Components----------------\tile</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\InstanceObject.h">
-      <Filter>GameObjects----------------\Instance</Filter>
+      <Filter>GameObjects----------------\instance</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\Imgui11.h">
-      <Filter>Resource--------------------\Imgui</Filter>
+      <Filter>Manager --------------------\resource\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\SkeletalMesh.h">
-      <Filter>Components----------------\SkeletalMesh</Filter>
+      <Filter>Components----------------\skeletalMesh</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\StaticMesh.h">
-      <Filter>Components----------------\StaticMesh</Filter>
-    </ClInclude>
-    <ClInclude Include="00 Source File\Game.h">
-      <Filter>Scene -----------------------</Filter>
+      <Filter>Components----------------\staticMesh</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\wall.h">
-      <Filter>GameObjects----------------\Wall</Filter>
+      <Filter>GameObjects----------------\wall</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\pillar.h">
-      <Filter>GameObjects----------------\Pillar</Filter>
+      <Filter>GameObjects----------------\pillar</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\stage.h">
-      <Filter>GameObjects----------------\Stage</Filter>
+      <Filter>GameObjects----------------\stage</Filter>
     </ClInclude>
     <ClInclude Include="05 Resource File\imgui\imconfig.h">
-      <Filter>Resource--------------------\Imgui</Filter>
+      <Filter>Manager --------------------\resource\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="05 Resource File\imgui\imgui.h">
-      <Filter>Resource--------------------\Imgui</Filter>
+      <Filter>Manager --------------------\resource\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="05 Resource File\imgui\imgui_impl_dx11.h">
-      <Filter>Resource--------------------\Imgui</Filter>
+      <Filter>Manager --------------------\resource\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="05 Resource File\imgui\imgui_impl_win32.h">
-      <Filter>Resource--------------------\Imgui</Filter>
+      <Filter>Manager --------------------\resource\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="05 Resource File\imgui\imgui_internal.h">
-      <Filter>Resource--------------------\Imgui</Filter>
+      <Filter>Manager --------------------\resource\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="05 Resource File\imgui\imstb_rectpack.h">
-      <Filter>Resource--------------------\Imgui</Filter>
+      <Filter>Manager --------------------\resource\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="05 Resource File\imgui\imstb_textedit.h">
-      <Filter>Resource--------------------\Imgui</Filter>
+      <Filter>Manager --------------------\resource\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="05 Resource File\imgui\imstb_truetype.h">
-      <Filter>Resource--------------------\Imgui</Filter>
+      <Filter>Manager --------------------\resource\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\trim.h">
-      <Filter>GameObjects----------------\Trim</Filter>
+      <Filter>GameObjects----------------\trim</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\ceiling.h">
-      <Filter>GameObjects----------------\Ceiling</Filter>
+      <Filter>GameObjects----------------\ceiling</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\pointLight.h">
-      <Filter>GameObjects----------------\PointLight</Filter>
+      <Filter>GameObjects----------------\pointLight</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\collision.h">
-      <Filter>Components----------------\Collision</Filter>
+      <Filter>Components----------------\collision</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\calculation.h">
-      <Filter>Manager --------------------\Calculation</Filter>
+      <Filter>Manager --------------------\calculation</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\scene.h">
+      <Filter>Scene -----------------------</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\game.h">
+      <Filter>Scene -----------------------</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="03 Shader File\hlsl\ConstantBuffer.hlsl">
-      <Filter>Shader-----------------------\Resource</Filter>
+      <Filter>Shader-----------------------\resource</Filter>
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\DeferredPS.hlsl">
-      <Filter>Shader-----------------------\Deferred</Filter>
+      <Filter>Shader-----------------------\deferred</Filter>
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\DeferredVS.hlsl">
-      <Filter>Shader-----------------------\Deferred</Filter>
+      <Filter>Shader-----------------------\deferred</Filter>
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\SkeletalPixelShader.hlsl">
-      <Filter>Shader-----------------------\SkeletalMesh</Filter>
+      <Filter>Shader-----------------------\skeletalMesh</Filter>
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\SkeletalVertexShader.hlsl">
-      <Filter>Shader-----------------------\SkeletalMesh</Filter>
+      <Filter>Shader-----------------------\skeletalMesh</Filter>
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\Tile_PixelShader.hlsl">
-      <Filter>Shader-----------------------\Tile</Filter>
+      <Filter>Shader-----------------------\tile</Filter>
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\Tile_VertexShader.hlsl">
-      <Filter>Shader-----------------------\Tile</Filter>
+      <Filter>Shader-----------------------\tile</Filter>
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\CollisionVertexShader.hlsl">
-      <Filter>Shader-----------------------\Collision</Filter>
+      <Filter>Shader-----------------------\collision</Filter>
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\CollisionPixelShader.hlsl">
-      <Filter>Shader-----------------------\Collision</Filter>
+      <Filter>Shader-----------------------\collision</Filter>
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\CollisionInstanceVertexShader.hlsl">
-      <Filter>Shader-----------------------\Collision</Filter>
+      <Filter>Shader-----------------------\collision</Filter>
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\VertexShader.hlsl">
-      <Filter>Shader-----------------------\Common</Filter>
+      <Filter>Shader-----------------------\common</Filter>
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\PixelShader.hlsl">
-      <Filter>Shader-----------------------\Common</Filter>
+      <Filter>Shader-----------------------\common</Filter>
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\InstanceComputeShader.hlsl">
-      <Filter>Shader-----------------------\Compute</Filter>
+      <Filter>Shader-----------------------\compute</Filter>
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\Geometry.hlsl">
-      <Filter>Shader-----------------------\Resource</Filter>
+      <Filter>Shader-----------------------\resource</Filter>
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\PointLightPixelShader.hlsl">
-      <Filter>Shader-----------------------\PointLight</Filter>
+      <Filter>Shader-----------------------\pointLight</Filter>
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\PointLightVertexShader.hlsl">
-      <Filter>Shader-----------------------\PointLight</Filter>
+      <Filter>Shader-----------------------\pointLight</Filter>
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\InstanceVertexShader.hlsl">
-      <Filter>Shader-----------------------\Common</Filter>
+      <Filter>Shader-----------------------\common</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\DirectionalLightPixelShader.hlsl">
+      <Filter>Shader-----------------------\directionalLight</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Manual.txt">
-      <Filter>Resource--------------------</Filter>
+      <Filter>Manager --------------------\resource</Filter>
     </Text>
   </ItemGroup>
 </Project>

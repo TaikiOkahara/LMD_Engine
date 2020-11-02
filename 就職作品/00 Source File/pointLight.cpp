@@ -11,15 +11,17 @@ void CPointLight::Init()
 	m_pMesh = new StaticMesh();
 	m_pMesh->LoadModel("../02 Visual File//UV.fbx");
 	
-	m_Position = D3DXVECTOR3(-2.5f, 0.0f, 5.0f);
-	m_Rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_Scale = D3DXVECTOR3(100.0f, 100.0f, 100.0f);
-
+	
 	posList = new D3DXVECTOR3[128];
+	scaleList = new D3DXVECTOR3[128];
+
+
 	{
 
 
 		posList[0] = D3DXVECTOR3(-2.5f, 0.0f, 5.0f);
+		scaleList[0] = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
+
 		m_PointLight.Color[0] = D3DXVECTOR4(1,1,1, 1);
 		m_PointLight.CalcInfo[0] = D3DXVECTOR4(1, 1, 1, 10);
 
@@ -59,6 +61,7 @@ void CPointLight::Init()
 void CPointLight::Uninit()
 {
 	delete[] posList;
+	delete[] scaleList;
 
 	m_pMesh->Unload();
 	delete m_pMesh;
@@ -75,10 +78,10 @@ void CPointLight::Uninit()
 void CPointLight::Update()
 {
 
-	CPlayer* player = Base::GetScene()->GetGameObject<CPlayer>(1);
+	/*CPlayer* player = Base::GetScene()->GetGameObject<CPlayer>(1);
 
 	m_Position = player->GetPosition() +  player->GetForward() * 3.0f;
-	m_Position.y = 0.0f;
+	m_Position.y = 0.0f;*/
 	
 }
 
@@ -100,9 +103,13 @@ void CPointLight::Draw()
 	D3DXMatrixRotationYawPitchRoll(&rot, m_Rotation.y, m_Rotation.x, m_Rotation.z);
 
 
-	for (int i = 0; i < 128; i++)
+	for (int i = 0; i < LIGHT_NUM; i++)
 	{
-		D3DXMatrixScaling(&scale, m_Scale.x, m_Scale.y, i);//xに本当のサイズを入れる、zにインデックス番号を入れる
+		if (scaleList[i].x <= 0)
+		{
+			continue;//スケールのないライト描画スキップ
+		}
+		D3DXMatrixScaling(&scale, scaleList[i].x, scaleList[i].y, i);//xに本当のサイズを入れる、zにインデックス番号を入れる
 
 		D3DXMatrixTranslation(&trans, posList[i].x, posList[i].y, posList[i].z);
 		world = scale * rot * trans;

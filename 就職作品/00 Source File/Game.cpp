@@ -1,6 +1,6 @@
 //#include "Scene.h"
 #include "base.h"
-#include "Game.h"
+#include "game.h"
 #include "Imgui11.h"
 #include "input.h"
 
@@ -31,11 +31,11 @@ void Game::Init() {
 }
 
 void Game::UnInit() {
-	Scene::UnInit();
+	CScene::UnInit();
 }
 
 void Game::Update() {
-	Scene::Update();
+	CScene::Update();
 }
 
 void Game::Imgui()
@@ -46,7 +46,7 @@ void Game::Imgui()
 	ImGui::NewFrame();
 
 	
-	Scene::Imgui();
+	CScene::Imgui();
 
 	//Sceneのデバッグ
 	static bool show_scene_window = true;
@@ -70,7 +70,8 @@ void Game::Imgui()
 
 
 
-		ImGui::Checkbox("Open/Close", &is_open);      // チェックボックスがクリックされるとis_openが反転し、trueならチェックマークが表示されます。
+		ImGui::Checkbox("DirectionalLight", &RENDERER::toggleDirectional);
+		ImGui::Checkbox("PointLight", &RENDERER::togglePoint);
 		//ImGui::Checkbox("Trigger", &show_another_window);
 
 		ImGui::SliderFloat("float", &f1, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f

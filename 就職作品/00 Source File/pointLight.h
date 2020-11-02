@@ -10,6 +10,7 @@ private:
 	StaticMesh* m_pMesh = nullptr;
 
 	D3DXVECTOR3* posList;
+	D3DXVECTOR3* scaleList;
 	//int m_PointCount;
 
 	//構造体バッファとビュー

@@ -4,19 +4,19 @@
 =============================================================*/
 #pragma once
 #include "window.h"
-#include "Scene.h"
+#include "scene.h"
 //#include "Scene.h"
 //　プロトタイプ
 //HRESULT GameInit(HINSTANCE phInstance);
 //void	GameRun();
 //HRESULT GameUninit();
 
-class Scene;
+class CScene;
 
 class Base
 {
 private:
-	static class Scene* m_Scene;
+	static class CScene* m_Scene;
 	static void MainLoop();
 	static void FixFPS60();
 public:
@@ -25,7 +25,7 @@ public:
 	static HRESULT Run();
 	static HRESULT Uninit();
 
-	static class Scene* GetScene() { return m_Scene; }
+	static class CScene* GetScene() { return m_Scene; }
 
 	template <typename T>
 	static void SetScene() {

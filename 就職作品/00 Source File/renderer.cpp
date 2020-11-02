@@ -18,7 +18,7 @@ IDXGISwapChain* RENDERER::m_pSwapChain = NULL;
 ID3D11RenderTargetView* RENDERER::m_pDeferred_TexRTV = NULL;
 
 ID3D11DepthStencilView* RENDERER::m_pDeferred_DSTexDSV = NULL;
-
+ID3D11ShaderResourceView* RENDERER::m_pDeferred_SRV = NULL;
 //ディファードレンダリング用
 ID3D11RasterizerState* RENDERER::m_pDeferredRasterizerState = NULL;
 ID3D11SamplerState* RENDERER::m_pDeferredSamplerState = NULL;
@@ -34,6 +34,9 @@ ID3D11VertexShader* RENDERER::m_pCommonVertexShader = NULL;
 ID3D11PixelShader* RENDERER::m_pCommonPixelShader = NULL;
 ID3D11InputLayout* RENDERER::m_pCommonVertexLayout = NULL;
 
+//描画トグル
+bool RENDERER::toggleDirectional = true;
+bool RENDERER::togglePoint = true;
 
 //定数バッファ
 ID3D11Buffer* RENDERER::m_pWorldBuffer = NULL;
@@ -52,13 +55,7 @@ D3D11_VIEWPORT RENDERER::m_Vp;
 //デプスステンシルステート
 ID3D11DepthStencilState* RENDERER::m_pBuckBuffer_DSTexState = NULL;
 
-//ID3D11Buffer* RENDERER::m_ComputeBufferIn = NULL;
-//ID3D11Buffer* RENDERER::m_ComputeBufferOut = NULL;
-//ID3D11ComputeShader* RENDERER::m_pComputeShader = NULL;
-//ID3D11ShaderResourceView* RENDERER::m_pComput_SRVIn = NULL;
-//ID3D11ShaderResourceView* RENDERER::m_pComput_SRV = NULL;
-//ID3D11UnorderedAccessView* RENDERER::m_pCompute_UAV = NULL;
-//===============================================
+
 //GBuffer --------------------------------------------
 //カラー
 ID3D11Texture2D* RENDERER::m_pColorTexture = NULL;
@@ -78,8 +75,10 @@ ID3D11InputLayout* RENDERER::m_pDeferredVertexLayout = NULL;
 
 ID3D11Texture2D* RENDERER::m_pDepthStencil = NULL;
 ID3D11Buffer* RENDERER::m_pScreenPolyVB = NULL;
-ID3D11VertexShader* RENDERER::m_pVS_Deferred = NULL;
-ID3D11PixelShader* RENDERER::m_pPS_Deferred = NULL;
+ID3D11VertexShader* RENDERER::m_pDeferredVertexShader = NULL;
+ID3D11PixelShader* RENDERER::m_pDeferredPixelShader = NULL;
+//ディレクショナルライト
+ID3D11PixelShader* RENDERER::m_pDirectionalPixelShader = NULL;
 //===============================================
 
 
@@ -168,6 +167,13 @@ HRESULT RENDERER::Init(D3D_INIT* pcd)
 	//レンダーターゲットビューと深度ステンシルビューをパイプラインにセット
 	m_pDeviceContext->OMSetRenderTargets(1, &m_pDeferred_TexRTV,m_pDeferred_DSTexDSV);
 
+	//シェーダーリソースビュー
+	D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc;
+	ZeroMemory(&SRVDesc, sizeof(SRVDesc));
+	SRVDesc.Format = descDepth.Format;
+	SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	SRVDesc.Texture2D.MipLevels = 1;
+	m_pDevice->CreateShaderResourceView(m_pDepthStencil, &SRVDesc, &m_pDeferred_SRV);
 	//----------------------------------------------------------------------------------------
 	
 	
@@ -343,8 +349,8 @@ HRESULT RENDERER::Init(D3D_INIT* pcd)
 	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,	0,0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,	0,D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 } };
 	
-	CreateVertexShader(&m_pVS_Deferred, &m_pDeferredVertexLayout,layout, ARRAYSIZE(layout), "DeferredVS.cso");
-	CreatePixelShader(&m_pPS_Deferred, "DeferredPS.cso");
+	CreateVertexShader(&m_pDeferredVertexShader, &m_pDeferredVertexLayout,layout, ARRAYSIZE(layout), "DeferredVS.cso");
+	CreatePixelShader(&m_pDeferredPixelShader, "DeferredPS.cso");
 
 	//通常---------------------------------------------------------------------------------------
 
@@ -356,25 +362,17 @@ HRESULT RENDERER::Init(D3D_INIT* pcd)
 	{ "TANGENT",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "BINORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 } };
 
-
 	//シェーダー作成
 	RENDERER::CreateVertexShader(&m_pCommonVertexShader, &m_pCommonVertexLayout, clayout, ARRAYSIZE(clayout), "VertexShader.cso");
 	RENDERER::CreatePixelShader(&m_pCommonPixelShader, "PixelShader.cso");
 
-	
+	//ディレクショナルライト-------------------------------------------------------------------------------
+	CreatePixelShader(&m_pDirectionalPixelShader, "DirectionalLightPixelShader.cso");
+
+
+
 	//定数バッファ作成
 	CreateConstantBuffers();
-
-
-
-
-	//　マテリアル設定
-	/*MATERIAL material;
-	ZeroMemory(&material, sizeof(material));
-	material.Diffuse = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
-	material.Ambient = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
-	material.Specular = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
-	SetMaterial(material);*/
 
 
 	return S_OK;
@@ -394,11 +392,10 @@ void RENDERER::Uninit()
 	SAFE_RELEASE(m_pWorldBuffer);
 	SAFE_RELEASE(m_pAnimationMatrixBuffer);
 
-	//SAFE_RELEASE(m_pPointLightBufferSRV);
 
 
-	SAFE_RELEASE(m_pPS_Deferred);
-	SAFE_RELEASE(m_pVS_Deferred);
+	SAFE_RELEASE(m_pDeferredPixelShader);
+	SAFE_RELEASE(m_pDeferredVertexShader);
 	SAFE_RELEASE(m_pScreenPolyVB);
 	SAFE_RELEASE(m_pDepthStencil);
 
@@ -418,12 +415,15 @@ void RENDERER::Uninit()
 
 
 	SAFE_RELEASE(m_pDeferred_DSTexDSV);
+	SAFE_RELEASE(m_pDeferred_SRV);
 	SAFE_RELEASE(m_pDeferred_TexRTV);
 	SAFE_RELEASE(m_pDeferredVertexLayout);
 	SAFE_RELEASE(m_pDeferredSamplerState);
 	SAFE_RELEASE(m_pDeferredRasterizerState);
 	SAFE_RELEASE(m_pDeferredBlendState);
 
+	//DirectionaｌLight
+	SAFE_RELEASE(m_pDirectionalPixelShader);
 	//PointLight
 	SAFE_RELEASE(m_pPointLightingRasterizerState);
 
@@ -432,7 +432,7 @@ void RENDERER::Uninit()
 	SAFE_RELEASE(m_pCommonVertexShader);
 	SAFE_RELEASE(m_pCommonSamplerState);
 	SAFE_RELEASE(m_pCommonRasterizerState);
-	//SAFE_RELEASE(m_pCommonBlendState);
+	
 
 	SAFE_RELEASE(m_pSwapChain);
 	SAFE_RELEASE(m_pDeviceContext);
@@ -457,12 +457,12 @@ void RENDERER::Clear()
 	pViews[1] = m_pNormal_RTV;
 	pViews[2] = m_pPosition_RTV;
 	
-	//pViews[3] = m_pOutline_RTV;
 
 	m_pDeviceContext->OMSetRenderTargets(3, pViews, m_pDeferred_DSTexDSV);//深度ステンシルビューは全てに共通の1つだけを使う
 	//クリア
 	float ClearColor[4] = { 0,0,0,1 };
 
+	m_pDeviceContext->ClearRenderTargetView(m_pDeferred_TexRTV, ClearColor);
 	m_pDeviceContext->ClearRenderTargetView(m_pColor_RTV, ClearColor);
 	m_pDeviceContext->ClearRenderTargetView(m_pNormal_RTV, ClearColor);
 	m_pDeviceContext->ClearRenderTargetView(m_pPosition_RTV, ClearColor);
@@ -477,34 +477,33 @@ void RENDERER::Clear()
 //ディファード
 void RENDERER::Deferred()
 {
-	//使用するシェーダーは、テクスチャーを参照するシェーダー	
-	m_pDeviceContext->VSSetShader(m_pVS_Deferred, NULL, 0);
-	m_pDeviceContext->PSSetShader(m_pPS_Deferred, NULL, 0);
-	m_pDeviceContext->IASetInputLayout(m_pDeferredVertexLayout);
-	//ビューポートの設定
-	m_pDeviceContext->RSSetViewports(1, &m_Vp);
 
 	//レンダーターゲットを通常に戻す
 	m_pDeviceContext->OMSetRenderTargets(1, &m_pDeferred_TexRTV, m_pDeferred_DSTexDSV);
 	//デプスステンシルステート	
 	m_pDeviceContext->OMSetDepthStencilState(m_pBuckBuffer_DSTexState, NULL);
-
 	//ブレンドステート
 	UINT mask = 0xffffffff;
 	float blend[4] = { 1,1,1,1 };
 	m_pDeviceContext->OMSetBlendState(m_pDeferredBlendState, blend, mask);
 
+	//ビューポートの設定
+	m_pDeviceContext->RSSetViewports(1, &m_Vp);
+
 	m_pDeviceContext->RSSetState(m_pDeferredRasterizerState);
 	//m_pDeviceContext->PSSetSamplers(1, 1, &m_pDeferredSamplerState);
-	//クリア
-	float ClearColor[4] = { 0,0,0,1 };
-	m_pDeviceContext->ClearRenderTargetView(m_pDeferred_TexRTV, ClearColor);
-	m_pDeviceContext->ClearDepthStencilView(m_pDeferred_DSTexDSV, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+
+	//使用するシェーダーは、テクスチャーを参照するシェーダー	
+	m_pDeviceContext->VSSetShader(m_pDeferredVertexShader, NULL, 0);
+	m_pDeviceContext->PSSetShader(m_pDeferredPixelShader, NULL, 0);
+	m_pDeviceContext->IASetInputLayout(m_pDeferredVertexLayout);
+	
 
 	//1パス目で作成したテクスチャー3枚をセット
-	m_pDeviceContext->PSSetShaderResources(2, 1, &m_pColor_SRV);
-	m_pDeviceContext->PSSetShaderResources(3, 1, &m_pNormal_SRV);
-	m_pDeviceContext->PSSetShaderResources(4, 1, &m_pPosition_SRV);
+	m_pDeviceContext->PSSetShaderResources(0, 1, &m_pColor_SRV);
+	m_pDeviceContext->PSSetShaderResources(1, 1, &m_pNormal_SRV);
+	m_pDeviceContext->PSSetShaderResources(2, 1, &m_pPosition_SRV);
 	
 
 	//スクリーンサイズのポリゴンをレンダー
@@ -519,11 +518,41 @@ void RENDERER::Deferred()
 //
 //
 //ライティング
-void RENDERER::Lighting()
+void RENDERER::PointLighting()
 {
+
+	m_pDeviceContext->PSSetShaderResources(0, 1, &m_pColor_SRV);
+	m_pDeviceContext->PSSetShaderResources(1, 1, &m_pNormal_SRV);
+	m_pDeviceContext->PSSetShaderResources(2, 1, &m_pPosition_SRV);
 	//バックカリング
 	m_pDeviceContext->RSSetState(m_pPointLightingRasterizerState);
 
+}
+
+void RENDERER::DirectionlLighting()
+{
+
+	//使用するシェーダーは、テクスチャーを参照するシェーダー	
+	m_pDeviceContext->VSSetShader(m_pDeferredVertexShader, NULL, 0);
+	m_pDeviceContext->PSSetShader(m_pDirectionalPixelShader, NULL, 0);
+	m_pDeviceContext->IASetInputLayout(m_pDeferredVertexLayout);
+
+	
+
+	//1パス目で作成したテクスチャー3枚をセット
+	m_pDeviceContext->PSSetShaderResources(0, 1, &m_pDeferred_SRV);
+	m_pDeviceContext->PSSetShaderResources(1, 1, &m_pColor_SRV);
+	m_pDeviceContext->PSSetShaderResources(2, 1, &m_pNormal_SRV);
+	m_pDeviceContext->PSSetShaderResources(3, 1, &m_pPosition_SRV);
+
+
+	//スクリーンサイズのポリゴンをレンダー
+	m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	UINT stride = sizeof(DEFERRED_VERTEX);
+	UINT offset = 0;
+	m_pDeviceContext->IASetVertexBuffers(0, 1, &m_pScreenPolyVB, &stride, &offset);
+
+	m_pDeviceContext->Draw(4, 0);
 }
 //
 //

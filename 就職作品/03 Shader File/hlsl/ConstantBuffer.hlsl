@@ -24,7 +24,7 @@ cbuffer EyeBuffer : register(b3)
 cbuffer DirectionalLightBuffer : register(b4)
 {
     float4 g_vLight; //ライトの座標
-	//float4 g_fIntensity;//明るさ	
+	float4 g_vLightColor;//色	
 	
 	//matrix g_mLightView;
 }

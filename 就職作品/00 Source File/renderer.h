@@ -64,6 +64,7 @@ struct POINTLIGHT
 
 	D3DXVECTOR4 Color[LIGHT_NUM];
 	D3DXVECTOR4 CalcInfo[LIGHT_NUM];//色以外の情報
+	
 };
 
 struct EYE
@@ -123,15 +124,19 @@ class RENDERER
 
 	//ディファード
 	static ID3D11Buffer* m_pScreenPolyVB;
-	static ID3D11VertexShader* m_pVS_Deferred;
-	static ID3D11PixelShader* m_pPS_Deferred;
+	static ID3D11VertexShader* m_pDeferredVertexShader;
+	static ID3D11PixelShader* m_pDeferredPixelShader;
 	static ID3D11InputLayout* m_pDeferredVertexLayout;
 	static ID3D11RenderTargetView* m_pDeferred_TexRTV;	
 	static ID3D11DepthStencilView* m_pDeferred_DSTexDSV;
+	static ID3D11ShaderResourceView* m_pDeferred_SRV;
 	static ID3D11Texture2D* m_pDepthStencil;
 	static ID3D11SamplerState* m_pDeferredSamplerState;
 	static ID3D11RasterizerState* m_pDeferredRasterizerState;
 	static ID3D11BlendState* m_pDeferredBlendState;
+	//ディレクショナルライト
+	static ID3D11PixelShader* m_pDirectionalPixelShader;
+
 	//ポイントライティング
 	static ID3D11RasterizerState* m_pPointLightingRasterizerState;
 	//======================================================
@@ -155,9 +160,12 @@ public:
 	static ID3D11DeviceContext*	m_pDeviceContext;	
 
 	
-
+	static bool toggleDirectional;
+	static bool togglePoint;
 	
 
+
+	//定数バッファセット
 	static void SetDepthEnable(bool Enable);
 	static void SetWorldViewProjection2D();
 	static void SetWorldMatrix(D3DXMATRIX WorldMatrix);
@@ -169,7 +177,7 @@ public:
 	static void SetDirectionalLight(D3DXVECTOR4 Light,D3DXMATRIX matrix);
 	static void SetPointLight(POINTLIGHT light);
 	static void SetEye(EYE Eye);
-	static void SetPointLight(ID3D11Buffer*,ID3D11ShaderResourceView*);
+	
 	
 	RENDERER() {}	//　コンストラクタ
 	~RENDERER() {}	//　デストラクタ
@@ -187,6 +195,7 @@ public:
 	static void CreateStructuredBuffer(UINT elementSize,UINT count,void* pInitData,ID3D11Buffer** ppBufferOut);
 
 	static void Deferred();//ディファード
-	static void Lighting();//ライティング
+	static void DirectionlLighting();//ライティング
+	static void PointLighting();//ライティング
 	static void Present();		//　画面更新
 };
