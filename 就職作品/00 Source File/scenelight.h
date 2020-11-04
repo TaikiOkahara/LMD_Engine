@@ -6,6 +6,9 @@
 
 class CSceneLight : public CGameObject
 {
+private:
+	DIRECTIONALLIGHT m_DirectionalLight;
+
 public:
 	CSceneLight(){}
 	~CSceneLight(){}

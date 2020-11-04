@@ -45,7 +45,7 @@ float4 main(VS_OUT input) : SV_Target
     
     //＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
     //ディレクショナルライトで色を付けるため黒にする
-    return float4(0, 0, 0, 1);
+    return Color;
     //＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
     
     

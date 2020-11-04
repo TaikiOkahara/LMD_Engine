@@ -27,7 +27,7 @@ float4 main(VS_OUT input) : SV_Target
     float NL = saturate(-dot(vWorldNormal.xyz, vLightVector));
     NL = NL * 0.9f + 0.1f;//世界観的に暗め
     NL = (vWorldNormal.w == 2.0f) ? 1.0f : NL;//ライティングを行か
-    
+    float3 color = g_vLightColor.xyz;
     
     
     float3 Eye = g_vEye.xyz - vWorldPos;
@@ -41,7 +41,7 @@ float4 main(VS_OUT input) : SV_Target
     float4 Color = vDiffuse;
     
     
-    Color.rgb *= vDiffuse.xyz * NL;
+    Color.rgb *= vDiffuse.xyz * NL * color.xyz;
     Color.a = vDiffuse.a;
     //アンビエント---------------------------------------------------
     float4 Ambient = float4(0, 0, 0, 0);

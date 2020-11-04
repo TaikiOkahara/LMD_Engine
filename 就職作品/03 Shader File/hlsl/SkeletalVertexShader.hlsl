@@ -2,27 +2,20 @@
 #include "ConstantBuffer.hlsl"
 
 
-// マテリアルバッファ
-struct MATERIAL
-{
-    float4 Ambient;
-    float4 Diffuse;
-    float4 Specular;
-    float4 Emission;
-    float Shininess;
-    float3 Dummy; //16bit境界用
-};
 
+#define ANIMATION_MATRIX_MAX (256)
 
 cbuffer AnimationBuffer : register(b7)
 {
-    matrix g_Animation[256];
+    matrix g_Animation[ANIMATION_MATRIX_MAX];
 }
 
 
 matrix GetAnimMatrix(uint index)
 {
-    return g_Animation[index];
+    //インデックスが要素数最大になっていたら、そのボーンウェイトは影響がないため、正規化のマトリクスを返す
+    return (index == ANIMATION_MATRIX_MAX - 1) ? g_Animation[ANIMATION_MATRIX_MAX - 1] : g_Animation[index];
+  
 }
 
 
@@ -46,9 +39,9 @@ VS_OUT main(
     float4 weight;
     
     position = float4(0,0,0,0);
-    normal = float4(0, 0, 0, 0);
-    binormal = float4(0, 0, 0, 0);
-    tangent = float4(0, 0, 0, 0);
+    normal = float4(0,0,0,0);
+    binormal = float4(0,0,0,0);
+    tangent = float4(0,0,0,0);
     
     weight = BoneWeight;
     index = BoneIndex;
@@ -56,10 +49,10 @@ VS_OUT main(
     //アニメーションマトリクス計算----------------
     //
     mat = GetAnimMatrix(index.x);
-    position = mul(Pos, mat * weight.x);
-    normal = mul(Normal, mat * weight.x);
-    binormal = mul(Binormal, mat * weight.x);
-    tangent = mul(Tangent, mat * weight.x);
+    position += mul(Pos, mat * weight.x);
+    normal += mul(Normal, mat * weight.x);
+    binormal += mul(Binormal, mat * weight.x);
+    tangent += mul(Tangent, mat * weight.x);
     //
     mat = GetAnimMatrix(index.y);
     position += mul(Pos, mat * weight.y);

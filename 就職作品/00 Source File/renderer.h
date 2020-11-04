@@ -5,8 +5,8 @@
 #pragma once
 
 
-#define		LIGHT_NUM		(128)	//ライトの数を有限にする
-
+#define	LIGHT_MAX		(128)	//ライトの数を有限にする
+#define	ANIMATION_MATRIX_MAX	(256)
 
 
 struct VERTEX_3D
@@ -33,13 +33,18 @@ struct ANIMVERTEX_3D
 	D3DXVECTOR3 Tangent;
 	D3DXVECTOR3 Binormal;
 	
-	UINT		BoneIndex[4]{ 0,0,0,0 };
+	UINT		BoneIndex[4]{ 
+		ANIMATION_MATRIX_MAX - 1,
+		ANIMATION_MATRIX_MAX - 1,
+		ANIMATION_MATRIX_MAX - 1,
+		ANIMATION_MATRIX_MAX - 1 };//0はインデックスで利用するため、255で代入さ入れていないインデックスを検知
+	
 	D3DXVECTOR4 BoneWeight{ 0.0f,0.0f,0.0f,0.0f };
 };
 
 struct ANIMATIONMATRIX
 {
-	D3DXMATRIX Animation[256];
+	D3DXMATRIX Animation[ANIMATION_MATRIX_MAX];
 };
 
 
@@ -53,7 +58,7 @@ struct MATERIAL
 struct DIRECTIONALLIGHT
 {
 	D3DXVECTOR4 LightDir;
-	//D3DXVECTOR4 Intensity;
+	D3DXVECTOR4 Color;
 
 	//D3DXMATRIX LightView;//シャドウマップ作成用
 };
@@ -62,8 +67,8 @@ struct POINTLIGHT
 {
 	//座標情報はワールドマトリクスとして設定しているのので、追加情報のみ入れる
 
-	D3DXVECTOR4 Color[LIGHT_NUM];
-	D3DXVECTOR4 CalcInfo[LIGHT_NUM];//色以外の情報
+	D3DXVECTOR4 Color[LIGHT_MAX];
+	D3DXVECTOR4 CalcInfo[LIGHT_MAX];//色以外の情報
 	
 };
 
@@ -162,6 +167,7 @@ public:
 	
 	static bool toggleDirectional;
 	static bool togglePoint;
+	static bool toggleDeferred;
 	
 
 
@@ -174,7 +180,7 @@ public:
 	static void SetMaterial(MATERIAL Material);
 	static void SetAnimationMatrix(ANIMATIONMATRIX Animation);
 
-	static void SetDirectionalLight(D3DXVECTOR4 Light,D3DXMATRIX matrix);
+	static void SetDirectionalLight(DIRECTIONALLIGHT light);
 	static void SetPointLight(POINTLIGHT light);
 	static void SetEye(EYE Eye);
 	

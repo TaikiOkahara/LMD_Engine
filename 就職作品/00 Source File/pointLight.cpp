@@ -4,7 +4,7 @@
 #include "input.h"
 #include "StaticMesh.h"
 #include "pointLight.h"
-#include "player.h"
+#include "chandelier.h"
 
 void CPointLight::Init()
 {
@@ -18,12 +18,18 @@ void CPointLight::Init()
 
 	{
 
+		for (int i = 0; i < 2; i++)
+		{
+			posList[i] = D3DXVECTOR3(-2.5f, 0.0f, 5.0f);
+			scaleList[i] = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 
-		posList[0] = D3DXVECTOR3(-2.5f, 0.0f, 5.0f);
-		scaleList[0] = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
+			m_PointLight.Color[i] = D3DXVECTOR4(1, 1, 1, 1);
+			m_PointLight.CalcInfo[i] = D3DXVECTOR4(1, 1, 1, 10);
+		}
+		
 
-		m_PointLight.Color[0] = D3DXVECTOR4(1,1,1, 1);
-		m_PointLight.CalcInfo[0] = D3DXVECTOR4(1, 1, 1, 10);
+
+
 
 		//m_PointLight.Position[0] = D3DXVECTOR3(-2.5f, 0.0f, 5.0f);
 
@@ -78,11 +84,12 @@ void CPointLight::Uninit()
 void CPointLight::Update()
 {
 
-	/*CPlayer* player = Base::GetScene()->GetGameObject<CPlayer>(1);
+	CChandelier* chandelier = Base::GetScene()->GetGameObject<CChandelier>(1);
 
-	m_Position = player->GetPosition() +  player->GetForward() * 3.0f;
-	m_Position.y = 0.0f;*/
-	
+	posList[0] = chandelier->GetPosition(0) + D3DXVECTOR3(0,-1,0);
+	scaleList[0] = D3DXVECTOR3(5.0f, 5.0f, 1.0f);
+	m_PointLight.Color[0] = D3DXVECTOR4(1.0f, 0.5f, 0.0f, 1);
+	m_PointLight.CalcInfo[0] = D3DXVECTOR4(0.1f, 1.0f, 0.1f, 30);
 }
 
 void CPointLight::Draw()
@@ -103,7 +110,7 @@ void CPointLight::Draw()
 	D3DXMatrixRotationYawPitchRoll(&rot, m_Rotation.y, m_Rotation.x, m_Rotation.z);
 
 
-	for (int i = 0; i < LIGHT_NUM; i++)
+	for (int i = 0; i < LIGHT_MAX; i++)
 	{
 		if (scaleList[i].x <= 0)
 		{
@@ -143,7 +150,7 @@ void CPointLight::Imgui()
 		ImGuiWindowFlags lw_flag = 0;
 		static bool lw_is_open;
 
-		ImGui::Begin("Light", &lw_is_open, lw_flag);
+		ImGui::Begin("PointLight", &lw_is_open, lw_flag);
 
 		/*for (int i = 0; i < 1; i++)
 		{

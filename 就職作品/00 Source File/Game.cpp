@@ -6,6 +6,8 @@
 
 #include "camera.h"
 #include "scenelight.h"
+#include "pointLight.h"
+
 #include "player.h"
 #include "floor.h"
 #include "wall.h"
@@ -13,7 +15,8 @@
 #include "pillar.h"
 #include "trim.h"
 #include "ceiling.h"
-#include "pointLight.h"
+#include "ceilingArch.h"
+#include "chandelier.h"
 
 void Game::Init() {
 	AddGameObject<CCamera>(LAYER::DRAW_LAYER_HIDE);
@@ -27,7 +30,9 @@ void Game::Init() {
 	AddGameObject<CStage>(LAYER::DRAW_LAYER_DRAW);	//ドア
 	AddGameObject<CTrim>(LAYER::DRAW_LAYER_DRAW);	//つなぎ目
 	AddGameObject<CCeiling>(LAYER::DRAW_LAYER_DRAW);//天井
+	AddGameObject<CCeilingArch>(LAYER::DRAW_LAYER_DRAW);//天井のアーチ
 	AddGameObject<CPlayer>(LAYER::DRAW_LAYER_DRAW);//プレイヤー
+	AddGameObject<CChandelier>(LAYER::DRAW_LAYER_DRAW);//シャンデリア
 }
 
 void Game::UnInit() {
@@ -70,6 +75,7 @@ void Game::Imgui()
 
 
 
+		ImGui::Checkbox("Deferred", &RENDERER::toggleDeferred);
 		ImGui::Checkbox("DirectionalLight", &RENDERER::toggleDirectional);
 		ImGui::Checkbox("PointLight", &RENDERER::togglePoint);
 		//ImGui::Checkbox("Trigger", &show_another_window);

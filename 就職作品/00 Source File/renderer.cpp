@@ -37,7 +37,7 @@ ID3D11InputLayout* RENDERER::m_pCommonVertexLayout = NULL;
 //描画トグル
 bool RENDERER::toggleDirectional = true;
 bool RENDERER::togglePoint = true;
-
+bool RENDERER::toggleDeferred = true;
 //定数バッファ
 ID3D11Buffer* RENDERER::m_pWorldBuffer = NULL;
 ID3D11Buffer* RENDERER::m_pViewBuffer = NULL;
@@ -215,7 +215,6 @@ HRESULT RENDERER::Init(D3D_INIT* pcd)
 	rdc.DepthClipEnable = FALSE;
 	//rdc.MultisampleEnable = FALSE;
 	m_pDevice->CreateRasterizerState(&rdc,&m_pDeferredRasterizerState);
-	m_pDeviceContext->RSSetState(m_pDeferredRasterizerState);
 
 
 	//通常用ラスタライズ設定
@@ -225,10 +224,11 @@ HRESULT RENDERER::Init(D3D_INIT* pcd)
 	rdc.FrontCounterClockwise = TRUE;
 	//rdc.MultisampleEnable = FALSE;
 	m_pDevice->CreateRasterizerState(&rdc, &m_pCommonRasterizerState);
+	m_pDeviceContext->RSSetState(m_pCommonRasterizerState);
 
 	//ポイントライト用バックカリングラスタライズ設定
 	ZeroMemory(&rdc, sizeof(rdc));
-	rdc.CullMode = D3D11_CULL_MODE::D3D11_CULL_BACK;
+	rdc.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
 	rdc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
 	rdc.DepthClipEnable = FALSE;
 	m_pDevice->CreateRasterizerState(&rdc, &m_pPointLightingRasterizerState);
@@ -278,8 +278,8 @@ HRESULT RENDERER::Init(D3D_INIT* pcd)
 	// ディファードレンダリング用サンプラーステート設定
 	D3D11_SAMPLER_DESC samplerDesc;
 	ZeroMemory(&samplerDesc, sizeof(samplerDesc));
-	//samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
-	samplerDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
+	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+	//samplerDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -482,10 +482,7 @@ void RENDERER::Deferred()
 	m_pDeviceContext->OMSetRenderTargets(1, &m_pDeferred_TexRTV, m_pDeferred_DSTexDSV);
 	//デプスステンシルステート	
 	m_pDeviceContext->OMSetDepthStencilState(m_pBuckBuffer_DSTexState, NULL);
-	//ブレンドステート
-	UINT mask = 0xffffffff;
-	float blend[4] = { 1,1,1,1 };
-	m_pDeviceContext->OMSetBlendState(m_pDeferredBlendState, blend, mask);
+	
 
 	//ビューポートの設定
 	m_pDeviceContext->RSSetViewports(1, &m_Vp);
@@ -493,6 +490,8 @@ void RENDERER::Deferred()
 	m_pDeviceContext->RSSetState(m_pDeferredRasterizerState);
 	//m_pDeviceContext->PSSetSamplers(1, 1, &m_pDeferredSamplerState);
 
+
+	if (!toggleDeferred) return;
 
 	//使用するシェーダーは、テクスチャーを参照するシェーダー	
 	m_pDeviceContext->VSSetShader(m_pDeferredVertexShader, NULL, 0);
@@ -520,6 +519,10 @@ void RENDERER::Deferred()
 //ライティング
 void RENDERER::PointLighting()
 {
+	//ブレンドステート
+	UINT mask = 0xffffffff;
+	float blend[4] = { 1,1,1,1 };
+	m_pDeviceContext->OMSetBlendState(m_pDeferredBlendState, blend, mask);
 
 	m_pDeviceContext->PSSetShaderResources(0, 1, &m_pColor_SRV);
 	m_pDeviceContext->PSSetShaderResources(1, 1, &m_pNormal_SRV);
@@ -559,13 +562,13 @@ void RENDERER::DirectionlLighting()
 //　画面更新
 void RENDERER::Present()
 {
+	m_pSwapChain->Present(1,0);//画面更新（バックバッファをフロントバッファに）
+	
+	
 	float blend[4] = { 1,1,1,1 };
 	m_pDeviceContext->RSSetState(NULL);
 	m_pDeviceContext->OMSetBlendState(NULL, blend, 0xFFFFFFFF);
 	m_pDeviceContext->OMSetDepthStencilState(NULL, 0);
-
-
-	m_pSwapChain->Present(1,0);//画面更新（バックバッファをフロントバッファに）
 }
 //
 //
@@ -669,12 +672,12 @@ void RENDERER::SetMaterial(MATERIAL Material)
 
 }
 //
-void RENDERER::SetDirectionalLight(D3DXVECTOR4 Light, D3DXMATRIX ViewMatrix)
+void RENDERER::SetDirectionalLight(DIRECTIONALLIGHT light)
 {
 	
 
 	DIRECTIONALLIGHT Set;
-	Set.LightDir = Light;
+	Set = light;
 
 	//Set.LightView = ViewMatrix;
 	//D3DXMatrixTranspose(&Set.LightView, &Set.LightView);
@@ -693,8 +696,9 @@ void RENDERER::SetEye(EYE Eye)
 
 void RENDERER::SetAnimationMatrix(ANIMATIONMATRIX Animation)
 {
-	ANIMATIONMATRIX animation = Animation;
-	m_pDeviceContext->UpdateSubresource(m_pAnimationMatrixBuffer, 0, NULL, &animation, 0, 0);
+	//ANIMATIONMATRIX animation = Animation;
+	
+	m_pDeviceContext->UpdateSubresource(m_pAnimationMatrixBuffer, 0, NULL, &Animation, 0, 0);
 }
 
 void RENDERER::SetPointLight(POINTLIGHT light)

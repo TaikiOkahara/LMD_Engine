@@ -124,6 +124,9 @@
     <Filter Include="Manager --------------------\resource\Imgui">
       <UniqueIdentifier>{e583db62-c03c-4ae5-adb5-a7391279b166}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObjects----------------\ceilingArch">
+      <UniqueIdentifier>{ed7c5f2f-6199-4aae-b09b-96f0177734d1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="00 Source File\Entry.cpp">
@@ -221,6 +224,12 @@
     </ClCompile>
     <ClCompile Include="00 Source File\game.cpp">
       <Filter>Scene -----------------------</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\chandelier.cpp">
+      <Filter>GameObjects----------------\chandelier</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\ceilingArch.cpp">
+      <Filter>GameObjects----------------\ceilingArch</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -328,6 +337,12 @@
     </ClInclude>
     <ClInclude Include="00 Source File\game.h">
       <Filter>Scene -----------------------</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\chandelier.h">
+      <Filter>GameObjects----------------\chandelier</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\ceilingArch.h">
+      <Filter>GameObjects----------------\ceilingArch</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

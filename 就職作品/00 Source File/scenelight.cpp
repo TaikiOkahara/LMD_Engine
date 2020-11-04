@@ -19,7 +19,7 @@ void CSceneLight::Init()
 	m_Rotation = D3DXVECTOR3(0.5f, 0.0f, 3.5f);
 	m_Scale = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 
-
+	m_DirectionalLight.Color = D3DXVECTOR4(1, 1, 1, 1);
 }
 //
 //
@@ -72,16 +72,17 @@ void CSceneLight::Draw()
 	D3DXMatrixInverse(&LightView, NULL, &LightView);
 
 
-	D3DXVECTOR4 LightVector;
-	LightVector.x = rot._21;
-	LightVector.y = rot._22;
-	LightVector.z = rot._23;
-	LightVector.w = 0.0f;
-	D3DXVec4Normalize(&LightVector, &LightVector);
-	LightVector.w = 1.0f;
+	
+	m_DirectionalLight.LightDir.x = rot._21;
+	m_DirectionalLight.LightDir.y = rot._22;
+	m_DirectionalLight.LightDir.z = rot._23;
+	m_DirectionalLight.LightDir.w = 0.0f;
+	D3DXVec4Normalize(&m_DirectionalLight.LightDir, &m_DirectionalLight.LightDir);
+	m_DirectionalLight.LightDir.w = 1.0f;
+	
 
 
-	RENDERER::SetDirectionalLight(LightVector, LightView);
+	RENDERER::SetDirectionalLight(m_DirectionalLight);
 	
 
 }
@@ -96,15 +97,23 @@ void CSceneLight::Imgui()
 
 	if (show_main_window)
 	{
+		static bool is_open = true;
 
 		ImGuiWindowFlags flag = 0;
-
-
-		static bool is_open = true;
+		static ImVec4 clear_color = ImVec4(m_DirectionalLight.Color.x, m_DirectionalLight.Color.y, m_DirectionalLight.Color.z, 1.00f);
+		
+		m_DirectionalLight.Color.x = clear_color.x;
+		m_DirectionalLight.Color.y = clear_color.y;
+		m_DirectionalLight.Color.z = clear_color.z;
+		
+		
+		
 
 		ImGui::Begin("DirectionalLight", &is_open, flag);
 		ImGui::InputFloat3("LightDirection", m_Rotation, 1);
 
+
+		ImGui::ColorEdit3("Color", (float*)&clear_color);
 		/*
 			"##1" や "##2" のような文字列を入れることで互いを区別できるようになり、チェックボックスをクリックしても別のウィンドウの開閉ができるようになります。
 			"##"以降の文字列は描画されません。"Open/Close" と描画されます。"##"を使うのはあくまでコード内で区別するための作法です。

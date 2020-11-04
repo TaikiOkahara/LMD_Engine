@@ -19,8 +19,9 @@ void CPlayer::Init()
 	
 	m_AnimModel = new CAnimationModel();
 
-	m_AnimModel->LoadModel("../02 Visual File//Akai//Akai_Idle.fbx", D3DXVECTOR3(0,2,0));
-	m_AnimModel->LoadTexture("../02 Visual File//Akai//texture.ini");
+	m_AnimModel->LoadModel("../02 Visual File//Akai//Akai_Idle.fbx", D3DXVECTOR3(0,0,0));
+	//m_AnimModel->LoadTexture("../02 Visual File//Akai//texture.ini");
+	m_AnimModel->LoadTexture("");
 	m_AnimModel->LoadAnimation("../02 Visual File//Akai//Akai_Run.fbx", "Run");
 	m_AnimModel->LoadAnimation("../02 Visual File//Akai//Akai_Idle.fbx", "Idle");
 

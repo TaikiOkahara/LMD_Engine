@@ -96,7 +96,7 @@ void CAnimationModel::LoadModel(const char* FileName, D3DXVECTOR3 pos)
 
 			for (unsigned int b = 0; b < 4; b++)
 			{
-				deformVertex.BoneName[b] = "";
+				deformVertex.BoneName[b] = "None";
 				deformVertex.BoneWeight[b] = 0.0f;
 			}
 
@@ -122,7 +122,11 @@ void CAnimationModel::LoadModel(const char* FileName, D3DXVECTOR3 pos)
 				m_DeformVertex[m][weight.mVertexId].BoneIndex[num] = b;
 				m_DeformVertex[m][weight.mVertexId].BoneNum++;
 
-				assert(m_DeformVertex[m][weight.mVertexId].BoneNum <= 4);
+				if (num >= 4)
+				{
+					assert(num >= 4);
+
+				}
 			}
 		}
 
@@ -138,6 +142,7 @@ void CAnimationModel::LoadModel(const char* FileName, D3DXVECTOR3 pos)
 			vertex[v].BoneWeight.y = m_DeformVertex[m][v].BoneWeight[1];
 			vertex[v].BoneWeight.z = m_DeformVertex[m][v].BoneWeight[2];
 			vertex[v].BoneWeight.w = m_DeformVertex[m][v].BoneWeight[3];
+
 		}
 
 
@@ -157,8 +162,9 @@ void CAnimationModel::LoadModel(const char* FileName, D3DXVECTOR3 pos)
 		delete[] vertex;
 	}
 
-	for (int i = 0; i < 256; i++)
+	for (int i = 0; i < ANIMATION_MATRIX_MAX; i++)
 	{
+		//正規化
 		D3DXMatrixIdentity(&m_AnimationMatrix.Animation[i]);
 	}
 }
@@ -176,13 +182,15 @@ void CAnimationModel::Unload()
 
 	for (std::pair<const std::string, ID3D11ShaderResourceView*> pair : m_Texture)
 	{
-		pair.second->Release();
+		if(pair.second != nullptr)
+			pair.second->Release();
 	}
 	/*for (auto pair : m_Texture) でもいい*/
 
 	for (std::pair<const std::string, const aiScene*> pair : m_Animation)
 	{
-		aiReleaseImport(pair.second);
+		if(pair.second != nullptr)
+			aiReleaseImport(pair.second);
 	}
 
 	aiReleaseImport(m_AiScene);
@@ -213,14 +221,8 @@ void CAnimationModel::Update(const char* AnimationName,int Frame)
 	const aiScene* scene0 = m_Animation[m_CurAnimationName];
 	const aiScene* scene1 = m_Animation[AnimationName];
 
-	if (!scene0->HasAnimations())
-	{
-		return;
-	}
-	if (!scene1->HasAnimations())
-	{
-		return;
-	}
+	if (!scene0->HasAnimations()){ return;}
+	if (!scene1->HasAnimations()){ return;}
 
 
 	//アニメーションデータからボーンマトリクス算出
@@ -314,8 +316,8 @@ void CAnimationModel::Draw()
 
 		//テクスチャ設定
 		aiString path;
-		material->GetTexture(aiTextureType_DIFFUSE, 0, &path);
-		/*if (m_Texture["Diffuse"]){
+		/*material->GetTexture(aiTextureType_DIFFUSE, 0, &path);
+		if (m_Texture["Diffuse"]){
 			RENDERER::m_pDeviceContext->PSSetShaderResources(0, 1, &m_Texture["Diffuse"]);
 		}
 		if (m_Texture["Normal"]) {

@@ -17,7 +17,7 @@ float4 main(VS_LIGHT_OUT input) : SV_Target
     float3 diffuse = g_texColor.Load(sampleIndices).xyz;
 
     
-    //ç°ÇÕ1Ç¬ÇæÇØ
+
     float3 lpos  = input.LightPos;
     float3 L = lpos - position;
     float dist = length(L);
@@ -48,15 +48,15 @@ float4 main(VS_LIGHT_OUT input) : SV_Target
     
     
 	//Specular calc
-    float3 V = g_vEye.xyz - position;
-    float3 H = normalize(L + V);
-    float inputSpecularValue = g_vPoint[index].w;
-    float specular = pow(saturate(dot(normal, H)), inputSpecularValue) * att;
+    //float3 V = g_vEye.xyz - position;
+    //float3 H = normalize(L + V);
+    //float inputSpecularValue = g_vPoint[index].w;
+    //float specular = pow(saturate(dot(normal, H)), inputSpecularValue) * att;
 
     float3 finalDiffuse = color * diffuse;
-    float3 finalSpecular = specular * diffuse * att;
+    //float3 finalSpecular = specular * diffuse * att;
 
-    float4 totalColor = float4(finalDiffuse + finalSpecular, 1.0f);
-    //float4 totalColor = float4(finalDiffuse , 1.0f);
+    //float4 totalColor = float4(finalDiffuse + finalSpecular, 1.0f);
+    float4 totalColor = float4(finalDiffuse , 1.0f);
     return totalColor;
 }
