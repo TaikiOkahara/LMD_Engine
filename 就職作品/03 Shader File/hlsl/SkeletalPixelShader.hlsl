@@ -24,31 +24,28 @@ PS_OUT main(VS_OUT input)
     Out.vPosition = input.WorldPos;
 	
 	//ワールド法線テクスチャーへ出力
-	//float3 vNormal = input.WorldNormal;
-    //vNormal = vNormal * 0.5 + 0.5;
 	
     float4 bump;
     bump = g_texNor.Sample(g_samLinear, input.Tex);
     bump = (bump * 2.0f) - 1.0f;
+    bump.w = 0.0f;
 	
-    float3 bumpNormal;
-    bumpNormal = (bump.x * input.WorldTangent) + (bump.y * input.WorldBinormal) + (bump.z * input.WorldNormal);
-    bumpNormal = normalize(bumpNormal);
+    //float3 bumpNormal;
+    //bumpNormal = (-bump.x * input.WorldTangent) + (-bump.y * input.WorldBinormal) + (-bump.z * input.WorldNormal);
+    ////bumpNormal = normalize(bumpNormal);
 	
-    //Out.vNormal = float4(bumpNormal, 0);//ポイントライトが軟化違和感があった
+    //float4 normal;
+    //normal.x = -bumpNormal.x;
+    //normal.y = bumpNormal.y;
+    //normal.z = bumpNormal.z;
+    //normal.w = 0.0f;
+    
+    
+    //Out.vNormal = float4(bumpNormal, 0);
+    
+    
     Out.vNormal = bump;
-    //Out.vNormal = normalize(float4(input.WorldNormal, 0));
-	
-	//float  NL = saturate(dot(input.WorldNormal, input.LightVector));
-	//NL = NL * 0.9f + 0.1f;
-	//Out.vColor *= NL;
-
-
-	
-
-	//ワールド座標テクスチャーへ出力
-	//Out.vPosition = input.ShadowPos;
-
+    
 
     return Out;
 }

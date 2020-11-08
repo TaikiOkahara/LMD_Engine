@@ -37,7 +37,6 @@ ID3D11InputLayout* RENDERER::m_pCommonVertexLayout = NULL;
 //描画トグル
 bool RENDERER::toggleDirectional = true;
 bool RENDERER::togglePoint = true;
-bool RENDERER::toggleDeferred = true;
 //定数バッファ
 ID3D11Buffer* RENDERER::m_pWorldBuffer = NULL;
 ID3D11Buffer* RENDERER::m_pViewBuffer = NULL;
@@ -209,9 +208,9 @@ HRESULT RENDERER::Init(D3D_INIT* pcd)
 	//ディファードレンダリング用ラスタライズ設定
 	D3D11_RASTERIZER_DESC rdc;
 	ZeroMemory(&rdc,sizeof(rdc));
-	rdc.CullMode= D3D11_CULL_MODE::D3D11_CULL_NONE;
+	rdc.CullMode= D3D11_CULL_MODE::D3D11_CULL_BACK;
 	rdc.FillMode= D3D11_FILL_MODE::D3D11_FILL_SOLID;
-	rdc.FrontCounterClockwise = TRUE;
+	//rdc.FrontCounterClockwise = FALSE;//デフォルト
 	rdc.DepthClipEnable = FALSE;
 	//rdc.MultisampleEnable = FALSE;
 	m_pDevice->CreateRasterizerState(&rdc,&m_pDeferredRasterizerState);
@@ -219,18 +218,22 @@ HRESULT RENDERER::Init(D3D_INIT* pcd)
 
 	//通常用ラスタライズ設定
 	ZeroMemory(&rdc, sizeof(rdc));
-	rdc.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
+	rdc.CullMode = D3D11_CULL_MODE::D3D11_CULL_BACK;
 	rdc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-	rdc.FrontCounterClockwise = TRUE;
+	//rdc.FrontCounterClockwise = FALSE;//デフォルト
+	rdc.DepthClipEnable = FALSE;
+
 	//rdc.MultisampleEnable = FALSE;
+
 	m_pDevice->CreateRasterizerState(&rdc, &m_pCommonRasterizerState);
-	m_pDeviceContext->RSSetState(m_pCommonRasterizerState);
+	//m_pDeviceContext->RSSetState(m_pCommonRasterizerState);
 
 	//ポイントライト用バックカリングラスタライズ設定
 	ZeroMemory(&rdc, sizeof(rdc));
-	rdc.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
+	rdc.CullMode = D3D11_CULL_MODE::D3D11_CULL_BACK;
 	rdc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-	rdc.DepthClipEnable = FALSE;
+	//rdc.FrontCounterClockwise = FALSE;
+	//rdc.DepthClipEnable = FALSE;
 	m_pDevice->CreateRasterizerState(&rdc, &m_pPointLightingRasterizerState);
 
 
@@ -462,6 +465,7 @@ void RENDERER::Clear()
 	//クリア
 	float ClearColor[4] = { 0,0,0,1 };
 
+
 	m_pDeviceContext->ClearRenderTargetView(m_pDeferred_TexRTV, ClearColor);
 	m_pDeviceContext->ClearRenderTargetView(m_pColor_RTV, ClearColor);
 	m_pDeviceContext->ClearRenderTargetView(m_pNormal_RTV, ClearColor);
@@ -483,15 +487,20 @@ void RENDERER::Deferred()
 	//デプスステンシルステート	
 	m_pDeviceContext->OMSetDepthStencilState(m_pBuckBuffer_DSTexState, NULL);
 	
-
+	//ブレンドステート
+	UINT mask = 0xffffffff;
+	float blend[4] = { 1,1,1,1 };
+	m_pDeviceContext->OMSetBlendState(NULL, blend, mask);
 	//ビューポートの設定
-	m_pDeviceContext->RSSetViewports(1, &m_Vp);
+	//m_pDeviceContext->RSSetViewports(1, &m_Vp);
 
 	m_pDeviceContext->RSSetState(m_pDeferredRasterizerState);
 	//m_pDeviceContext->PSSetSamplers(1, 1, &m_pDeferredSamplerState);
 
 
-	if (!toggleDeferred) return;
+
+	
+
 
 	//使用するシェーダーは、テクスチャーを参照するシェーダー	
 	m_pDeviceContext->VSSetShader(m_pDeferredVertexShader, NULL, 0);
@@ -511,14 +520,17 @@ void RENDERER::Deferred()
 	UINT offset = 0;
 	m_pDeviceContext->IASetVertexBuffers(0, 1, &m_pScreenPolyVB, &stride, &offset);
 
-	m_pDeviceContext->Draw(4, 0);
 
+	m_pDeviceContext->Draw(4, 0);
 }
 //
 //
 //ライティング
 void RENDERER::PointLighting()
 {
+
+	//バックカリング
+	m_pDeviceContext->RSSetState(m_pPointLightingRasterizerState);
 	//ブレンドステート
 	UINT mask = 0xffffffff;
 	float blend[4] = { 1,1,1,1 };
@@ -527,26 +539,30 @@ void RENDERER::PointLighting()
 	m_pDeviceContext->PSSetShaderResources(0, 1, &m_pColor_SRV);
 	m_pDeviceContext->PSSetShaderResources(1, 1, &m_pNormal_SRV);
 	m_pDeviceContext->PSSetShaderResources(2, 1, &m_pPosition_SRV);
-	//バックカリング
-	m_pDeviceContext->RSSetState(m_pPointLightingRasterizerState);
 
+	
 }
 
 void RENDERER::DirectionlLighting()
 {
 
+	m_pDeviceContext->RSSetState(m_pDeferredRasterizerState);
+	//レンダーターゲットを通常に戻す
+	//m_pDeviceContext->OMSetRenderTargets(1, &m_pDeferred_TexRTV, m_pDeferred_DSTexDSV);
 	//使用するシェーダーは、テクスチャーを参照するシェーダー	
 	m_pDeviceContext->VSSetShader(m_pDeferredVertexShader, NULL, 0);
 	m_pDeviceContext->PSSetShader(m_pDirectionalPixelShader, NULL, 0);
 	m_pDeviceContext->IASetInputLayout(m_pDeferredVertexLayout);
 
-	
+	//ブレンドステート
+	UINT mask = 0xffffffff;
+	float blend[4] = { 1,1,1,1 };
+	m_pDeviceContext->OMSetBlendState(NULL, blend, mask);
 
 	//1パス目で作成したテクスチャー3枚をセット
-	m_pDeviceContext->PSSetShaderResources(0, 1, &m_pDeferred_SRV);
-	m_pDeviceContext->PSSetShaderResources(1, 1, &m_pColor_SRV);
-	m_pDeviceContext->PSSetShaderResources(2, 1, &m_pNormal_SRV);
-	m_pDeviceContext->PSSetShaderResources(3, 1, &m_pPosition_SRV);
+	m_pDeviceContext->PSSetShaderResources(0, 1, &m_pColor_SRV);
+	m_pDeviceContext->PSSetShaderResources(1, 1, &m_pNormal_SRV);
+	m_pDeviceContext->PSSetShaderResources(2, 1, &m_pPosition_SRV);
 
 
 	//スクリーンサイズのポリゴンをレンダー

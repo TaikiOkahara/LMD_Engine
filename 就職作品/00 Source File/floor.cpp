@@ -15,7 +15,7 @@ void CFloor::Init()
 	m_pField->Init("BrickFloor//T_BrickFloor_Clean_A.png", "BrickFloor//T_BrickFloor_Clean_N.BMP",100,100,1.0f);
 	
 	m_Position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_Rotation = D3DXVECTOR3(0.0f, D3DX_PI/2, 0.0f);
+	m_Rotation = D3DXVECTOR3(0, -D3DX_PI/2, 0.0f);
 	m_Scale = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 	
 	//　入力レイアウト生成

@@ -127,6 +127,9 @@
     <Filter Include="GameObjects----------------\ceilingArch">
       <UniqueIdentifier>{ed7c5f2f-6199-4aae-b09b-96f0177734d1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObjects----------------\pots">
+      <UniqueIdentifier>{c4492a0b-ece1-421e-9f38-8057d2b26237}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="00 Source File\Entry.cpp">
@@ -183,9 +186,6 @@
     <ClCompile Include="00 Source File\wall.cpp">
       <Filter>GameObjects----------------\wall</Filter>
     </ClCompile>
-    <ClCompile Include="00 Source File\pillar.cpp">
-      <Filter>GameObjects----------------\pillar</Filter>
-    </ClCompile>
     <ClCompile Include="00 Source File\stage.cpp">
       <Filter>GameObjects----------------\stage</Filter>
     </ClCompile>
@@ -230,6 +230,12 @@
     </ClCompile>
     <ClCompile Include="00 Source File\ceilingArch.cpp">
       <Filter>GameObjects----------------\ceilingArch</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\pots.cpp">
+      <Filter>GameObjects----------------\pots</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\pillar.cpp">
+      <Filter>GameObjects----------------\pillar</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -287,9 +293,6 @@
     <ClInclude Include="00 Source File\wall.h">
       <Filter>GameObjects----------------\wall</Filter>
     </ClInclude>
-    <ClInclude Include="00 Source File\pillar.h">
-      <Filter>GameObjects----------------\pillar</Filter>
-    </ClInclude>
     <ClInclude Include="00 Source File\stage.h">
       <Filter>GameObjects----------------\stage</Filter>
     </ClInclude>
@@ -343,6 +346,12 @@
     </ClInclude>
     <ClInclude Include="00 Source File\ceilingArch.h">
       <Filter>GameObjects----------------\ceilingArch</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\pots.h">
+      <Filter>GameObjects----------------\pots</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\pillar.h">
+      <Filter>GameObjects----------------\pillar</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -39,7 +39,7 @@ cbuffer PointLightBuffer : register(b5)
     
     
     float4 g_vPointColor[LIGHT_NUM];//xyzは色、wは光の強さ
-    float4 g_vPoint[LIGHT_NUM];//xは光の範囲yは減衰度,zwはダミー
+    float4 g_vPoint[LIGHT_NUM]; //x：一定減衰係数　y：線形減衰係数　z：２次減衰係数 w：スペキュラ
     
     //float2 dummy;
 }

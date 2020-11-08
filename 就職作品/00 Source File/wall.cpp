@@ -11,17 +11,15 @@ void CWall::Init()
 {
 	
 	m_pWall = new Tile();
-	m_pWall->Init("Wall//T_StoneWall_A.BMP", "Wall//T_StoneWall_N.BMP", 1,2, 4.0f);
+	m_pWall->Init("Wall//T_StoneWall_A.BMP", "Wall//T_StoneWall_N.BMP", 2,2, 2.5f);
 
 
 
 	m_Position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_Rotation = D3DXVECTOR3(-D3DX_PI/2, D3DX_PI/2, 0.0f);
-	//m_Rotation = D3DXVECTOR3(0, 0, 0.0f);
+	m_Rotation = D3DXVECTOR3(D3DX_PI/2,D3DX_PI/2, 0.0f);
 	m_Scale = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 
-	m_Collision.Init(D3DXVECTOR3(4, 0.1f, 8), D3DXVECTOR3(0, 0, 0));
-	//m_Collision.Init(D3DXVECTOR3(4, 4, 4), D3DXVECTOR3(0, 0, 0));
+	m_Collision.Init(D3DXVECTOR3(5.0f, 0.1f, 5.0f), D3DXVECTOR3(0, 0, 0));
 
 	//　入力レイアウト生成
 	D3D11_INPUT_ELEMENT_DESC layout[]{
@@ -46,111 +44,106 @@ void CWall::Init()
 	VECTOR vector;
 
 	vector.scale = m_Scale;
-	//スタート地点壁
+	//スタート地点囲い壁
 	{
-		{
-			vector.position = D3DXVECTOR3(4 - 2.0f, 2.0f, -2.0f);
-			//vector.position = m_Position;
+		{//スタート地点壁
+			vector.position = D3DXVECTOR3(2.5f, 2.5f, -5.0f);
 			vector.rotation = m_Rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
-			//vector.rotation = m_Rotation + D3DXVECTOR3(0, 0, 0);
-
-
 			m_Vector.push_back(vector);
 
-			vector.position = D3DXVECTOR3(-7.0f, 2.0f, -2.0f);
+			vector.position = D3DXVECTOR3(-7.5f, 2.5f, -5.0f);
 			vector.rotation = m_Rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
-
 			m_Vector.push_back(vector);
 		}
 		
 		{
-			vector.position = D3DXVECTOR3(4, 2.0f, -4.0f);
+			//スタート地点横壁
+			vector.position = D3DXVECTOR3(5.0f, 2.5f, -7.5f);
 			vector.rotation = m_Rotation + D3DXVECTOR3(0, D3DX_PI, 0);
-
 			m_Vector.push_back(vector);
 
-			vector.position = D3DXVECTOR3(-9.0f, 2.0f, -4.0f);
-			vector.rotation = m_Rotation + D3DXVECTOR3(0, D3DX_PI, 0);
-
+			vector.position = D3DXVECTOR3(-10.0f, 2.5f, -7.5f);
+			vector.rotation = m_Rotation + D3DXVECTOR3(0, 0, 0);
 			m_Vector.push_back(vector);
 
-			vector.position = D3DXVECTOR3(4, 2.0f, -8.0f);
+			vector.position = D3DXVECTOR3(5.0f, 2.5f, -12.5f);
 			vector.rotation = m_Rotation + D3DXVECTOR3(0, D3DX_PI, 0);
-
 			m_Vector.push_back(vector);
 
-			vector.position = D3DXVECTOR3(-9.0f, 2.0f, -8.0f);
-			vector.rotation = m_Rotation + D3DXVECTOR3(0, D3DX_PI, 0);
-
+			vector.position = D3DXVECTOR3(-10.0f, 2.5f, -12.5f);
+			vector.rotation = m_Rotation + D3DXVECTOR3(0, 0, 0);
 			m_Vector.push_back(vector);
 		}
+
 		{
-			vector.position = D3DXVECTOR3(0, 2.0f, -10.0f);
-			vector.rotation = m_Rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
-
+			//スタート地点後ろ壁
+			vector.position = D3DXVECTOR3(2.5f, 2.5f, -15.0f);
+			vector.rotation = m_Rotation + D3DXVECTOR3(0, -D3DX_PI / 2, 0);
 			m_Vector.push_back(vector);
 
-			vector.position = D3DXVECTOR3(4, 2.0f, -10.0f);
-			vector.rotation = m_Rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
-
+			vector.position = D3DXVECTOR3(-2.5f, 2.5f, -15.0f);
+			vector.rotation = m_Rotation + D3DXVECTOR3(0, -D3DX_PI / 2, 0);
 			m_Vector.push_back(vector);
 
-			vector.position = D3DXVECTOR3(-4.0f, 2.0f, -10.0f);
-			vector.rotation = m_Rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
-
+			vector.position = D3DXVECTOR3(-7.5f, 2.5f, -15.0f);
+			vector.rotation = m_Rotation + D3DXVECTOR3(0, -D3DX_PI / 2, 0);
 			m_Vector.push_back(vector);
 
-			vector.position = D3DXVECTOR3(-8.0f, 2.0f, -10.0f);
-			vector.rotation = m_Rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
-
-			m_Vector.push_back(vector);
+		
 		}
 		{
-			vector.position = D3DXVECTOR3(2.0f, 6.0f, -8.0f);
+			//天井
+			vector.position = D3DXVECTOR3(2.5f, 5.0f, -12.5f);
 			vector.rotation = m_Rotation + D3DXVECTOR3(D3DX_PI/2, 0, 0);
-
 			m_Vector.push_back(vector);
 
-			vector.position = D3DXVECTOR3(2.0f, 6.0f, -4.0f);
+			vector.position = D3DXVECTOR3(2.5f, 5.0f, -7.5f);
 			vector.rotation = m_Rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
-
 			m_Vector.push_back(vector);
 
-			vector.position = D3DXVECTOR3(-6.0f, 6.0f, -8.0f);
+			vector.position = D3DXVECTOR3(-2.5f, 5.0f, -12.5f);
 			vector.rotation = m_Rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
-
 			m_Vector.push_back(vector);
 
-			vector.position = D3DXVECTOR3(-6.0f, 6.0f, -4.0f);
+			vector.position = D3DXVECTOR3(-2.5f, 5.0f, -7.5f);
 			vector.rotation = m_Rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
-
+			m_Vector.push_back(vector);
+			
+			vector.position = D3DXVECTOR3(-7.5f, 5.0f, -12.5f);
+			vector.rotation = m_Rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
 			m_Vector.push_back(vector);
 
-			vector.position = D3DXVECTOR3(-2.0f, 6.0f, 0.0f);
+			vector.position = D3DXVECTOR3(-7.5f, 5.0f, -7.5f);
 			vector.rotation = m_Rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
+			m_Vector.push_back(vector);
 
+			vector.position = D3DXVECTOR3(-2.5f, 5.0f, -2.5f);
+			vector.rotation = m_Rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
 			m_Vector.push_back(vector);
 			
 		}
 		
 	}
 	
-	
+	//横の壁
 	for (int i = 0; i < 7; i++)
 	{
-		vector.position = D3DXVECTOR3(0, 2.0f, i * 4.0f);
+		vector.position = D3DXVECTOR3(0, 2.5f, -2.5f +  i * 5.0f);
+		vector.rotation = m_Rotation + D3DXVECTOR3(0, -D3DX_PI, 0);
+
+		m_Vector.push_back(vector);
+	}
+	for (int i = 0; i < 7; i++)
+	{
+		vector.position = D3DXVECTOR3(-5.0f, 2.5f, -2.5f + i * 5.0f);
 		vector.rotation = m_Rotation;
 
 		m_Vector.push_back(vector);
 	}
-	for (int i = 0; i < 7; i++)
-	{
-		vector.position = D3DXVECTOR3(-5.0f, 2.0f, i * 4.0f);
-		vector.rotation = m_Rotation + D3DXVECTOR3(0,-D3DX_PI,0);
 
-		m_Vector.push_back(vector);
-	}
 
+
+	//奥の壁
 	for (int i = 0; i < 8; i++)
 	{
 		vector.position = D3DXVECTOR3(i * -4.0f + 4 * 4.0f, 2.0f, 35.0f);

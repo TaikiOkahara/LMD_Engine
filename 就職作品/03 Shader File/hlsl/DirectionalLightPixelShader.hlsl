@@ -2,10 +2,9 @@
 #include "ConstantBuffer.hlsl"
 
 //GBuffer
-Texture2D g_texDeferred	: register(t0);
-Texture2D g_texColor	: register(t1);
-Texture2D g_texNormal	: register(t2);
-Texture2D g_texPosition	: register(t3);
+Texture2D g_texColor	: register(t0);
+Texture2D g_texNormal	: register(t1);
+Texture2D g_texPosition	: register(t2);
 
 SamplerState g_samLinear : register(s0);
 SamplerState g_samDeferredLinear : register(s1);

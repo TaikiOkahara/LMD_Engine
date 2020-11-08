@@ -43,7 +43,7 @@ void Base::MainLoop()
 	
 	
 	RENDERER::Deferred();
-
+	
 	if (RENDERER::toggleDirectional)
 	{
 

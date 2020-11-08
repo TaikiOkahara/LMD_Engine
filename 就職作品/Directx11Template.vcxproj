@@ -30,6 +30,7 @@
     <ClCompile Include="00 Source File\InstanceObject.cpp" />
     <ClCompile Include="00 Source File\pillar.cpp" />
     <ClCompile Include="00 Source File\pointLight.cpp" />
+    <ClCompile Include="00 Source File\pots.cpp" />
     <ClCompile Include="00 Source File\SkeletalMesh.cpp" />
     <ClCompile Include="00 Source File\renderer.cpp" />
     <ClCompile Include="00 Source File\base.cpp" />
@@ -66,6 +67,7 @@
     <ClInclude Include="00 Source File\calculation.h" />
     <ClInclude Include="00 Source File\pillar.h" />
     <ClInclude Include="00 Source File\pointLight.h" />
+    <ClInclude Include="00 Source File\pots.h" />
     <ClInclude Include="00 Source File\SkeletalMesh.h" />
     <ClInclude Include="00 Source File\renderer.h" />
     <ClInclude Include="00 Source File\base.h" />

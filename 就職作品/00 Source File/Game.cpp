@@ -13,6 +13,7 @@
 #include "wall.h"
 #include "stage.h"
 #include "pillar.h"
+#include "pots.h"
 #include "trim.h"
 #include "ceiling.h"
 #include "ceilingArch.h"
@@ -31,8 +32,10 @@ void Game::Init() {
 	AddGameObject<CTrim>(LAYER::DRAW_LAYER_DRAW);	//つなぎ目
 	AddGameObject<CCeiling>(LAYER::DRAW_LAYER_DRAW);//天井
 	AddGameObject<CCeilingArch>(LAYER::DRAW_LAYER_DRAW);//天井のアーチ
-	AddGameObject<CPlayer>(LAYER::DRAW_LAYER_DRAW);//プレイヤー
+	AddGameObject<CPots>(LAYER::DRAW_LAYER_DRAW);//ポット
 	AddGameObject<CChandelier>(LAYER::DRAW_LAYER_DRAW);//シャンデリア
+
+	AddGameObject<CPlayer>(LAYER::DRAW_LAYER_DRAW);//プレイヤー
 }
 
 void Game::UnInit() {
@@ -75,7 +78,6 @@ void Game::Imgui()
 
 
 
-		ImGui::Checkbox("Deferred", &RENDERER::toggleDeferred);
 		ImGui::Checkbox("DirectionalLight", &RENDERER::toggleDirectional);
 		ImGui::Checkbox("PointLight", &RENDERER::togglePoint);
 		//ImGui::Checkbox("Trigger", &show_another_window);

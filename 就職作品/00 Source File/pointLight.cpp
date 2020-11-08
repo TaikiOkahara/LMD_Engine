@@ -12,8 +12,8 @@ void CPointLight::Init()
 	m_pMesh->LoadModel("../02 Visual File//UV.fbx");
 	
 	
-	posList = new D3DXVECTOR3[128];
-	scaleList = new D3DXVECTOR3[128];
+	//posList = new D3DXVECTOR3[128];
+	//scaleList = new D3DXVECTOR3[128];
 
 
 	{
@@ -45,23 +45,21 @@ void CPointLight::Init()
 		
 	}
 
-	//　入力レイアウト生成
-	D3D11_INPUT_ELEMENT_DESC layout[]{
-	{ "POSITION",		0, DXGI_FORMAT_R32G32B32_FLOAT,	0,							   0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "NORMAL",			0, DXGI_FORMAT_R32G32B32_FLOAT,	0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TEXCOORD",		0, DXGI_FORMAT_R32G32_FLOAT,	0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TANGENT",		0, DXGI_FORMAT_R32G32B32_FLOAT,	0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "BINORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,	0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 } };
-
-
+	
 	//シェーダー作成
-	RENDERER::CreateVertexShader(&m_pVertexShader, &m_pVertexLayout, layout, 5, "PointLightVertexShader.cso");
+	
+	RENDERER::CreateVertexShader(&m_pVertexShader, &RENDERER::m_pCommonVertexLayout,nullptr, 0, "PointLightVertexShader.cso");
 	RENDERER::CreatePixelShader(&m_pPixelShader, "PointLightPixelShader.cso");
 
 	//InitInstance();
 	//UpdateInstance();//視錐台カリングを行う場合入れる
 
+	//CChandelier* chandelier = Base::GetScene()->GetGameObject<CChandelier>(1);
 
+	posList[0] = D3DXVECTOR3(-2.5f, 4.0f, 3.0f) + D3DXVECTOR3(0, -1, 0);
+	scaleList[0] = D3DXVECTOR3(5.0f, 5.0f, 1.0f);
+	m_PointLight.Color[0] = D3DXVECTOR4(1.0f, 0.5f, 0.0f, 1);
+	m_PointLight.CalcInfo[0] = D3DXVECTOR4(0.1f, 1.0f, 0.1f, 30);
 }
 
 void CPointLight::Uninit()
@@ -84,23 +82,15 @@ void CPointLight::Uninit()
 void CPointLight::Update()
 {
 
-	CChandelier* chandelier = Base::GetScene()->GetGameObject<CChandelier>(1);
-
-	posList[0] = chandelier->GetPosition(0) + D3DXVECTOR3(0,-1,0);
-	scaleList[0] = D3DXVECTOR3(5.0f, 5.0f, 1.0f);
-	m_PointLight.Color[0] = D3DXVECTOR4(1.0f, 0.5f, 0.0f, 1);
-	m_PointLight.CalcInfo[0] = D3DXVECTOR4(0.1f, 1.0f, 0.1f, 30);
+	
 }
 
 void CPointLight::Draw()
 {
-	//RENDERER::SetPointLight(m_PointLight);
 	
-	//DrawInstance();
-	//SetWorldMatrix();
 	RENDERER::m_pDeviceContext->VSSetShader(m_pVertexShader, NULL, 0);
 	RENDERER::m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);
-	RENDERER::m_pDeviceContext->IASetInputLayout(m_pVertexLayout);
+	RENDERER::m_pDeviceContext->IASetInputLayout(RENDERER::m_pCommonVertexLayout);
 
 	RENDERER::SetPointLight(m_PointLight);
 	
@@ -149,6 +139,12 @@ void CPointLight::Imgui()
 	{
 		ImGuiWindowFlags lw_flag = 0;
 		static bool lw_is_open;
+		ImGuiWindowFlags flag = 0;
+		static ImVec4 clear_color = ImVec4(m_PointLight.Color[0].x, m_PointLight.Color[0].y, m_PointLight.Color[0].z, 1.00f);
+
+		m_PointLight.Color[0].x = clear_color.x;
+		m_PointLight.Color[0].y = clear_color.y;
+		m_PointLight.Color[0].z = clear_color.z;
 
 		ImGui::Begin("PointLight", &lw_is_open, lw_flag);
 
@@ -162,11 +158,13 @@ void CPointLight::Imgui()
 			D3DXVECTOR3 pos;
 			pos = m_Position;
 			ImGui::InputFloat3("Position", pos, 1);
-			ImGui::SliderFloat3("Color", &m_PointLight.Color[0].x, 0.0f, 1.0f);
+			//ImGui::SliderFloat3("Color", &m_PointLight.Color[0].x, 0.0f, 1.0f);
+
+			ImGui::ColorEdit3("Color", (float*)&clear_color);
 
 			ImGui::SliderFloat("x : ", &m_PointLight.CalcInfo[0].x,0.0f,1.0f);
 			ImGui::SliderFloat("y : ", &m_PointLight.CalcInfo[0].y,0.0f,1.0f);
-			ImGui::SliderFloat("z : ", &m_PointLight.CalcInfo[0].z,0.0f,1.0f);
+			ImGui::SliderFloat("z : ", &m_PointLight.CalcInfo[0].z,0.0f,5.0f);
 			ImGui::SliderFloat("Specular", &m_PointLight.CalcInfo[0].w, 0.0f, 30.0f);
 			//ImGui::InputFloat("input float", &f0, 0.01f, 1.0f, "%.3f");
 

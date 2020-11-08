@@ -8,10 +8,7 @@ struct VS_OUT
     float3 WorldTangent : TANGENT;
     float3 WorldBinormal: BINORMAL;
 	float2 Tex			: TEXCOORD0;
-	//float3 LightVector  : TEXCOORD1;
-	//float4 LightTexCoord: TEXCOORD2;
-	//float4 LightViewPos : TEXCOORD3;
-	
+
 
 	float3 EyeVector	: TEXCOORD5;
 };
@@ -26,25 +23,14 @@ struct PS_OUT
 struct VS_LIGHT_OUT
 {
     float4 Pos			: SV_POSITION;
-    float3 LightPos		: TEXCOORD0;
-    float3 LightRange	: TEXCOORD1;
-    uint   LightIndex	: TEXCOORD2;
-	
+    float2 Tex          : TEXCOORD0;
+    float3 LightPos		: TEXCOORD1;
+    float3 LightRange	: TEXCOORD2;
+    uint   LightIndex	: TEXCOORD3;
+    float4 WorldPos : POSITION;
+    float3 WorldNormal : NORMAL;
 };
 
-//struct VS_LINE_OUT
-//{
-//    float4 Pos		: SV_POSITION;
-//    float4 WorldPos : TEXCOORD0;
-//};
-
-
-//バーテックスシェーダー出力構造体
-//struct VS_OUTPUT_DEPTH//深度テクスチャーレンダー用
-//{
-//	float4 Pos		: SV_POSITION;
-//	float4 Depth	: POSITION;
-//};
 
 
 

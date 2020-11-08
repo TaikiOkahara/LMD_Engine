@@ -8,6 +8,13 @@
 #define	LIGHT_MAX		(128)	//ÉâÉCÉgÇÃêîÇóLå¿Ç…Ç∑ÇÈ
 #define	ANIMATION_MATRIX_MAX	(256)
 
+struct TRANSFORM
+{
+	D3DXVECTOR3 position = D3DXVECTOR3(0,0,0);
+	D3DXVECTOR3 rotation = D3DXVECTOR3(0, 0, 0);
+	D3DXVECTOR3 scale = D3DXVECTOR3(1, 1, 1);
+};
+
 
 struct VERTEX_3D
 {
@@ -167,7 +174,6 @@ public:
 	
 	static bool toggleDirectional;
 	static bool togglePoint;
-	static bool toggleDeferred;
 	
 
 

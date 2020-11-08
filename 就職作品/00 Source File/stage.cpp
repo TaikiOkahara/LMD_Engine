@@ -19,19 +19,19 @@ void CStage::Init()
 	m_Position = D3DXVECTOR3(-2.5f, 0.0f, 0.0f);
 	m_Rotation = D3DXVECTOR3(0.0f, D3DX_PI/2, 0.0f);
 	//m_Scale = D3DXVECTOR3(1.0f, 0.9f, 0.9f);
-	m_Scale = D3DXVECTOR3(1.0f, 0.9f, 0.9f);
+	m_Scale = D3DXVECTOR3(0.85f, 0.85f, 0.85f);
 
 
 	
 	//シェーダー作成
 	RENDERER::CreateVertexShader(&m_pVertexShader, &RENDERER::m_pCommonVertexLayout, nullptr, 0, "InstanceVertexShader.cso");
-	RENDERER::CreatePixelShader(&m_pPixelShader, "Tile_PixelShader.cso");
+	RENDERER::CreatePixelShader(&m_pPixelShader, "PixelShader.cso");
 
 	
 
 	
 	{
-		////　床
+		////　扉
 		VECTOR vector;
 		vector.rotation = m_Rotation;
 		vector.scale = m_Scale;

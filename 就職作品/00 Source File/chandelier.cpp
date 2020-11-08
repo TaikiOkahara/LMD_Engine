@@ -29,11 +29,11 @@ void CChandelier::Init()
 	VECTOR vector;
 	
 	vector.scale = m_Scale;
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 3; i++)
 	{
 
 		////　マトリクス設定
-		vector.position = D3DXVECTOR3(-2.0f, 4.0f, 3.0f);
+		vector.position = D3DXVECTOR3(-2.5f, 4.0f, 3.0f + 5.0f * i);
 		vector.rotation = m_Rotation;
 		m_Vector.push_back(vector);
 	}

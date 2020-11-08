@@ -1,7 +1,7 @@
 #pragma once
-#include "GameObject.h"
+#include "InstanceObject.h"
 
-class CPointLight : public CGameObject
+class CPointLight : public CInstanceGameObject
 {
 private:
 
@@ -9,10 +9,9 @@ private:
 	POINTLIGHT m_PointLight;//ポイントライト追加情報
 	StaticMesh* m_pMesh = nullptr;
 
-	D3DXVECTOR3* posList;
-	D3DXVECTOR3* scaleList;
-	//int m_PointCount;
-
+	//D3DXVECTOR3* posList;
+	//D3DXVECTOR3* scaleList;
+	
 	//構造体バッファとビュー
 	ID3D11Buffer* m_pPointLightBuffer = nullptr;
 	ID3D11ShaderResourceView* m_pPointLightBufferSRV = nullptr;

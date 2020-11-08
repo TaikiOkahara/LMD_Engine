@@ -31,8 +31,8 @@ VS_OUT main(
 	output.WorldNormal = normalize(mul(Normal.xyz, (float3x3)g_mWorld));
 	output.Pos = mul(Pos, WVP);
 	output.WorldPos = mul(Pos, g_mWorld);
-    output.WorldTangent = mul(Tangent.xyz, (float3x3)g_mWorld);
-    output.WorldBinormal = mul(Binormal.xyz, (float3x3)g_mWorld);
+    output.WorldTangent = normalize(mul(Tangent.xyz, (float3x3) g_mWorld));
+    output.WorldBinormal = normalize(mul(Binormal.xyz, (float3x3) g_mWorld));
 	
 	output.Tex = Tex;
 	//output.ShadowPos = Pos;

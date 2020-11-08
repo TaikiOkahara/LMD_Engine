@@ -27,23 +27,34 @@ void CCeilingArch::Init()
 
 
 	VECTOR vector;
+	//‰E
 	for (int i = 0; i < 6; i++)
 	{
-		vector.position = D3DXVECTOR3(0.0f, 4.0f, 2.5f + i * 5);
-		vector.rotation = m_Rotation;
+		vector.position = D3DXVECTOR3(0.0f, 3.5f, 2.5f + i * 5);
+		vector.rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		vector.scale = m_Scale;
 		
 		m_Vector.push_back(vector);
 	}
+	//¶
 	for (int i = 0; i < 6; i++)
 	{
-		vector.position = D3DXVECTOR3(-5.0f, 4.0f, 2.5f + i * 5);
-		vector.rotation = m_Rotation;
+		vector.position = D3DXVECTOR3(-5.0f, 3.5f, 2.5f + i * 5);
+		vector.rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		vector.scale = m_Scale;
 
 		m_Vector.push_back(vector);
 	}
+	//‰¡
+	for (int i = 0; i < 6; i++)
+	{
+		vector.position = D3DXVECTOR3(-2.5f, 3.5f, 5.0f + i * 5);
+		vector.rotation = D3DXVECTOR3(0.0f, D3DX_PI/2, 0.0f);
+		vector.scale = m_Scale;
 
+		m_Vector.push_back(vector);
+	}
+	
 
 	InitInstance();
 	UpdateInstance();//ˆ—‘¬“x‚ª—Ž‚¿‚é‚©‚à‚¾‚©‚çInit‚É’u‚¢‚Ä‚é

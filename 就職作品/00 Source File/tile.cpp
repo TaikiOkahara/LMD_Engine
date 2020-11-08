@@ -31,7 +31,7 @@ void Tile::MakeVertexField()
 
 		for (int x = 0; x <= m_XCount; x++) {
 
-			pVtx[z * (m_XCount + 1) + x].Position = D3DXVECTOR3(x * (m_TileSize)- offset_x, 0, z * (m_TileSize) - offset_y);
+			pVtx[z * (m_XCount + 1) + x].Position = D3DXVECTOR3(-x * (m_TileSize) + offset_x, 0, z * (m_TileSize) - offset_y);
 									  
 			pVtx[z * (m_XCount + 1) + x].TexturePos.x = (float)x;
 			pVtx[z * (m_XCount + 1) + x].TexturePos.y = (float)z;

@@ -19,7 +19,7 @@ void CPlayer::Init()
 	
 	m_AnimModel = new CAnimationModel();
 
-	m_AnimModel->LoadModel("../02 Visual File//Akai//Akai_Idle.fbx", D3DXVECTOR3(0,0,0));
+	m_AnimModel->LoadModel("../02 Visual File//Akai//Akai_Idle.fbx", D3DXVECTOR3(0,0.1f,0));
 	//m_AnimModel->LoadTexture("../02 Visual File//Akai//texture.ini");
 	m_AnimModel->LoadTexture("");
 	m_AnimModel->LoadAnimation("../02 Visual File//Akai//Akai_Run.fbx", "Run");
@@ -130,7 +130,7 @@ void CPlayer::Update()
 	
 	//ï«Ç∆ÇÃìñÇΩÇËîªíË
 	CWall* wall = Base::GetScene()->GetGameObject<CWall>(1);
-	m_hit = LenOBBToPoint(*wall,m_Position,3.0f);
+	m_hit = LenOBBToPoint(*wall,m_Position,4.0f);
 	CPillar* pillar = Base::GetScene()->GetGameObject<CPillar>(1);
 	m_hit = LenOBBToPoint(*pillar,m_Position,1.5f);
 
@@ -190,7 +190,7 @@ FLOAT CPlayer:: LenOBBToPoint(CInstanceGameObject& obj, D3DXVECTOR3& p,float len
 	//ç≈èâÇÕ1å¬Ç©ÇÁ
 	for(int i = 0;i < obj.GetMeshCount();i++)
 	{
-		//ÉvÉåÉCÉÑÅ[ÇÃîºåa4.0fà»ì‡Ç…Ç¢Ç»Ç¢Ç‡ÇÃÇÕîrèúÇ∑ÇÈ
+		//lengthà»ì‡Ç…Ç¢Ç»Ç¢Ç‡ÇÃÇÕîrèúÇ∑ÇÈ
 		float len = D3DXVec3Length(&D3DXVECTOR3(obj.GetPosition(i) - m_Position));
 		if (len > length)
 		{

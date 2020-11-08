@@ -14,14 +14,14 @@ void Collision::Init(D3DXVECTOR3 size, D3DXVECTOR3 center)
 	{
 		m_pVertex = new D3DXVECTOR3[8];
 
-		m_pVertex[0] = D3DXVECTOR3(-m_Xsize, m_Ysize,-m_Zsize);
-		m_pVertex[1] = D3DXVECTOR3( m_Xsize, m_Ysize,-m_Zsize);
-		m_pVertex[2] = D3DXVECTOR3( m_Xsize,-m_Ysize,-m_Zsize);
-		m_pVertex[3] = D3DXVECTOR3(-m_Xsize,-m_Ysize,-m_Zsize);
-		m_pVertex[4] = D3DXVECTOR3(-m_Xsize, m_Ysize, m_Zsize);
-		m_pVertex[5] = D3DXVECTOR3( m_Xsize, m_Ysize, m_Zsize);
-		m_pVertex[6] = D3DXVECTOR3( m_Xsize,-m_Ysize, m_Zsize);
-		m_pVertex[7] = D3DXVECTOR3(-m_Xsize,-m_Ysize, m_Zsize);
+		m_pVertex[0] = D3DXVECTOR3(-m_Xsize, m_Ysize,-m_Zsize) + center;
+		m_pVertex[1] = D3DXVECTOR3( m_Xsize, m_Ysize,-m_Zsize) + center;
+		m_pVertex[2] = D3DXVECTOR3( m_Xsize,-m_Ysize,-m_Zsize) + center;
+		m_pVertex[3] = D3DXVECTOR3(-m_Xsize,-m_Ysize,-m_Zsize) + center;
+		m_pVertex[4] = D3DXVECTOR3(-m_Xsize, m_Ysize, m_Zsize) + center;
+		m_pVertex[5] = D3DXVECTOR3( m_Xsize, m_Ysize, m_Zsize) + center;
+		m_pVertex[6] = D3DXVECTOR3( m_Xsize,-m_Ysize, m_Zsize) + center;
+		m_pVertex[7] = D3DXVECTOR3(-m_Xsize,-m_Ysize, m_Zsize) + center;
 		
 	}
 	{

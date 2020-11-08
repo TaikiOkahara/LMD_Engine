@@ -42,7 +42,7 @@ public:
 	}
 
 	virtual void Draw() {
-		for (int i = 0; i < LAYER::DRAW_LAYER_LIGHT; i++)
+		for (int i = 0; i <= LAYER::DRAW_LAYER_DRAW; i++)
 		{
 			for (CGameObject* object : m_GameObject[i])
 			{
@@ -53,7 +53,7 @@ public:
 
 	virtual void DrawLighting() {
 		//LightingƒpƒX‚¾‚¯•`‰æ
-		for (CGameObject* object : m_GameObject[LAYER::DRAW_LAYER_MAX - 1])
+		for (CGameObject* object : m_GameObject[DRAW_LAYER_LIGHT])
 		{
 			object->Draw();
 		}

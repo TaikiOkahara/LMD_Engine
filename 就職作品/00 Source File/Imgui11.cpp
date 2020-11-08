@@ -21,7 +21,7 @@ void IMGUI_Init(HWND m_hWnd)
 	io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\meiryo.ttc", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
 	
 	// Enable docking(available in imgui `docking` branch at the moment)
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;//岡原・ドッキング機能追加
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;//ドッキング機能追加
 }
 
 void IMGUI_Uninit()
