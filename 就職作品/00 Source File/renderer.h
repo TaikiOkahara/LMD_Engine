@@ -70,19 +70,38 @@ struct DIRECTIONALLIGHT
 	//D3DXMATRIX LightView;//シャドウマップ作成用
 };
 
+struct PointLightInfo
+{
+	D3DXVECTOR3 color;
+	FLOAT intensity;
+	D3DXVECTOR3 calc;
+	FLOAT specular;
+};
+
+
 struct POINTLIGHT
 {
-	//座標情報はワールドマトリクスとして設定しているのので、追加情報のみ入れる
-
-	D3DXVECTOR4 Color[LIGHT_MAX];
-	D3DXVECTOR4 CalcInfo[LIGHT_MAX];//色以外の情報
-	
+	PointLightInfo pointList[LIGHT_MAX];
 };
 
 struct EYE
 {
 	D3DXVECTOR4 Eye;
 };
+
+struct EFFECT
+{
+	D3DXVECTOR2 fogOffset[2];
+	float texScale;
+	float maxHeight;
+	float minHeight;
+	float dummy0;
+
+	D3DXVECTOR3 color;
+	float dummy1;
+};
+
+
 
 //　初期化
 struct D3D_INIT
@@ -110,11 +129,12 @@ class RENDERER
 	static ID3D11Buffer* m_pWorldBuffer;
 	static ID3D11Buffer* m_pViewBuffer;
 	static ID3D11Buffer* m_pProjectionBuffer;
-	static ID3D11Buffer* m_pMaterialBuffer;
+	//static ID3D11Buffer* m_pMaterialBuffer;
 	static ID3D11Buffer* m_pDirectionalLightBuffer;
 	static ID3D11Buffer* m_pPointLightBuffer;
 	static ID3D11Buffer* m_pEyeBuffer;
 	static ID3D11Buffer* m_pAnimationMatrixBuffer;
+	static ID3D11Buffer* m_pEffectBuffer;
 
 	
 	//======================================================
@@ -145,7 +165,7 @@ class RENDERER
 	static ID3D11Texture2D* m_pDepthStencil;
 	static ID3D11SamplerState* m_pDeferredSamplerState;
 	static ID3D11RasterizerState* m_pDeferredRasterizerState;
-	static ID3D11BlendState* m_pDeferredBlendState;
+	static ID3D11BlendState* m_pPointLightBlendState;
 	//ディレクショナルライト
 	static ID3D11PixelShader* m_pDirectionalPixelShader;
 
@@ -174,6 +194,7 @@ public:
 	
 	static bool toggleDirectional;
 	static bool togglePoint;
+	static bool toggleColor;
 	
 
 
@@ -189,7 +210,7 @@ public:
 	static void SetDirectionalLight(DIRECTIONALLIGHT light);
 	static void SetPointLight(POINTLIGHT light);
 	static void SetEye(EYE Eye);
-	
+	static void SetEffect(EFFECT effect);
 	
 	RENDERER() {}	//　コンストラクタ
 	~RENDERER() {}	//　デストラクタ
@@ -209,5 +230,6 @@ public:
 	static void Deferred();//ディファード
 	static void DirectionlLighting();//ライティング
 	static void PointLighting();//ライティング
+	static void Effect();
 	static void Present();		//　画面更新
 };

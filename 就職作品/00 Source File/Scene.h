@@ -16,7 +16,8 @@ protected:
 		DRAW_LAYER_HIDE = 0,//非描画レイヤー
 		DRAW_LAYER_DRAW = 1,//一般的なオブジェクトレイヤー
 		DRAW_LAYER_LIGHT = 2,//ライティングレイヤー
-		DRAW_LAYER_MAX = 3,//レイヤー数
+		DRAW_LAYER_EFFECT = 3,//フォグ等のエフェクト
+		DRAW_LAYER_MAX = 4,//レイヤー数
 	};
 
 	std::list<CGameObject*> m_GameObject[LAYER::DRAW_LAYER_MAX];
@@ -54,6 +55,14 @@ public:
 	virtual void DrawLighting() {
 		//Lightingパスだけ描画
 		for (CGameObject* object : m_GameObject[DRAW_LAYER_LIGHT])
+		{
+			object->Draw();
+		}
+	}
+
+	virtual void DrawEffect() {
+		//Effectパスだけ描画
+		for (CGameObject* object : m_GameObject[DRAW_LAYER_EFFECT])
 		{
 			object->Draw();
 		}

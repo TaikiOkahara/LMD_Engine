@@ -3,6 +3,8 @@
 
 class Game : public CScene
 {
+private:
+	bool timeStop = false;
 public:
 	Game(){}
 	~Game(){}

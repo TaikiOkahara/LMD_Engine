@@ -18,8 +18,6 @@ void CCamera::Init()
 	D3DXVECTOR3 Eye(0, 1, -4);
 	D3DXVECTOR3 LookAt(0, -2, 0);
 
-	m_Position = D3DXVECTOR3(0, 0, 0);
-	m_Rotation = D3DXVECTOR3(0, 0, 0);
 	m_Distance = D3DXVECTOR3(0, 1.5, -5);
 
 	m_Angle = D3DX_PI / 4;
@@ -48,26 +46,26 @@ void CCamera::Update()
 	m_Target = player->GetPosition() +D3DXVECTOR3(0, 1, 0);
 
 
-	if (Keyboard_IsPress(DIK_LEFTARROW)){	
-		m_Rotation.y -= 0.05f;
+	if (CInput::KeyPress(DIK_LEFTARROW)){	
+		m_Transform.rotation.y -= 0.05f;
 	}
-	else if (Keyboard_IsPress(DIK_RIGHTARROW)) {
-		m_Rotation.y += 0.05f;
-	}
-
-	if (Keyboard_IsPress(DIK_UPARROW)) {
-		m_Rotation.x -= 0.05f;
-	}
-	else if (Keyboard_IsPress(DIK_DOWNARROW)) {
-		m_Rotation.x += 0.05f;
-		if (m_Rotation.x >= (D3DX_PI /180) * 70)
-			m_Rotation.x = (D3DX_PI / 180) * 70;
+	else if (CInput::KeyPress(DIK_RIGHTARROW)) {
+		m_Transform.rotation.y += 0.05f;
 	}
 
-	if (Keyboard_IsPress(DIK_Q)) {
+	if (CInput::KeyPress(DIK_UPARROW)) {
+		m_Transform.rotation.x -= 0.05f;
+	}
+	else if (CInput::KeyPress(DIK_DOWNARROW)) {
+		m_Transform.rotation.x += 0.05f;
+		if (m_Transform.rotation.x >= (D3DX_PI /180) * 70)
+			m_Transform.rotation.x = (D3DX_PI / 180) * 70;
+	}
+
+	if (CInput::KeyPress(DIK_Q)) {
 		m_Distance.z -= 0.05f;
 	}
-	else if (Keyboard_IsPress(DIK_E)) {
+	else if (CInput::KeyPress(DIK_E)) {
 		m_Distance.z += 0.05f;
 	}
 	
@@ -75,12 +73,12 @@ void CCamera::Update()
 	D3DXVECTOR3 offset = m_Distance;
 
 	D3DXMATRIX rot;
-	D3DXMatrixRotationYawPitchRoll(&rot, m_Rotation.y, m_Rotation.x, m_Rotation.z);
+	D3DXMatrixRotationYawPitchRoll(&rot, m_Transform.rotation.y, m_Transform.rotation.x, m_Transform.rotation.z);
 	D3DXVec3TransformCoord(&offset, &offset, &rot);
 
 
 	//D3DXVECTOR3 pos;
-	m_Position = offset + m_OffsetPosition;
+	m_Transform.position = offset + m_OffsetPosition;
 
 
 
@@ -89,9 +87,9 @@ void CCamera::Update()
 	if (m_CameraControl)
 	{
 		CWall* wall = Base::GetScene()->GetGameObject<CWall>(1);
-		m_Position = RayIntersect(wall);
+		m_Transform.position = RayIntersect(wall);
 		CPillar* pillar = Base::GetScene()->GetGameObject<CPillar>(1);
-		m_Position = RayIntersect(pillar);
+		m_Transform.position = RayIntersect(pillar);
 
 	}
 }
@@ -107,7 +105,7 @@ void CCamera::Draw()
 
 	D3DXMATRIX ViewMatrix;
 	D3DXMATRIX ProjectionMatrix;
-	D3DXMatrixLookAtLH(&ViewMatrix, &m_Position, &m_Target, &D3DXVECTOR3(0, 1, 0));
+	D3DXMatrixLookAtLH(&ViewMatrix, &m_Transform.position, &m_Target, &D3DXVECTOR3(0, 1, 0));
 	RENDERER::SetViewMatrix(ViewMatrix);
 
 
@@ -115,7 +113,7 @@ void CCamera::Draw()
 	RENDERER::SetProjectionMatrix(ProjectionMatrix);
 
 	EYE eye;
-	eye.Eye = D3DXVECTOR4(m_Position.x, m_Position.y, m_Position.z, 0);
+	eye.Eye = D3DXVECTOR4(m_Transform.position.x, m_Transform.position.y, m_Transform.position.z, 0);
 	RENDERER::SetEye(eye);
 }
 
@@ -129,12 +127,12 @@ D3DXVECTOR3 CCamera::RayIntersect(CInstanceGameObject* object)
 
 
 	D3DXVECTOR3 playerPos = player->GetPosition() + D3DXVECTOR3(0, 1, 0);//プレイヤーの中心
-	D3DXVECTOR3 cameraPos = m_Position;
-	D3DXVECTOR3 origin = m_Position;
+	D3DXVECTOR3 cameraPos = m_Transform.position;
+	D3DXVECTOR3 origin = m_Transform.position;
 	D3DXVECTOR3 ray = playerPos - cameraPos;
 	D3DXVec3Normalize(&ray, &ray);
 
-	D3DXVECTOR3 returnPos = m_Position;
+	D3DXVECTOR3 returnPos = m_Transform.position;
 
 	D3DXVECTOR3 offsetVertex[8];
 
@@ -313,7 +311,7 @@ void CCamera::Imgui()
 
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-	if (Keyboard_IsTrigger(DIK_F1))
+	if (CInput::KeyTrigger(DIK_F1))
 		show = !show;
 
 	if (show)
@@ -328,8 +326,8 @@ void CCamera::Imgui()
 		ImGui::Checkbox("CameraControl", &m_CameraControl);
 
 
-		ImGui::InputFloat3("Position", m_Position, 1);
-		ImGui::InputFloat3("Rotation", m_Rotation, 1);
+		ImGui::InputFloat3("Position", m_Transform.position, 1);
+		ImGui::InputFloat3("Rotation", m_Transform.rotation, 1);
 		ImGui::InputFloat3("Target", m_Target, 1);
 		ImGui::InputFloat3("Distance", m_Distance, 1);
 

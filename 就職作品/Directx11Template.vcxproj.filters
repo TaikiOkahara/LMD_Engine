@@ -73,17 +73,11 @@
     <Filter Include="GameObjects----------------\wall">
       <UniqueIdentifier>{c9a0be23-5867-49fb-8a4b-24234641b81d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Manager --------------------\bass">
-      <UniqueIdentifier>{6a8f36ea-cf58-4886-9c18-11fa4d6e80c9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Manager --------------------\calculation">
       <UniqueIdentifier>{4349bfc7-f47e-4607-90d0-2ad602b52286}</UniqueIdentifier>
     </Filter>
     <Filter Include="Manager --------------------\director">
       <UniqueIdentifier>{1c74470e-4a23-4b26-9910-450aaf2a3cc7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Manager --------------------\imput">
-      <UniqueIdentifier>{e4ed265e-77a0-4f26-baed-87b2e5a4a237}</UniqueIdentifier>
     </Filter>
     <Filter Include="Manager --------------------\renderer">
       <UniqueIdentifier>{09c167d3-f0c7-40d5-8724-df8043bc988a}</UniqueIdentifier>
@@ -130,6 +124,18 @@
     <Filter Include="GameObjects----------------\pots">
       <UniqueIdentifier>{c4492a0b-ece1-421e-9f38-8057d2b26237}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Manager --------------------\input">
+      <UniqueIdentifier>{e4ed265e-77a0-4f26-baed-87b2e5a4a237}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager --------------------\base">
+      <UniqueIdentifier>{6a8f36ea-cf58-4886-9c18-11fa4d6e80c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects----------------\fog">
+      <UniqueIdentifier>{5355ddf3-ac3f-4c73-8808-a1386269e6c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader-----------------------\fog">
+      <UniqueIdentifier>{abbb36bf-d7f3-4af4-a1b7-cea638334861}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="00 Source File\Entry.cpp">
@@ -154,16 +160,13 @@
       <Filter>GameObjects----------------\sceneLight</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\base.cpp">
-      <Filter>Manager --------------------\bass</Filter>
+      <Filter>Manager --------------------\base</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\director.cpp">
       <Filter>Manager --------------------\director</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\renderer.cpp">
       <Filter>Manager --------------------\renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="00 Source File\input.cpp">
-      <Filter>Manager --------------------\imput</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\window.cpp">
       <Filter>Manager --------------------\window</Filter>
@@ -237,6 +240,12 @@
     <ClCompile Include="00 Source File\pillar.cpp">
       <Filter>GameObjects----------------\pillar</Filter>
     </ClCompile>
+    <ClCompile Include="00 Source File\input.cpp">
+      <Filter>Manager --------------------\input</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\fog.cpp">
+      <Filter>GameObjects----------------\fog</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="00 Source File\camera.h">
@@ -258,16 +267,13 @@
       <Filter>GameObjects----------------\sceneLight</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\base.h">
-      <Filter>Manager --------------------\bass</Filter>
+      <Filter>Manager --------------------\base</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\director.h">
       <Filter>Manager --------------------\director</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\renderer.h">
       <Filter>Manager --------------------\renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="00 Source File\input.h">
-      <Filter>Manager --------------------\imput</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\window.h">
       <Filter>Manager --------------------\window</Filter>
@@ -353,6 +359,12 @@
     <ClInclude Include="00 Source File\pillar.h">
       <Filter>GameObjects----------------\pillar</Filter>
     </ClInclude>
+    <ClInclude Include="00 Source File\input.h">
+      <Filter>Manager --------------------\input</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\fog.h">
+      <Filter>GameObjects----------------\fog</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="03 Shader File\hlsl\ConstantBuffer.hlsl">
@@ -408,6 +420,9 @@
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\DirectionalLightPixelShader.hlsl">
       <Filter>Shader-----------------------\directionalLight</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\FogPixelShader.hlsl">
+      <Filter>Shader-----------------------\fog</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

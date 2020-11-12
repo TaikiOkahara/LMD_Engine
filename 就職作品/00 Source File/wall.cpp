@@ -15,9 +15,7 @@ void CWall::Init()
 
 
 
-	m_Position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_Rotation = D3DXVECTOR3(D3DX_PI/2,D3DX_PI/2, 0.0f);
-	m_Scale = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
+	m_Transform.rotation = D3DXVECTOR3(D3DX_PI/2,D3DX_PI/2, 0.0f);
 
 	m_Collision.Init(D3DXVECTOR3(5.0f, 0.1f, 5.0f), D3DXVECTOR3(0, 0, 0));
 
@@ -43,50 +41,50 @@ void CWall::Init()
 			
 	VECTOR vector;
 
-	vector.scale = m_Scale;
+	vector.scale = m_Transform.scale;
 	//スタート地点囲い壁
 	{
 		{//スタート地点壁
 			vector.position = D3DXVECTOR3(2.5f, 2.5f, -5.0f);
-			vector.rotation = m_Rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
+			vector.rotation = m_Transform.rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
 			m_Vector.push_back(vector);
 
 			vector.position = D3DXVECTOR3(-7.5f, 2.5f, -5.0f);
-			vector.rotation = m_Rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
+			vector.rotation = m_Transform.rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
 			m_Vector.push_back(vector);
 		}
 		
 		{
 			//スタート地点横壁
 			vector.position = D3DXVECTOR3(5.0f, 2.5f, -7.5f);
-			vector.rotation = m_Rotation + D3DXVECTOR3(0, D3DX_PI, 0);
+			vector.rotation = m_Transform.rotation + D3DXVECTOR3(0, D3DX_PI, 0);
 			m_Vector.push_back(vector);
 
 			vector.position = D3DXVECTOR3(-10.0f, 2.5f, -7.5f);
-			vector.rotation = m_Rotation + D3DXVECTOR3(0, 0, 0);
+			vector.rotation = m_Transform.rotation + D3DXVECTOR3(0, 0, 0);
 			m_Vector.push_back(vector);
 
 			vector.position = D3DXVECTOR3(5.0f, 2.5f, -12.5f);
-			vector.rotation = m_Rotation + D3DXVECTOR3(0, D3DX_PI, 0);
+			vector.rotation = m_Transform.rotation + D3DXVECTOR3(0, D3DX_PI, 0);
 			m_Vector.push_back(vector);
 
 			vector.position = D3DXVECTOR3(-10.0f, 2.5f, -12.5f);
-			vector.rotation = m_Rotation + D3DXVECTOR3(0, 0, 0);
+			vector.rotation = m_Transform.rotation + D3DXVECTOR3(0, 0, 0);
 			m_Vector.push_back(vector);
 		}
 
 		{
 			//スタート地点後ろ壁
 			vector.position = D3DXVECTOR3(2.5f, 2.5f, -15.0f);
-			vector.rotation = m_Rotation + D3DXVECTOR3(0, -D3DX_PI / 2, 0);
+			vector.rotation = m_Transform.rotation + D3DXVECTOR3(0, -D3DX_PI / 2, 0);
 			m_Vector.push_back(vector);
 
 			vector.position = D3DXVECTOR3(-2.5f, 2.5f, -15.0f);
-			vector.rotation = m_Rotation + D3DXVECTOR3(0, -D3DX_PI / 2, 0);
+			vector.rotation = m_Transform.rotation + D3DXVECTOR3(0, -D3DX_PI / 2, 0);
 			m_Vector.push_back(vector);
 
 			vector.position = D3DXVECTOR3(-7.5f, 2.5f, -15.0f);
-			vector.rotation = m_Rotation + D3DXVECTOR3(0, -D3DX_PI / 2, 0);
+			vector.rotation = m_Transform.rotation + D3DXVECTOR3(0, -D3DX_PI / 2, 0);
 			m_Vector.push_back(vector);
 
 		
@@ -94,31 +92,31 @@ void CWall::Init()
 		{
 			//天井
 			vector.position = D3DXVECTOR3(2.5f, 5.0f, -12.5f);
-			vector.rotation = m_Rotation + D3DXVECTOR3(D3DX_PI/2, 0, 0);
+			vector.rotation = m_Transform.rotation + D3DXVECTOR3(D3DX_PI/2, 0, 0);
 			m_Vector.push_back(vector);
 
 			vector.position = D3DXVECTOR3(2.5f, 5.0f, -7.5f);
-			vector.rotation = m_Rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
+			vector.rotation = m_Transform.rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
 			m_Vector.push_back(vector);
 
 			vector.position = D3DXVECTOR3(-2.5f, 5.0f, -12.5f);
-			vector.rotation = m_Rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
+			vector.rotation = m_Transform.rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
 			m_Vector.push_back(vector);
 
 			vector.position = D3DXVECTOR3(-2.5f, 5.0f, -7.5f);
-			vector.rotation = m_Rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
+			vector.rotation = m_Transform.rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
 			m_Vector.push_back(vector);
 			
 			vector.position = D3DXVECTOR3(-7.5f, 5.0f, -12.5f);
-			vector.rotation = m_Rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
+			vector.rotation = m_Transform.rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
 			m_Vector.push_back(vector);
 
 			vector.position = D3DXVECTOR3(-7.5f, 5.0f, -7.5f);
-			vector.rotation = m_Rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
+			vector.rotation = m_Transform.rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
 			m_Vector.push_back(vector);
 
 			vector.position = D3DXVECTOR3(-2.5f, 5.0f, -2.5f);
-			vector.rotation = m_Rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
+			vector.rotation = m_Transform.rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
 			m_Vector.push_back(vector);
 			
 		}
@@ -129,14 +127,14 @@ void CWall::Init()
 	for (int i = 0; i < 7; i++)
 	{
 		vector.position = D3DXVECTOR3(0, 2.5f, -2.5f +  i * 5.0f);
-		vector.rotation = m_Rotation + D3DXVECTOR3(0, -D3DX_PI, 0);
+		vector.rotation = m_Transform.rotation + D3DXVECTOR3(0, -D3DX_PI, 0);
 
 		m_Vector.push_back(vector);
 	}
 	for (int i = 0; i < 7; i++)
 	{
 		vector.position = D3DXVECTOR3(-5.0f, 2.5f, -2.5f + i * 5.0f);
-		vector.rotation = m_Rotation;
+		vector.rotation = m_Transform.rotation;
 
 		m_Vector.push_back(vector);
 	}
@@ -147,7 +145,7 @@ void CWall::Init()
 	for (int i = 0; i < 8; i++)
 	{
 		vector.position = D3DXVECTOR3(i * -4.0f + 4 * 4.0f, 2.0f, 35.0f);
-		vector.rotation = m_Rotation + D3DXVECTOR3(0,D3DX_PI/2, 0);
+		vector.rotation = m_Transform.rotation + D3DXVECTOR3(0,D3DX_PI/2, 0);
 
 		m_Vector.push_back(vector);
 	}
@@ -203,7 +201,7 @@ void CWall::Imgui()
 
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-	if (Keyboard_IsTrigger(DIK_F1))
+	if (CInput::KeyTrigger(DIK_F1))
 		show_wall_window = !show_wall_window;
 
 	if (show_wall_window)

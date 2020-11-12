@@ -3,19 +3,16 @@
 
 
 
-#define ANIMATION_MATRIX_MAX (256)
 
-cbuffer AnimationBuffer : register(b7)
-{
-    matrix g_Animation[ANIMATION_MATRIX_MAX];
-}
 
 
 matrix GetAnimMatrix(uint index)
 {
-    //インデックスが要素数最大になっていたら、そのボーンウェイトは影響がないため、正規化のマトリクスを返す
-    return (index == ANIMATION_MATRIX_MAX - 1) ? g_Animation[ANIMATION_MATRIX_MAX - 1] : g_Animation[index];
+    return g_Animation[index];
   
+    
+    //インデックスが要素数最大になっていたら、そのボーンウェイトは影響がないため、正規化のマトリクスを返す
+    //return (index == ANIMATION_MATRIX_MAX - 1) ? mat : g_Animation[index];
 }
 
 
@@ -49,31 +46,31 @@ VS_OUT main(
     //アニメーションマトリクス計算----------------
     //
     mat = GetAnimMatrix(index.x);
-    position += mul(Pos, mat * weight.x);
+    position += mul(Pos, mat) * weight.x;
     normal += mul(Normal, mat * weight.x);
     binormal += mul(Binormal, mat * weight.x);
     tangent += mul(Tangent, mat * weight.x);
     //
     mat = GetAnimMatrix(index.y);
-    position += mul(Pos, mat * weight.y);
-    normal += mul(Normal, mat * weight.y);
+    position += mul(Pos, mat) * weight.y;
+    normal += mul(Normal, mat) * weight.y;
     binormal += mul(Binormal, mat * weight.y);
     tangent += mul(Tangent, mat * weight.y);
     //
     mat = GetAnimMatrix(index.z);
-    position += mul(Pos, mat * weight.z);
+    position += mul(Pos, mat) * weight.z;
     normal += mul(Normal, mat * weight.z);
     binormal += mul(Binormal, mat * weight.z);
     tangent += mul(Tangent, mat * weight.z);
     //
     mat = GetAnimMatrix(index.w);
-    position += mul(Pos, mat * weight.w);
+    position += mul(Pos, mat) * weight.w;
     normal += mul(Normal, mat * weight.w);
     binormal += mul(Binormal, mat * weight.w);
     tangent += mul(Tangent, mat * weight.w);
     
     //--------------------------------------------
-    
+    //position = Pos;
     
     matrix WVP;
     WVP = mul(g_mWorld, g_mView);

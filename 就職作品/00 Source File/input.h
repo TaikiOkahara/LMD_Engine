@@ -3,7 +3,6 @@
 　　製作者：岡原大起　	(-"-)
 =============================================================*/
 #pragma once
-//#include "renderer.h"
 #include "director.h"
 #define DIRECTINPUT_VERSION (0x0800)
 #include <dinput.h>
@@ -25,49 +24,94 @@
 #define BUTTON_M		0x00002000l	// Ｍボタン(.rgbButtons[9]&0x80)
 #define GAMEPADMAX		4			// 同時に接続するジョイパッドの最大数をセット
 
-bool Input_Initialize(HINSTANCE hInstance, HWND hWnd);
-void Input_Finalize(void);
-void Input_Update();
+//
+//
+//　マクロ
+#define	NUM_KEY_MAX			(256)
 
-//
-//
-//　キーボードプロトタイプ
-bool Keyboard_IsPress(int nKey);
-bool Keyboard_IsTrigger(int nKey);
-bool Keyboard_IsRelease(int nKey);
+#define NUM_MOUSE_MAX		(3)	//右、左、真ん中の３つ
 
-//
-//
-//　ゲームパッドプロトタイプ
-BOOL GamePad_IsPress(int padNo, DWORD button);
-BOOL GamePad_IsTrigger(int padNo, DWORD button);
+// game pad用設定値
+#define DEADZONE		2500			// 各軸の25%を無効ゾーンとする
+#define RANGE_MAX		1000			// 有効範囲の最大値
+#define RANGE_MIN		-1000			// 有効範囲の最小値
 
-//
-//
-//
-enum MouseState
+class CInput
 {
-	M_CLICK_LEFT,	//　左クリック
-	M_CLICK_RIGHT,	//　右クリック
-	M_CLICK_CENTER,	//　真ん中ボタンクリック
+public:
 	
-	M_DRAGDROP,		//　ドラッグアンドドロップ
-	M_CURDOR_SLIDE,	//　真ん中ドラッグドロップ
+
+	static bool Init(HINSTANCE hInstance, HWND hWnd);
+	static void Uninit();
+	static void Update();
+	
+	//　キーボードプロトタイプ
+	static bool KeyPress(int nKey);
+	static bool KeyTrigger(int nKey);
+	static bool KeyRelease(int nKey);
+
+	//　ゲームパッドプロトタイプ
+	static BOOL PadPress(int padNo, DWORD button);
+	static BOOL PadTrigger(int padNo, DWORD button);
+
+private:
+
+	enum MouseState
+	{
+		M_CLICK_LEFT,	//　左クリック
+		M_CLICK_RIGHT,	//　右クリック
+		M_CLICK_CENTER,	//　真ん中ボタンクリック
+
+		M_DRAGDROP,		//　ドラッグアンドドロップ
+		M_CURDOR_SLIDE,	//　真ん中ドラッグドロップ
+	};
+
+
+	static bool Keyboard_Initialize(HWND hWnd);
+	static void Keyboard_Finalize();
+	static void Keyboard_Update();
+
+	static bool GamePad_Initialize(HWND hWnd);
+	static void GamePad_Finalize(void);
+	static void GamePad_Update(void);
+	
+	static bool Mouse_Initialize(HWND hWnd);
+	static void Mouse_Update();
+	static void Mouse_Finalize();
+
+
+	static D3DXVECTOR2 Mouse_Cursor_Pos();
+	static bool Mouse_On_Window();
+	
+	static bool Mouse_Click(int nMouse);
+	static bool Mouse_Trigger(int nMouse);
+	static bool Mouse_Release(int nMouse);
+
+	static bool GetMouseState(int state_num);
+
+	static D3DXVECTOR2 GetCurDirect(int nMouse);
+	
+	static BOOL CALLBACK SearchGamePadCallback(LPDIDEVICEINSTANCE lpddi, LPVOID);
+	
+	static HWND m_phWnd;
+
+	static LPDIRECTINPUT8			g_pInput;
+
+	//キーボード
+	static LPDIRECTINPUTDEVICE8	g_pDevKeyboard;
+	static BYTE					g_aKeyState[NUM_KEY_MAX];
+	static BYTE					g_aKeyStateTrigger[NUM_KEY_MAX];
+	static BYTE					g_aKeyStateRelease[NUM_KEY_MAX];
+
+	//ゲームパッド
+	static LPDIRECTINPUTDEVICE8	g_pGamePad[GAMEPADMAX];// パッドデバイス
+	static DWORD				g_padState[GAMEPADMAX];	// パッド情報（複数対応）
+	static DWORD				g_padTrigger[GAMEPADMAX];
+	static int					g_padCount;			// 検出したパッドの数
+
+	//マウス
+	static LPDIRECTINPUTDEVICE8	g_pDIMouse;
+	static BYTE					g_zdiMouseState[NUM_MOUSE_MAX];
+	static BYTE					g_zdiMouseStateTrigger[NUM_MOUSE_MAX];
+	static BYTE					g_zdiMouseStateRelease[NUM_MOUSE_MAX];
 };
-//
-//
-//
-D3DXVECTOR2 Mouse_Cursor_Pos();
-bool Mouse_On_Window();
-//bool Mouse_Click_Left();
-//bool Mouse_Click_Right();
-//bool Mouse_Click_Center();
-
-bool Mouse_Click(int nMouse);
-bool Mouse_Trigger(int nMouse);
-bool Mouse_Release(int nMouse);
-
-bool GetMouseState(int state_num);
-//bool GetMouseClick(int click_num);
-
-D3DXVECTOR2 GetCurDirect(int nMouse);

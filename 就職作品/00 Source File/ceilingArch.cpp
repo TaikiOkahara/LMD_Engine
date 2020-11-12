@@ -15,9 +15,7 @@ void CCeilingArch::Init()
 	m_pMesh->LoadModel("../02 Visual File//CeilingArch//ceilingArch.fbx");
 	m_pMesh->LoadTexture("");
 
-	m_Position = D3DXVECTOR3(0.0f, 0.0f, 2.5f);
-	m_Rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_Scale = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
+	m_Transform.position = D3DXVECTOR3(0.0f, 0.0f, 2.5f);
 
 
 	
@@ -32,7 +30,7 @@ void CCeilingArch::Init()
 	{
 		vector.position = D3DXVECTOR3(0.0f, 3.5f, 2.5f + i * 5);
 		vector.rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		vector.scale = m_Scale;
+		vector.scale = m_Transform.scale;
 		
 		m_Vector.push_back(vector);
 	}
@@ -41,7 +39,7 @@ void CCeilingArch::Init()
 	{
 		vector.position = D3DXVECTOR3(-5.0f, 3.5f, 2.5f + i * 5);
 		vector.rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		vector.scale = m_Scale;
+		vector.scale = m_Transform.scale;
 
 		m_Vector.push_back(vector);
 	}
@@ -50,7 +48,7 @@ void CCeilingArch::Init()
 	{
 		vector.position = D3DXVECTOR3(-2.5f, 3.5f, 5.0f + i * 5);
 		vector.rotation = D3DXVECTOR3(0.0f, D3DX_PI/2, 0.0f);
-		vector.scale = m_Scale;
+		vector.scale = m_Transform.scale;
 
 		m_Vector.push_back(vector);
 	}

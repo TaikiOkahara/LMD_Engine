@@ -25,10 +25,8 @@ void CPlayer::Init()
 	m_AnimModel->LoadAnimation("../02 Visual File//Akai//Akai_Run.fbx", "Run");
 	m_AnimModel->LoadAnimation("../02 Visual File//Akai//Akai_Idle.fbx", "Idle");
 
-	m_Position = D3DXVECTOR3(-2.5f, 0.01f, -3.5f);
-	m_Rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_Scale = D3DXVECTOR3(0.008f, 0.008f, 0.008f);
-	//m_Scale = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
+	m_Transform.position = D3DXVECTOR3(-2.5f, 0.01f, -3.5f);
+	m_Transform.scale = D3DXVECTOR3(0.008f, 0.008f, 0.008f);
 
 	//　入力レイアウト生成
 	D3D11_INPUT_ELEMENT_DESC layout[]{
@@ -46,7 +44,7 @@ void CPlayer::Init()
 	RENDERER::CreatePixelShader(&m_PixelShader, "SkeletalPixelShader.cso");
 
 	D3DXQuaternionIdentity(&m_Quaternion);
-	m_OldPosition = m_Position;
+	m_OldPosition = m_Transform.position;
 	m_OldForward = GetForward();
 	m_OldForward.y = 0;
 
@@ -83,38 +81,38 @@ void CPlayer::Update()
 	D3DXVECTOR3 position(0,0,0);
 	float rotation = 0;
 
-	if (Keyboard_IsPress(DIK_W))
+	if (CInput::KeyPress(DIK_W))
 	{
 		position += cameraforward;
 		rotation = camerarotation.y + 2 * D3DX_PI;
-		if (Keyboard_IsPress(DIK_A)){
+		if (CInput::KeyPress(DIK_A)){
 			position -= cameraright;
 			rotation = camerarotation.y + 2 * D3DX_PI - D3DX_PI/4;
 		}
-		else if (Keyboard_IsPress(DIK_D)) {
+		else if (CInput::KeyPress(DIK_D)) {
 			position += cameraright;
 			rotation = camerarotation.y + 2 * D3DX_PI + D3DX_PI / 4;
 		}
 	}
-	else if (Keyboard_IsPress(DIK_S))
+	else if (CInput::KeyPress(DIK_S))
 	{
 		position -= cameraforward;
 		rotation = camerarotation.y + D3DX_PI;
-		if (Keyboard_IsPress(DIK_A)) {
+		if (CInput::KeyPress(DIK_A)) {
 			position -= cameraright;
 			rotation = camerarotation.y + D3DX_PI + D3DX_PI / 4;
 		}
-		else if (Keyboard_IsPress(DIK_D)) {
+		else if (CInput::KeyPress(DIK_D)) {
 			position += cameraright;
 			rotation = camerarotation.y + D3DX_PI - D3DX_PI / 4;
 		}
 	}
-	else if (Keyboard_IsPress(DIK_A))
+	else if (CInput::KeyPress(DIK_A))
 	{
 		position -= cameraright;
 		rotation = camerarotation.y -D3DX_PI/2;
 	}
-	else if (Keyboard_IsPress(DIK_D))
+	else if (CInput::KeyPress(DIK_D))
 	{
 		position += cameraright;
 		rotation = camerarotation.y + D3DX_PI/2;
@@ -122,33 +120,33 @@ void CPlayer::Update()
 	
 
 	D3DXVec3Normalize(&position, &position);
-	m_Position += position * 0.1f;
+	m_Transform.position += position * 0.1f;
 	
 	if (rotation != 0){
-		m_Rotation.y = rotation;
+		m_Transform.rotation.y = rotation;
 	}
 	
 	//壁との当たり判定
 	CWall* wall = Base::GetScene()->GetGameObject<CWall>(1);
-	m_hit = LenOBBToPoint(*wall,m_Position,4.0f);
+	m_hit = LenOBBToPoint(*wall, m_Transform.position,4.0f);
 	CPillar* pillar = Base::GetScene()->GetGameObject<CPillar>(1);
-	m_hit = LenOBBToPoint(*pillar,m_Position,1.5f);
+	m_hit = LenOBBToPoint(*pillar, m_Transform.position,1.5f);
 
 	
 	
 
 
-	if (Keyboard_IsPress(DIK_W) || 
-		Keyboard_IsPress(DIK_A) ||
-		Keyboard_IsPress(DIK_S) ||
-		Keyboard_IsPress(DIK_D))
+	if (CInput::KeyPress(DIK_W) || 
+		CInput::KeyPress(DIK_A) ||
+		CInput::KeyPress(DIK_S) ||
+		CInput::KeyPress(DIK_D))
 		m_AnimModel->Update("Run", m_Frame);
 	else
 		m_AnimModel->Update("Idle", m_Frame);
 
 	
 
-	m_OldPosition = m_Position;
+	m_OldPosition = m_Transform.position;
 	m_Frame++;
 }
 //
@@ -158,9 +156,9 @@ void CPlayer::Draw()
 {
 	//　マトリクス設定
 	D3DXMATRIX world, scale, rot, trans;
-	D3DXMatrixScaling(&scale, m_Scale.x, m_Scale.y, m_Scale.z);
-	D3DXMatrixRotationYawPitchRoll(&rot, m_Rotation.y + D3DX_PI, m_Rotation.x, m_Rotation.z);
-	D3DXMatrixTranslation(&trans, m_Position.x, m_Position.y, m_Position.z);
+	D3DXMatrixScaling(&scale, m_Transform.scale.x, m_Transform.scale.y, m_Transform.scale.z);
+	D3DXMatrixRotationYawPitchRoll(&rot, m_Transform.rotation.y + D3DX_PI, m_Transform.rotation.x, m_Transform.rotation.z);
+	D3DXMatrixTranslation(&trans, m_Transform.position.x, m_Transform.position.y, m_Transform.position.z);
 	world = scale * rot * trans;
 
 	//影
@@ -191,7 +189,7 @@ FLOAT CPlayer:: LenOBBToPoint(CInstanceGameObject& obj, D3DXVECTOR3& p,float len
 	for(int i = 0;i < obj.GetMeshCount();i++)
 	{
 		//length以内にいないものは排除する
-		float len = D3DXVec3Length(&D3DXVECTOR3(obj.GetPosition(i) - m_Position));
+		float len = D3DXVec3Length(&D3DXVECTOR3(obj.GetPosition(i) - m_Transform.position));
 		if (len > length)
 		{
 			continue;
@@ -249,7 +247,7 @@ FLOAT CPlayer:: LenOBBToPoint(CInstanceGameObject& obj, D3DXVECTOR3& p,float len
 
 		if (D3DXVec3Length(&Vec) <= 0)
 		{
-			m_Position = RayIntersect(&obj, i);
+			m_Transform.position = RayIntersect(&obj, i);
 		}
 		else
 		{
@@ -267,7 +265,7 @@ FLOAT CPlayer:: LenOBBToPoint(CInstanceGameObject& obj, D3DXVECTOR3& p,float len
 D3DXVECTOR3 CPlayer::RayIntersect(CInstanceGameObject* object, int index)
 {
 
-	D3DXVECTOR3 playerPos = m_Position;//プレイヤー
+	D3DXVECTOR3 playerPos = m_Transform.position;//プレイヤー
 	D3DXVECTOR3 oldPlayerPos = m_OldPosition;//オブジェクトの中心
 	D3DXVECTOR3 origin = m_OldPosition;//レイを飛ばす原点
 	D3DXVECTOR3 ray = playerPos - oldPlayerPos;
@@ -377,7 +375,7 @@ void CPlayer::Imgui()
 
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-	if (Keyboard_IsTrigger(DIK_F1))
+	if (CInput::KeyTrigger(DIK_F1))
 		show_player_winow = !show_player_winow;
 
 	if (show_player_winow)
@@ -390,8 +388,8 @@ void CPlayer::Imgui()
 		
 		ImGui::Text("HitDistance : %.3f", m_hit);
 
-		ImGui::InputFloat3("Position", m_Position, 1);
-		ImGui::InputFloat3("Rotation", m_Rotation, 1);
+		ImGui::InputFloat3("Position", m_Transform.position, 1);
+		ImGui::InputFloat3("Rotation", m_Transform.rotation, 1);
 
 		ImGui::End();
 	}

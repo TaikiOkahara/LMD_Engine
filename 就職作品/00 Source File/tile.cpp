@@ -179,7 +179,7 @@ void Tile::Draw()
 
 	RENDERER::m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	RENDERER::SetMaterial(m_Material);
+	//RENDERER::SetMaterial(m_Material);
 
 	RENDERER::m_pDeviceContext->PSSetShaderResources(0, 1, &m_pTextureSRV);
 	RENDERER::m_pDeviceContext->PSSetShaderResources(1, 1, &m_pNormalTextureSRV);
@@ -198,7 +198,7 @@ void Tile::DrawInstanced(UINT instanceCount)
 
 	RENDERER::m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	RENDERER::SetMaterial(m_Material);
+	//RENDERER::SetMaterial(m_Material);
 
 	RENDERER::m_pDeviceContext->PSSetShaderResources(0, 1, &m_pTextureSRV);
 	RENDERER::m_pDeviceContext->PSSetShaderResources(1, 1, &m_pNormalTextureSRV);

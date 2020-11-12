@@ -136,11 +136,11 @@ void StaticMesh::Draw()
 	RENDERER::m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//　マテリアル設定
-	MATERIAL material;
+	/*MATERIAL material;
 	ZeroMemory(&material, sizeof(material));
 	material.Diffuse = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
 	material.Ambient = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
-	RENDERER::SetMaterial(material);
+	RENDERER::SetMaterial(material);*/
 
 	for (unsigned int m = 0; m < m_AiScene->mNumMeshes; m++)
 	{
@@ -183,11 +183,11 @@ void StaticMesh::DrawInstanced(UINT instanceCount)
 	RENDERER::m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//　マテリアル設定
-	MATERIAL mat;
-	ZeroMemory(&mat, sizeof(mat));
-	mat.Diffuse = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
-	mat.Ambient = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
-	RENDERER::SetMaterial(mat);
+	//MATERIAL mat;
+	//ZeroMemory(&mat, sizeof(mat));
+	//mat.Diffuse = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+	//mat.Ambient = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+	//RENDERER::SetMaterial(mat);
 
 	for (unsigned int m = 0; m < m_AiScene->mNumMeshes; m++)
 	{

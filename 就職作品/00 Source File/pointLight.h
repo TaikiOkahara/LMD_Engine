@@ -5,13 +5,19 @@ class CPointLight : public CInstanceGameObject
 {
 private:
 
-	//std::vector<D3DXVECTOR4> m_PointList;
+	//enum LightName
+	//{
+	//	PLAYER = 0,//プレイヤーについていく
+	//	CHANDELIER,//シャンデリア
+	//	WORLD,//環境
+	//};
 	POINTLIGHT m_PointLight;//ポイントライト追加情報
 	StaticMesh* m_pMesh = nullptr;
 
-	//D3DXVECTOR3* posList;
-	//D3DXVECTOR3* scaleList;
 	
+	TRANSFORM* m_TransformList;
+		 
+
 	//構造体バッファとビュー
 	ID3D11Buffer* m_pPointLightBuffer = nullptr;
 	ID3D11ShaderResourceView* m_pPointLightBufferSRV = nullptr;

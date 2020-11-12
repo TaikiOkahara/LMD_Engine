@@ -31,7 +31,6 @@ PS_OUT main(VS_OUT input)
 	
     float3 bumpNormal;
     bumpNormal = (-bump.x * input.WorldTangent) + (-bump.y * input.WorldBinormal) + (-bump.z * input.WorldNormal);
-    //bumpNormal = normalize(bumpNormal);
 	
     float4 normal;
     normal.x = bumpNormal.x;
@@ -39,6 +38,7 @@ PS_OUT main(VS_OUT input)
     normal.z = bumpNormal.z;
     normal.w = 0.0f;
     
+    normal = normalize(normal);
     
     //光反射しすぎて見づらかったからバンプマッピングだけにした
     //Out.vNormal = normalize(float4(bump.xyz, 0));

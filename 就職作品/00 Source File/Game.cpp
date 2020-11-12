@@ -18,6 +18,7 @@
 #include "ceiling.h"
 #include "ceilingArch.h"
 #include "chandelier.h"
+#include "fog.h"
 
 void Game::Init() {
 	AddGameObject<CCamera>(LAYER::DRAW_LAYER_HIDE);
@@ -36,6 +37,9 @@ void Game::Init() {
 	AddGameObject<CChandelier>(LAYER::DRAW_LAYER_DRAW);//シャンデリア
 
 	AddGameObject<CPlayer>(LAYER::DRAW_LAYER_DRAW);//プレイヤー
+
+
+	AddGameObject<CFog>(LAYER::DRAW_LAYER_EFFECT);//フォグエフェクト
 }
 
 void Game::UnInit() {
@@ -43,6 +47,8 @@ void Game::UnInit() {
 }
 
 void Game::Update() {
+
+	if (timeStop) return;
 	CScene::Update();
 }
 
@@ -59,7 +65,7 @@ void Game::Imgui()
 	//Sceneのデバッグ
 	static bool show_scene_window = true;
 
-	if (Keyboard_IsTrigger(DIK_F1))
+	if (CInput::KeyTrigger(DIK_F1))
 		show_scene_window = !show_scene_window;
 
 	if (show_scene_window)
@@ -77,7 +83,9 @@ void Game::Imgui()
 		ImGui::Begin("Scene", &is_open, flag);
 
 
+		ImGui::Checkbox("isStop", &timeStop);
 
+		ImGui::Checkbox("DirectionalColor", &RENDERER::toggleColor);
 		ImGui::Checkbox("DirectionalLight", &RENDERER::toggleDirectional);
 		ImGui::Checkbox("PointLight", &RENDERER::togglePoint);
 		//ImGui::Checkbox("Trigger", &show_another_window);
@@ -113,5 +121,5 @@ void Game::Imgui()
 
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-	//ImGui::set
+
 }

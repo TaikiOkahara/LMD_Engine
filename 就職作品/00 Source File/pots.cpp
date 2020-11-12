@@ -31,10 +31,16 @@ void CPots::Init()
 	vector.scale = D3DXVECTOR3(1,1,1);
 
 
-	//　マトリクス設定
-	vector.position = D3DXVECTOR3(-2.0f, 0.0f, 5.0f);
-	vector.rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_Vector.push_back(vector);
+	{
+		//　マトリクス設定
+		vector.position = D3DXVECTOR3(4.0f, 0.0f, -5.8f);
+		vector.rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		m_Vector.push_back(vector);
+
+		vector.position = D3DXVECTOR3(4.0f, 0.0f, -7.2f);
+		vector.rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		m_Vector.push_back(vector);
+	}
 
 	InitInstance();
 	UpdateInstance();//処理速度が落ちるかもだからInitに置いてる
@@ -78,7 +84,7 @@ void CPots::Imgui()
 
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-	if (Keyboard_IsTrigger(DIK_F1))
+	if (CInput::KeyTrigger(DIK_F1))
 		show_pillar_window = !show_pillar_window;
 
 	if (show_pillar_window)

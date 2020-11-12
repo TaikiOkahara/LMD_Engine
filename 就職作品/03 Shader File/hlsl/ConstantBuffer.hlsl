@@ -1,3 +1,9 @@
+#define ANIMATION_MATRIX_MAX (256)
+#define LIGHT_NUM (128)
+
+
+
+
 cbuffer WorldBuffer : register(b0)
 {
     matrix g_mWorld;
@@ -29,20 +35,36 @@ cbuffer DirectionalLightBuffer : register(b4)
 	//matrix g_mLightView;
 }
 
-#define LIGHT_NUM (128)
+
+struct POINT
+{
+    float3 color;
+    float intensity;
+    float3 calc;
+    float specular;
+};
+
 cbuffer PointLightBuffer : register(b5)
 {
-    //float g_vPointIntensity[LIGHT_NUM];
-    //float g_vPointRange[LIGHT_NUM];
-    //float g_vPointAttenuation[LIGHT_NUM];
-    //float3 g_vPointColor[LIGHT_NUM];
-    
-    
-    float4 g_vPointColor[LIGHT_NUM];//xyzは色、wは光の強さ
-    float4 g_vPoint[LIGHT_NUM]; //x：一定減衰係数　y：線形減衰係数　z：２次減衰係数 w：スペキュラ
-    
-    //float2 dummy;
+    POINT g_vPointLight[LIGHT_NUM];
 }
 
-//
-//register7はアニメーションコンスタントバッファ
+
+cbuffer EffectBuffer : register(b6)
+{
+  
+    float2 g_fFogOffset0; //フォグの揺らぎテクスチャーのテクセルのオフセット値
+    float2 g_fFogOffset1; //フォグの揺らぎテクスチャーのテクセルのオフセット値
+    float g_fFogTexScale; //テクセルのスケーリング値。
+    float g_fFogMaxHeight; //頂点の高さの最大値。頂点の高さがこの値より大きくなるとフォグがかからなくなる。
+    float g_fFogMinHeight; //頂点の高さの最小値。頂点の高さがこの値より小さくなるとフォグカラーで塗りつぶされる。
+    float g_fFogDummy0;
+    
+    float3 g_fFogColor;
+    float g_fFogDummy1;
+}
+
+cbuffer AnimationBuffer : register(b7)
+{
+    matrix g_Animation[ANIMATION_MATRIX_MAX];
+}

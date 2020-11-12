@@ -28,23 +28,16 @@ void CChandelier::Init()
 
 	VECTOR vector;
 	
-	vector.scale = m_Scale;
+	vector.scale = m_Transform.scale;
 	for (int i = 0; i < 3; i++)
 	{
 
 		////　マトリクス設定
-		vector.position = D3DXVECTOR3(-2.5f, 4.0f, 3.0f + 5.0f * i);
-		vector.rotation = m_Rotation;
+		vector.position = D3DXVECTOR3(-2.5f, 4.0f, 5.0f + 10.0f * i);
+		vector.rotation = m_Transform.rotation;
 		m_Vector.push_back(vector);
 	}
-	/*for (int i = 0; i < 5; i++)
-	{
-		vector.position = D3DXVECTOR3(m_Position.x - 4.5f, m_Position.y, m_Position.z + i * 5);
-		vector.rotation = D3DXVECTOR3(m_Rotation.x, m_Rotation.y - D3DX_PI, m_Rotation.z);
 
-		m_Vector.push_back(vector);
-
-	}*/
 
 	InitInstance();
 	UpdateInstance();//処理速度が落ちるかもだからInitに置いてる
@@ -88,7 +81,7 @@ void CChandelier::Imgui()
 
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-	if (Keyboard_IsTrigger(DIK_F1))
+	if (CInput::KeyTrigger(DIK_F1))
 		show_pillar_window = !show_pillar_window;
 
 	if (show_pillar_window)

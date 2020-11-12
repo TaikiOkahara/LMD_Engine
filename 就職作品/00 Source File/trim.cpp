@@ -16,9 +16,7 @@ void CTrim::Init()
 	//m_pMesh->LoadModel("../02 Visual File//Chandelier//chandelier.fbx");
 	m_pMesh->LoadTexture("../02 Visual File//Trim");
 
-	m_Position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_Rotation = D3DXVECTOR3(0.0f, D3DX_PI/2, 0.0f);
-	m_Scale = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
+	m_Transform.rotation = D3DXVECTOR3(0.0f, D3DX_PI/2, 0.0f);
 	
 
 	//シェーダー作成
@@ -29,18 +27,18 @@ void CTrim::Init()
 
 
 	VECTOR vector;
-	vector.scale = m_Scale;
-	vector.rotation = m_Rotation;
+	vector.scale = m_Transform.scale;
+	vector.rotation = m_Transform.rotation;
 	for (int i = 0; i < 4; i++)
 	{
 		//　マトリクス設定
-		vector.position = D3DXVECTOR3(m_Position.x - 0.2f, m_Position.y, m_Position.z + i * 5);
+		vector.position = D3DXVECTOR3(m_Transform.position.x - 0.2f, m_Transform.position.y, m_Transform.position.z + i * 5);
 		m_Vector.push_back(vector);
 
 	}
 	for (int i = 0; i < 4; i++)
 	{
-		vector.position = D3DXVECTOR3(m_Position.x - 4.7f, m_Position.y, m_Position.z + i * 5);
+		vector.position = D3DXVECTOR3(m_Transform.position.x - 4.7f, m_Transform.position.y, m_Transform.position.z + i * 5);
 		m_Vector.push_back(vector);
 	}
 

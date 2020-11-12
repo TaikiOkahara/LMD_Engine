@@ -27,13 +27,10 @@ CScene* Base::m_Scene = nullptr;
 //
 void Base::MainLoop()
 {
-	Input_Update();
-
+	CInput::Update();
 	m_Scene->Update();
 	
 	
-	//RENDERER::ShadowClear();
-	//g_Scene.Draw();
 
 	RENDERER::Clear();//　画面塗りつぶし
 	
@@ -56,6 +53,9 @@ void Base::MainLoop()
 		m_Scene->DrawLighting();
 	}
 	
+
+	m_Scene->DrawEffect();
+
 
 	m_Scene->Imgui();
 
@@ -127,7 +127,7 @@ HRESULT Base::Init(HINSTANCE phInstance)
 	IMGUI_Init(m_hWnd);
 
 	//　キーボード初期化
-	Input_Initialize(m_hInstance, m_hWnd);
+	CInput::Init(m_hInstance, m_hWnd);
 
 
 	//ウインドウの表示
@@ -151,7 +151,7 @@ HRESULT Base::Uninit()
 
 	RENDERER::Uninit();
 
-	Input_Finalize();
+	CInput::Uninit();
 
 	SAFE_DELETE(m_pWindow);
 

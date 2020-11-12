@@ -25,8 +25,10 @@
     <ClCompile Include="00 Source File\collision.cpp" />
     <ClCompile Include="00 Source File\director.cpp" />
     <ClCompile Include="00 Source File\camera.cpp" />
+    <ClCompile Include="00 Source File\fog.cpp" />
     <ClCompile Include="00 Source File\game.cpp" />
     <ClCompile Include="00 Source File\Imgui11.cpp" />
+    <ClCompile Include="00 Source File\input.cpp" />
     <ClCompile Include="00 Source File\InstanceObject.cpp" />
     <ClCompile Include="00 Source File\pillar.cpp" />
     <ClCompile Include="00 Source File\pointLight.cpp" />
@@ -39,7 +41,6 @@
     <ClCompile Include="00 Source File\StaticMesh.cpp" />
     <ClCompile Include="00 Source File\tile.cpp" />
     <ClCompile Include="00 Source File\floor.cpp" />
-    <ClCompile Include="00 Source File\input.cpp" />
     <ClCompile Include="00 Source File\light.cpp" />
     <ClCompile Include="00 Source File\calculation.cpp" />
     <ClCompile Include="00 Source File\player.cpp" />
@@ -62,7 +63,9 @@
     <ClInclude Include="00 Source File\collision.h" />
     <ClInclude Include="00 Source File\director.h" />
     <ClInclude Include="00 Source File\camera.h" />
+    <ClInclude Include="00 Source File\fog.h" />
     <ClInclude Include="00 Source File\game.h" />
+    <ClInclude Include="00 Source File\input.h" />
     <ClInclude Include="00 Source File\InstanceObject.h" />
     <ClInclude Include="00 Source File\calculation.h" />
     <ClInclude Include="00 Source File\pillar.h" />
@@ -77,7 +80,6 @@
     <ClInclude Include="00 Source File\floor.h" />
     <ClInclude Include="00 Source File\gameobject.h" />
     <ClInclude Include="00 Source File\Imgui11.h" />
-    <ClInclude Include="00 Source File\input.h" />
     <ClInclude Include="00 Source File\light.h" />
     <ClInclude Include="00 Source File\player.h" />
     <ClInclude Include="00 Source File\scene.h" />
@@ -167,6 +169,16 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)\03 Shader File\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)\03 Shader File\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\FogPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)\03 Shader File\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)\03 Shader File\%(Filename).cso</ObjectFileOutput>

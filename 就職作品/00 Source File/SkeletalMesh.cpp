@@ -35,13 +35,14 @@ void CAnimationModel::LoadModel(const char* FileName, D3DXVECTOR3 pos)
 	{
 		aiMesh* mesh = m_AiScene->mMeshes[m];
 
+		vertex = new ANIMVERTEX_3D[mesh->mNumVertices];
+			 
 		//頂点バッファ生成
 		{
-			 vertex = new ANIMVERTEX_3D[mesh->mNumVertices];
 
 			for (unsigned int v = 0; v < mesh->mNumVertices; v++)
 			{
-				vertex[v].Position = D3DXVECTOR3(mesh->mVertices[v].x, mesh->mVertices[v].y, mesh->mVertices[v].z) + pos;
+				vertex[v].Position = D3DXVECTOR3(mesh->mVertices[v].x, mesh->mVertices[v].y, mesh->mVertices[v].z);// +pos;
 				vertex[v].Normal = D3DXVECTOR3(mesh->mNormals[v].x, mesh->mNormals[v].y, mesh->mNormals[v].z);
 				vertex[v].TexturePos = D3DXVECTOR2(mesh->mTextureCoords[0][v].x, mesh->mTextureCoords[0][v].y);//[0]はテクスチャ番号
 				vertex[v].Tangent = D3DXVECTOR3(mesh->mTangents[v].x, mesh->mTangents[v].y, mesh->mTangents[v].z);
@@ -56,7 +57,7 @@ void CAnimationModel::LoadModel(const char* FileName, D3DXVECTOR3 pos)
 		{
 			unsigned int* index = new unsigned int[mesh->mNumFaces * 3];
 
-			for (unsigned f = 0; f < mesh->mNumFaces; f++)
+			for (unsigned int f = 0; f < mesh->mNumFaces; f++)
 			{
 				const aiFace* face = &mesh->mFaces[f];
 
@@ -302,11 +303,11 @@ void CAnimationModel::Draw()
 	RENDERER::m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//　マテリアル設定
-	MATERIAL material;
-	ZeroMemory(&material, sizeof(material));
-	material.Diffuse = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
-	material.Ambient = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
-	RENDERER::SetMaterial(material);
+	//MATERIAL material;
+	//ZeroMemory(&material, sizeof(material));
+	//material.Diffuse = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+	//material.Ambient = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+	//RENDERER::SetMaterial(material);
 
 	for (unsigned int m = 0; m < m_AiScene->mNumMeshes; m++)
 	{
@@ -356,11 +357,11 @@ void CAnimationModel::DrawInstance()
 	RENDERER::m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//　マテリアル設定
-	MATERIAL material;
-	ZeroMemory(&material, sizeof(material));
-	material.Diffuse = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
-	material.Ambient = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
-	RENDERER::SetMaterial(material);
+	//MATERIAL material;
+	//ZeroMemory(&material, sizeof(material));
+	//material.Diffuse = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+	//material.Ambient = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+	//RENDERER::SetMaterial(material);
 
 	for (unsigned int m = 0; m < m_AiScene->mNumMeshes; m++)
 	{

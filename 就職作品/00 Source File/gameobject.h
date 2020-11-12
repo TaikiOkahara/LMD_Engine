@@ -17,17 +17,17 @@ public:
 	virtual void Draw() = 0;
 	virtual void Imgui(){}
 
-	D3DXVECTOR3 GetPosition() { return m_Position; }
-	D3DXVECTOR3 GetRotation() { return m_Rotation; }
-	D3DXVECTOR3 GetScale()	  { return m_Scale; }
+	D3DXVECTOR3 GetPosition() { return m_Transform.position; }
+	D3DXVECTOR3 GetRotation() { return m_Transform.rotation; }
+	D3DXVECTOR3 GetScale()	  { return m_Transform.scale; }
 
 	D3DXVECTOR3 GetForward()
 	{
 		D3DXMATRIX rot;
 		D3DXMatrixRotationYawPitchRoll(&rot,
-			m_Rotation.y,
-			m_Rotation.x,
-			m_Rotation.z);
+			m_Transform.rotation.y,
+			m_Transform.rotation.x,
+			m_Transform.rotation.z);
 
 		D3DXVECTOR3 forward;
 		forward.x = rot._31;
@@ -40,9 +40,9 @@ public:
 	{
 		D3DXMATRIX rot;
 		D3DXMatrixRotationYawPitchRoll(&rot,
-			m_Rotation.y,
-			m_Rotation.x,
-			m_Rotation.z);
+			m_Transform.rotation.y,
+			m_Transform.rotation.x,
+			m_Transform.rotation.z);
 
 		D3DXVECTOR3 right;
 		right.x = rot._11;
@@ -55,9 +55,9 @@ public:
 	{
 		D3DXMATRIX rot;
 		D3DXMatrixRotationYawPitchRoll(&rot,
-			m_Rotation.y,
-			m_Rotation.x,
-			m_Rotation.z);
+			m_Transform.rotation.y,
+			m_Transform.rotation.x,
+			m_Transform.rotation.z);
 
 		D3DXVECTOR3 up;
 		up.x = rot._21;
@@ -71,9 +71,9 @@ public:
 	{
 		//　マトリクス設定
 		D3DXMATRIX world, scale, rot, trans;
-		D3DXMatrixScaling(&scale, m_Scale.x, m_Scale.y, m_Scale.z);
-		D3DXMatrixRotationYawPitchRoll(&rot, m_Rotation.y, m_Rotation.x, m_Rotation.z);
-		D3DXMatrixTranslation(&trans, m_Position.x, m_Position.y, m_Position.z);
+		D3DXMatrixScaling(&scale, m_Transform.scale.x, m_Transform.scale.y, m_Transform.scale.z);
+		D3DXMatrixRotationYawPitchRoll(&rot, m_Transform.rotation.y, m_Transform.rotation.x, m_Transform.rotation.z);
+		D3DXMatrixTranslation(&trans, m_Transform.position.x, m_Transform.position.y, m_Transform.position.z);
 		world = scale * rot * trans;
 		RENDERER::SetWorldMatrix(world);
 	}
@@ -98,9 +98,12 @@ public:
 
 	Collision* GetCollision() { return &m_Collision; }
 protected:
-	D3DXVECTOR3		m_Position = D3DXVECTOR3(0,0,0);
-	D3DXVECTOR3		m_Rotation = D3DXVECTOR3(0, 0, 0);//Pitch,Yaw,Roll
-	D3DXVECTOR3		m_Scale = D3DXVECTOR3(1, 1, 1);
+	//D3DXVECTOR3		m_Position = D3DXVECTOR3(0,0,0);
+	//D3DXVECTOR3		m_Rotation = D3DXVECTOR3(0, 0, 0);//Pitch,Yaw,Roll
+	//D3DXVECTOR3		m_Scale = D3DXVECTOR3(1, 1, 1);
+	TRANSFORM m_Transform;
+
+
 	D3DXQUATERNION  m_Quaternion;
 	bool			m_Destroy = false;
 	D3DXMATRIX		m_WorldMatrix;

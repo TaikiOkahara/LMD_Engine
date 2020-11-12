@@ -88,7 +88,7 @@ void CPillar::Imgui()
 
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-	if (Keyboard_IsTrigger(DIK_F1))
+	if (CInput::KeyTrigger(DIK_F1))
 		show_pillar_window = !show_pillar_window;
 
 	if (show_pillar_window)

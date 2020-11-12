@@ -12,36 +12,27 @@ void CPointLight::Init()
 	m_pMesh->LoadModel("../02 Visual File//UV.fbx");
 	
 	
-	//posList = new D3DXVECTOR3[128];
-	//scaleList = new D3DXVECTOR3[128];
-
-
+	m_TransformList = new TRANSFORM[LIGHT_MAX];
 	{
 
-		for (int i = 0; i < 2; i++)
+		for (int i = 0; i < LIGHT_MAX; i++)
 		{
-			posList[i] = D3DXVECTOR3(-2.5f, 0.0f, 5.0f);
-			scaleList[i] = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
+			m_TransformList[i].scale.x = -1;
+		}
 
-			m_PointLight.Color[i] = D3DXVECTOR4(1, 1, 1, 1);
-			m_PointLight.CalcInfo[i] = D3DXVECTOR4(1, 1, 1, 10);
+		for (int i = 0; i < 3; i++)
+		{
+			TRANSFORM transform;
+			transform.position = D3DXVECTOR3(-2.5f, 2.0f, 10.0f * i + 5.0f);
+			transform.scale = D3DXVECTOR3(5.0f, 5.0f, 1.0f);
+			transform.rotation = D3DXVECTOR3(0, 0, 0);
+			m_TransformList[i] = transform;
+			m_PointLight.pointList[i].color = D3DXVECTOR3(1.0f, 0.5f, 0.0f);
+			m_PointLight.pointList[i].intensity = 1;
+			m_PointLight.pointList[i].calc = D3DXVECTOR3(0.1f, 1.0f, 0.1f);
+			m_PointLight.pointList[i].specular = 30;
 		}
 		
-
-
-
-
-		//m_PointLight.Position[0] = D3DXVECTOR3(-2.5f, 0.0f, 5.0f);
-
-		//for (int i = 0; i < 3; i++)
-		//{
-		//	D3DXMatrixTranslation(&trans, -2.5f, 0.0f, 2.0f + i * 2);
-		//	world = scale * trans;
-		//	D3DXMatrixTranspose(&world, &world);
-
-		//	//m_MatrixList.push_back(world);
-		//}
-
 		
 	}
 
@@ -53,19 +44,13 @@ void CPointLight::Init()
 
 	//InitInstance();
 	//UpdateInstance();//視錐台カリングを行う場合入れる
-
-	//CChandelier* chandelier = Base::GetScene()->GetGameObject<CChandelier>(1);
-
-	posList[0] = D3DXVECTOR3(-2.5f, 4.0f, 3.0f) + D3DXVECTOR3(0, -1, 0);
-	scaleList[0] = D3DXVECTOR3(5.0f, 5.0f, 1.0f);
-	m_PointLight.Color[0] = D3DXVECTOR4(1.0f, 0.5f, 0.0f, 1);
-	m_PointLight.CalcInfo[0] = D3DXVECTOR4(0.1f, 1.0f, 0.1f, 30);
+	
 }
 
 void CPointLight::Uninit()
 {
-	delete[] posList;
-	delete[] scaleList;
+
+	delete[] m_TransformList;
 
 	m_pMesh->Unload();
 	delete m_pMesh;
@@ -81,6 +66,19 @@ void CPointLight::Uninit()
 
 void CPointLight::Update()
 {
+	CChandelier* chandelier = Base::GetScene()->GetGameObject<CChandelier>(1);
+
+	/*for (int i = 1; i < chandelier->GetMeshCount(); i++)
+	{
+		m_TransformList[i].position = chandelier->GetPosition(i) + D3DXVECTOR3(0, -1, 0);
+		m_TransformList[i].scale = D3DXVECTOR3(5.0f, 5.0f, 1.0f);
+
+		m_PointLight.pointList[i].color = D3DXVECTOR3(1.0f, 0.5f, 0.0f);
+		m_PointLight.pointList[i].intensity = 1;
+		m_PointLight.pointList[i].calc = D3DXVECTOR3(0.1f, 1.0f, 0.1f);
+		m_PointLight.pointList[i].specular = 30;
+	}*/
+
 
 	
 }
@@ -97,18 +95,18 @@ void CPointLight::Draw()
 	
 	//　マトリクス設定
 	D3DXMATRIX world, scale, rot, trans;
-	D3DXMatrixRotationYawPitchRoll(&rot, m_Rotation.y, m_Rotation.x, m_Rotation.z);
+	D3DXMatrixRotationYawPitchRoll(&rot, m_Transform.rotation.y, m_Transform.rotation.x, m_Transform.rotation.z);
 
 
 	for (int i = 0; i < LIGHT_MAX; i++)
 	{
-		if (scaleList[i].x <= 0)
+		if (m_TransformList[i].scale.x <= 0)
 		{
 			continue;//スケールのないライト描画スキップ
 		}
-		D3DXMatrixScaling(&scale, scaleList[i].x, scaleList[i].y, i);//xに本当のサイズを入れる、zにインデックス番号を入れる
+		D3DXMatrixScaling(&scale, m_TransformList[i].scale.x, m_TransformList[i].scale.y, i * 1.0f);//xに本当のサイズを入れる、zにインデックス番号を入れる
 
-		D3DXMatrixTranslation(&trans, posList[i].x, posList[i].y, posList[i].z);
+		D3DXMatrixTranslation(&trans, m_TransformList[i].position.x, m_TransformList[i].position.y, m_TransformList[i].position.z);
 		world = scale * rot * trans;
 		RENDERER::SetWorldMatrix(world);
 		
@@ -132,7 +130,7 @@ void CPointLight::Imgui()
 
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-	if (Keyboard_IsTrigger(DIK_F1))
+	if (CInput::KeyTrigger(DIK_F1))
 		show_light_window = !show_light_window;
 
 	if (show_light_window)
@@ -140,11 +138,11 @@ void CPointLight::Imgui()
 		ImGuiWindowFlags lw_flag = 0;
 		static bool lw_is_open;
 		ImGuiWindowFlags flag = 0;
-		static ImVec4 clear_color = ImVec4(m_PointLight.Color[0].x, m_PointLight.Color[0].y, m_PointLight.Color[0].z, 1.00f);
+		static ImVec4 clear_color = ImVec4(m_PointLight.pointList[0].color.x, m_PointLight.pointList[0].color.y, m_PointLight.pointList[0].color.z, 1.00f);
 
-		m_PointLight.Color[0].x = clear_color.x;
-		m_PointLight.Color[0].y = clear_color.y;
-		m_PointLight.Color[0].z = clear_color.z;
+		m_PointLight.pointList[0].color.x = clear_color.x;
+		m_PointLight.pointList[0].color.y = clear_color.y;
+		m_PointLight.pointList[0].color.z = clear_color.z;
 
 		ImGui::Begin("PointLight", &lw_is_open, lw_flag);
 
@@ -156,16 +154,16 @@ void CPointLight::Imgui()
 		for (int i = 0; i < 1; i++)
 		{
 			D3DXVECTOR3 pos;
-			pos = m_Position;
+			pos = m_Transform.position;
 			ImGui::InputFloat3("Position", pos, 1);
 			//ImGui::SliderFloat3("Color", &m_PointLight.Color[0].x, 0.0f, 1.0f);
 
 			ImGui::ColorEdit3("Color", (float*)&clear_color);
 
-			ImGui::SliderFloat("x : ", &m_PointLight.CalcInfo[0].x,0.0f,1.0f);
-			ImGui::SliderFloat("y : ", &m_PointLight.CalcInfo[0].y,0.0f,1.0f);
-			ImGui::SliderFloat("z : ", &m_PointLight.CalcInfo[0].z,0.0f,5.0f);
-			ImGui::SliderFloat("Specular", &m_PointLight.CalcInfo[0].w, 0.0f, 30.0f);
+			ImGui::SliderFloat("x : ", &m_PointLight.pointList[0].calc.x,0.0f,5.0f);
+			ImGui::SliderFloat("y : ", &m_PointLight.pointList[0].calc.y,0.0f,1.0f);
+			ImGui::SliderFloat("z : ", &m_PointLight.pointList[0].calc.z,0.0f,10.0f);
+			ImGui::SliderFloat("Specular", &m_PointLight.pointList[0].specular, 0.0f, 1.0f);
 			//ImGui::InputFloat("input float", &f0, 0.01f, 1.0f, "%.3f");
 
 		}

@@ -16,10 +16,10 @@ void CStage::Init()
 	m_pMesh->LoadTexture("");
 
 
-	m_Position = D3DXVECTOR3(-2.5f, 0.0f, 0.0f);
-	m_Rotation = D3DXVECTOR3(0.0f, D3DX_PI/2, 0.0f);
+	m_Transform.position = D3DXVECTOR3(-2.5f, 0.0f, 0.0f);
+	m_Transform.rotation = D3DXVECTOR3(0.0f, D3DX_PI/2, 0.0f);
 	//m_Scale = D3DXVECTOR3(1.0f, 0.9f, 0.9f);
-	m_Scale = D3DXVECTOR3(0.85f, 0.85f, 0.85f);
+	m_Transform.scale = D3DXVECTOR3(0.85f, 0.85f, 0.85f);
 
 
 	
@@ -33,9 +33,9 @@ void CStage::Init()
 	{
 		////Å@î‡
 		VECTOR vector;
-		vector.rotation = m_Rotation;
-		vector.scale = m_Scale;
-		vector.position = m_Position;
+		vector.rotation = m_Transform.rotation;
+		vector.scale = m_Transform.scale;
+		vector.position = m_Transform.position;
 		m_Vector.push_back(vector);
 	}
 

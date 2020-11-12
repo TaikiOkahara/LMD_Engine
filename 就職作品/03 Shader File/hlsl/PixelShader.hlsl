@@ -27,7 +27,7 @@ PS_OUT main(VS_OUT input)
     bump = (bump * 2.0f) - 1.0f;
 	
     float3 bumpNormal;
-    bumpNormal = (-bump.x * input.WorldTangent) + (-bump.y * input.WorldBinormal) + (-bump.z * input.WorldNormal);
+    bumpNormal = (-bump.x * input.WorldTangent) + (-bump.y * input.WorldBinormal) + (bump.z * input.WorldNormal);
    
     float4 normal;
     normal.x = -bumpNormal.x;
@@ -35,8 +35,7 @@ PS_OUT main(VS_OUT input)
     normal.z = bumpNormal.z;
     normal.w = 0.0f;
 	
-	
-    //Out.vNormal = normalize(float4(bumpNormal,0));
+    normal = normalize(normal);
     Out.vNormal = normal;
 	
 

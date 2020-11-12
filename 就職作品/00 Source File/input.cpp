@@ -4,77 +4,38 @@
 =============================================================*/
 #include "input.h"
 
-//
-//
-//　マクロ
-#define	NUM_KEY_MAX			(256)
-
-#define NUM_MOUSE_MAX		(3)	//右、左、真ん中の３つ
-
-// game pad用設定値
-#define DEADZONE		2500			// 各軸の25%を無効ゾーンとする
-#define RANGE_MAX		1000			// 有効範囲の最大値
-#define RANGE_MIN		-1000			// 有効範囲の最小値
 
 
-static HWND m_phWnd = NULL;
 
-static bool Keyboard_Initialize(HWND hWnd);
-static void Keyboard_Finalize(void);
-static void Keyboard_Update(void);
+HWND CInput::m_phWnd = NULL;
 
-static bool GamePad_Initialize(HWND hWnd);
-static void GamePad_Finalize(void);
-static void GamePad_Update(void);
-
-static bool Mouse_Initialize(HWND hWnd);
-static void Mouse_Update();
-static void Mouse_Finalize();
-
-static LPDIRECTINPUT8			g_pInput = NULL;
+LPDIRECTINPUT8			CInput::g_pInput = NULL;
 
 //キーボード
-static LPDIRECTINPUTDEVICE8	g_pDevKeyboard = NULL;
-static BYTE					g_aKeyState[NUM_KEY_MAX];
-static BYTE					g_aKeyStateTrigger[NUM_KEY_MAX];
-static BYTE					g_aKeyStateRelease[NUM_KEY_MAX];
+LPDIRECTINPUTDEVICE8	CInput::g_pDevKeyboard = NULL;
+BYTE					CInput::g_aKeyState[NUM_KEY_MAX];
+BYTE					CInput::g_aKeyStateTrigger[NUM_KEY_MAX];
+BYTE					CInput::g_aKeyStateRelease[NUM_KEY_MAX];
 
 //ゲームパッド
-static LPDIRECTINPUTDEVICE8	g_pGamePad[GAMEPADMAX] = { NULL, NULL, NULL, NULL };// パッドデバイス
-static DWORD				g_padState[GAMEPADMAX];	// パッド情報（複数対応）
-static DWORD				g_padTrigger[GAMEPADMAX];
-static int					g_padCount = 0;			// 検出したパッドの数
+LPDIRECTINPUTDEVICE8	CInput::g_pGamePad[GAMEPADMAX] = { NULL, NULL, NULL, NULL };// パッドデバイス
+DWORD					CInput::g_padState[GAMEPADMAX];	// パッド情報（複数対応）
+DWORD					CInput::g_padTrigger[GAMEPADMAX];
+int						CInput::g_padCount = 0;			// 検出したパッドの数
 
 //マウス
-static LPDIRECTINPUTDEVICE8	g_pDIMouse = NULL;
-static BYTE					g_zdiMouseState[NUM_MOUSE_MAX];
-//static DIMOUSESTATE			g_zdiMouseState_back;	// マウス情報(変化検知用)
-static BYTE					g_zdiMouseStateTrigger[NUM_MOUSE_MAX];
-static BYTE					g_zdiMouseStateRelease[NUM_MOUSE_MAX];
+LPDIRECTINPUTDEVICE8	CInput::g_pDIMouse = NULL;
+BYTE					CInput::g_zdiMouseState[NUM_MOUSE_MAX];
+BYTE					CInput::g_zdiMouseStateTrigger[NUM_MOUSE_MAX];
+BYTE					CInput::g_zdiMouseStateRelease[NUM_MOUSE_MAX];
 
 
-//static bool bState = false;//ドラッグドロップステート
-
-//
-//
-//　コールバック
-BOOL CALLBACK SearchGamePadCallback(LPDIDEVICEINSTANCE lpddi, LPVOID)
-{
-	HRESULT result;
-
-	result = g_pInput->CreateDevice(lpddi->guidInstance, &g_pGamePad[g_padCount++], NULL);
-	return DIENUM_CONTINUE;	// 次のデバイスを列挙
-}
-
-//
-//
-//　初期化
-bool Input_Initialize(HINSTANCE hInstance, HWND hWnd)
+bool CInput::Init(HINSTANCE hInstance, HWND hWnd)
 {
 	m_phWnd = hWnd;
-	if(g_pInput == NULL) {
+	if (g_pInput == NULL) {
 
-		if(FAILED(DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&g_pInput, NULL))) {
+		if (FAILED(DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&g_pInput, NULL))) {
 
 			return false;
 		}
@@ -92,34 +53,41 @@ bool Input_Initialize(HINSTANCE hInstance, HWND hWnd)
 
 	return true;
 }
-//
-//　
-//　終了
-void Input_Finalize(void)
+
+void CInput::Uninit()
 {
 	Keyboard_Finalize();
 	GamePad_Finalize();
 	Mouse_Finalize();
-	if(g_pInput != NULL) {
+	if (g_pInput != NULL) {
 		g_pInput->Release();
 		g_pInput = NULL;
 	}
 }
-//
-//
-//　更新
-void Input_Update() 
+
+void CInput::Update()
 {
 	Keyboard_Update();
 	GamePad_Update();
 	Mouse_Update();
 }
-//=============================================================================
+
+//
+//
+//　コールバック
+BOOL CALLBACK CInput::SearchGamePadCallback(LPDIDEVICEINSTANCE lpddi, LPVOID)
+{
+	HRESULT result;
+
+	result = g_pInput->CreateDevice(lpddi->guidInstance, &g_pGamePad[g_padCount++], NULL);
+	return DIENUM_CONTINUE;	// 次のデバイスを列挙
+}
+
 
 //
 //
 //　キーボード初期化
-bool Keyboard_Initialize(HWND hWnd)
+bool CInput::Keyboard_Initialize(HWND hWnd)
 {
 
 	if(FAILED(g_pInput->CreateDevice(GUID_SysKeyboard, &g_pDevKeyboard, NULL)))
@@ -147,7 +115,7 @@ bool Keyboard_Initialize(HWND hWnd)
 //
 //
 //　キーボード終了
-void Keyboard_Finalize(void)
+void CInput::Keyboard_Finalize(void)
 {
 	if(g_pDevKeyboard != NULL)
 	{
@@ -160,7 +128,7 @@ void Keyboard_Finalize(void)
 //
 //
 //　キーボード更新
-void Keyboard_Update(void)
+void CInput::Keyboard_Update(void)
 {
 	BYTE aKeyState[NUM_KEY_MAX];
 
@@ -183,21 +151,21 @@ void Keyboard_Update(void)
 //
 //
 //　キー入力
-bool Keyboard_IsPress(int nKey)
+bool CInput::KeyPress(int nKey)
 {
 	return (g_aKeyState[nKey] & 0x80) ? true : false;
 }
 //
 //
 //　キー入力
-bool Keyboard_IsTrigger(int nKey)
+bool CInput::KeyTrigger(int nKey)
 {
 	return (g_aKeyStateTrigger[nKey] & 0x80) ? true: false;
 }
 //
 //
 //　キー離す
-bool Keyboard_IsRelease(int nKey)
+bool CInput::KeyRelease(int nKey)
 {
 	return (g_aKeyStateRelease[nKey] & 0x80) ? true: false;
 }
@@ -207,7 +175,7 @@ bool Keyboard_IsRelease(int nKey)
 //
 //
 //　ゲームパッド初期化
-bool GamePad_Initialize(HWND hWnd)
+bool CInput::GamePad_Initialize(HWND hWnd)
 {
 
 	HRESULT		result;
@@ -272,7 +240,7 @@ bool GamePad_Initialize(HWND hWnd)
 //
 //
 //　ゲームパッド終了
-void GamePad_Finalize(void)
+void CInput::GamePad_Finalize(void)
 {
 	for (int i = 0; i<GAMEPADMAX; i++) {
 		if (g_pGamePad[i])
@@ -285,7 +253,7 @@ void GamePad_Finalize(void)
 //
 //
 //　ゲームパッド更新
-void GamePad_Update(void)
+void CInput::GamePad_Update(void)
 {
 	HRESULT			result;
 	DIJOYSTATE2		dijs;
@@ -350,14 +318,14 @@ void GamePad_Update(void)
 //
 //
 //　ゲームパッド入力（ずっと）
-BOOL GamePad_IsPress(int padNo, DWORD button)
+BOOL CInput::PadPress(int padNo, DWORD button)
 {
 	return (button & g_padState[padNo]);
 }
 //
 //
 //　ゲームパッド入力（一度）
-BOOL GamePad_IsTrigger(int padNo, DWORD button)
+BOOL CInput::PadTrigger(int padNo, DWORD button)
 {
 	return (button & g_padTrigger[padNo]);
 }
@@ -366,7 +334,7 @@ BOOL GamePad_IsTrigger(int padNo, DWORD button)
 
 
 
-bool Mouse_Initialize(HWND hWnd)
+bool CInput::Mouse_Initialize(HWND hWnd)
 {
 	HRESULT ret = S_FALSE;
 	
@@ -414,7 +382,7 @@ bool Mouse_Initialize(HWND hWnd)
 //
 //
 //
-void Mouse_Finalize()
+void CInput::Mouse_Finalize()
 {
 	// DirectInputのデバイスを開放
 	if (g_pDIMouse) {
@@ -425,7 +393,7 @@ void Mouse_Finalize()
 //
 //
 //
-void Mouse_Update()
+void CInput::Mouse_Update()
 {
 	DIMOUSESTATE zdiMouseState;
 
@@ -452,7 +420,7 @@ void Mouse_Update()
 //
 //
 //
-D3DXVECTOR2 Mouse_Cursor_Pos() {
+D3DXVECTOR2 CInput::Mouse_Cursor_Pos() {
 
 	POINT poi;
 	GetCursorPos(&poi);
@@ -466,7 +434,7 @@ D3DXVECTOR2 Mouse_Cursor_Pos() {
 //
 //
 //
-bool Mouse_On_Window() {
+bool CInput::Mouse_On_Window() {
 	
 	RECT w_rec;
 	GetWindowRect(m_phWnd, &w_rec);
@@ -487,23 +455,23 @@ bool Mouse_On_Window() {
 }
 
 
-bool Mouse_Click(int nMouse) 
+bool CInput::Mouse_Click(int nMouse)
 {
 	return (g_zdiMouseState[nMouse] & 0x80) ? true : false;
 }
 
-bool Mouse_Trigger(int nMouse)
+bool CInput::Mouse_Trigger(int nMouse)
 {
 	return (g_zdiMouseStateTrigger[nMouse] & 0x80) ? true : false;
 }
 
-bool Mouse_Release(int nMouse)
+bool CInput::Mouse_Release(int nMouse)
 {
 	return (g_zdiMouseStateRelease[nMouse] & 0x80) ? true : false;
 }
 
 //　マウスの状態
-bool GetMouseState(int state_num) {
+bool CInput::GetMouseState(int state_num) {
 
 	if (state_num == M_DRAGDROP){
 		return (g_zdiMouseState[M_CLICK_LEFT] & 0x80) ? true : false;
@@ -516,7 +484,7 @@ bool GetMouseState(int state_num) {
 }
 //
 //
-D3DXVECTOR2 GetCurDirect(int nMouse) 
+D3DXVECTOR2 CInput::GetCurDirect(int nMouse)
 {
 	//static D3DXVECTOR2	cursor_direct[2];	//x,yの二次元座標
 
