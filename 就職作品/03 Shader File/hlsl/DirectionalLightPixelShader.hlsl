@@ -5,6 +5,8 @@
 Texture2D g_texColor	: register(t0);
 Texture2D g_texNormal	: register(t1);
 Texture2D g_texPosition	: register(t2);
+Texture2D g_texPointLight: register(t3);
+
 
 SamplerState g_samLinear : register(s0);
 SamplerState g_samDeferredLinear : register(s1);
@@ -21,7 +23,8 @@ float4 main(VS_OUT input) : SV_Target
     float4 vDiffuse = g_texColor.Load(sampleIndices);
     float4 vWorldNormal = g_texNormal.Load(sampleIndices);
     float3 vWorldPos = g_texPosition.Load(sampleIndices).xyz;
-   
+    float3 vPointLight = g_texPointLight.Load(sampleIndices).xyz;
+    
     float3 vLightVector = normalize(g_vLight).xyz;
     float NL = saturate(-dot(vWorldNormal.xyz, vLightVector));
     NL = NL * 0.9f + 0.1f;//世界観的に暗め
@@ -57,7 +60,10 @@ float4 main(VS_OUT input) : SV_Target
     //Color.rgb += Rim;
     //---------------------------------------------------------------
 	
+    //ポイントライトを加算
 
+    Color.rgb += vPointLight.xyz;
+    
     return Color;
    
 }

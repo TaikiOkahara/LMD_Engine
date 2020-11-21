@@ -6,13 +6,13 @@
 class CFog : public CGameObject
 {
 private:
-	EFFECT m_Effect;
+	FOG m_Fog;
 
 	ID3D11VertexShader* m_pVertexShader;
 	ID3D11PixelShader* m_pPixelShader;
 
 	ID3D11ShaderResourceView* m_FogTexture = NULL;
-	bool isEnableCollision = true;
+	bool m_Enable = true;
 public:
 	CFog() {}
 	~CFog() {}

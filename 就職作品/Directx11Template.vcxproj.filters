@@ -136,6 +136,9 @@
     <Filter Include="Shader-----------------------\fog">
       <UniqueIdentifier>{abbb36bf-d7f3-4af4-a1b7-cea638334861}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader-----------------------\playerShadow">
+      <UniqueIdentifier>{d681d1bc-375d-4d3b-9253-d3a1f44b9459}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="00 Source File\Entry.cpp">
@@ -385,9 +388,6 @@
     <FxCompile Include="03 Shader File\hlsl\Tile_PixelShader.hlsl">
       <Filter>Shader-----------------------\tile</Filter>
     </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\Tile_VertexShader.hlsl">
-      <Filter>Shader-----------------------\tile</Filter>
-    </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\CollisionVertexShader.hlsl">
       <Filter>Shader-----------------------\collision</Filter>
     </FxCompile>
@@ -423,6 +423,9 @@
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\FogPixelShader.hlsl">
       <Filter>Shader-----------------------\fog</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\PlayerShadowPixelShader.hlsl">
+      <Filter>Shader-----------------------\playerShadow</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

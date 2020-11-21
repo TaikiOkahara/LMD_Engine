@@ -15,11 +15,9 @@ static HINSTANCE	m_hInstance;
 static WINDOW*		m_pWindow;
 static HWND			m_hWnd;
 
-//static void MainLoop();
-//static void FixFPS60();
 
 
-//Scene g_Scene;
+
 CScene* Base::m_Scene = nullptr;
 
 //
@@ -38,23 +36,23 @@ void Base::MainLoop()
 	m_Scene->Draw();
 	
 	
-	
-	RENDERER::Deferred();
-	
-	if (RENDERER::toggleDirectional)
-	{
-
-		RENDERER::DirectionlLighting();
-	}
-
-	if (RENDERER::togglePoint)
-	{
+	if (RENDERER::togglePoint){
 		RENDERER::PointLighting();
 		m_Scene->DrawLighting();
 	}
 	
+	RENDERER::Deferred();
+	
+	if (RENDERER::toggleDirectional){
+		RENDERER::DirectionlLighting();
+	}
 
-	m_Scene->DrawEffect();
+	for (int i = 0; i < m_Scene->GetLayerGameObjectsCount(3); i++)
+	{
+		m_Scene->DrawEffect();
+		RENDERER::EffectDraw();
+	}
+	
 
 
 	m_Scene->Imgui();
@@ -114,8 +112,6 @@ HRESULT Base::Init(HINSTANCE phInstance)
 	RENDERER::Init(&di);
 
 	
-	//m_Scene = new Scene();
-	//m_Scene->Init();
 
 	SetScene<Game>();
 
@@ -123,7 +119,6 @@ HRESULT Base::Init(HINSTANCE phInstance)
 	LoadIni();
 
 
-	//IMGUI_INIT();
 	IMGUI_Init(m_hWnd);
 
 	//　キーボード初期化

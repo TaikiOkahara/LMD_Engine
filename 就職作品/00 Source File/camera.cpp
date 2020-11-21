@@ -15,14 +15,14 @@
 //　初期化
 void CCamera::Init()
 {
-	D3DXVECTOR3 Eye(0, 1, -4);
-	D3DXVECTOR3 LookAt(0, -2, 0);
+	//D3DXVECTOR3 Eye(0, 1, -4);
+	//D3DXVECTOR3 LookAt(0, -2, 0);
 
 	m_Distance = D3DXVECTOR3(0, 1.5, -5);
 
 	m_Angle = D3DX_PI / 4;
 	m_Aspect = (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT;
-	m_Near = 0.1f;
+	m_Near = 1.0f;
 	m_Far = 1000.0f;
 }
 //
@@ -87,40 +87,65 @@ void CCamera::Update()
 	if (m_CameraControl)
 	{
 		CWall* wall = Base::GetScene()->GetGameObject<CWall>(1);
-		m_Transform.position = RayIntersect(wall);
+		m_Transform.position = CameraRayIntersect(wall);
 		CPillar* pillar = Base::GetScene()->GetGameObject<CPillar>(1);
-		m_Transform.position = RayIntersect(pillar);
+		m_Transform.position = CameraRayIntersect(pillar);
 
 	}
+
+
+	//　マトリクス設定
+
+	m_ViewMatrix.viewOldMatrix = m_ViewMatrix.viewMatrix;
+	m_ProjMatrix.projOldMatrix = m_ProjMatrix.projMatrix;
+
+
+	D3DXMatrixLookAtLH(&m_ViewMatrix.viewMatrix, &m_Transform.position, &m_Target, &D3DXVECTOR3(0, 1, 0));
+	RENDERER::SetViewMatrix(m_ViewMatrix);
+
+
+	D3DXMatrixPerspectiveFovLH(&m_ProjMatrix.projMatrix, m_Angle, m_Aspect, m_Near, m_Far);
+	RENDERER::SetProjectionMatrix(m_ProjMatrix);
+
+	EYE eye;
+	eye.Eye = D3DXVECTOR4(m_Transform.position.x, m_Transform.position.y, m_Transform.position.z, 0);
+	RENDERER::SetEye(eye);
+
+	D3DXMATRIX vp, invvp;
+
+	vp = m_ViewMatrix.viewMatrix * m_ProjMatrix.projMatrix;
+
+	D3DXMatrixInverse(&invvp, NULL, &vp);
+
+	D3DXVECTOR3 vpos[4];
+	D3DXVECTOR3 wpos[4];
+
+	vpos[0] = D3DXVECTOR3(-1.0f, 1.0f, 1.0f);
+	vpos[1] = D3DXVECTOR3( 1.0f, 1.0f, 1.0f);
+	vpos[2] = D3DXVECTOR3(-1.0f,-1.0f, 1.0f);
+	vpos[3] = D3DXVECTOR3( 1.0f,-1.0f, 1.0f);
+	
+	D3DXVec3TransformCoord(&wpos[0], &vpos[0], &invvp);
+	D3DXVec3TransformCoord(&wpos[1], &vpos[1], &invvp);
+	D3DXVec3TransformCoord(&wpos[2], &vpos[2], &invvp);
+	D3DXVec3TransformCoord(&wpos[3], &vpos[3], &invvp);
+
+	m_CullingWPos[0] = D3DXVECTOR4(wpos[0].x,wpos[0].y,wpos[0].z,0);
+	m_CullingWPos[1] = D3DXVECTOR4(wpos[1].x,wpos[1].y,wpos[1].z,0);
+	m_CullingWPos[2] = D3DXVECTOR4(wpos[2].x,wpos[2].y,wpos[2].z,0);
+	m_CullingWPos[3] = D3DXVECTOR4(wpos[3].x,wpos[3].y,wpos[3].z,0);
 }
 //
 //
 //
 void CCamera::Draw()
 {
-	//　マトリクス設定
-
-
-	
-
-	D3DXMATRIX ViewMatrix;
-	D3DXMATRIX ProjectionMatrix;
-	D3DXMatrixLookAtLH(&ViewMatrix, &m_Transform.position, &m_Target, &D3DXVECTOR3(0, 1, 0));
-	RENDERER::SetViewMatrix(ViewMatrix);
-
-
-	D3DXMatrixPerspectiveFovLH(&ProjectionMatrix,m_Angle,m_Aspect,m_Near,m_Far);
-	RENDERER::SetProjectionMatrix(ProjectionMatrix);
-
-	EYE eye;
-	eye.Eye = D3DXVECTOR4(m_Transform.position.x, m_Transform.position.y, m_Transform.position.z, 0);
-	RENDERER::SetEye(eye);
 }
 
 
 
 
-D3DXVECTOR3 CCamera::RayIntersect(CInstanceGameObject* object)
+D3DXVECTOR3 CCamera::CameraRayIntersect(CInstanceGameObject* object)
 {
 
 	CPlayer* player = Base::GetScene()->GetGameObject<CPlayer>(1);
@@ -142,7 +167,7 @@ D3DXVECTOR3 CCamera::RayIntersect(CInstanceGameObject* object)
 		offsetVertex[i] = object->GetCollision()->GetVertex()[i];
 	}
 
-	int count = object->GetMeshCount();
+	int count = object->GetMeshMax();
 	for (int objnum = 0; objnum < count; objnum++)
 	{
 		D3DXVECTOR3 vertex[8];

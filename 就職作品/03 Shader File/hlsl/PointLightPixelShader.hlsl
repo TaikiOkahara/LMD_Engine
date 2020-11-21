@@ -8,9 +8,9 @@ Texture2D g_texNormal : register(t1);
 Texture2D g_texPosition : register(t2);
 
 
-float4 main(VS_LIGHT_OUT input) : SV_Target
+PS_OUT main(VS_LIGHT_OUT input)
 {
-    //PS_OUT Out = (PS_OUT) 0;
+    PS_OUT Out = (PS_OUT) 0;
     
     int3 sampleIndices = int3(input.Pos.xy, 0);
 
@@ -29,7 +29,7 @@ float4 main(VS_LIGHT_OUT input) : SV_Target
     
     if (dist > input.LightRange.x)//‹——£
     {
-        return float4(0, 0, 0, 1);
+        Out.vPointLight = float4(0, 0, 0, 1);
     }
     
      
@@ -65,20 +65,24 @@ float4 main(VS_LIGHT_OUT input) : SV_Target
     //color = (att == 0) ? float3(0, 0, 1) : color;
     
     //Specular calc
-    //float3 V = g_vEye.xyz - position.xyz;
-    //float3 H = normalize(L + V);
-    //float inputSpecularValue = g_vPointLight[index].specular;
-    //float specular = pow(saturate(dot(normal, H)), inputSpecularValue) * att;
+    float3 V = g_vEye.xyz - position.xyz;
+    float3 H = normalize(L + V);
+    float inputSpecularValue = g_vPointLight[index].specular;
+    float specular = pow(saturate(dot(normal, H)), inputSpecularValue) * att;
 
-    //float3 finalDiffuse = color * diffuse;
-    //float3 finalSpecular = specular * diffuse * att;
+    float3 finalDiffuse = color * diffuse;
+    float3 finalSpecular = specular * diffuse * att;
 
-    //float4 totalColor = float4(finalDiffuse + finalSpecular, 1.0f);
+    float4 totalColor = float4(finalDiffuse + finalSpecular, 1.0f);
 
     
-    float4 totalColor = float4(color, 1.0f);
+    //float4 totalColor = float4(color, 1.0f);
        
     
-    //Out.vColor =  totalColor;
-    return totalColor;
+    Out.vColor =  totalColor;
+    Out.vPointLight = totalColor;
+    
+    //return totalColor;
+    
+    return Out;
 }

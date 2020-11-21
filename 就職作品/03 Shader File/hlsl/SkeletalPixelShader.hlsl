@@ -41,6 +41,9 @@ PS_OUT main(VS_OUT input)
     
     Out.vNormal = bump;
     
+    Out.vMotion = float4(input.MotionDir, 1);
 
+    Out.vDepth = input.Depth;
+    
     return Out;
 }

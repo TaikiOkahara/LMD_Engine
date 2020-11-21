@@ -11,13 +11,9 @@
 void CSceneLight::Init()
 {
 	
-	
-	//m_DL_Intensity = D3DXVECTOR4(1, 0, 0, 0);
-	
-
 	m_Transform.rotation = D3DXVECTOR3(0.5f, 0.0f, 3.5f);
 
-	m_DirectionalLight.Color = D3DXVECTOR4(1, 1, 1, 1);
+	m_DirectionalLight.Color = D3DXVECTOR4(0.4f, 0.6f, 1, 1);
 }
 //
 //
@@ -112,13 +108,7 @@ void CSceneLight::Imgui()
 
 
 		ImGui::ColorEdit3("Color", (float*)&clear_color);
-		/*
-			"##1" や "##2" のような文字列を入れることで互いを区別できるようになり、チェックボックスをクリックしても別のウィンドウの開閉ができるようになります。
-			"##"以降の文字列は描画されません。"Open/Close" と描画されます。"##"を使うのはあくまでコード内で区別するための作法です。
-			"##"以降の文字列は1や2でなくても構いません。
-
-		*/
-
+		
 		ImGui::End();
 	}
 }

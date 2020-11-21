@@ -16,7 +16,7 @@ void CPillar::Init()
 
 
 
-	m_Collision.Init(D3DXVECTOR3(1.0f, 3.25f, 1.0f), D3DXVECTOR3(0, 1.7f, 0));
+	m_Collision.Init(D3DXVECTOR3(1.0f, 4.5f, 1.0f), D3DXVECTOR3(0, 2.25f, 0));
 
 
 
@@ -26,28 +26,25 @@ void CPillar::Init()
 
 
 
-	VECTOR vector;
 
-	vector.scale = D3DXVECTOR3(1, 1, 1);
+	D3DXVECTOR3 scale, rot;
+	scale = m_Transform.scale;
+	rot = m_Transform.rotation;
+
 
 
 	for (int i = 0; i < 6; i++)
 	{
-		//　マトリクス設定
-		vector.position = D3DXVECTOR3(-0.5f, 0.0f,5.0f +  5.0f * i);
-		vector.rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		m_Vector.push_back(vector);
+		//右柱
+		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-0.5f, 0.0f,5.0f + 5.0f*i),rot, scale });
 
-		//　マトリクス設定
-		vector.position = D3DXVECTOR3(-4.5f, 0.0f, 5.0f + 5.0f * i);
-		vector.rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		m_Vector.push_back(vector);
+		//左柱
+		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-4.5f, 0.0f,5.0f + 5.0f*i),rot, scale });
 	}
 
 	
 
 	InitInstance();
-	UpdateInstance();//処理速度が落ちるかもだからInitに置いてる
 }
 
 void CPillar::Uninit()
@@ -64,6 +61,7 @@ void CPillar::Uninit()
 
 void CPillar::Update()
 {
+	UpdateInstance();
 
 }
 
@@ -78,30 +76,28 @@ void CPillar::Draw()
 
 	m_pMesh->DrawInstanced(m_MeshCount);
 
-	if (!isEnableCollision)
+	if (m_EnableCollision)
 		m_Collision.DrawInstance(m_MeshCount);
 }
 
 void CPillar::Imgui()
 {
-	static bool show_pillar_window = true;
+	static bool show = true;
 
-	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 	if (CInput::KeyTrigger(DIK_F1))
-		show_pillar_window = !show_pillar_window;
+		show = !show;
 
-	if (show_pillar_window)
+	if (show)
 	{
 		ImGuiWindowFlags lw_flag = 0;
 		static bool lw_is_open;
 
 		ImGui::Begin("Pillar", &lw_is_open, lw_flag);
 
-		ImGui::Checkbox("isEnableCollision", &isEnableCollision);
+		ImGui::Checkbox("isEnableCollision", &m_EnableCollision);
 
-		int count = m_MeshCount;
-		ImGui::InputInt("MeshCount", &count, 1);
+		ImGui::Text("MeshCount : %d / %d", m_MeshCount, m_MeshMax);
 
 
 		ImGui::End();

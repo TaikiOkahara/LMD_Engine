@@ -88,6 +88,15 @@ public:
 		}
 	}
 	
+	int GetLayerGameObjectsCount(int layer)
+	{
+		if (layer >= LAYER::DRAW_LAYER_MAX)
+			assert(layer);
+
+		return m_GameObject[layer].size();
+	}
+
+
 	template <typename T>
 	T* AddGameObject(int Layer)
 	{

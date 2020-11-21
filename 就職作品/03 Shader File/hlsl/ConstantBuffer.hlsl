@@ -1,4 +1,4 @@
-#define ANIMATION_MATRIX_MAX (256)
+#define ANIMATION_MATRIX_MAX (64)
 #define LIGHT_NUM (128)
 
 
@@ -13,11 +13,13 @@ cbuffer WorldBuffer : register(b0)
 cbuffer ViewBuffer : register(b1)
 {
     matrix g_mView;
+    matrix g_mOldView;
 }
 
 cbuffer ProjectionBuffer : register(b2)
 {
     matrix g_mProj;
+    matrix g_mOldProj;
 }
 
 cbuffer EyeBuffer : register(b3)
@@ -32,7 +34,6 @@ cbuffer DirectionalLightBuffer : register(b4)
     float4 g_vLight; //ライトの座標
 	float4 g_vLightColor;//色	
 	
-	//matrix g_mLightView;
 }
 
 
@@ -52,16 +53,17 @@ cbuffer PointLightBuffer : register(b5)
 
 cbuffer EffectBuffer : register(b6)
 {
-  
-    float2 g_fFogOffset0; //フォグの揺らぎテクスチャーのテクセルのオフセット値
-    float2 g_fFogOffset1; //フォグの揺らぎテクスチャーのテクセルのオフセット値
-    float g_fFogTexScale; //テクセルのスケーリング値。
-    float g_fFogMaxHeight; //頂点の高さの最大値。頂点の高さがこの値より大きくなるとフォグがかからなくなる。
-    float g_fFogMinHeight; //頂点の高さの最小値。頂点の高さがこの値より小さくなるとフォグカラーで塗りつぶされる。
-    float g_fFogDummy0;
+    float4 g_fDeferred;//xでレンダリングバッファ変更（セット番号と共通）
     
+    
+    //Fog
+    float4 g_fFogOffset; //フォグの揺らぎテクスチャーのテクセルのオフセット値 x 2 
+    float4 g_fFogData; //x :テクセルのスケーリング値 y :頂点の高さの最大値 z : 頂点の高さの最小値 w : ダミー
+  
     float3 g_fFogColor;
-    float g_fFogDummy1;
+    float g_fFogEnable;
+    
+    
 }
 
 cbuffer AnimationBuffer : register(b7)

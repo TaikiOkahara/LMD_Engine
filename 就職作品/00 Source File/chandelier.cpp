@@ -26,7 +26,7 @@ void CChandelier::Init()
 
 	
 
-	VECTOR vector;
+	TRANSFORM vector;
 	
 	vector.scale = m_Transform.scale;
 	for (int i = 0; i < 3; i++)
@@ -35,12 +35,11 @@ void CChandelier::Init()
 		////　マトリクス設定
 		vector.position = D3DXVECTOR3(-2.5f, 4.0f, 5.0f + 10.0f * i);
 		vector.rotation = m_Transform.rotation;
-		m_Vector.push_back(vector);
+		m_TransformList.push_back(vector);
 	}
 
 
 	InitInstance();
-	UpdateInstance();//処理速度が落ちるかもだからInitに置いてる
 }
 
 void CChandelier::Uninit()
@@ -57,6 +56,7 @@ void CChandelier::Uninit()
 
 void CChandelier::Update()
 {
+	UpdateInstance();
 
 }
 
@@ -71,30 +71,28 @@ void CChandelier::Draw()
 
 	m_pMesh->DrawInstanced(m_MeshCount);
 
-	if(!isEnableCollision)
+	if(m_EnableCollision)
 		m_Collision.DrawInstance(m_MeshCount);
 }
 
 void CChandelier::Imgui()
 {
-	static bool show_pillar_window = true;
+	static bool show = true;
 
-	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 	if (CInput::KeyTrigger(DIK_F1))
-		show_pillar_window = !show_pillar_window;
+		show = !show;
 
-	if (show_pillar_window)
+	if (show)
 	{
 		ImGuiWindowFlags lw_flag = 0;
 		static bool lw_is_open;
 
 		ImGui::Begin("Chandelier", &lw_is_open, lw_flag);
 
-		ImGui::Checkbox("isEnableCollision", &isEnableCollision);
+		ImGui::Checkbox("isEnableCollision", &m_EnableCollision);
 
-		int count = m_MeshCount;
-		ImGui::InputInt("MeshCount", &count, 1);
+		ImGui::Text("MeshCount : %d / %d", m_MeshCount, m_MeshMax);
 	
 
 		ImGui::End();

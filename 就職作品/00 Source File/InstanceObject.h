@@ -2,11 +2,11 @@
 #include "gameobject.h"
 #include "tile.h"
 #include "collision.h"
-#include "StaticMesh.h"
 
 class CInstanceGameObject : public CGameObject
 {
 private:
+	ID3D11ComputeShader* m_pComputeShader = nullptr;
 
 	//構造体バッファとビュー
 	ID3D11Buffer* m_pMatrixBuffer = nullptr;
@@ -14,22 +14,22 @@ private:
 	//スタック操作を行うバッファとビュー
 	ID3D11Buffer* m_pIndexBuffer = nullptr;
 	ID3D11UnorderedAccessView* m_pIndexBufferUAV = nullptr;
+	//インデックス参照バッファとビュー
+	ID3D11Buffer* m_pOutIndexBuffer = nullptr;
+	ID3D11ShaderResourceView* m_pOutIndexBufferSRV = nullptr;
+
 
 	ID3D11Buffer* m_pCounterBuffer = nullptr;
-	ID3D11ComputeShader* m_pComputeShader = nullptr;
 	
 protected:
-	struct VECTOR
-	{
-		D3DXVECTOR3 position;
-		D3DXVECTOR3 rotation;
-		D3DXVECTOR3 scale;
-	};
 	
-	std::vector<VECTOR> m_Vector;
+	std::vector<TRANSFORM> m_TransformList;
 	
 
 	UINT m_MeshCount = 0;
+	UINT m_MeshMax = 0;
+	CULLING culling;
+
 
 
 	void InitInstance();
@@ -43,16 +43,16 @@ public:
 	~CInstanceGameObject(){}
 
 	//オーバーロード
-	D3DXVECTOR3  GetPosition(int index) { return m_Vector[index].position; }
-	D3DXVECTOR3  GetRotation(int index) { return m_Vector[index].rotation; }
-	D3DXVECTOR3  GetScale(int index) { return m_Vector[index].scale; }
+	D3DXVECTOR3  GetPosition(int index) { return m_TransformList[index].position; }
+	D3DXVECTOR3  GetRotation(int index) { return m_TransformList[index].rotation; }
+	D3DXVECTOR3  GetScale(int index) { return m_TransformList[index].scale; }
 	D3DXVECTOR3 GetForward(int index)
 	{
 		D3DXMATRIX rot;
 		D3DXMatrixRotationYawPitchRoll(&rot,
-			m_Vector[index].rotation.y,
-			m_Vector[index].rotation.x,
-			m_Vector[index].rotation.z);
+			m_TransformList[index].rotation.y,
+			m_TransformList[index].rotation.x,
+			m_TransformList[index].rotation.z);
 
 		D3DXVECTOR3 forward;
 		forward.x = rot._31;
@@ -65,9 +65,9 @@ public:
 	{
 		D3DXMATRIX rot;
 		D3DXMatrixRotationYawPitchRoll(&rot,
-			m_Vector[index].rotation.y,
-			m_Vector[index].rotation.x,
-			m_Vector[index].rotation.z);
+			m_TransformList[index].rotation.y,
+			m_TransformList[index].rotation.x,
+			m_TransformList[index].rotation.z);
 
 		D3DXVECTOR3 right;
 		right.x = rot._11;
@@ -80,9 +80,9 @@ public:
 	{
 		D3DXMATRIX rot;
 		D3DXMatrixRotationYawPitchRoll(&rot,
-			m_Vector[index].rotation.y,
-			m_Vector[index].rotation.x,
-			m_Vector[index].rotation.z);
+			m_TransformList[index].rotation.y,
+			m_TransformList[index].rotation.x,
+			m_TransformList[index].rotation.z);
 
 		D3DXVECTOR3 up;
 		up.x = rot._21;
@@ -94,4 +94,5 @@ public:
 
 
 	int GetMeshCount() { return m_MeshCount; }
+	int GetMeshMax() { return m_MeshMax; }
 };

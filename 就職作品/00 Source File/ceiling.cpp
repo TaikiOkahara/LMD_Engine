@@ -2,7 +2,8 @@
 #include "renderer.h"
 #include "StaticMesh.h"
 #include "ceiling.h"
-
+#include "Imgui11.h"
+#include "input.h"
 
 //
 //
@@ -17,25 +18,25 @@ void CCeiling::Init()
 
 	m_Transform.position = D3DXVECTOR3(-0.5f, 3.5f, 2.5f);
 
-
+	m_Collision.Init(D3DXVECTOR3(1, 1, 1), D3DXVECTOR3(0, 0, 0));
 	
 	//シェーダー作成
 	RENDERER::CreateVertexShader(&m_pVertexShader, &RENDERER::m_pCommonVertexLayout, nullptr, 0, "InstanceVertexShader.cso");
 	RENDERER::CreatePixelShader(&m_pPixelShader, "PixelShader.cso");
 
 
-	VECTOR vector;
+	TRANSFORM vector;
 	for (int i = 0; i < 6; i++)
 	{
 		vector.position = D3DXVECTOR3(m_Transform.position.x, m_Transform.position.y, m_Transform.position.z + i * 5);
 		vector.rotation = m_Transform.rotation;
 		vector.scale = m_Transform.scale;
 		
-		m_Vector.push_back(vector);
+		m_TransformList.push_back(vector);
 	}
 
 	InitInstance();
-	UpdateInstance();//処理速度が落ちるかもだからInitに置いてる
+	
 }
 
 void CCeiling::Uninit()
@@ -45,6 +46,7 @@ void CCeiling::Uninit()
 
 	UninitInstance();
 
+	m_Collision.Uninit();
 
 	SAFE_RELEASE(m_pVertexShader);
 	SAFE_RELEASE(m_pPixelShader);
@@ -52,7 +54,7 @@ void CCeiling::Uninit()
 
 void CCeiling::Update()
 {
-
+	UpdateInstance();
 }
 
 void CCeiling::Draw()
@@ -63,6 +65,32 @@ void CCeiling::Draw()
 	RENDERER::m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);
 	RENDERER::m_pDeviceContext->IASetInputLayout(RENDERER::m_pCommonVertexLayout);
 
-
 	m_pMesh->DrawInstanced(m_MeshCount);
+
+	if (m_EnableCollision)
+		m_Collision.DrawInstance(m_MeshCount);
+}
+
+void CCeiling::Imgui()
+{
+	static bool show = true;
+
+
+	if (CInput::KeyTrigger(DIK_F1))
+		show = !show;
+
+	if (show)
+	{
+		ImGuiWindowFlags lw_flag = 0;
+		static bool lw_is_open;
+
+		ImGui::Begin("Ceiling", &lw_is_open, lw_flag);
+
+		ImGui::Checkbox("isEnableCollision", &m_EnableCollision);
+
+		ImGui::Text("MeshCount : %d / %d", m_MeshCount, m_MeshMax);
+
+
+		ImGui::End();
+	}
 }

@@ -7,13 +7,7 @@ void CAnimationModel::LoadModel(const char* FileName, D3DXVECTOR3 pos)
 {
 	const std::string modelPath(FileName);
 
-	//TEXTUREINI textureIni;
-	//LoadTextureFile(textureIni, FileName);
-
-	/*m_AiScene = aiImportFile(FileName,
-		aiProcessPreset_TargetRealtime_MaxQuality);*/
-		//↓テクスチャ座標をDirectX用に変換してくれるので、
-		//Y座標を1.0f‐する必要がない
+	
 	m_AiScene = aiImportFile(FileName,
 		aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_ConvertToLeftHanded);
 
@@ -22,6 +16,7 @@ void CAnimationModel::LoadModel(const char* FileName, D3DXVECTOR3 pos)
 	m_VertexBuffer = new ID3D11Buffer*[m_AiScene->mNumMeshes];
 	m_IndexBuffer = new ID3D11Buffer*[m_AiScene->mNumMeshes];
 
+	m_AnimationMatrix = new ANIMATIONMATRIX[m_AiScene->mNumMeshes];
 
 	//変形後頂点配列生成
 	m_DeformVertex = new std::vector<DEFORM_ANIMVERTEX>[m_AiScene->mNumMeshes];
@@ -97,7 +92,7 @@ void CAnimationModel::LoadModel(const char* FileName, D3DXVECTOR3 pos)
 
 			for (unsigned int b = 0; b < 4; b++)
 			{
-				deformVertex.BoneName[b] = "None";
+				deformVertex.BoneName[b] = "";
 				deformVertex.BoneWeight[b] = 0.0f;
 			}
 
@@ -121,7 +116,7 @@ void CAnimationModel::LoadModel(const char* FileName, D3DXVECTOR3 pos)
 				m_DeformVertex[m][weight.mVertexId].BoneWeight[num] = weight.mWeight;
 				m_DeformVertex[m][weight.mVertexId].BoneName[num] = bone->mName.C_Str();
 				m_DeformVertex[m][weight.mVertexId].BoneIndex[num] = b;
-				m_DeformVertex[m][weight.mVertexId].BoneNum++;
+				m_DeformVertex[m][weight.mVertexId].BoneNum = num + 1;
 
 				if (num >= 4)
 				{
@@ -163,11 +158,11 @@ void CAnimationModel::LoadModel(const char* FileName, D3DXVECTOR3 pos)
 		delete[] vertex;
 	}
 
-	for (int i = 0; i < ANIMATION_MATRIX_MAX; i++)
-	{
-		//正規化
-		D3DXMatrixIdentity(&m_AnimationMatrix.Animation[i]);
-	}
+	//for (int i = 0; i < ANIMATION_MATRIX_MAX; i++)
+	//{
+	//	//正規化
+	//	D3DXMatrixIdentity(&m_AnimationMatrix.Animation[i]);
+	//}
 }
 
 void CAnimationModel::Unload()
@@ -180,6 +175,7 @@ void CAnimationModel::Unload()
 
 	delete[] m_VertexBuffer;
 	delete[] m_IndexBuffer;
+	delete[] m_AnimationMatrix;
 
 	for (std::pair<const std::string, ID3D11ShaderResourceView*> pair : m_Texture)
 	{
@@ -218,6 +214,8 @@ void CAnimationModel::Update(const char* AnimationName,int Frame)
 		}
 	}
 
+	
+
 
 	const aiScene* scene0 = m_Animation[m_CurAnimationName];
 	const aiScene* scene1 = m_Animation[AnimationName];
@@ -226,35 +224,67 @@ void CAnimationModel::Update(const char* AnimationName,int Frame)
 	if (!scene1->HasAnimations()){ return;}
 
 
-	//アニメーションデータからボーンマトリクス算出
-	aiAnimation* animation0 = scene0->mAnimations[0];
-	aiAnimation* animation1 = scene1->mAnimations[0];
+	
 
-	for (unsigned int c = 0; c < animation0->mNumChannels; c++)
+	if (m_CurAnimationName == AnimationName)
 	{
-		aiNodeAnim* nodeAnim0 = animation0->mChannels[c];
-		aiNodeAnim* nodeAnim1 = animation1->mChannels[c];
-		BONE* bone = &m_Bone[nodeAnim0->mNodeName.C_Str()];
+		//アニメーションデータからボーンマトリクス算出
+		aiAnimation* animation = scene0->mAnimations[0];
 
-		int f0,f1;
-		f0 = Frame % nodeAnim0->mNumRotationKeys;//簡易実装
-		f1 = Frame % nodeAnim1->mNumRotationKeys;//簡易実装
-		
-		aiQuaternion rot;
-		aiQuaternion::Interpolate(rot,nodeAnim1->mRotationKeys[f1].mValue,nodeAnim0->mRotationKeys[f0].mValue,m_BlendTime);
+		for (unsigned int c = 0; c < animation->mNumChannels; c++)
+		{
+			aiNodeAnim* nodeAnim = animation->mChannels[c];
 
-		f0 = Frame % nodeAnim0->mNumPositionKeys;//簡易実装
-		f1 = Frame % nodeAnim1->mNumPositionKeys;//簡易実装
+			BONE* bone = &m_Bone[nodeAnim->mNodeName.C_Str()];
 
-		aiVector3D pos;
-		
-		pos.x = nodeAnim0->mPositionKeys[f0].mValue.x * m_BlendTime + nodeAnim1->mPositionKeys[f1].mValue.x * (1.0f - m_BlendTime);
-		pos.y = nodeAnim0->mPositionKeys[f0].mValue.y * m_BlendTime + nodeAnim1->mPositionKeys[f1].mValue.y * (1.0f - m_BlendTime);
-		pos.z = nodeAnim0->mPositionKeys[f0].mValue.z * m_BlendTime + nodeAnim1->mPositionKeys[f1].mValue.z * (1.0f - m_BlendTime);
+			int frot,fpos;
+			
+			frot = Frame % nodeAnim->mNumRotationKeys;//簡易実装
+			fpos = Frame % nodeAnim->mNumPositionKeys;//簡易実装
 
-		bone->AnimationMatrix = aiMatrix4x4(aiVector3D(1.0f, 1.0f, 1.0f), rot, pos);
 
+			aiQuaternion rot = nodeAnim->mRotationKeys[frot].mValue;
+			aiVector3D pos = nodeAnim->mPositionKeys[fpos].mValue;
+
+
+			bone->AnimationMatrix = aiMatrix4x4(aiVector3D(1.0f, 1.0f, 1.0f), rot, pos);
+		}
 	}
+	else
+	{
+		//アニメーションデータからボーンマトリクス算出
+		aiAnimation* animation0 = scene0->mAnimations[0];
+		aiAnimation* animation1 = scene1->mAnimations[0];
+
+		for (unsigned int c = 0; c < animation0->mNumChannels; c++)
+		{
+			aiNodeAnim* nodeAnim0 = animation0->mChannels[c];
+			aiNodeAnim* nodeAnim1 = animation1->mChannels[c];
+			BONE* bone = &m_Bone[nodeAnim0->mNodeName.C_Str()];
+
+			int f0, f1;
+			f0 = Frame % nodeAnim0->mNumRotationKeys;//簡易実装
+			f1 = Frame % nodeAnim1->mNumRotationKeys;//簡易実装
+
+			aiQuaternion rot;
+			aiQuaternion::Interpolate(rot, nodeAnim1->mRotationKeys[f1].mValue, nodeAnim0->mRotationKeys[f0].mValue, m_BlendTime);
+
+			f0 = Frame % nodeAnim0->mNumPositionKeys;//簡易実装
+			f1 = Frame % nodeAnim1->mNumPositionKeys;//簡易実装
+
+			aiVector3D pos;
+
+			pos = nodeAnim0->mPositionKeys[f0].mValue * m_BlendTime + nodeAnim1->mPositionKeys[f1].mValue * (1.0f - m_BlendTime);
+			//pos.x = nodeAnim0->mPositionKeys[f0].mValue.x * m_BlendTime + nodeAnim1->mPositionKeys[f1].mValue.x * (1.0f - m_BlendTime);
+			//pos.y = nodeAnim0->mPositionKeys[f0].mValue.y * m_BlendTime + nodeAnim1->mPositionKeys[f1].mValue.y * (1.0f - m_BlendTime);
+			//pos.z = nodeAnim0->mPositionKeys[f0].mValue.z * m_BlendTime + nodeAnim1->mPositionKeys[f1].mValue.z * (1.0f - m_BlendTime);
+
+			bone->AnimationMatrix = aiMatrix4x4(aiVector3D(1.0f, 1.0f, 1.0f), rot, pos);
+
+		}
+	}
+
+	
 
 	//再帰的にボーンマトリクスを更新
 	UpdateBoneMatrix(m_AiScene->mRootNode, aiMatrix4x4());
@@ -269,32 +299,28 @@ void CAnimationModel::Update(const char* AnimationName,int Frame)
 		{
 			aiBone* bone = mesh->mBones[b];
 
-			m_AnimationMatrix.Animation[b]._11 = m_Bone[bone->mName.C_Str()].Matrix.a1;
-			m_AnimationMatrix.Animation[b]._12 = m_Bone[bone->mName.C_Str()].Matrix.a2;
-			m_AnimationMatrix.Animation[b]._13 = m_Bone[bone->mName.C_Str()].Matrix.a3;
-			m_AnimationMatrix.Animation[b]._14 = m_Bone[bone->mName.C_Str()].Matrix.a4;
+			m_AnimationMatrix[m].Animation[b]._11 = m_Bone[bone->mName.C_Str()].Matrix.a1;
+			m_AnimationMatrix[m].Animation[b]._12 = m_Bone[bone->mName.C_Str()].Matrix.a2;
+			m_AnimationMatrix[m].Animation[b]._13 = m_Bone[bone->mName.C_Str()].Matrix.a3;
+			m_AnimationMatrix[m].Animation[b]._14 = m_Bone[bone->mName.C_Str()].Matrix.a4;
 
-			m_AnimationMatrix.Animation[b]._21 = m_Bone[bone->mName.C_Str()].Matrix.b1;
-			m_AnimationMatrix.Animation[b]._22 = m_Bone[bone->mName.C_Str()].Matrix.b2;
-			m_AnimationMatrix.Animation[b]._23 = m_Bone[bone->mName.C_Str()].Matrix.b3;
-			m_AnimationMatrix.Animation[b]._24 = m_Bone[bone->mName.C_Str()].Matrix.b4;
+			m_AnimationMatrix[m].Animation[b]._21 = m_Bone[bone->mName.C_Str()].Matrix.b1;
+			m_AnimationMatrix[m].Animation[b]._22 = m_Bone[bone->mName.C_Str()].Matrix.b2;
+			m_AnimationMatrix[m].Animation[b]._23 = m_Bone[bone->mName.C_Str()].Matrix.b3;
+			m_AnimationMatrix[m].Animation[b]._24 = m_Bone[bone->mName.C_Str()].Matrix.b4;
 
-			m_AnimationMatrix.Animation[b]._31 = m_Bone[bone->mName.C_Str()].Matrix.c1;
-			m_AnimationMatrix.Animation[b]._32 = m_Bone[bone->mName.C_Str()].Matrix.c2;
-			m_AnimationMatrix.Animation[b]._33 = m_Bone[bone->mName.C_Str()].Matrix.c3;
-			m_AnimationMatrix.Animation[b]._34 = m_Bone[bone->mName.C_Str()].Matrix.c4;
+			m_AnimationMatrix[m].Animation[b]._31 = m_Bone[bone->mName.C_Str()].Matrix.c1;
+			m_AnimationMatrix[m].Animation[b]._32 = m_Bone[bone->mName.C_Str()].Matrix.c2;
+			m_AnimationMatrix[m].Animation[b]._33 = m_Bone[bone->mName.C_Str()].Matrix.c3;
+			m_AnimationMatrix[m].Animation[b]._34 = m_Bone[bone->mName.C_Str()].Matrix.c4;
 
-			m_AnimationMatrix.Animation[b]._41 = m_Bone[bone->mName.C_Str()].Matrix.d1;
-			m_AnimationMatrix.Animation[b]._42 = m_Bone[bone->mName.C_Str()].Matrix.d2;
-			m_AnimationMatrix.Animation[b]._43 = m_Bone[bone->mName.C_Str()].Matrix.d3;
-			m_AnimationMatrix.Animation[b]._44 = m_Bone[bone->mName.C_Str()].Matrix.d4;
+			m_AnimationMatrix[m].Animation[b]._41 = m_Bone[bone->mName.C_Str()].Matrix.d1;
+			m_AnimationMatrix[m].Animation[b]._42 = m_Bone[bone->mName.C_Str()].Matrix.d2;
+			m_AnimationMatrix[m].Animation[b]._43 = m_Bone[bone->mName.C_Str()].Matrix.d3;
+			m_AnimationMatrix[m].Animation[b]._44 = m_Bone[bone->mName.C_Str()].Matrix.d4;
+
 		}
-
-
-		RENDERER::SetAnimationMatrix(m_AnimationMatrix);
-		
 	}
-
 }
 
 void CAnimationModel::Draw()
@@ -311,6 +337,9 @@ void CAnimationModel::Draw()
 
 	for (unsigned int m = 0; m < m_AiScene->mNumMeshes; m++)
 	{
+
+		RENDERER::SetAnimationMatrix(m_AnimationMatrix[m]);
+
 		aiMesh* mesh = m_AiScene->mMeshes[m];
 
 		aiMaterial* material = m_AiScene->mMaterials[mesh->mMaterialIndex];

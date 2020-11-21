@@ -11,15 +11,20 @@ private:
 
 	ID3D11VertexShader* m_VertexShader;
 	ID3D11PixelShader* m_PixelShader;
+	ID3D11PixelShader* m_ShadowPixelShader;
 
 	ID3D11InputLayout* m_VertexLayout;
-
+	ID3D11BlendState* m_pPointLightBlendState;
+	ID3D11DepthStencilState* m_pBuckBuffer_DSTexState;
+	//ID3D11RasterizerState* m_pCommonRasterizerState;
 	D3DXVECTOR3 RayIntersect(CInstanceGameObject* object,int index);
-	FLOAT LenOBBToPoint(CInstanceGameObject& obj, D3DXVECTOR3& p,float length);
-	float m_hit;
-	int m_Frame = 0;
+	D3DXVECTOR3 LenOBBToPoint(CInstanceGameObject& obj, D3DXVECTOR3& p,float length);
+	bool m_hit;
+	
 	D3DXVECTOR3 m_OldPosition;
 	D3DXVECTOR3 m_OldForward;
+
+	bool isEnableCollision = true;
 public:
 	CPlayer(){}
 	~CPlayer(){}

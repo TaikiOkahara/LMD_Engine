@@ -3,10 +3,7 @@
 
 Texture2D g_tex			: register(t0);
 Texture2D g_texNor		: register(t1);
-////GBuffer
-//Texture2D g_texColor	: register(t2);
-//Texture2D g_texNormal	: register(t3);
-//Texture2D g_texPosition	: register(t4);
+
 
 
 SamplerState g_samLinear : register(s0);
@@ -40,10 +37,12 @@ PS_OUT main(VS_OUT input)
     
     normal = normalize(normal);
     
-    //光反射しすぎて見づらかったからバンプマッピングだけにした
-    //Out.vNormal = normalize(float4(bump.xyz, 0));
+    
     Out.vNormal = normal;
 	
-	
+    Out.vMotion = float4(input.MotionDir, 1);
+    
+    Out.vDepth = input.Depth;
+    
 	return Out;
 }

@@ -1,20 +1,6 @@
 #include "Geometry.hlsl"
+#include "ConstantBuffer.hlsl"
 
-cbuffer WorldBuffer : register(b0)
-{
-    matrix g_mWorld;
-    matrix g_mWIT;
-}
-
-cbuffer ViewBuffer : register(b1)
-{
-    matrix g_mView;
-}
-
-cbuffer ProjectionBuffer : register(b2)
-{
-    matrix g_mProj;
-}
 
 
 VS_OUT main(

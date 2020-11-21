@@ -18,10 +18,10 @@ struct DEFORM_ANIMVERTEX
 	aiVector3D Tangent;
 	aiVector3D BiNormal;
 
-	int			BoneIndex[4];
-	int			BoneNum;
-	std::string BoneName[4];//本来はボーンインデックスで管理するべき
-	float		BoneWeight[4];
+	unsigned int BoneIndex[4];
+	unsigned int BoneNum;
+	std::string  BoneName[4];//本来はボーンインデックスで管理するべき
+	float		 BoneWeight[4];
 
 };
 
@@ -55,8 +55,10 @@ private:
 	std::string m_CurAnimationName;
 	float m_BlendTime = 1.0f;
 
-	ANIMATIONMATRIX m_AnimationMatrix;
+	ANIMATIONMATRIX* m_AnimationMatrix = nullptr;
 public:
+	int m_Frame = 0;
+
 	void LoadModel(const char* FileName,D3DXVECTOR3 pos);
 	void LoadTexture(std::string file_name);
 	void LoadAnimation(const char* FileName, const char* AnimationName);

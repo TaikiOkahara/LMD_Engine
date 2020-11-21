@@ -8,7 +8,6 @@ class CWall : public CInstanceGameObject
 private:
 	Tile* m_pWall = nullptr;
 	
-	bool isEnableCollision = true;
 
 	
 	ID3D11VertexShader* m_pVertexShader;

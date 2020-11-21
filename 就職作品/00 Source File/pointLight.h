@@ -15,7 +15,7 @@ private:
 	StaticMesh* m_pMesh = nullptr;
 
 	
-	TRANSFORM* m_TransformList;
+	//TRANSFORM* m_TransformList;
 		 
 
 	//構造体バッファとビュー

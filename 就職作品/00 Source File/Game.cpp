@@ -36,6 +36,7 @@ void Game::Init() {
 	AddGameObject<CPots>(LAYER::DRAW_LAYER_DRAW);//ポット
 	AddGameObject<CChandelier>(LAYER::DRAW_LAYER_DRAW);//シャンデリア
 
+
 	AddGameObject<CPlayer>(LAYER::DRAW_LAYER_DRAW);//プレイヤー
 
 
@@ -50,6 +51,8 @@ void Game::Update() {
 
 	if (timeStop) return;
 	CScene::Update();
+
+	RENDERER::SetDeferred(D3DXVECTOR4(deferredType, 0, 0, 0));
 }
 
 void Game::Imgui()
@@ -72,7 +75,8 @@ void Game::Imgui()
 	{
 		static float f1 = 0.0f;
 		static int counter1 = 0;
-		static int radio = 0;
+		static int radio = deferredType;
+		
 
 		ImGuiWindowFlags flag = 0;
 		ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
@@ -85,7 +89,7 @@ void Game::Imgui()
 
 		ImGui::Checkbox("isStop", &timeStop);
 
-		ImGui::Checkbox("DirectionalColor", &RENDERER::toggleColor);
+		ImGui::Checkbox("DeferredRendering", &RENDERER::toggleColor);
 		ImGui::Checkbox("DirectionalLight", &RENDERER::toggleDirectional);
 		ImGui::Checkbox("PointLight", &RENDERER::togglePoint);
 		//ImGui::Checkbox("Trigger", &show_another_window);
@@ -93,9 +97,13 @@ void Game::Imgui()
 		ImGui::SliderFloat("float", &f1, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 		ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
-		ImGui::RadioButton("RadioButton 0", &radio, 0); ImGui::SameLine();
-		ImGui::RadioButton("RadioButton 1", &radio, 1); ImGui::SameLine();
-		ImGui::RadioButton("RadioButton 2", &radio, 2);
+		ImGui::Text("RendereType");
+		ImGui::RadioButton("Color", &radio, 0); ImGui::SameLine();
+		ImGui::RadioButton("Normal", &radio, 1); ImGui::SameLine();
+		ImGui::RadioButton("Position", &radio, 2); ImGui::SameLine();
+		ImGui::RadioButton("Motion", &radio, 4); ImGui::SameLine();
+		ImGui::RadioButton("Depth", &radio, 5);
+		deferredType = radio;
 
 		if (ImGui::Button("Button"))	// "Button"が押されるとtrueになる
 			counter1++;

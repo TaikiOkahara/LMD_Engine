@@ -72,21 +72,36 @@ VS_OUT main(
     //--------------------------------------------
     //position = Pos;
     
-    matrix WVP;
-    WVP = mul(g_mWorld, g_mView);
-    WVP = mul(WVP, g_mProj);
+    matrix wvp;
+    wvp = mul(g_mWorld, g_mView);
+    wvp = mul(wvp, g_mProj);
+    
+    matrix oldWvp;
+    oldWvp = mul(g_mWorld, g_mOldView);
+    oldWvp = mul(oldWvp, g_mOldProj);
     
     
-    output.Pos = mul(position, WVP);
-    output.WorldNormal = mul(normal.xyz, (float3x3)g_mWorld);
-    
+    output.Pos = mul(position, wvp);
+    output.WorldNormal = mul(normal.xyz, (float3x3)g_mWorld);  
     output.WorldPos = mul(position, g_mWorld);
     output.WorldTangent = mul(tangent.xyz, (float3x3)g_mWorld);
     output.WorldBinormal = mul(binormal.xyz, (float3x3) g_mWorld);
-	
     output.Tex = Tex;
-	//output.ShadowPos = Pos;
+	
+    output.Depth = output.Pos.z / output.Pos.w;
+    
+    float4 curPos = mul(Pos, wvp);
+    float4 lastPos = mul(Pos, oldWvp);
 
+	
+    float2 velocity = (curPos.xy / curPos.w) - (lastPos.xy / lastPos.w);
+	
+	// The velocity is now between (-2,2) so divide by 2 to get it to (-1,1)
+    velocity /= 2.0f;
+	
+    output.MotionDir = float3(velocity, 0);
+    //float3 motionDir = output.Pos.xyz - output.MotionDir;
+    //output.MotionDir = motionDir;
 
     return output;
 

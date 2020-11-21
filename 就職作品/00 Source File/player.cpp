@@ -9,7 +9,7 @@
 #include "player.h"
 #include <typeinfo>
 #include "calculation.h"
-
+#include "pointLight.h"
 
 //
 //
@@ -20,13 +20,16 @@ void CPlayer::Init()
 	m_AnimModel = new CAnimationModel();
 
 	m_AnimModel->LoadModel("../02 Visual File//Akai//Akai_Idle.fbx", D3DXVECTOR3(0,0.1f,0));
-	//m_AnimModel->LoadTexture("../02 Visual File//Akai//texture.ini");
+	
 	m_AnimModel->LoadTexture("");
 	m_AnimModel->LoadAnimation("../02 Visual File//Akai//Akai_Run.fbx", "Run");
 	m_AnimModel->LoadAnimation("../02 Visual File//Akai//Akai_Idle.fbx", "Idle");
 
 	m_Transform.position = D3DXVECTOR3(-2.5f, 0.01f, -3.5f);
-	m_Transform.scale = D3DXVECTOR3(0.008f, 0.008f, 0.008f);
+	m_Transform.scale = D3DXVECTOR3(0.8f, 0.8f, 0.8f);
+
+	m_Collision.Init(D3DXVECTOR3(1.0f, 1.0f, 1.0f), D3DXVECTOR3(0, 0, 0));
+
 
 	//　入力レイアウト生成
 	D3D11_INPUT_ELEMENT_DESC layout[]{
@@ -42,11 +45,60 @@ void CPlayer::Init()
 	//シェーダー作成
 	RENDERER::CreateVertexShader(&m_VertexShader,&m_VertexLayout,layout,7,"SkeletalVertexShader.cso");
 	RENDERER::CreatePixelShader(&m_PixelShader, "SkeletalPixelShader.cso");
+	RENDERER::CreatePixelShader(&m_ShadowPixelShader, "PlayerShadowPixelShader.cso");
 
-	D3DXQuaternionIdentity(&m_Quaternion);
+
 	m_OldPosition = m_Transform.position;
 	m_OldForward = GetForward();
 	m_OldForward.y = 0;
+
+	D3D11_BLEND_DESC dblend;
+	ZeroMemory(&dblend, sizeof(D3D11_BLEND_DESC));
+	dblend.IndependentBlendEnable = false;
+	dblend.AlphaToCoverageEnable = false;
+	dblend.RenderTarget[0].BlendEnable = true;
+	dblend.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;//メッシュのレンダリングイメージ
+	dblend.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;//レンダーターゲットサーファスのイメージ
+	dblend.RenderTarget[0].BlendOp = D3D11_BLEND_OP_REV_SUBTRACT;
+	//dblend.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	//dblend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+	//dblend.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	dblend.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	if (FAILED(RENDERER::m_pDevice->CreateBlendState(&dblend, &m_pPointLightBlendState)))
+	{
+		return ;
+	}
+
+	////通常用ラスタライズ設定
+	//D3D11_RASTERIZER_DESC rdc;
+	//ZeroMemory(&rdc, sizeof(rdc));
+	//rdc.CullMode = D3D11_CULL_MODE::D3D11_CULL_FRONT;
+	//rdc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
+	////rdc.FrontCounterClockwise = FALSE;//デフォルト
+	//rdc.DepthClipEnable = FALSE;
+
+	//rdc.MultisampleEnable = FALSE;
+
+	//RENDERER::m_pDevice->CreateRasterizerState(&rdc, &m_pCommonRasterizerState);
+	//m_pDeviceContext->RSSetState(m_pCommonRasterizerState);
+
+	//D3D11_DEPTH_STENCIL_DESC dc;
+	//ZeroMemory(&dc, sizeof(dc));
+	//dc.DepthEnable = true;
+
+	//dc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK::D3D11_DEPTH_WRITE_MASK_ZERO;
+	////dc.DepthWriteMask=D3D11_DEPTH_WRITE_MASK_ALL;
+	//dc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+	////dc.DepthFunc=D3D11_COMPARISON_LESS;
+	////dc.StencilEnable=false;
+	//
+	//if (FAILED(RENDERER::m_pDevice->CreateDepthStencilState(&dc, &m_pBuckBuffer_DSTexState)))
+	//{
+	//	return;// E_FAIL;
+	//}
+	//深度ステンシルステートを適用
+	//m_pDeviceContext->OMSetDepthStencilState(m_pBuckBuffer_DSTexState,NULL);
 
 }
 //
@@ -54,9 +106,10 @@ void CPlayer::Init()
 //
 void CPlayer::Uninit()
 {
-
 	m_AnimModel->Unload();
 	delete m_AnimModel;
+
+	m_Collision.Uninit();
 }
 //
 //
@@ -128,68 +181,128 @@ void CPlayer::Update()
 	
 	//壁との当たり判定
 	CWall* wall = Base::GetScene()->GetGameObject<CWall>(1);
-	m_hit = LenOBBToPoint(*wall, m_Transform.position,4.0f);
+	m_Transform.position = LenOBBToPoint(*wall, m_Transform.position,10.0f);
 	CPillar* pillar = Base::GetScene()->GetGameObject<CPillar>(1);
-	m_hit = LenOBBToPoint(*pillar, m_Transform.position,1.5f);
+	m_Transform.position = LenOBBToPoint(*pillar, m_Transform.position,2.0f);
 
 	
-	
+	m_Collision.Update();
+
+
+	/*bool ishit = false;
+	for (int i = 0; i < wall->GetMeshCount(); i++)
+	{
+		ishit = ColOBBs(this, wall, i);
+
+		if (ishit)
+			break;
+	}
+	m_hit = ishit;*/
+
 
 
 	if (CInput::KeyPress(DIK_W) || 
 		CInput::KeyPress(DIK_A) ||
 		CInput::KeyPress(DIK_S) ||
 		CInput::KeyPress(DIK_D))
-		m_AnimModel->Update("Run", m_Frame);
+		m_AnimModel->Update("Run", m_AnimModel->m_Frame);
 	else
-		m_AnimModel->Update("Idle", m_Frame);
+		m_AnimModel->Update("Idle", m_AnimModel->m_Frame);
 
 	
 
 	m_OldPosition = m_Transform.position;
-	m_Frame++;
+	m_AnimModel->m_Frame++;
 }
 //
 //
 //
 void CPlayer::Draw()
 {
-	//　マトリクス設定
-	D3DXMATRIX world, scale, rot, trans;
-	D3DXMatrixScaling(&scale, m_Transform.scale.x, m_Transform.scale.y, m_Transform.scale.z);
-	D3DXMatrixRotationYawPitchRoll(&rot, m_Transform.rotation.y + D3DX_PI, m_Transform.rotation.x, m_Transform.rotation.z);
-	D3DXMatrixTranslation(&trans, m_Transform.position.x, m_Transform.position.y, m_Transform.position.z);
-	world = scale * rot * trans;
-
-	//影
-	/*D3DXMATRIX shadow;
-	D3DXPLANE plane;
-	D3DXPlaneFromPointNormal(&plane, &D3DXVECTOR3(0, 0.01f, 0), &D3DXVECTOR3(0, 1, 0));
-	D3DXMatrixShadow(&shadow, &D3DXVECTOR4(-5, 5, 0, 1), &plane);
-	world = world * shadow;*/
-
-	RENDERER::SetWorldMatrix(world);
-
 	RENDERER::m_pDeviceContext->VSSetShader(m_VertexShader, NULL, 0);
 	RENDERER::m_pDeviceContext->PSSetShader(m_PixelShader, NULL, 0);
 	RENDERER::m_pDeviceContext->IASetInputLayout(m_VertexLayout);
 
+	WORLDMATRIX worldMatrix;
+	//モデル
+	D3DXMATRIX world, scale, rot, trans;
+	D3DXMatrixScaling(&scale, m_Transform.scale.x / 100.0f, m_Transform.scale.y / 100.0f, m_Transform.scale.z / 100.0f);
+	D3DXMatrixRotationYawPitchRoll(&rot, m_Transform.rotation.y + D3DX_PI, m_Transform.rotation.x, m_Transform.rotation.z);
+	D3DXMatrixTranslation(&trans, m_Transform.position.x, m_Transform.position.y, m_Transform.position.z);
+	world = scale * rot * trans;
+	
+	worldMatrix.worldMatrix = world;
+	RENDERER::SetWorldMatrix(worldMatrix);
 
 	m_AnimModel->Draw();
 
+
+	//影
+	//{
+	//	//ブレンドステート
+	//	float blend[4] = { 1,1,1,1 };
+	//	RENDERER::m_pDeviceContext->OMSetBlendState(m_pPointLightBlendState, blend, 0xffffffff);
+	//	RENDERER::m_pDeviceContext->OMSetDepthStencilState(m_pBuckBuffer_DSTexState, NULL);
+	//	//RENDERER::m_pDeviceContext->RSSetState(m_pCommonRasterizerState);
+
+	//	RENDERER::m_pDeviceContext->PSSetShader(m_ShadowPixelShader, NULL, 0);
+	//	CPointLight* pointLight = Base::GetScene()->GetGameObject<CPointLight>(2);
+	//	int lightNum = pointLight->GetMeshCount();
+	//	for (int i = 0; i < lightNum; i++)
+	//	{
+	//		D3DXVECTOR3 lightPos = pointLight->GetPosition(i);
+	//		float distance;
+	//		distance = D3DXVec3Length(&D3DXVECTOR3(lightPos - m_Transform.position));
+	//		if (distance > pointLight->GetScale(i).x)
+	//			continue;
+
+	//		D3DXMATRIX shadow;
+	//		D3DXPLANE plane;
+
+	//		D3DXPlaneFromPointNormal(&plane, &D3DXVECTOR3(0, 0.01f, 0), &D3DXVECTOR3(0, 1, 0));
+	//		D3DXMatrixShadow(&shadow, &D3DXVECTOR4(lightPos.x, lightPos.y, lightPos.z, 1), &plane);
+	//		worldMatrix.worldMatrix = world * shadow;
+	//		//WORLDMATRIXのInverseにポイントライトの座標とサイズをマトリクスを入れる
+	//		D3DXMatrixTranslation(&worldMatrix.worldInverseMatrix, lightPos.x, lightPos.y, lightPos.z);
+	//		//サイズ(どこでもいいが31)
+	//		worldMatrix.worldInverseMatrix._31 = pointLight->GetScale(i).x;
+
+
+	//		RENDERER::SetWorldMatrix(worldMatrix);
+
+	//		m_AnimModel->Draw();
+	//	}
+
+	//	//ブレンドステート
+
+	//	RENDERER::m_pDeviceContext->OMSetBlendState(nullptr, blend, 0xffffffff);
+	//	RENDERER::m_pDeviceContext->PSSetShader(m_PixelShader, NULL, 0);
+	//}
+	
+
+
+	//コリジョン	
+	D3DXMatrixScaling(&scale, m_Transform.scale.x, m_Transform.scale.y, m_Transform.scale.z);
+	world = scale * rot * trans;
+	worldMatrix.worldMatrix = world;
+	RENDERER::SetWorldMatrix(worldMatrix);
+
+	if (!isEnableCollision)
+		m_Collision.Draw();
 }
 
 //インスタンスオブジェクト専用
 //3次元OBBと点の最短距離算出関数
-FLOAT CPlayer:: LenOBBToPoint(CInstanceGameObject& obj, D3DXVECTOR3& p,float length)
+D3DXVECTOR3 CPlayer:: LenOBBToPoint(CInstanceGameObject& obj, D3DXVECTOR3& p,float length)
 {
-	D3DXVECTOR3 Vec(0, 0, 0);   // 最終的に長さを求めるベクトル
+	D3DXVECTOR3 Vec(0,0,0);   // 最終的に長さを求めるベクトル
+	D3DXVECTOR3 position = m_Transform.position;
 
 	//最初は1個から
-	for(int i = 0;i < obj.GetMeshCount();i++)
+	for(unsigned int i = 0;i < obj.GetMeshMax();i++)
 	{
 		//length以内にいないものは排除する
-		float len = D3DXVec3Length(&D3DXVECTOR3(obj.GetPosition(i) - m_Transform.position));
+		float len = D3DXVec3Length(&D3DXVECTOR3(obj.GetPosition(i) + obj.GetCollision()->GetPosition() - m_Transform.position));
 		if (len > length)
 		{
 			continue;
@@ -197,74 +310,57 @@ FLOAT CPlayer:: LenOBBToPoint(CInstanceGameObject& obj, D3DXVECTOR3& p,float len
 
 
 
-
-
-
-
-
-
 		D3DXVECTOR3 pos = obj.GetPosition(i) + obj.GetCollision()->GetPosition();
 
-		FLOAT L = obj.GetCollision()->GetXsize();
-		if (L > 0)// L=0は計算できない
+		FLOAT LenX = obj.GetCollision()->GetXsize();
+		FLOAT LenY = obj.GetCollision()->GetYsize();
+		FLOAT LenZ = obj.GetCollision()->GetZsize();
+		if (LenX > 0)// L=0は計算できない
 		{
-			
 			D3DXVECTOR3 rot = obj.GetRight(i);
-			FLOAT s = D3DXVec3Dot(&(p - pos), &rot) / L;
+			FLOAT s = D3DXVec3Dot(&(p - pos), &rot) / LenX;
 
 			// sの値から、はみ出した部分があればそのベクトルを加算
 			s = fabs(s);
 			if (s > 1)
-				Vec += (1 - s) * L * rot;   // はみ出した部分のベクトル算出
-
-			
+				Vec += (1 - s) * LenX * rot;   // はみ出した部分のベクトル算出
 		}
-		L = obj.GetCollision()->GetYsize();
-		if (L > 0)// L=0は計算できない
+
+		if (LenY > 0)// L=0は計算できない
 		{
 			D3DXVECTOR3 rot = obj.GetUp(i);
-			FLOAT s = D3DXVec3Dot(&(p - pos), &rot) / L;
+			FLOAT s = D3DXVec3Dot(&(p - pos), &rot) / LenY;
 
 			// sの値から、はみ出した部分があればそのベクトルを加算
 			s = fabs(s);
 			if (s > 1)
-				Vec += (1 - s) * L * rot;   // はみ出した部分のベクトル算出
-
-
+				Vec += (1 - s) * LenY * rot;   // はみ出した部分のベクトル算出
 		}
-		L = obj.GetCollision()->GetZsize();
-		if (L > 0)// L=0は計算できない
+		if (LenZ > 0)// L=0は計算できない
 		{
 			D3DXVECTOR3 rot = obj.GetForward(i);
-			FLOAT s = D3DXVec3Dot(&(p - pos), &rot) / L;
+			FLOAT s = D3DXVec3Dot(&(p - pos), &rot) / LenZ;
 
 			// sの値から、はみ出した部分があればそのベクトルを加算
 			s = fabs(s);
 			if (s > 1)
-				Vec += (1 - s) * L * rot;   // はみ出した部分のベクトル算出
-
+				Vec += (1 - s) * LenZ * rot;   // はみ出した部分のベクトル算出
 		}
+
 
 		if (D3DXVec3Length(&Vec) <= 0)
-		{
-			m_Transform.position = RayIntersect(&obj, i);
-		}
-		else
-		{
-			Vec = D3DXVECTOR3(0, 0, 0);
-		}
+			position = RayIntersect(&obj, i);
+
+		Vec = D3DXVECTOR3(0, 0, 0);
 	}
 	
-
-
-
-	return D3DXVec3Length(&Vec);   // 長さを出力
+	return position;
 }
 
 //壁に平行なベクトルを計算する関数
+//前回の座標から今の座標へ伸ばしたベクトルとボックスの当たり判定
 D3DXVECTOR3 CPlayer::RayIntersect(CInstanceGameObject* object, int index)
 {
-
 	D3DXVECTOR3 playerPos = m_Transform.position;//プレイヤー
 	D3DXVECTOR3 oldPlayerPos = m_OldPosition;//オブジェクトの中心
 	D3DXVECTOR3 origin = m_OldPosition;//レイを飛ばす原点
@@ -385,8 +481,11 @@ void CPlayer::Imgui()
 
 		ImGui::Begin("Player", &lw_is_open, lw_flag);
 
+		ImGui::Checkbox("isEnableCollision", &isEnableCollision);
 		
-		ImGui::Text("HitDistance : %.3f", m_hit);
+		
+		/*if(m_hit)
+			ImGui::Text("Hit!!!");*/
 
 		ImGui::InputFloat3("Position", m_Transform.position, 1);
 		ImGui::InputFloat3("Rotation", m_Transform.rotation, 1);

@@ -13,148 +13,96 @@ void CWall::Init()
 	m_pWall = new Tile();
 	m_pWall->Init("Wall//T_StoneWall_A.BMP", "Wall//T_StoneWall_N.BMP", 2,2, 2.5f);
 
+	m_Collision.Init(D3DXVECTOR3(5.5f, 0.5f, 5.5f), D3DXVECTOR3(0, 0, 0));
 
 
 	m_Transform.rotation = D3DXVECTOR3(D3DX_PI/2,D3DX_PI/2, 0.0f);
 
-	m_Collision.Init(D3DXVECTOR3(5.0f, 0.1f, 5.0f), D3DXVECTOR3(0, 0, 0));
-
 	//　入力レイアウト生成
 	D3D11_INPUT_ELEMENT_DESC layout[]{
-	{ "POSITION",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0,							   0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "NORMAL",			0, DXGI_FORMAT_R32G32B32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TEXCOORD",		0, DXGI_FORMAT_R32G32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "POSITION",		0, DXGI_FORMAT_R32G32B32_FLOAT,	0,							   0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "NORMAL",			0, DXGI_FORMAT_R32G32B32_FLOAT,	0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "TEXCOORD",		0, DXGI_FORMAT_R32G32_FLOAT,	0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "TANGENT",		0, DXGI_FORMAT_R32G32B32_FLOAT,	0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "BINORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,	0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 } };
-
 
 	//シェーダー作成
 	RENDERER::CreateVertexShader(&m_pVertexShader, &m_pVertexLayout, layout, 5, "InstanceVertexShader.cso");
 	RENDERER::CreatePixelShader(&m_pPixelShader, "Tile_PixelShader.cso");
 	
 	
+	
 
-	
-	//D3DXVECTOR3 pos;
-	//D3DXVECTOR3 rot;
-	
+
 			
-	VECTOR vector;
+	D3DXVECTOR3 scale;
+	scale = m_Transform.scale;
 
-	vector.scale = m_Transform.scale;
-	//スタート地点囲い壁
-	{
+
+	D3DXVECTOR3 forwardRot, backRot, leftRot, rightRot,topRot;
+
+	forwardRot = m_Transform.rotation + D3DXVECTOR3(0,-D3DX_PI/2,0);
+	backRot = m_Transform.rotation + D3DXVECTOR3(0,D3DX_PI/2,0);
+	leftRot = m_Transform.rotation + D3DXVECTOR3(0,D3DX_PI,0);
+	rightRot = m_Transform.rotation + D3DXVECTOR3(0,0,0);
+	topRot = m_Transform.rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
+
+
+	{//スタート地点囲い壁
+
 		{//スタート地点壁
-			vector.position = D3DXVECTOR3(2.5f, 2.5f, -5.0f);
-			vector.rotation = m_Transform.rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
-			m_Vector.push_back(vector);
 
-			vector.position = D3DXVECTOR3(-7.5f, 2.5f, -5.0f);
-			vector.rotation = m_Transform.rotation + D3DXVECTOR3(0, D3DX_PI / 2, 0);
-			m_Vector.push_back(vector);
+			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(2.5f, 2.5f, -5.0f),backRot, scale });
+			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-7.5f, 2.5f, -5.0f),backRot, scale });
+		}	
+		{//スタート地点横壁
+
+			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(5.0f, 2.5f, -7.5f),leftRot, scale });
+			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-10.0f, 2.5f, -7.5f),rightRot, scale });
+			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(5.0f, 2.5f, -12.5f),leftRot, scale });
+			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-10.0f, 2.5f, -12.5f),rightRot, scale });
 		}
-		
-		{
-			//スタート地点横壁
-			vector.position = D3DXVECTOR3(5.0f, 2.5f, -7.5f);
-			vector.rotation = m_Transform.rotation + D3DXVECTOR3(0, D3DX_PI, 0);
-			m_Vector.push_back(vector);
+		{//スタート地点後ろ壁
 
-			vector.position = D3DXVECTOR3(-10.0f, 2.5f, -7.5f);
-			vector.rotation = m_Transform.rotation + D3DXVECTOR3(0, 0, 0);
-			m_Vector.push_back(vector);
-
-			vector.position = D3DXVECTOR3(5.0f, 2.5f, -12.5f);
-			vector.rotation = m_Transform.rotation + D3DXVECTOR3(0, D3DX_PI, 0);
-			m_Vector.push_back(vector);
-
-			vector.position = D3DXVECTOR3(-10.0f, 2.5f, -12.5f);
-			vector.rotation = m_Transform.rotation + D3DXVECTOR3(0, 0, 0);
-			m_Vector.push_back(vector);
+			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(2.5f, 2.5f, -15.0f),forwardRot, scale });
+			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 2.5f, -15.0f),forwardRot, scale });
+			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-7.5f, 2.5f, -15.0f),forwardRot, scale });	
 		}
-
-		{
-			//スタート地点後ろ壁
-			vector.position = D3DXVECTOR3(2.5f, 2.5f, -15.0f);
-			vector.rotation = m_Transform.rotation + D3DXVECTOR3(0, -D3DX_PI / 2, 0);
-			m_Vector.push_back(vector);
-
-			vector.position = D3DXVECTOR3(-2.5f, 2.5f, -15.0f);
-			vector.rotation = m_Transform.rotation + D3DXVECTOR3(0, -D3DX_PI / 2, 0);
-			m_Vector.push_back(vector);
-
-			vector.position = D3DXVECTOR3(-7.5f, 2.5f, -15.0f);
-			vector.rotation = m_Transform.rotation + D3DXVECTOR3(0, -D3DX_PI / 2, 0);
-			m_Vector.push_back(vector);
-
-		
-		}
-		{
-			//天井
-			vector.position = D3DXVECTOR3(2.5f, 5.0f, -12.5f);
-			vector.rotation = m_Transform.rotation + D3DXVECTOR3(D3DX_PI/2, 0, 0);
-			m_Vector.push_back(vector);
-
-			vector.position = D3DXVECTOR3(2.5f, 5.0f, -7.5f);
-			vector.rotation = m_Transform.rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
-			m_Vector.push_back(vector);
-
-			vector.position = D3DXVECTOR3(-2.5f, 5.0f, -12.5f);
-			vector.rotation = m_Transform.rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
-			m_Vector.push_back(vector);
-
-			vector.position = D3DXVECTOR3(-2.5f, 5.0f, -7.5f);
-			vector.rotation = m_Transform.rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
-			m_Vector.push_back(vector);
+		{//天井
 			
-			vector.position = D3DXVECTOR3(-7.5f, 5.0f, -12.5f);
-			vector.rotation = m_Transform.rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
-			m_Vector.push_back(vector);
-
-			vector.position = D3DXVECTOR3(-7.5f, 5.0f, -7.5f);
-			vector.rotation = m_Transform.rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
-			m_Vector.push_back(vector);
-
-			vector.position = D3DXVECTOR3(-2.5f, 5.0f, -2.5f);
-			vector.rotation = m_Transform.rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
-			m_Vector.push_back(vector);
-			
+			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(2.5f, 5.0f, -12.5f),topRot, scale });
+			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(2.5f, 5.0f, -7.5f),topRot, scale });
+			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 5.0f, -12.5f),topRot, scale });
+			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 5.0f, -7.5f),topRot, scale });
+			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-7.5f, 5.0f, -12.5f),topRot, scale });
+			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-7.5f, 5.0f, -7.5f),topRot, scale });
+			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 5.0f, -2.5f),topRot, scale });
 		}
 		
 	}
 	
 	//横の壁
-	for (int i = 0; i < 7; i++)
+	for (int i = 0; i < 8; i++)
 	{
-		vector.position = D3DXVECTOR3(0, 2.5f, -2.5f +  i * 5.0f);
-		vector.rotation = m_Transform.rotation + D3DXVECTOR3(0, -D3DX_PI, 0);
-
-		m_Vector.push_back(vector);
+		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(0, 2.5f, -2.5f + i * 5.0f),leftRot, scale });
 	}
 	for (int i = 0; i < 7; i++)
 	{
-		vector.position = D3DXVECTOR3(-5.0f, 2.5f, -2.5f + i * 5.0f);
-		vector.rotation = m_Transform.rotation;
-
-		m_Vector.push_back(vector);
+		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-5.0f, 2.5f, -2.5f + i * 5.0f),rightRot, scale });
 	}
-
 
 
 	//奥の壁
 	for (int i = 0; i < 8; i++)
 	{
-		vector.position = D3DXVECTOR3(i * -4.0f + 4 * 4.0f, 2.0f, 35.0f);
-		vector.rotation = m_Transform.rotation + D3DXVECTOR3(0,D3DX_PI/2, 0);
-
-		m_Vector.push_back(vector);
+		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(0.0f - i * 5.0f, 2.5f, 35.0f),backRot, scale });
 	}
 	
 
 
 
 	InitInstance();
-	UpdateInstance();//処理速度が落ちるかもだからInitに置いてる
+	
 }
 //
 //
@@ -175,7 +123,7 @@ void CWall::Uninit()
 //
 void CWall::Update()
 {
-
+	UpdateInstance();
 }
 //
 //
@@ -191,35 +139,29 @@ void CWall::Draw()
 
 	m_pWall->DrawInstanced(m_MeshCount);
 
-	if(!isEnableCollision)
+	if(m_EnableCollision)
 		m_Collision.DrawInstance(m_MeshCount);
 }
 
 void CWall::Imgui()
 {
-	static bool show_wall_window = true;
+	static bool show = true;
 
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 	if (CInput::KeyTrigger(DIK_F1))
-		show_wall_window = !show_wall_window;
+		show = !show;
 
-	if (show_wall_window)
+	if (show)
 	{
 		ImGuiWindowFlags lw_flag = 0;
 		static bool lw_is_open;
 
 		ImGui::Begin("Wall", &lw_is_open, lw_flag);
 
-		ImGui::Checkbox("isEnableCollision", &isEnableCollision);
+		ImGui::Checkbox("isEnableCollision", &m_EnableCollision);
 
-		int count = m_MeshCount;
-		ImGui::InputInt("MeshCount",&count , 1);
-		/*for (int i = 0; i < m_MatrixList.size(); i++)
-		{
-
-		}
-		ImGui::SliderFloat3()*/
+		ImGui::Text("MeshCount : %d / %d", m_MeshCount, m_MeshMax);
 
 		ImGui::End();
 	}

@@ -8,9 +8,9 @@
 #include <io.h>
 
 
-D3DXMATRIX RENDERER::m_World;
-D3DXMATRIX RENDERER::m_View;
-D3DXMATRIX RENDERER::m_Proj;
+//D3DXMATRIX RENDERER::m_World;
+//D3DXMATRIX RENDERER::m_View;
+//D3DXMATRIX RENDERER::m_Proj;
 
 ID3D11Device* RENDERER::m_pDevice = NULL;
 ID3D11DeviceContext* RENDERER::m_pDeviceContext = NULL;
@@ -38,20 +38,20 @@ ID3D11InputLayout* RENDERER::m_pCommonVertexLayout = NULL;
 bool RENDERER::toggleDirectional = true;
 bool RENDERER::togglePoint = true;
 bool RENDERER::toggleColor = true;
+EFFECT RENDERER::m_Effect;
+
 //定数バッファ
 ID3D11Buffer* RENDERER::m_pWorldBuffer = NULL;
 ID3D11Buffer* RENDERER::m_pViewBuffer = NULL;
 ID3D11Buffer* RENDERER::m_pProjectionBuffer = NULL;
-//ID3D11Buffer* RENDERER::m_pMaterialBuffer = NULL;
 ID3D11Buffer* RENDERER::m_pDirectionalLightBuffer = NULL;
 ID3D11Buffer* RENDERER::m_pPointLightBuffer = NULL;
 ID3D11Buffer* RENDERER::m_pEyeBuffer = NULL;
 ID3D11Buffer* RENDERER::m_pEffectBuffer = NULL;
-
+ID3D11Buffer* RENDERER::m_pCullingBuffer = NULL;
 
 //構造体バッファ
 ID3D11Buffer* RENDERER::m_pAnimationMatrixBuffer = NULL;
-//ID3D11ShaderResourceView* RENDERER::m_pPointLightBufferSRV = NULL;
 
 //ビューポート
 D3D11_VIEWPORT RENDERER::m_Vp;
@@ -72,8 +72,21 @@ ID3D11ShaderResourceView* RENDERER::m_pNormal_SRV = NULL;
 ID3D11Texture2D* RENDERER::m_pPositionTexture = NULL;
 ID3D11RenderTargetView* RENDERER::m_pPosition_RTV = NULL;
 ID3D11ShaderResourceView* RENDERER::m_pPosition_SRV = NULL;
+//ライティング
+ID3D11Texture2D* RENDERER::m_pLightingTexture = NULL;
+ID3D11RenderTargetView* RENDERER::m_pLighting_RTV = NULL;
+ID3D11ShaderResourceView* RENDERER::m_pLighting_SRV = NULL;
+//モーション
+ID3D11Texture2D* RENDERER::m_pMotionTexture = NULL;
+ID3D11RenderTargetView* RENDERER::m_pMotion_RTV = NULL;
+ID3D11ShaderResourceView* RENDERER::m_pMotion_SRV = NULL;
+//デプスバッファ
+ID3D11Texture2D* RENDERER::m_pDepthTexture = NULL;
+ID3D11RenderTargetView* RENDERER::m_pDepth_RTV = NULL;
+ID3D11ShaderResourceView* RENDERER::m_pDepth_SRV = NULL;
 
 
+//===============================================
 ID3D11InputLayout* RENDERER::m_pDeferredVertexLayout = NULL;
 
 ID3D11Texture2D* RENDERER::m_pDepthStencil = NULL;
@@ -82,7 +95,6 @@ ID3D11VertexShader* RENDERER::m_pDeferredVertexShader = NULL;
 ID3D11PixelShader* RENDERER::m_pDeferredPixelShader = NULL;
 //ディレクショナルライト
 ID3D11PixelShader* RENDERER::m_pDirectionalPixelShader = NULL;
-//===============================================
 
 
 
@@ -234,7 +246,7 @@ HRESULT RENDERER::Init(D3D_INIT* pcd)
 
 	//ポイントライト用バックカリングラスタライズ設定
 	ZeroMemory(&rdc, sizeof(rdc));
-	rdc.CullMode = D3D11_CULL_MODE::D3D11_CULL_BACK;
+	rdc.CullMode = D3D11_CULL_MODE::D3D11_CULL_FRONT;
 	rdc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
 	//rdc.FrontCounterClockwise = FALSE;
 	//rdc.DepthClipEnable = FALSE;
@@ -322,10 +334,19 @@ HRESULT RENDERER::Init(D3D_INIT* pcd)
 	//ノーマルマップ用テクスチャーとそのレンダーターゲットビュー、シェーダーリソースビューの作成	
 	CreateRenderFormat(DXGI_FORMAT::DXGI_FORMAT_R32G32B32A32_FLOAT, &m_pNormalTexture, &m_pNormal_RTV, &m_pNormal_SRV);
 
-	//ポジションマップ用テクスチャーとそのレンダーターゲットビュー、シェーダーリソースビューの作成	
+	//ポジション用テクスチャーとそのレンダーターゲットビュー、シェーダーリソースビューの作成	
 	CreateRenderFormat(DXGI_FORMAT::DXGI_FORMAT_R32G32B32A32_FLOAT, &m_pPositionTexture, &m_pPosition_RTV, &m_pPosition_SRV);
 
-	
+	//ライティング用テクスチャーとそのレンダーターゲットビュー、シェーダーリソースビューの作成	
+	CreateRenderFormat(DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM, &m_pLightingTexture, &m_pLighting_RTV, &m_pLighting_SRV);
+
+	//モーション用テクスチャーとそのレンダーターゲットビュー、シェーダーリソースビューの作成	
+	CreateRenderFormat(DXGI_FORMAT::DXGI_FORMAT_R32G32B32A32_FLOAT, &m_pMotionTexture, &m_pMotion_RTV, &m_pMotion_SRV);
+
+	//デプス用テクスチャーとそのレンダーターゲットビュー、シェーダーリソースビューの作成	
+	CreateRenderFormat(DXGI_FORMAT::DXGI_FORMAT_R32_FLOAT, &m_pDepthTexture, &m_pDepth_RTV, &m_pDepth_SRV);
+
+
 
 	//スクリーンサイズのポリゴン用　バーテックスバッファーを作成
 	DEFERRED_VERTEX VertexData[] ={
@@ -395,12 +416,13 @@ void RENDERER::Uninit()
 	SAFE_RELEASE(m_pEyeBuffer);
 	SAFE_RELEASE(m_pPointLightBuffer);
 	SAFE_RELEASE(m_pDirectionalLightBuffer);
-	//SAFE_RELEASE(m_pMaterialBuffer);
+	
 	SAFE_RELEASE(m_pProjectionBuffer);
 	SAFE_RELEASE(m_pViewBuffer);
 	SAFE_RELEASE(m_pWorldBuffer);
 	SAFE_RELEASE(m_pAnimationMatrixBuffer);
 	SAFE_RELEASE(m_pEffectBuffer);
+	SAFE_RELEASE(m_pCullingBuffer);
 
 
 	SAFE_RELEASE(m_pDeferredPixelShader);
@@ -420,7 +442,16 @@ void RENDERER::Uninit()
 	SAFE_RELEASE(m_pColor_SRV);
 	SAFE_RELEASE(m_pColor_RTV);
 	SAFE_RELEASE(m_pColorTexture);
-	
+	SAFE_RELEASE(m_pLighting_SRV);
+	SAFE_RELEASE(m_pLighting_RTV);
+	SAFE_RELEASE(m_pLightingTexture);
+	SAFE_RELEASE(m_pMotion_SRV);
+	SAFE_RELEASE(m_pMotion_RTV);
+	SAFE_RELEASE(m_pMotionTexture);
+	SAFE_RELEASE(m_pDepth_SRV);
+	SAFE_RELEASE(m_pDepth_RTV);
+	SAFE_RELEASE(m_pDepthTexture);
+
 
 
 	SAFE_RELEASE(m_pDeferred_DSTexDSV);
@@ -459,11 +490,14 @@ void RENDERER::Clear()
 
 
 	//全てのテクスチャーをレンダーターゲットにセット
-	ID3D11RenderTargetView* pViews[3];
+	ID3D11RenderTargetView* pViews[6];
 	pViews[0] = m_pColor_RTV;
 	pViews[1] = m_pNormal_RTV;
 	pViews[2] = m_pPosition_RTV;
-	m_pDeviceContext->OMSetRenderTargets(3, pViews, m_pDeferred_DSTexDSV);//深度ステンシルビューは全てに共通の1つだけを使う
+	pViews[3] = m_pLighting_RTV;
+	pViews[4] = m_pMotion_RTV;
+	pViews[5] = m_pDepth_RTV;
+	m_pDeviceContext->OMSetRenderTargets(6, pViews, m_pDeferred_DSTexDSV);//深度ステンシルビューは全てに共通の1つだけを使う
 	
 
 
@@ -474,6 +508,9 @@ void RENDERER::Clear()
 	m_pDeviceContext->ClearRenderTargetView(m_pColor_RTV, ClearColor);
 	m_pDeviceContext->ClearRenderTargetView(m_pNormal_RTV, ClearColor);
 	m_pDeviceContext->ClearRenderTargetView(m_pPosition_RTV, ClearColor);
+	m_pDeviceContext->ClearRenderTargetView(m_pLighting_RTV, ClearColor);
+	m_pDeviceContext->ClearRenderTargetView(m_pMotion_RTV, ClearColor);
+	m_pDeviceContext->ClearRenderTargetView(m_pDepth_RTV, ClearColor);
 	
 
 	m_pDeviceContext->ClearDepthStencilView(m_pDeferred_DSTexDSV, D3D11_CLEAR_DEPTH, 1.0f, 0);
@@ -513,6 +550,9 @@ void RENDERER::Deferred()
 	m_pDeviceContext->PSSetShaderResources(0, 1, &m_pColor_SRV);
 	m_pDeviceContext->PSSetShaderResources(1, 1, &m_pNormal_SRV);
 	m_pDeviceContext->PSSetShaderResources(2, 1, &m_pPosition_SRV);
+	m_pDeviceContext->PSSetShaderResources(3, 1, &m_pLighting_SRV);
+	m_pDeviceContext->PSSetShaderResources(4, 1, &m_pMotion_SRV);
+	m_pDeviceContext->PSSetShaderResources(5, 1, &m_pDepth_SRV);
 	
 
 	//スクリーンサイズのポリゴンをレンダー
@@ -523,24 +563,29 @@ void RENDERER::Deferred()
 
 	m_pDeviceContext->Draw(4, 0);
 }
-//
-//
+
+
 //ライティング
 void RENDERER::PointLighting()
 {
+
+	//レンダーターゲット
+	m_pDeviceContext->OMSetRenderTargets(1, &m_pLighting_RTV, m_pDeferred_DSTexDSV);
+
+
+	
 	ID3D11DepthStencilState* stencil = NULL;
 	D3D11_DEPTH_STENCIL_DESC dc;
 	ZeroMemory(&dc, sizeof(dc));
 	dc.DepthEnable = false;
-	//dc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
-	dc.DepthWriteMask=D3D11_DEPTH_WRITE_MASK_ALL;
+	dc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+	//dc.DepthWriteMask=D3D11_DEPTH_WRITE_MASK_ALL;
 	dc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 	//dc.DepthFunc=D3D11_COMPARISON_LESS;
-	//dc.StencilEnable=false;
 	m_pDevice->CreateDepthStencilState(&dc, &stencil);
 	//深度ステンシルステートを適用
 	m_pDeviceContext->OMSetDepthStencilState(stencil,NULL);
-
+	
 
 
 	//バックカリング
@@ -570,10 +615,11 @@ void RENDERER::DirectionlLighting()
 	float blend[4] = { 1,1,1,1 };
 	m_pDeviceContext->OMSetBlendState(NULL, blend, 0xffffffff);
 
-	//1パス目で作成したテクスチャー3枚をセット
+	//1パス目で作成したテクスチャー4枚をセット
 	m_pDeviceContext->PSSetShaderResources(0, 1, &m_pColor_SRV);
 	m_pDeviceContext->PSSetShaderResources(1, 1, &m_pNormal_SRV);
 	m_pDeviceContext->PSSetShaderResources(2, 1, &m_pPosition_SRV);
+	m_pDeviceContext->PSSetShaderResources(3, 1, &m_pLighting_SRV);
 
 	//スクリーンサイズのポリゴンをレンダー
 	m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
@@ -584,8 +630,10 @@ void RENDERER::DirectionlLighting()
 	m_pDeviceContext->Draw(4, 0);
 }
 
-void RENDERER::Effect()
+void RENDERER::EffectDraw()
 {
+	SetEffect();
+
 	m_pDeviceContext->OMSetDepthStencilState(m_pBuckBuffer_DSTexState, NULL);
 	m_pDeviceContext->IASetInputLayout(m_pDeferredVertexLayout);
 	m_pDeviceContext->RSSetState(m_pDeferredRasterizerState);
@@ -598,6 +646,9 @@ void RENDERER::Effect()
 	m_pDeviceContext->PSSetShaderResources(0, 1, &m_pColor_SRV);
 	m_pDeviceContext->PSSetShaderResources(1, 1, &m_pNormal_SRV);
 	m_pDeviceContext->PSSetShaderResources(2, 1, &m_pPosition_SRV);
+	m_pDeviceContext->PSSetShaderResources(3, 1, &m_pLighting_SRV);
+	m_pDeviceContext->PSSetShaderResources(4, 1, &m_pMotion_SRV);
+
 
 	//スクリーンサイズのポリゴンをレンダー
 	m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
@@ -607,8 +658,8 @@ void RENDERER::Effect()
 
 	m_pDeviceContext->Draw(4, 0);
 }
-//
-//
+
+
 //　画面更新
 void RENDERER::Present()
 {
@@ -620,8 +671,8 @@ void RENDERER::Present()
 	m_pDeviceContext->OMSetBlendState(NULL, blend, 0xFFFFFFFF);
 	m_pDeviceContext->OMSetDepthStencilState(NULL, 0);
 }
-//
-//
+
+
 // FPS固定
 void RENDERER::ShowFPS()
 {
@@ -647,9 +698,9 @@ void RENDERER::ShowFPS()
 
 	Frames++;
 }
-//
-//
-//
+
+
+
 void RENDERER::SetDepthEnable(bool Enable)
 {
 	//if (Enable)
@@ -658,7 +709,7 @@ void RENDERER::SetDepthEnable(bool Enable)
 	//	m_pDeviceContext->OMSetDepthStencilState(m_pBuckBuffer_DSTexState, NULL);
 
 }
-//
+
 void RENDERER::SetWorldViewProjection2D()
 {
 	D3DXMATRIX world;
@@ -678,64 +729,46 @@ void RENDERER::SetWorldViewProjection2D()
 	m_pDeviceContext->UpdateSubresource(m_pProjectionBuffer, 0, NULL, &projection, 0, 0);
 
 }
-//
-void RENDERER::SetWorldMatrix(D3DXMATRIX WorldMatrix)
-{
-	m_World = WorldMatrix;
-	
-	D3DXMATRIX SetWorld[2];//配列一つ目は普通のワールドマトリクス、二つ目はその逆行列
-	SetWorld[0] = WorldMatrix;
-	SetWorld[1] = WorldMatrix;
-	D3DXMatrixTranspose(&SetWorld[0], &SetWorld[0]);
 
-	D3DXMatrixInverse(&SetWorld[1], NULL, &SetWorld[1]);
-	D3DXMatrixTranspose(&SetWorld[1], &SetWorld[1]);
+void RENDERER::SetWorldMatrix(WORLDMATRIX WorldMatrix)
+{
+	//m_World = WorldMatrix;
+	
+	WORLDMATRIX SetWorld;//配列一つ目は普通のワールドマトリクス、二つ目はその逆行列
+	//SetWorld = WorldMatrix;
+	//SetWorld[1] = WorldMatrix;
+	D3DXMatrixTranspose(&SetWorld.worldMatrix, &WorldMatrix.worldMatrix);
+
+	//D3DXMatrixInverse(&SetWorld[1], NULL, &SetWorld[1]);
+	//D3DXMatrixTranspose(&SetWorld[1], &SetWorld[1]);
 
 	m_pDeviceContext->UpdateSubresource(m_pWorldBuffer, 0, NULL, &SetWorld, 0, 0);
 }
-//
-void RENDERER::SetViewMatrix(D3DXMATRIX ViewMatrix)
-{
-	m_View = ViewMatrix;
 
-	D3DXMATRIX Set = ViewMatrix;
-	D3DXMatrixTranspose(&Set, &Set);
-
-	m_pDeviceContext->UpdateSubresource(m_pViewBuffer, 0, NULL, &Set, 0, 0);
-}
-//
-void RENDERER::SetProjectionMatrix(D3DXMATRIX ProjectionMatrix)
-{
-	m_Proj = ProjectionMatrix;
-
-	D3DXMATRIX Set = ProjectionMatrix;
-	D3DXMatrixTranspose(&Set, &Set);
-
-	m_pDeviceContext->UpdateSubresource(m_pProjectionBuffer, 0, NULL, &Set, 0, 0);
-}
-//
-//void RENDERER::SetMaterial(MATERIAL Material)
-//{
-//	//MATERIAL material;
-//	//material.Ambient = D3DXVECTOR4(1, 1, 1, 1);
-//	m_pDeviceContext->UpdateSubresource(m_pMaterialBuffer, 0, NULL, &Material, 0, 0);
-//
-//}
-//
-void RENDERER::SetDirectionalLight(DIRECTIONALLIGHT light)
+void RENDERER::SetViewMatrix(VIEWMATRIX ViewMatrix)
 {
 	
+	VIEWMATRIX set;
 
-	DIRECTIONALLIGHT Set;
-	Set = light;
+	D3DXMatrixTranspose(&set.viewMatrix, &ViewMatrix.viewMatrix);
+	D3DXMatrixTranspose(&set.viewOldMatrix, &ViewMatrix.viewOldMatrix);
 
-	//Set.LightView = ViewMatrix;
-	//D3DXMatrixTranspose(&Set.LightView, &Set.LightView);
+	m_pDeviceContext->UpdateSubresource(m_pViewBuffer, 0, NULL, &set, 0, 0);
+}
 
+void RENDERER::SetProjectionMatrix(PROJMATRIX ProjectionMatrix)
+{
+	PROJMATRIX set;
 
+	D3DXMatrixTranspose(&set.projMatrix, &ProjectionMatrix.projMatrix);
+	D3DXMatrixTranspose(&set.projOldMatrix, &ProjectionMatrix.projOldMatrix);
 
-	m_pDeviceContext->UpdateSubresource(m_pDirectionalLightBuffer, 0, NULL, &Set, 0, 0);
+	m_pDeviceContext->UpdateSubresource(m_pProjectionBuffer, 0, NULL, &set, 0, 0);
+}
 
+void RENDERER::SetDirectionalLight(DIRECTIONALLIGHT light)
+{
+	m_pDeviceContext->UpdateSubresource(m_pDirectionalLightBuffer, 0, NULL, &light, 0, 0);
 }
 
 
@@ -746,24 +779,34 @@ void RENDERER::SetEye(EYE Eye)
 
 void RENDERER::SetAnimationMatrix(ANIMATIONMATRIX Animation)
 {
-	//ANIMATIONMATRIX animation = Animation;
-	
 	m_pDeviceContext->UpdateSubresource(m_pAnimationMatrixBuffer, 0, NULL, &Animation, 0, 0);
 }
 
 void RENDERER::SetPointLight(POINTLIGHT light)
 {
-	POINTLIGHT set = light;
-	m_pDeviceContext->UpdateSubresource(m_pPointLightBuffer, 0, NULL, &set, 0, 0);
+	m_pDeviceContext->UpdateSubresource(m_pPointLightBuffer, 0, NULL, &light, 0, 0);
 }
 
-void RENDERER::SetEffect(EFFECT effect)
+void RENDERER::SetEffect()
 {
-	m_pDeviceContext->UpdateSubresource(m_pEffectBuffer, 0, NULL, &effect, 0, 0);
+	m_pDeviceContext->UpdateSubresource(m_pEffectBuffer, 0, NULL, &m_Effect, 0, 0);
 }
 
+void RENDERER::SetCulling(CULLING count)
+{
+	CULLING set = count;
+	m_pDeviceContext->UpdateSubresource(m_pCullingBuffer, 0, NULL, &set, 0, 0);
+}
 
+void RENDERER::SetFog(FOG fog)
+{
+	m_Effect.fog = fog;
+}
 
+void RENDERER::SetDeferred(D3DXVECTOR4 deferred)
+{
+	m_Effect.deferred = deferred;
+}
 
 
 void RENDERER::CreateVertexShader(ID3D11VertexShader** VertexShader, ID3D11InputLayout** VertexLayout, D3D11_INPUT_ELEMENT_DESC* pLayout, UINT layoutSize, const char* FileName)
@@ -812,20 +855,7 @@ void RENDERER::CreatePixelShader(ID3D11PixelShader** PixelShader, const char* Fi
 void RENDERER::CreateComputeShader(const char* FileName,ID3D11ComputeShader** ppComputeShader)
 {
 	SetShaderDirectory();
-	//ID3DBlob* pCompiledShader = NULL;
-	//ID3DBlob* pErrors = NULL;
-
-	////コンパイル
-	//if (FAILED(D3DX11CompileFromFile(hlslName.c_str(), NULL, NULL, funcName.c_str(), "cs_5_0", flag, 0, NULL, &pCompiledShader, &pErrors, NULL)))
-	//{
-	//	int size = pErrors->GetBufferSize();
-	//	char* ch = (char*)pErrors->GetBufferPointer();
-	//	std::string ErrorMsg;
-	//	ErrorMsg = funcName + "読み込み失敗";
-	//	MSG(ErrorMsg.c_str());
-	//	return E_FAIL;
-	//}
-	//SAFE_RELEASE(pErrors);
+	
 
 	FILE* file;
 	long int fsize;
@@ -838,13 +868,6 @@ void RENDERER::CreateComputeShader(const char* FileName,ID3D11ComputeShader** pp
 
 	m_pDevice->CreateComputeShader(buffer, fsize, NULL, ppComputeShader);
 
-
-	/*if (FAILED(m_pDevice->CreateComputeShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), NULL, ppComputeShader)))
-	{
-		MSG("コンピュートシェーダー作成失敗");
-		return E_FAIL;
-	}
-	SAFE_RELEASE(pCompiledShader);*/
 
 	delete[] buffer;
 
@@ -923,26 +946,28 @@ void RENDERER::CreateConstantBuffers()
 	buffer_desc.MiscFlags = 0;
 	//buffer_desc_2.StructureByteStride = 0;
 
-	buffer_desc.ByteWidth = sizeof(D3DXMATRIX) * 2;
+	buffer_desc.ByteWidth = sizeof(WORLDMATRIX);
 	m_pDevice->CreateBuffer(&buffer_desc, NULL, &m_pWorldBuffer);
 	m_pDeviceContext->VSSetConstantBuffers(0, 1, &m_pWorldBuffer);
 	m_pDeviceContext->PSSetConstantBuffers(0, 1, &m_pWorldBuffer);
 
-	buffer_desc.ByteWidth = sizeof(D3DXMATRIX);
+	buffer_desc.ByteWidth = sizeof(VIEWMATRIX);
 	m_pDevice->CreateBuffer(&buffer_desc, NULL, &m_pViewBuffer);
 	m_pDeviceContext->VSSetConstantBuffers(1, 1, &m_pViewBuffer);
 	m_pDeviceContext->PSSetConstantBuffers(1, 1, &m_pViewBuffer);
+	m_pDeviceContext->CSSetConstantBuffers(1, 1, &m_pViewBuffer);
 
-	buffer_desc.ByteWidth = sizeof(D3DXMATRIX);
+	buffer_desc.ByteWidth = sizeof(PROJMATRIX);
 	m_pDevice->CreateBuffer(&buffer_desc, NULL, &m_pProjectionBuffer);
 	m_pDeviceContext->VSSetConstantBuffers(2, 1, &m_pProjectionBuffer);
 	m_pDeviceContext->PSSetConstantBuffers(2, 1, &m_pProjectionBuffer);
+	m_pDeviceContext->CSSetConstantBuffers(2, 1, &m_pProjectionBuffer);
 
 	buffer_desc.ByteWidth = sizeof(EYE);
 	m_pDevice->CreateBuffer(&buffer_desc, NULL, &m_pEyeBuffer);
 	m_pDeviceContext->VSSetConstantBuffers(3, 1, &m_pEyeBuffer);
 	m_pDeviceContext->PSSetConstantBuffers(3, 1, &m_pEyeBuffer);
-
+	m_pDeviceContext->CSSetConstantBuffers(3, 1, &m_pEyeBuffer);
 
 	buffer_desc.ByteWidth = sizeof(DIRECTIONALLIGHT);
 	m_pDevice->CreateBuffer(&buffer_desc, NULL, &m_pDirectionalLightBuffer);
@@ -953,12 +978,6 @@ void RENDERER::CreateConstantBuffers()
 	m_pDevice->CreateBuffer(&buffer_desc, NULL, &m_pPointLightBuffer);
 	m_pDeviceContext->VSSetConstantBuffers(5, 1, &m_pPointLightBuffer);
 	m_pDeviceContext->PSSetConstantBuffers(5, 1, &m_pPointLightBuffer);
-
-	//Pixel
-	/*buffer_desc.ByteWidth = sizeof(MATERIAL);
-	m_pDevice->CreateBuffer(&buffer_desc, NULL, &m_pMaterialBuffer);
-	m_pDeviceContext->VSSetConstantBuffers(6, 1, &m_pMaterialBuffer);
-	m_pDeviceContext->PSSetConstantBuffers(6, 1, &m_pMaterialBuffer);*/
 
 	//エフェクトエフェクトバッファ
 	buffer_desc.ByteWidth = sizeof(EFFECT);
@@ -971,4 +990,10 @@ void RENDERER::CreateConstantBuffers()
 	m_pDevice->CreateBuffer(&buffer_desc, NULL, &m_pAnimationMatrixBuffer);
 	m_pDeviceContext->VSSetConstantBuffers(7, 1, &m_pAnimationMatrixBuffer);
 
+
+	//CS-----------------------------------------
+	//カリングバッファ
+	buffer_desc.ByteWidth = sizeof(CULLING);
+	m_pDevice->CreateBuffer(&buffer_desc, NULL, &m_pCullingBuffer);
+	m_pDeviceContext->CSSetConstantBuffers(0, 1, &m_pCullingBuffer);
 }

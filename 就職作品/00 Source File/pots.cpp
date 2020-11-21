@@ -16,9 +16,9 @@ void CPots::Init()
 
 
 
-	m_Collision.Init(D3DXVECTOR3(1.0f,3.0f,1.0f),D3DXVECTOR3(0,1.5f,0));
+	m_Collision.Init(D3DXVECTOR3(0.5f,0.5f,0.5f),D3DXVECTOR3(0,0,0));
 
-
+	
 
 	//シェーダー作成
 	RENDERER::CreateVertexShader(&m_pVertexShader, &RENDERER::m_pCommonVertexLayout, nullptr, 0, "InstanceVertexShader.cso");
@@ -26,24 +26,26 @@ void CPots::Init()
 
 	
 
-	VECTOR vector;
+	TRANSFORM vector;
 	
-	vector.scale = D3DXVECTOR3(1,1,1);
 
 
 	{
 		//　マトリクス設定
-		vector.position = D3DXVECTOR3(4.0f, 0.0f, -5.8f);
+		vector.position = D3DXVECTOR3(-0.6f, 0.0f, -1.2f);
 		vector.rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		m_Vector.push_back(vector);
+		vector.scale = D3DXVECTOR3(1.2, 1.5, 1.2);
 
-		vector.position = D3DXVECTOR3(4.0f, 0.0f, -7.2f);
+		m_TransformList.push_back(vector);
+
+		vector.position = D3DXVECTOR3(-0.4f, 0.0f, -1.7f);
 		vector.rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		m_Vector.push_back(vector);
+		vector.scale = D3DXVECTOR3(1, 1, 1);
+
+		m_TransformList.push_back(vector);
 	}
 
 	InitInstance();
-	UpdateInstance();//処理速度が落ちるかもだからInitに置いてる
 }
 
 void CPots::Uninit()
@@ -60,6 +62,7 @@ void CPots::Uninit()
 
 void CPots::Update()
 {
+	UpdateInstance();
 
 }
 
@@ -74,7 +77,7 @@ void CPots::Draw()
 
 	m_pMesh->DrawInstanced(m_MeshCount);
 
-	if(!isEnableCollision)
+	if(m_EnableCollision)
 		m_Collision.DrawInstance(m_MeshCount);
 }
 
@@ -94,10 +97,9 @@ void CPots::Imgui()
 
 		ImGui::Begin("Pots", &lw_is_open, lw_flag);
 
-		ImGui::Checkbox("isEnableCollision", &isEnableCollision);
+		ImGui::Checkbox("isEnableCollision", &m_EnableCollision);
 
-		int count = m_MeshCount;
-		ImGui::InputInt("MeshCount", &count, 1);
+		ImGui::Text("MeshCount : %d / %d", m_MeshCount,m_MeshMax);
 	
 
 		ImGui::End();

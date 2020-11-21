@@ -6,7 +6,7 @@
 
 
 #define	LIGHT_MAX		(128)	//ライトの数を有限にする
-#define	ANIMATION_MATRIX_MAX	(256)
+#define	ANIMATION_MATRIX_MAX	(64)
 
 struct TRANSFORM
 {
@@ -67,7 +67,6 @@ struct DIRECTIONALLIGHT
 	D3DXVECTOR4 LightDir;
 	D3DXVECTOR4 Color;
 
-	//D3DXMATRIX LightView;//シャドウマップ作成用
 };
 
 struct PointLightInfo
@@ -89,19 +88,54 @@ struct EYE
 	D3DXVECTOR4 Eye;
 };
 
-struct EFFECT
+struct FOG
 {
 	D3DXVECTOR2 fogOffset[2];
-	float texScale;
-	float maxHeight;
-	float minHeight;
-	float dummy0;
+	FLOAT texScale;
+	FLOAT maxHeight;
+	FLOAT minHeight;
+	FLOAT dummy0;
 
 	D3DXVECTOR3 color;
-	float dummy1;
+	FLOAT	fogEnable;
 };
 
+struct EFFECT
+{
+	D3DXVECTOR4 deferred;
 
+	FOG			fog;
+};
+
+struct WORLDMATRIX
+{
+	D3DXMATRIX worldMatrix;
+	D3DXMATRIX worldInverseMatrix;
+};
+
+struct VIEWMATRIX
+{
+	D3DXMATRIX viewMatrix;
+	D3DXMATRIX viewOldMatrix;
+};
+
+struct PROJMATRIX
+{
+	D3DXMATRIX projMatrix;
+	D3DXMATRIX projOldMatrix;
+};
+
+struct CULLING
+{
+	UINT cullingCount;
+
+	D3DXVECTOR3 dummy;
+
+	D3DXVECTOR4 cullingCenterPos[4];
+
+	D3DXVECTOR4 cullingPos[8];
+
+};
 
 //　初期化
 struct D3D_INIT
@@ -113,12 +147,15 @@ struct D3D_INIT
 //　クラス
 class RENDERER
 {
-	static D3DXMATRIX m_World;
+	/*static D3DXMATRIX m_World;
 	static D3DXMATRIX m_View;
-	static D3DXMATRIX m_Proj;
-	static D3DXMATRIX GetWorldMatrix() { return m_World; }
+	static D3DXMATRIX m_Proj;*/
+	/*static D3DXMATRIX GetWorldMatrix() { return m_World; }
 	static D3DXMATRIX GetViewMatrix() { return m_View; }
-	static D3DXMATRIX GetProjectionMatrix() { return m_Proj; }
+	static D3DXMATRIX GetProjectionMatrix() { return m_Proj; }*/
+	static EFFECT m_Effect;
+	static void SetEffect();
+
 	static void CreateRenderFormat(DXGI_FORMAT dxgi_format, ID3D11Texture2D** pTexture, ID3D11RenderTargetView** pRTV, ID3D11ShaderResourceView** pSRV);
 	static void CreateConstantBuffers();
 
@@ -129,13 +166,13 @@ class RENDERER
 	static ID3D11Buffer* m_pWorldBuffer;
 	static ID3D11Buffer* m_pViewBuffer;
 	static ID3D11Buffer* m_pProjectionBuffer;
-	//static ID3D11Buffer* m_pMaterialBuffer;
+	
 	static ID3D11Buffer* m_pDirectionalLightBuffer;
 	static ID3D11Buffer* m_pPointLightBuffer;
 	static ID3D11Buffer* m_pEyeBuffer;
 	static ID3D11Buffer* m_pAnimationMatrixBuffer;
 	static ID3D11Buffer* m_pEffectBuffer;
-
+	static ID3D11Buffer* m_pCullingBuffer;
 	
 	//======================================================
 	//ランバート
@@ -150,7 +187,18 @@ class RENDERER
 	static ID3D11Texture2D* m_pPositionTexture;
 	static ID3D11RenderTargetView* m_pPosition_RTV;
 	static ID3D11ShaderResourceView* m_pPosition_SRV;
-
+	//ライティング
+	static ID3D11Texture2D* m_pLightingTexture;
+	static ID3D11RenderTargetView* m_pLighting_RTV;
+	static ID3D11ShaderResourceView* m_pLighting_SRV;
+	//モーション
+	static ID3D11Texture2D* m_pMotionTexture;
+	static ID3D11RenderTargetView* m_pMotion_RTV;
+	static ID3D11ShaderResourceView* m_pMotion_SRV;
+	//デプス
+	static ID3D11Texture2D* m_pDepthTexture;
+	static ID3D11RenderTargetView* m_pDepth_RTV;
+	static ID3D11ShaderResourceView* m_pDepth_SRV;
 
 
 
@@ -201,17 +249,18 @@ public:
 	//定数バッファセット
 	static void SetDepthEnable(bool Enable);
 	static void SetWorldViewProjection2D();
-	static void SetWorldMatrix(D3DXMATRIX WorldMatrix);
-	static void SetViewMatrix(D3DXMATRIX ViewMatrix);
-	static void SetProjectionMatrix(D3DXMATRIX ProjectionMatrix);
-	static void SetMaterial(MATERIAL Material);
+	static void SetWorldMatrix(WORLDMATRIX WorldMatrix);
+	static void SetViewMatrix(VIEWMATRIX ViewMatrix);
+	static void SetProjectionMatrix(PROJMATRIX ProjectionMatrix);
 	static void SetAnimationMatrix(ANIMATIONMATRIX Animation);
 
 	static void SetDirectionalLight(DIRECTIONALLIGHT light);
 	static void SetPointLight(POINTLIGHT light);
 	static void SetEye(EYE Eye);
-	static void SetEffect(EFFECT effect);
-	
+	static void SetCulling(CULLING count);
+	static void SetFog(FOG fog);
+	static void SetDeferred(D3DXVECTOR4 param);
+
 	RENDERER() {}	//　コンストラクタ
 	~RENDERER() {}	//　デストラクタ
 
@@ -230,6 +279,6 @@ public:
 	static void Deferred();//ディファード
 	static void DirectionlLighting();//ライティング
 	static void PointLighting();//ライティング
-	static void Effect();
+	static void EffectDraw();
 	static void Present();		//　画面更新
 };

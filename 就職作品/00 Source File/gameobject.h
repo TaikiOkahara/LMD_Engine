@@ -1,11 +1,20 @@
 #pragma once
-//#include "BASE.h"
 #include "director.h"
 #include "renderer.h"
 #include "collision.h"
 
 class CGameObject
 {
+protected:
+
+	TRANSFORM m_Transform;
+
+
+	D3DXQUATERNION  m_Quaternion;
+	bool			m_Destroy = false;
+	D3DXMATRIX		m_WorldMatrix;
+	Collision m_Collision;
+	bool			m_EnableCollision = false;
 public:
 	CGameObject() {}
 	virtual ~CGameObject() {}
@@ -20,6 +29,7 @@ public:
 	D3DXVECTOR3 GetPosition() { return m_Transform.position; }
 	D3DXVECTOR3 GetRotation() { return m_Transform.rotation; }
 	D3DXVECTOR3 GetScale()	  { return m_Transform.scale; }
+	Collision* GetCollision() { return &m_Collision; }
 
 	D3DXVECTOR3 GetForward()
 	{
@@ -66,17 +76,6 @@ public:
 
 		return up;
 	}
-	//マトリクス設定を省略する関数
-	void SetWorldMatrix()
-	{
-		//　マトリクス設定
-		D3DXMATRIX world, scale, rot, trans;
-		D3DXMatrixScaling(&scale, m_Transform.scale.x, m_Transform.scale.y, m_Transform.scale.z);
-		D3DXMatrixRotationYawPitchRoll(&rot, m_Transform.rotation.y, m_Transform.rotation.x, m_Transform.rotation.z);
-		D3DXMatrixTranslation(&trans, m_Transform.position.x, m_Transform.position.y, m_Transform.position.z);
-		world = scale * rot * trans;
-		RENDERER::SetWorldMatrix(world);
-	}
 	void SetDestroy()
 	{
 		m_Destroy = true;
@@ -95,18 +94,18 @@ public:
 			return false;
 		}
 	}
-
-	Collision* GetCollision() { return &m_Collision; }
-protected:
-	//D3DXVECTOR3		m_Position = D3DXVECTOR3(0,0,0);
-	//D3DXVECTOR3		m_Rotation = D3DXVECTOR3(0, 0, 0);//Pitch,Yaw,Roll
-	//D3DXVECTOR3		m_Scale = D3DXVECTOR3(1, 1, 1);
-	TRANSFORM m_Transform;
-
-
-	D3DXQUATERNION  m_Quaternion;
-	bool			m_Destroy = false;
-	D3DXMATRIX		m_WorldMatrix;
-	Collision m_Collision;
+	//マトリクス設定を省略する関数
+	void SetWorldMatrix()
+	{
+		//　マトリクス設定
+		D3DXMATRIX world, scale, rot, trans;
+		D3DXMatrixScaling(&scale, m_Transform.scale.x, m_Transform.scale.y, m_Transform.scale.z);
+		D3DXMatrixRotationYawPitchRoll(&rot, m_Transform.rotation.y, m_Transform.rotation.x, m_Transform.rotation.z);
+		D3DXMatrixTranslation(&trans, m_Transform.position.x, m_Transform.position.y, m_Transform.position.z);
+		world = scale * rot * trans;
+		WORLDMATRIX worldMatrix;
+		worldMatrix.worldMatrix = world;
+		RENDERER::SetWorldMatrix(worldMatrix);
+	}
 };
 

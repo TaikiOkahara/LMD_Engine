@@ -11,7 +11,6 @@ private:
 	ID3D11PixelShader* m_pPixelShader;
 
 
-	bool isEnableCollision = true;
 public:
 	CChandelier() {}
 	~CChandelier() {}

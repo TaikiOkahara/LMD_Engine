@@ -14,7 +14,7 @@ PS_OUT main(VS_OUT input)
 	PS_OUT Out = (PS_OUT)0;
 
 	//カラーテクスチャーへ出力 
-    Out.vColor = g_texDif.Sample(g_samLinear, input.Tex);//+float4(0.01, 0.01, 0.01, 0);
+    Out.vColor = g_texDif.Sample(g_samLinear, input.Tex);
   
 	
 	//座標テクスチャ―へ出力
@@ -38,6 +38,9 @@ PS_OUT main(VS_OUT input)
     normal = normalize(normal);
     Out.vNormal = normal;
 	
+    Out.vMotion = float4(input.MotionDir, 1);
 
-	return Out;
+	Out.vDepth = input.Depth;
+    
+    return Out;
 }
