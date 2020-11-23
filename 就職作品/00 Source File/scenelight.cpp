@@ -1,6 +1,5 @@
 #include "director.h"
 #include "renderer.h"
-#include "light.h"
 #include "input.h"
 #include "scenelight.h"
 #include "Imgui11.h"

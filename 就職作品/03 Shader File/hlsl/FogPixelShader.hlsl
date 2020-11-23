@@ -30,16 +30,7 @@ float4 main(VS_OUT input) : SV_Target
     
     //float4 color = g_texColor.Sample(g_samLinear, input.Tex);
     float4 position = g_texPosition.Sample(g_samLinear, input.Tex);
-    
-    //if (length(motion) != 0)
-    //{
-    //    return float4(0, 0, 0, 1);
-    //}
-    
-    //float2 uv = input.Tex;
-    
-    
-    
+   
     
     float texScale = g_fFogData.x;
     float maxHeight = g_fFogData.y;

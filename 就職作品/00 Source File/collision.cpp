@@ -4,24 +4,24 @@
 void Collision::Init(D3DXVECTOR3 size, D3DXVECTOR3 center)
 {
 	//í∏ì_ÇÃç¿ïW
-	LineVertex* vertex = new LineVertex[24];
+	D3DXVECTOR3* vertex = new D3DXVECTOR3[24];
 
-	m_Center = center;
-	m_Xsize = size.x/2;
-	m_Ysize = size.y/2;
-	m_Zsize = size.z/2;
+	m_vCenter = center;
+	m_fXsize = size.x/2;
+	m_fYsize = size.y/2;
+	m_fZsize = size.z/2;
 
 	{
 		m_pVertex = new D3DXVECTOR3[8];
 
-		m_pVertex[0] = D3DXVECTOR3(-m_Xsize, m_Ysize,-m_Zsize) + center;
-		m_pVertex[1] = D3DXVECTOR3( m_Xsize, m_Ysize,-m_Zsize) + center;
-		m_pVertex[2] = D3DXVECTOR3( m_Xsize,-m_Ysize,-m_Zsize) + center;
-		m_pVertex[3] = D3DXVECTOR3(-m_Xsize,-m_Ysize,-m_Zsize) + center;
-		m_pVertex[4] = D3DXVECTOR3(-m_Xsize, m_Ysize, m_Zsize) + center;
-		m_pVertex[5] = D3DXVECTOR3( m_Xsize, m_Ysize, m_Zsize) + center;
-		m_pVertex[6] = D3DXVECTOR3( m_Xsize,-m_Ysize, m_Zsize) + center;
-		m_pVertex[7] = D3DXVECTOR3(-m_Xsize,-m_Ysize, m_Zsize) + center;
+		m_pVertex[0] = D3DXVECTOR3(-m_fXsize, m_fYsize,-m_fZsize) + center;
+		m_pVertex[1] = D3DXVECTOR3( m_fXsize, m_fYsize,-m_fZsize) + center;
+		m_pVertex[2] = D3DXVECTOR3( m_fXsize,-m_fYsize,-m_fZsize) + center;
+		m_pVertex[3] = D3DXVECTOR3(-m_fXsize,-m_fYsize,-m_fZsize) + center;
+		m_pVertex[4] = D3DXVECTOR3(-m_fXsize, m_fYsize, m_fZsize) + center;
+		m_pVertex[5] = D3DXVECTOR3( m_fXsize, m_fYsize, m_fZsize) + center;
+		m_pVertex[6] = D3DXVECTOR3( m_fXsize,-m_fYsize, m_fZsize) + center;
+		m_pVertex[7] = D3DXVECTOR3(-m_fXsize,-m_fYsize, m_fZsize) + center;
 		
 	}
 	{
@@ -36,53 +36,53 @@ void Collision::Init(D3DXVECTOR3 size, D3DXVECTOR3 center)
 	}
 
 	{
-		vertex[0].pos = D3DXVECTOR3(-m_Xsize, m_Ysize, -m_Zsize);
-		vertex[1].pos = D3DXVECTOR3( m_Xsize, m_Ysize, -m_Zsize);
+		vertex[0] = D3DXVECTOR3(-m_fXsize, m_fYsize, -m_fZsize);
+		vertex[1] = D3DXVECTOR3( m_fXsize, m_fYsize, -m_fZsize);
 
-		vertex[2].pos = D3DXVECTOR3( m_Xsize,  m_Ysize, -m_Zsize);
-		vertex[3].pos = D3DXVECTOR3( m_Xsize, -m_Ysize, -m_Zsize);
+		vertex[2] = D3DXVECTOR3( m_fXsize,  m_fYsize, -m_fZsize);
+		vertex[3] = D3DXVECTOR3( m_fXsize, -m_fYsize, -m_fZsize);
 
-		vertex[4].pos = D3DXVECTOR3( m_Xsize,-m_Ysize, -m_Zsize);
-		vertex[5].pos = D3DXVECTOR3(-m_Xsize,-m_Ysize, -m_Zsize);
+		vertex[4] = D3DXVECTOR3( m_fXsize,-m_fYsize, -m_fZsize);
+		vertex[5] = D3DXVECTOR3(-m_fXsize,-m_fYsize, -m_fZsize);
 
-		vertex[6].pos = D3DXVECTOR3(-m_Xsize,-m_Ysize, -m_Zsize);
-		vertex[7].pos = D3DXVECTOR3(-m_Xsize, m_Ysize, -m_Zsize);
+		vertex[6] = D3DXVECTOR3(-m_fXsize,-m_fYsize, -m_fZsize);
+		vertex[7] = D3DXVECTOR3(-m_fXsize, m_fYsize, -m_fZsize);
 	}
 	{
-		vertex[8].pos = D3DXVECTOR3(-m_Xsize, m_Ysize, m_Zsize);
-		vertex[9].pos = D3DXVECTOR3( m_Xsize, m_Ysize, m_Zsize);
+		vertex[8] = D3DXVECTOR3(-m_fXsize, m_fYsize, m_fZsize);
+		vertex[9] = D3DXVECTOR3( m_fXsize, m_fYsize, m_fZsize);
 
-		vertex[10].pos = D3DXVECTOR3( m_Xsize, m_Ysize, m_Zsize);
-		vertex[11].pos = D3DXVECTOR3( m_Xsize,-m_Ysize, m_Zsize);
+		vertex[10] = D3DXVECTOR3( m_fXsize, m_fYsize, m_fZsize);
+		vertex[11] = D3DXVECTOR3( m_fXsize,-m_fYsize, m_fZsize);
 
-		vertex[12].pos = D3DXVECTOR3( m_Xsize,-m_Ysize, m_Zsize);
-		vertex[13].pos = D3DXVECTOR3(-m_Xsize,-m_Ysize, m_Zsize);
+		vertex[12] = D3DXVECTOR3( m_fXsize,-m_fYsize, m_fZsize);
+		vertex[13] = D3DXVECTOR3(-m_fXsize,-m_fYsize, m_fZsize);
 
-		vertex[14].pos = D3DXVECTOR3(-m_Xsize, -m_Ysize, m_Zsize);
-		vertex[15].pos = D3DXVECTOR3(-m_Xsize, m_Ysize, m_Zsize);
+		vertex[14] = D3DXVECTOR3(-m_fXsize, -m_fYsize, m_fZsize);
+		vertex[15] = D3DXVECTOR3(-m_fXsize, m_fYsize, m_fZsize);
 	}
 	{
-		vertex[16].pos = D3DXVECTOR3(-m_Xsize, m_Ysize, -m_Zsize);
-		vertex[17].pos = D3DXVECTOR3(-m_Xsize, m_Ysize, m_Zsize);
+		vertex[16] = D3DXVECTOR3(-m_fXsize, m_fYsize, -m_fZsize);
+		vertex[17] = D3DXVECTOR3(-m_fXsize, m_fYsize, m_fZsize);
 
-		vertex[18].pos = D3DXVECTOR3(m_Xsize, m_Ysize, -m_Zsize);
-		vertex[19].pos = D3DXVECTOR3(m_Xsize, m_Ysize, m_Zsize);
+		vertex[18] = D3DXVECTOR3(m_fXsize, m_fYsize, -m_fZsize);
+		vertex[19] = D3DXVECTOR3(m_fXsize, m_fYsize, m_fZsize);
 
-		vertex[20].pos = D3DXVECTOR3(m_Xsize, -m_Ysize, -m_Zsize);
-		vertex[21].pos = D3DXVECTOR3(m_Xsize, -m_Ysize, m_Zsize);
+		vertex[20] = D3DXVECTOR3(m_fXsize, -m_fYsize, -m_fZsize);
+		vertex[21] = D3DXVECTOR3(m_fXsize, -m_fYsize, m_fZsize);
 
-		vertex[22].pos = D3DXVECTOR3(-m_Xsize, -m_Ysize, -m_Zsize);
-		vertex[23].pos = D3DXVECTOR3(-m_Xsize, -m_Ysize, m_Zsize);
+		vertex[22] = D3DXVECTOR3(-m_fXsize, -m_fYsize, -m_fZsize);
+		vertex[23] = D3DXVECTOR3(-m_fXsize, -m_fYsize, m_fZsize);
 	}
 
 	for (int i = 0; i < 24; i++)
 	{
-		vertex[i].pos += center;
+		vertex[i] += center;
 	}
 
 	D3D11_BUFFER_DESC bd;
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(LineVertex) * 24;
+	bd.ByteWidth = sizeof(D3DXVECTOR3) * 24;
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;
@@ -125,7 +125,7 @@ void Collision::Draw()
 	RENDERER::m_pDeviceContext->IASetInputLayout(m_pVertexLayout);
 
 	RENDERER::m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-	UINT stride = sizeof(LineVertex);
+	UINT stride = sizeof(D3DXVECTOR3);
 	UINT offset = 0;
 	RENDERER::m_pDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
 
@@ -140,14 +140,14 @@ void Collision::Update()
 
 }
 
-void Collision::DrawInstance(UINT instanceCount)
+void Collision::DrawInstance(const unsigned int instanceCount)
 {
 	RENDERER::m_pDeviceContext->VSSetShader(m_pInstanceVertexShader, NULL, 0);
 	RENDERER::m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);
 	RENDERER::m_pDeviceContext->IASetInputLayout(m_pVertexLayout);
 
 	RENDERER::m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-	UINT stride = sizeof(LineVertex);
+	UINT stride = sizeof(D3DXVECTOR3);
 	UINT offset = 0;
 	RENDERER::m_pDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
 

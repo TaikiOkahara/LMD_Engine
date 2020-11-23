@@ -17,15 +17,14 @@ public:
 	void Uninit();
 	void Update();
 	void Draw();
-	void DrawInstanced(UINT instanceCount);
+	void DrawInstanced(const unsigned int instanceCount);
 
-	/*D3DXVECTOR3 GetNormal() { return D3DXVECTOR3(0, 1, 0); }*/
 private:
-	std::string m_Texture_Name;
-	std::string m_NormalTexture_Name;
+	void MakeVertexField();
 	
 
-	void MakeVertexField();
+	std::string m_sTexture_Name;
+	std::string m_sNormalTexture_Name;
 	
 	ID3D11Buffer* m_pVertexBuffer = nullptr;
 	ID3D11Buffer* m_pIndexBuffer = nullptr;
@@ -38,10 +37,10 @@ private:
 
 	ID3D11RasterizerState* m_pRasterizerState = nullptr;
 
-	int m_NumVertex;
-	int m_NumIndex;
-	int	m_NumPrimitive;
-	int m_XCount;
-	int m_YCount;
-	float m_TileSize;
+	int m_iNumVertex;
+	int m_iNumIndex;
+	int	m_iNumPrimitive;
+	int m_iXCount;
+	int m_iYCount;
+	float m_fTileSize;
 };

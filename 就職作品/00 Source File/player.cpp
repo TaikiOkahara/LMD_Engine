@@ -19,11 +19,11 @@ void CPlayer::Init()
 	
 	m_AnimModel = new CAnimationModel();
 
-	m_AnimModel->LoadModel("../02 Visual File//Akai//Akai_Idle.fbx", D3DXVECTOR3(0,0.1f,0));
+	m_AnimModel->LoadModel("../02 Visual File//Knight//Knight.fbx", D3DXVECTOR3(0,0.1f,0));
 	
 	m_AnimModel->LoadTexture("");
-	m_AnimModel->LoadAnimation("../02 Visual File//Akai//Akai_Run.fbx", "Run");
-	m_AnimModel->LoadAnimation("../02 Visual File//Akai//Akai_Idle.fbx", "Idle");
+	//m_AnimModel->LoadAnimation("../02 Visual File//Knight//untitled3.fbx", "Run");
+	m_AnimModel->LoadAnimation("../02 Visual File//Knight//Knight_Idle_Anim.fbx", "Idle");
 
 	m_Transform.position = D3DXVECTOR3(-2.5f, 0.01f, -3.5f);
 	m_Transform.scale = D3DXVECTOR3(0.8f, 0.8f, 0.8f);
@@ -52,23 +52,23 @@ void CPlayer::Init()
 	m_OldForward = GetForward();
 	m_OldForward.y = 0;
 
-	D3D11_BLEND_DESC dblend;
-	ZeroMemory(&dblend, sizeof(D3D11_BLEND_DESC));
-	dblend.IndependentBlendEnable = false;
-	dblend.AlphaToCoverageEnable = false;
-	dblend.RenderTarget[0].BlendEnable = true;
-	dblend.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;//メッシュのレンダリングイメージ
-	dblend.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;//レンダーターゲットサーファスのイメージ
-	dblend.RenderTarget[0].BlendOp = D3D11_BLEND_OP_REV_SUBTRACT;
-	//dblend.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	//dblend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
-	//dblend.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	dblend.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	//D3D11_BLEND_DESC dblend;
+	//ZeroMemory(&dblend, sizeof(D3D11_BLEND_DESC));
+	//dblend.IndependentBlendEnable = false;
+	//dblend.AlphaToCoverageEnable = false;
+	//dblend.RenderTarget[0].BlendEnable = true;
+	//dblend.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;//メッシュのレンダリングイメージ
+	//dblend.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;//レンダーターゲットサーファスのイメージ
+	//dblend.RenderTarget[0].BlendOp = D3D11_BLEND_OP_REV_SUBTRACT;
+	////dblend.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	////dblend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+	////dblend.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	//dblend.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-	if (FAILED(RENDERER::m_pDevice->CreateBlendState(&dblend, &m_pPointLightBlendState)))
-	{
-		return ;
-	}
+	//if (FAILED(RENDERER::m_pDevice->CreateBlendState(&dblend, &m_pPointLightBlendState)))
+	//{
+	//	return ;
+	//}
 
 	////通常用ラスタライズ設定
 	//D3D11_RASTERIZER_DESC rdc;
@@ -201,18 +201,19 @@ void CPlayer::Update()
 
 
 
-	if (CInput::KeyPress(DIK_W) || 
+	/*if (CInput::KeyPress(DIK_W) || 
 		CInput::KeyPress(DIK_A) ||
 		CInput::KeyPress(DIK_S) ||
 		CInput::KeyPress(DIK_D))
-		m_AnimModel->Update("Run", m_AnimModel->m_Frame);
+		m_AnimModel->Update("Run", m_AnimModel->m_iFrame);
 	else
-		m_AnimModel->Update("Idle", m_AnimModel->m_Frame);
+		*/
+		m_AnimModel->Update("Idle", m_AnimModel->m_iFrame);
 
 	
 
 	m_OldPosition = m_Transform.position;
-	m_AnimModel->m_Frame++;
+	m_AnimModel->m_iFrame++;
 }
 //
 //
@@ -226,7 +227,7 @@ void CPlayer::Draw()
 	WORLDMATRIX worldMatrix;
 	//モデル
 	D3DXMATRIX world, scale, rot, trans;
-	D3DXMatrixScaling(&scale, m_Transform.scale.x / 100.0f, m_Transform.scale.y / 100.0f, m_Transform.scale.z / 100.0f);
+	D3DXMatrixScaling(&scale, m_Transform.scale.x / 100.0f, m_Transform.scale.y / 100.0f, m_Transform.scale.z / 100.0f);//アニメーションデータをスケール変更できないため、/100をして調節
 	D3DXMatrixRotationYawPitchRoll(&rot, m_Transform.rotation.y + D3DX_PI, m_Transform.rotation.x, m_Transform.rotation.z);
 	D3DXMatrixTranslation(&trans, m_Transform.position.x, m_Transform.position.y, m_Transform.position.z);
 	world = scale * rot * trans;

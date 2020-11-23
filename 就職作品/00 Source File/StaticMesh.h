@@ -8,23 +8,23 @@
 #include "../05 Resource File/assimp/matrix4x4.h"
 #pragma comment (lib,"assimp.lib")
 
-struct DEFORM_VERTEX {
-	aiVector3D Posistion;
-	aiVector3D Normal;
-	aiVector3D Tangent;
-};
+
 
 class StaticMesh
 {
-	
+	struct DEFORM_VERTEX {
+		aiVector3D Posistion;
+		aiVector3D Normal;
+		aiVector3D Tangent;
+	};
 private:
-	const aiScene* m_AiScene = nullptr;
-	ID3D11Buffer** m_VertexBuffer = nullptr;
-	ID3D11Buffer** m_IndexBuffer = nullptr;
+	const aiScene* m_pAiScene = nullptr;
+	ID3D11Buffer** m_ppVertexBuffer = nullptr;
+	ID3D11Buffer** m_ppIndexBuffer = nullptr;
 
-	std::map<std::string, ID3D11ShaderResourceView*> m_Texture;
+	std::map<std::string, ID3D11ShaderResourceView*> m_mapTexture;
 
-	std::vector<DEFORM_VERTEX>* m_DeformVertex;//変形後頂点データ
+	std::vector<DEFORM_VERTEX>* m_vectorDeformVertex;//変形後頂点データ
 
 public:
 	void LoadModel(const char* FileName);
@@ -34,7 +34,4 @@ public:
 	void Update();
 	void Draw();
 	void DrawInstanced(UINT instanceCount);
-
-	StaticMesh(){}
-	~StaticMesh(){}
 };

@@ -1,7 +1,6 @@
 #include "director.h"
 #include "renderer.h"
-//#include "tile.h"
-#include "StaticMesh.h"
+#include "staticMesh.h"
 #include "stage.h"
 #include "Imgui11.h"
 #include "input.h"

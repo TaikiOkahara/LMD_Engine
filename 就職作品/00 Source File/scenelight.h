@@ -1,7 +1,6 @@
 #pragma once
 #include "gameobject.h"
 #include "StaticMesh.h"
-#include "light.h"
 
 
 class CSceneLight : public CGameObject

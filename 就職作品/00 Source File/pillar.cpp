@@ -1,6 +1,6 @@
 #include "director.h"
 #include "renderer.h"
-#include "StaticMesh.h"
+#include "staticMesh.h"
 #include "pillar.h"
 #include "Imgui11.h"
 #include "input.h"
@@ -11,7 +11,7 @@
 void CPillar::Init()
 {
 	m_pMesh = new StaticMesh();
-	m_pMesh->LoadModel("../02 Visual File//Pillar//untitled.fbx");
+	m_pMesh->LoadModel("../02 Visual File//Pillar//pillar.fbx");
 	m_pMesh->LoadTexture("");
 
 

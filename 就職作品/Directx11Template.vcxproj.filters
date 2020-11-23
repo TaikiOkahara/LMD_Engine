@@ -22,9 +22,6 @@
     <Filter Include="Components----------------\collision">
       <UniqueIdentifier>{ef34e6cf-c5c3-4a35-9ac6-da9f1e98582e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Components----------------\light">
-      <UniqueIdentifier>{f8635fd1-1ad7-4af6-95fb-cafaaff1af6d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Components----------------\skeletalMesh">
       <UniqueIdentifier>{d2e29390-cee8-4641-8e88-0635d2f34e49}</UniqueIdentifier>
     </Filter>
@@ -147,9 +144,6 @@
     <ClCompile Include="00 Source File\camera.cpp">
       <Filter>GameObjects----------------\camera</Filter>
     </ClCompile>
-    <ClCompile Include="00 Source File\light.cpp">
-      <Filter>Components----------------\light</Filter>
-    </ClCompile>
     <ClCompile Include="00 Source File\sound.cpp">
       <Filter>Components----------------\sound</Filter>
     </ClCompile>
@@ -182,12 +176,6 @@
     </ClCompile>
     <ClCompile Include="00 Source File\Imgui11.cpp">
       <Filter>Manager --------------------\resource\Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="00 Source File\SkeletalMesh.cpp">
-      <Filter>Components----------------\skeletalMesh</Filter>
-    </ClCompile>
-    <ClCompile Include="00 Source File\StaticMesh.cpp">
-      <Filter>Components----------------\staticMesh</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\wall.cpp">
       <Filter>GameObjects----------------\wall</Filter>
@@ -249,13 +237,16 @@
     <ClCompile Include="00 Source File\fog.cpp">
       <Filter>GameObjects----------------\fog</Filter>
     </ClCompile>
+    <ClCompile Include="00 Source File\skeletalMesh.cpp">
+      <Filter>Components----------------\skeletalMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\staticMesh.cpp">
+      <Filter>Components----------------\staticMesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="00 Source File\camera.h">
       <Filter>GameObjects----------------\camera</Filter>
-    </ClInclude>
-    <ClInclude Include="00 Source File\light.h">
-      <Filter>Components----------------\light</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\sound.h">
       <Filter>Components----------------\sound</Filter>
@@ -292,12 +283,6 @@
     </ClInclude>
     <ClInclude Include="00 Source File\Imgui11.h">
       <Filter>Manager --------------------\resource\Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="00 Source File\SkeletalMesh.h">
-      <Filter>Components----------------\skeletalMesh</Filter>
-    </ClInclude>
-    <ClInclude Include="00 Source File\StaticMesh.h">
-      <Filter>Components----------------\staticMesh</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\wall.h">
       <Filter>GameObjects----------------\wall</Filter>
@@ -367,6 +352,12 @@
     </ClInclude>
     <ClInclude Include="00 Source File\fog.h">
       <Filter>GameObjects----------------\fog</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\skeletalMesh.h">
+      <Filter>Components----------------\skeletalMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\staticMesh.h">
+      <Filter>Components----------------\staticMesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

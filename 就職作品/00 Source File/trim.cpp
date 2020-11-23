@@ -1,6 +1,6 @@
 #include "director.h"
 #include "renderer.h"
-#include "StaticMesh.h"
+#include "staticMesh.h"
 #include "trim.h"
 #include "Imgui11.h"
 #include "input.h"

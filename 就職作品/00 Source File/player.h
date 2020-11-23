@@ -1,6 +1,6 @@
 #pragma once
 #include "gameobject.h"
-#include "SkeletalMesh.h"
+#include "skeletalMesh.h"
 #include "collision.h"
 #include "InstanceObject.h"
 

@@ -4,16 +4,13 @@
 class Collision
 {
 private:
-	struct LineVertex
-	{
-		D3DXVECTOR3 pos;
-	};
+	
 
 	D3DXVECTOR3* m_pVertex;//—§•û‘Ì‚È‚Ì‚Å8’¸“_
 	D3DXVECTOR3* m_pNormal;
 	
-	float m_Xsize, m_Ysize, m_Zsize;
-	D3DXVECTOR3 m_Center;
+	float m_fXsize, m_fYsize, m_fZsize;
+	D3DXVECTOR3 m_vCenter;
 
 	ID3D11Buffer* m_pVertexBuffer = nullptr;
 	ID3D11VertexShader* m_pVertexShader = nullptr;
@@ -21,21 +18,19 @@ private:
 	ID3D11PixelShader* m_pPixelShader = nullptr;
 	ID3D11InputLayout* m_pVertexLayout = nullptr;
 public:
-	Collision(){}
-	~Collision(){}
 
 	void Init(D3DXVECTOR3 size, D3DXVECTOR3 center);
 	void Uninit();
 	void Draw();
 	void Update();
-	void DrawInstance(UINT instanceCount);
+	void DrawInstance(const unsigned int instanceCount);
 
 
 	D3DXVECTOR3* GetVertex(){return m_pVertex;}
 	D3DXVECTOR3* GetNormal(){return m_pNormal;}
-	D3DXVECTOR3  GetPosition() { return m_Center; }
+	D3DXVECTOR3  GetPosition() { return m_vCenter; }
 
-	float  GetXsize() { return m_Xsize; }
-	float  GetYsize() { return m_Ysize; }
-	float  GetZsize() { return m_Zsize; }
+	float  GetXsize() { return m_fXsize; }
+	float  GetYsize() { return m_fYsize; }
+	float  GetZsize() { return m_fZsize; }
 };

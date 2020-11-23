@@ -27,6 +27,7 @@ struct DEFORM_ANIMVERTEX
 
 class CAnimationModel
 {
+
 	
 
 	//ボーン構造体
@@ -39,25 +40,27 @@ class CAnimationModel
 
 
 private:
-	const aiScene* m_AiScene = nullptr;
-	ID3D11Buffer** m_VertexBuffer = nullptr;
-	ID3D11Buffer** m_IndexBuffer = nullptr;
+	const aiScene* m_pAiScene = nullptr;
+	ID3D11Buffer** m_pVertexBuffer = nullptr;
+	ID3D11Buffer** m_pIndexBuffer = nullptr;
 
-	std::map<std::string, ID3D11ShaderResourceView*> m_Texture;
-	std::map < std::string, const aiScene*> m_Animation;
+	std::map<std::string, ID3D11ShaderResourceView*> m_mapTexture;
+	std::map < std::string, const aiScene*> m_mapAnimation;
+
+	std::vector<DEFORM_ANIMVERTEX>* m_vectorDeformVertex;//変形後頂点データ
+	std::map < const std::string, BONE> m_mapBone;//ボーンデータ（名前で参照）
+	std::string m_sCurAnimationName;
+
+	ANIMATIONMATRIX* m_AnimationMatrix = nullptr;
+
+
+	float m_fBlendTime = 1.0f;
+
 
 	void CreateBone(aiNode* node);
 	void UpdateBoneMatrix(aiNode* node, aiMatrix4x4 matrix);
-
-	std::vector<DEFORM_ANIMVERTEX>* m_DeformVertex;//変形後頂点データ
-	std::map < const std::string, BONE> m_Bone;//ボーンデータ（名前で参照）
-
-	std::string m_CurAnimationName;
-	float m_BlendTime = 1.0f;
-
-	ANIMATIONMATRIX* m_AnimationMatrix = nullptr;
 public:
-	int m_Frame = 0;
+	int m_iFrame = 0;
 
 	void LoadModel(const char* FileName,D3DXVECTOR3 pos);
 	void LoadTexture(std::string file_name);
@@ -68,6 +71,4 @@ public:
 	void Draw();
 	void DrawInstance();
 
-	CAnimationModel(){}
-	~CAnimationModel(){}
 };
