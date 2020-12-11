@@ -38,8 +38,8 @@ void CAnimationModel::LoadModel(const char* FileName, D3DXVECTOR3 pos)
 			for (unsigned int v = 0; v < mesh->mNumVertices; v++)
 			{
 				vertex[v].Position = D3DXVECTOR3(mesh->mVertices[v].x, mesh->mVertices[v].y, mesh->mVertices[v].z);// +pos;
-				vertex[v].Normal = D3DXVECTOR3(mesh->mNormals[v].x, mesh->mNormals[v].y, mesh->mNormals[v].z);
 				vertex[v].TexturePos = D3DXVECTOR2(mesh->mTextureCoords[0][v].x, mesh->mTextureCoords[0][v].y);//[0]はテクスチャ番号
+				vertex[v].Normal = D3DXVECTOR3(mesh->mNormals[v].x, mesh->mNormals[v].y, mesh->mNormals[v].z);
 				vertex[v].Tangent = D3DXVECTOR3(mesh->mTangents[v].x, mesh->mTangents[v].y, mesh->mTangents[v].z);
 				vertex[v].Binormal = D3DXVECTOR3(mesh->mBitangents[v].x, mesh->mBitangents[v].y, mesh->mBitangents[v].z);
 			}
@@ -341,6 +341,20 @@ void CAnimationModel::Draw()
 		if (m_mapTexture[path.data]) {
 			RENDERER::m_pDeviceContext->PSSetShaderResources(1, 1, &m_mapTexture[path.data]);
 		}
+		path.Clear();
+		//Roughness
+		material->GetTexture(aiTextureType_SHININESS, 0, &path);
+		if (m_mapTexture[path.data]) {
+			RENDERER::m_pDeviceContext->PSSetShaderResources(2, 1, &m_mapTexture[path.data]);
+		}
+		path.Clear();
+		//metallic
+		material->GetTexture(aiTextureType_EMISSIVE, 0, &path);
+		if (m_mapTexture[path.data]) {
+			RENDERER::m_pDeviceContext->PSSetShaderResources(3, 1, &m_mapTexture[path.data]);
+		}
+		path.Clear();
+
 
 
 		//　頂点バッファ設定
@@ -424,26 +438,33 @@ void CAnimationModel::UpdateBoneMatrix(aiNode* node, aiMatrix4x4 matrix)
 }
 //　テクスチャ読み込み
 
-void CAnimationModel::LoadTexture(std::string file_name)
+void CAnimationModel::LoadTexture()
 {
 	//テクスチャ読み込み
+	std::map<int, aiTextureType> texTypeList;
+
+	texTypeList[0] = aiTextureType::aiTextureType_DIFFUSE;
+	texTypeList[1] = aiTextureType::aiTextureType_NORMALS;
+	texTypeList[2] = aiTextureType::aiTextureType_SHININESS;//roughnessをshiness入れた（なぜかエラーになるから）
+	texTypeList[3] = aiTextureType::aiTextureType_EMISSIVE;//metallicをemissive入れた（なぜかエラーになるから）
+
+	for (int i = 0; i < texTypeList.size(); i++)
 	{
+
 		for (unsigned int m = 0; m < m_pAiScene->mNumMaterials; m++)
 		{
-			aiString pathD;
-			aiString pathN;
+			aiString path;
 
-			//Diffuse
-			if (m_pAiScene->mMaterials[m]->GetTexture(aiTextureType_DIFFUSE, 0, &pathD)
+			if (m_pAiScene->mMaterials[m]->GetTexture(texTypeList[i], 0, &path)
 				== AI_SUCCESS)
 			{
-				if (pathD.data[0] == '*')
+				if (path.data[0] == '*')
 				{
 					//FBXファイル内から読み込み
-					if (m_mapTexture[pathD.data] == NULL)
+					if (m_mapTexture[path.data] == NULL)
 					{
 						ID3D11ShaderResourceView* texture;
-						int id = atoi(&pathD.data[1]);
+						int id = atoi(&path.data[1]);
 
 						D3DX11CreateShaderResourceViewFromMemory(
 							RENDERER::m_pDevice,
@@ -454,87 +475,23 @@ void CAnimationModel::LoadTexture(std::string file_name)
 							&texture,
 							NULL);
 
-						m_mapTexture[pathD.data] = texture;
+						m_mapTexture[path.data] = texture;
 					}
-				}
-				else
-				{
-					//外部ファイルから読み込み
-
-					//テクスチャの数分テクスチャ名読み込み
-
-					std::string textureName;
-
-					//SetVisualDirectory();
-					//textureName = str;
-
-					ID3D11ShaderResourceView* texture;
-					//std::string texturename;
-					textureName = file_name;
-					textureName += "//";
-					textureName += pathD.data;
-
-					D3DX11CreateShaderResourceViewFromFile(RENDERER::m_pDevice, textureName.c_str(), NULL, NULL, &texture, NULL);
-
-					m_mapTexture[pathD.data] = texture;
-
 				}
 			}
 			else
 			{
-				m_mapTexture[pathD.data] = NULL;
-			}
+				m_mapTexture[path.data] = NULL;
 
-			//Normal
-			if (m_pAiScene->mMaterials[m]->GetTexture(aiTextureType_NORMALS, 0, &pathN)
-				== AI_SUCCESS)
-			{
-				if (pathN.data[0] == '*')
-				{
-					//FBXファイル内から読み込み
-					if (m_mapTexture[pathN.data] == NULL)
-					{
-						ID3D11ShaderResourceView* texture;
-						int id = atoi(&pathN.data[1]);
 
-						D3DX11CreateShaderResourceViewFromMemory(
-							RENDERER::m_pDevice,
-							(const unsigned char*)m_pAiScene->mTextures[id]->pcData,
-							m_pAiScene->mTextures[id]->mWidth,
-							NULL,
-							NULL,
-							&texture,
-							NULL);
+				//外部ファイルから読み込む
 
-						m_mapTexture[pathN.data] = texture;
-					}
-				}
-				else
-				{
-					//外部ファイルから読み込み
 
-					//テクスチャの数分テクスチャ名読み込み
-
-					std::string textureName;
-
-					//SetVisualDirectory();
-					//textureName = str;
-
-					ID3D11ShaderResourceView* texture;
-
-					textureName = file_name;
-					textureName += "//";
-					textureName += pathN.data;
-
-					D3DX11CreateShaderResourceViewFromFile(RENDERER::m_pDevice, textureName.c_str(), NULL, NULL, &texture, NULL);
-
-					m_mapTexture[pathN.data] = texture;
-				}
-			}
-			else
-			{
-				m_mapTexture[pathN.data] = NULL;
 			}
 		}
+
+
 	}
+
+	texTypeList.clear();
 }

@@ -26,7 +26,7 @@ private:
 	ID3D11PixelShader* m_pPixelShader;
 	ID3D11InputLayout* m_pVertexLayout;
 
-
+	bool m_EnablePlayerPointLight = true;
 public:
 
 	void Init();

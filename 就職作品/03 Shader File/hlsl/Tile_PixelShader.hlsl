@@ -3,6 +3,8 @@
 
 Texture2D g_tex			: register(t0);
 Texture2D g_texNor		: register(t1);
+Texture2D g_texMRA : register(t2); //Roughnessテクスチャ
+//Texture2D g_texMetallic : register(t3); //Metallicテクスチャ
 
 
 
@@ -27,22 +29,24 @@ PS_OUT main(VS_OUT input)
     bump = (bump * 2.0f) - 1.0f;
 	
     float3 bumpNormal;
-    bumpNormal = (-bump.x * input.WorldTangent) + (-bump.y * input.WorldBinormal) + (-bump.z * input.WorldNormal);
+    bumpNormal = (bump.x * input.WorldTangent) + (bump.y * input.WorldBinormal) + (-bump.z * input.WorldNormal);
 	
-    float4 normal;
-    normal.x = bumpNormal.x;
-    normal.y = bumpNormal.y;
-    normal.z = bumpNormal.z;
-    normal.w = 0.0f;
-    
-    normal = normalize(normal);
+    bumpNormal = normalize(bumpNormal);
     
     
-    Out.vNormal = normal;
+    
+    Out.vNormal = float4(bumpNormal,0);
 	
-    Out.vMotion = float4(input.MotionDir, 1);
+    Out.vMotion = input.Velocity;
     
-    Out.vDepth = input.Depth;
+    float roughness = g_texMRA.Sample(g_samLinear, input.Tex).g;
+    float metallic = g_texMRA.Sample(g_samLinear, input.Tex).r;
+    float ambientOcclusion = g_texMRA.Sample(g_samLinear, input.Tex).b;
+    
+    
+    Out.vColor *= ambientOcclusion;
+    
+    Out.vDepthPBR = float4(input.Depth, roughness, metallic, 0);
     
 	return Out;
 }

@@ -3,160 +3,19 @@
 　　製作者：岡原大起　	(-"-)
 =============================================================*/
 #pragma once
+#include "struct.h"
 
 
-#define	LIGHT_MAX		(128)	//ライトの数を有限にする
-#define	ANIMATION_MATRIX_MAX	(64)
 
-struct TRANSFORM
-{
-	D3DXVECTOR3 position = D3DXVECTOR3(0,0,0);
-	D3DXVECTOR3 rotation = D3DXVECTOR3(0, 0, 0);
-	D3DXVECTOR3 scale = D3DXVECTOR3(1, 1, 1);
-};
-
-
-struct VERTEX_3D
-{
-	D3DXVECTOR3 Position;
-	D3DXVECTOR3 Normal;	
-	D3DXVECTOR2 TexturePos;
-	
-	D3DXVECTOR3 Tangent;
-	D3DXVECTOR3 Binormal;
-};
-
-struct DEFERRED_VERTEX
-{
-	D3DXVECTOR3 Pos;
-	D3DXVECTOR2 TexturePos;
-};
-
-struct ANIMVERTEX_3D
-{
-	D3DXVECTOR3 Position;
-	D3DXVECTOR3 Normal;
-	D3DXVECTOR2 TexturePos;
-	D3DXVECTOR3 Tangent;
-	D3DXVECTOR3 Binormal;
-	
-	UINT		BoneIndex[4]{ 
-		ANIMATION_MATRIX_MAX - 1,
-		ANIMATION_MATRIX_MAX - 1,
-		ANIMATION_MATRIX_MAX - 1,
-		ANIMATION_MATRIX_MAX - 1 };//0はインデックスで利用するため、255で代入さ入れていないインデックスを検知
-	
-	D3DXVECTOR4 BoneWeight{ 0.0f,0.0f,0.0f,0.0f };
-};
-
-struct ANIMATIONMATRIX
-{
-	D3DXMATRIX Animation[ANIMATION_MATRIX_MAX];
-};
-
-
-struct MATERIAL
-{
-	D3DXVECTOR4		Ambient;
-	D3DXVECTOR4		Diffuse;
-	D3DXVECTOR4		Specular;
-};
-
-struct DIRECTIONALLIGHT
-{
-	D3DXVECTOR4 LightDir;
-	D3DXVECTOR4 Color;
-
-};
-
-struct PointLightInfo
-{
-	D3DXVECTOR3 color;
-	FLOAT intensity;
-	D3DXVECTOR3 calc;
-	FLOAT specular;
-};
-
-
-struct POINTLIGHT
-{
-	PointLightInfo pointList[LIGHT_MAX];
-};
-
-struct EYE
-{
-	D3DXVECTOR4 Eye;
-};
-
-struct FOG
-{
-	D3DXVECTOR2 fogOffset[2];
-	FLOAT texScale;
-	FLOAT maxHeight;
-	FLOAT minHeight;
-	FLOAT dummy0;
-
-	D3DXVECTOR3 color;
-	FLOAT	fogEnable;
-};
-
-struct EFFECT
-{
-	D3DXVECTOR4 deferred;
-
-	FOG			fog;
-};
-
-struct WORLDMATRIX
-{
-	D3DXMATRIX worldMatrix;
-	D3DXMATRIX worldInverseMatrix;
-};
-
-struct VIEWMATRIX
-{
-	D3DXMATRIX viewMatrix;
-	D3DXMATRIX viewOldMatrix;
-};
-
-struct PROJMATRIX
-{
-	D3DXMATRIX projMatrix;
-	D3DXMATRIX projOldMatrix;
-};
-
-struct CULLING
-{
-	UINT cullingCount;
-
-	D3DXVECTOR3 dummy;
-
-	D3DXVECTOR4 cullingCenterPos[4];
-
-	D3DXVECTOR4 cullingPos[8];
-
-};
-
-//　初期化
-struct D3D_INIT
-{
-	HWND hWnd;
-};
-//
-//
-//　クラス
 class RENDERER
 {
-	/*static D3DXMATRIX m_World;
-	static D3DXMATRIX m_View;
-	static D3DXMATRIX m_Proj;*/
-	/*static D3DXMATRIX GetWorldMatrix() { return m_World; }
-	static D3DXMATRIX GetViewMatrix() { return m_View; }
-	static D3DXMATRIX GetProjectionMatrix() { return m_Proj; }*/
 	static EFFECT m_Effect;
+	static VIEWMATRIX m_ViewMatrix;
+	static PROJMATRIX m_ProjMatrix;
+
 	static void SetEffect();
 
-	static void CreateRenderFormat(DXGI_FORMAT dxgi_format, ID3D11Texture2D** pTexture, ID3D11RenderTargetView** pRTV, ID3D11ShaderResourceView** pSRV);
+	static void CreateGBufferFormat(GBuffer* pGbuffer, DXGI_FORMAT dxgi_format);
 	static void CreateConstantBuffers();
 
 	static IDXGISwapChain* m_pSwapChain;
@@ -175,32 +34,15 @@ class RENDERER
 	static ID3D11Buffer* m_pCullingBuffer;
 	
 	//======================================================
-	//ランバート
-	static ID3D11Texture2D* m_pColorTexture;
-	static ID3D11RenderTargetView* m_pColor_RTV;
-	static ID3D11ShaderResourceView* m_pColor_SRV;
-	//ノーマル
-	static ID3D11Texture2D* m_pNormalTexture;
-	static ID3D11RenderTargetView* m_pNormal_RTV;
-	static ID3D11ShaderResourceView* m_pNormal_SRV;
-	//ポジション
-	static ID3D11Texture2D* m_pPositionTexture;
-	static ID3D11RenderTargetView* m_pPosition_RTV;
-	static ID3D11ShaderResourceView* m_pPosition_SRV;
-	//ライティング
-	static ID3D11Texture2D* m_pLightingTexture;
-	static ID3D11RenderTargetView* m_pLighting_RTV;
-	static ID3D11ShaderResourceView* m_pLighting_SRV;
-	//モーション
-	static ID3D11Texture2D* m_pMotionTexture;
-	static ID3D11RenderTargetView* m_pMotion_RTV;
-	static ID3D11ShaderResourceView* m_pMotion_SRV;
-	//デプス
-	static ID3D11Texture2D* m_pDepthTexture;
-	static ID3D11RenderTargetView* m_pDepth_RTV;
-	static ID3D11ShaderResourceView* m_pDepth_SRV;
+	//GBuffer
+	static GBuffer m_Diffuse_GBuffer;
+	static GBuffer m_Normal_GBuffer;
+	static GBuffer m_Position_GBuffer;
+	static GBuffer m_Lighting_GBuffer;
+	static GBuffer m_Velocity_GBuffer;
+	static GBuffer m_DepthPBR_GBuffer;
 
-
+	//======================================================
 
 	//ディファード
 	static ID3D11Buffer* m_pScreenPolyVB;
@@ -219,7 +61,7 @@ class RENDERER
 
 	//ポイントライティング
 	static ID3D11RasterizerState* m_pPointLightingRasterizerState;
-	//======================================================
+	
 
 	//ビューポート
 	static D3D11_VIEWPORT m_Vp;
@@ -261,11 +103,13 @@ public:
 	static void SetFog(FOG fog);
 	static void SetDeferred(D3DXVECTOR4 param);
 
-	RENDERER() {}	//　コンストラクタ
-	~RENDERER() {}	//　デストラクタ
+	static void SetRasterizerState(D3D11_CULL_MODE mode);
+
+	static VIEWMATRIX GetViewMatrix() { return m_ViewMatrix; }
+	static PROJMATRIX GeProjMatrix() { return m_ProjMatrix; }
 
 	//メンバ関数
-	static HRESULT Init(D3D_INIT*);//　初期化
+	static HRESULT Init(HWND hWnd);//　初期化
 	static void Uninit();
 	static void ShowFPS();			//　FPS表示
 	static void Clear();			//　クリア
@@ -278,7 +122,7 @@ public:
 
 	static void Deferred();//ディファード
 	static void DirectionlLighting();//ライティング
-	static void PointLighting();//ライティング
-	static void EffectDraw();
+	static void PointLighting();	//ポイントライト
+	static void EffectDraw();	//ポストエフェクト
 	static void Present();		//　画面更新
 };

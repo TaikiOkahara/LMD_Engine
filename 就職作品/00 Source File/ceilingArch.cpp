@@ -27,7 +27,7 @@ void CCeilingArch::Init()
 
 	TRANSFORM vector;
 	//‰E
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 7; i++)
 	{
 		vector.position = D3DXVECTOR3(0.0f, 3.5f, 2.5f + i * 5);
 		vector.rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -36,7 +36,7 @@ void CCeilingArch::Init()
 		m_TransformList.push_back(vector);
 	}
 	//¶
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 7; i++)
 	{
 		vector.position = D3DXVECTOR3(-5.0f, 3.5f, 2.5f + i * 5);
 		vector.rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -45,7 +45,7 @@ void CCeilingArch::Init()
 		m_TransformList.push_back(vector);
 	}
 	//‰¡
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 7; i++)
 	{
 		vector.position = D3DXVECTOR3(-2.5f, 3.5f, 5.0f + i * 5);
 		vector.rotation = D3DXVECTOR3(0.0f, D3DX_PI/2, 0.0f);
@@ -107,7 +107,7 @@ void CCeilingArch::Imgui()
 
 		ImGui::Begin("CeilingArch", &lw_is_open, lw_flag);
 
-		ImGui::Checkbox("isEnableCollision", &m_EnableCollision);
+		ImGui::Checkbox("EnableCollision", &m_EnableCollision);
 
 		ImGui::Text("MeshCount : %d / %d", m_MeshCount, m_MeshMax);
 

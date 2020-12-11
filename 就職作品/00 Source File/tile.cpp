@@ -84,22 +84,22 @@ void Tile::MakeVertexField()
 		
 	
 
-	//ノーマルテクスチャ―作成
-	SetVisualDirectory();
-	D3DX11CreateTextureFromFileA(RENDERER::m_pDevice, m_sNormalTexture_Name.c_str(), NULL, NULL, (ID3D11Resource**)&m_pNormalTexture, NULL);
+	////ノーマルテクスチャ―作成
+	//SetVisualDirectory();
+	//D3DX11CreateTextureFromFileA(RENDERER::m_pDevice, m_sNormalTexture_Name.c_str(), NULL, NULL, (ID3D11Resource**)&m_pNormalTexture, NULL);
 
 
-	//ノーマルマップテクスチャーのシェーダーリソースビュー作成
-	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
-	ZeroMemory(&srvDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
-	D3D11_TEXTURE2D_DESC desc;
-	m_pNormalTexture->GetDesc( &desc );
-	srvDesc.Format = desc.Format;
-	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = desc.MipLevels;
-	srvDesc.Texture2D.MostDetailedMip = 0;
+	////テクスチャーのシェーダーリソースビュー作成
+	//D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+	//ZeroMemory(&srvDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
+	//D3D11_TEXTURE2D_DESC desc;
+	//m_pNormalTexture->GetDesc( &desc );
+	//srvDesc.Format = desc.Format;
+	//srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	//srvDesc.Texture2D.MipLevels = desc.MipLevels;
+	//srvDesc.Texture2D.MostDetailedMip = 0;
 
-	HRESULT hr = RENDERER::m_pDevice->CreateShaderResourceView(m_pNormalTexture, &srvDesc, &m_pNormalTextureSRV);
+	//HRESULT hr = RENDERER::m_pDevice->CreateShaderResourceView(m_pNormalTexture, &srvDesc, &m_pNormalTextureSRV);
 
 	
 	//　カラーテクスチャ―作成
@@ -110,10 +110,15 @@ void Tile::MakeVertexField()
 	//　ノーマルテクスチャ―作成
 	SetVisualDirectory();
 	D3DX11CreateShaderResourceViewFromFileA(RENDERER::m_pDevice, m_sNormalTexture_Name.c_str(), NULL, NULL, &m_pNormalTextureSRV, NULL);
-	
+
+	//　RMクスチャ―作成
+	SetVisualDirectory();
+	D3DX11CreateShaderResourceViewFromFileA(RENDERER::m_pDevice, m_sMRATexture_Name.c_str(), NULL, NULL, &m_pMRATextureSRV, NULL);
+
+
 }
 
-void Tile::Init(std::string Tex_name,std::string Nor_name, int tile_X_count, int tile_Y_count, float tile_size)
+void Tile::Init(std::string Tex_name,std::string Nor_name,std::string RM_name, int tile_X_count, int tile_Y_count, float tile_size)
 {
 
 	m_Material.Ambient = D3DXVECTOR4(0.1, 0.1, 0.1, 1);
@@ -122,6 +127,7 @@ void Tile::Init(std::string Tex_name,std::string Nor_name, int tile_X_count, int
 
 	m_sTexture_Name = Tex_name;
 	m_sNormalTexture_Name = Nor_name;
+	m_sMRATexture_Name = RM_name;
 	m_iNumVertex = (tile_X_count + 1) * (tile_Y_count + 1);
 	m_iNumIndex = (tile_X_count + 1) * 2 * tile_Y_count + (tile_Y_count - 1) * 2;
 	m_iNumPrimitive = (tile_X_count * tile_Y_count) * 2 + (tile_Y_count - 1) * 4;
@@ -134,7 +140,16 @@ void Tile::Init(std::string Tex_name,std::string Nor_name, int tile_X_count, int
 	MakeVertexField();
 }
 
-void Tile::Uninit(){}
+void Tile::Uninit()
+{
+	m_pIndexBuffer->Release();
+	m_pVertexBuffer->Release();
+
+	m_pTextureSRV->Release();
+	m_pNormalTextureSRV->Release();
+	m_pMRATextureSRV->Release();
+
+}
 
 void Tile::Update(){}
 
@@ -145,6 +160,7 @@ void Tile::Draw()
 
 	RENDERER::m_pDeviceContext->PSSetShaderResources(0, 1, &m_pTextureSRV);
 	RENDERER::m_pDeviceContext->PSSetShaderResources(1, 1, &m_pNormalTextureSRV);
+	RENDERER::m_pDeviceContext->PSSetShaderResources(2, 1, &m_pMRATextureSRV);
 
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
@@ -162,6 +178,7 @@ void Tile::DrawInstanced(const unsigned int instanceCount)
 
 	RENDERER::m_pDeviceContext->PSSetShaderResources(0, 1, &m_pTextureSRV);
 	RENDERER::m_pDeviceContext->PSSetShaderResources(1, 1, &m_pNormalTextureSRV);
+	RENDERER::m_pDeviceContext->PSSetShaderResources(2, 1, &m_pMRATextureSRV);
 
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;

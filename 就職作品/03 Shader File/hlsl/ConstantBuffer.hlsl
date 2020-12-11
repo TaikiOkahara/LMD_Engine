@@ -24,14 +24,15 @@ cbuffer ProjectionBuffer : register(b2)
 
 cbuffer EyeBuffer : register(b3)
 {
-    float4 g_vEye;
+    float4 g_vEyePos;
 }
 
 
 //　ディレクショナルライト
 cbuffer DirectionalLightBuffer : register(b4)
 {
-    float4 g_vLight; //ライトの座標
+    float4 g_vDirectionalLightDir; //ライトの座標
+    float4 g_vDirectionalLightPos; //ライトの座標
 	float4 g_vLightColor;//色	
 	
 }

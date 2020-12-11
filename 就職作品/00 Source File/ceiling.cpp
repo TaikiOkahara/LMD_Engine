@@ -26,7 +26,7 @@ void CCeiling::Init()
 
 
 	TRANSFORM vector;
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 7; i++)
 	{
 		vector.position = D3DXVECTOR3(m_Transform.position.x, m_Transform.position.y, m_Transform.position.z + i * 5);
 		vector.rotation = m_Transform.rotation;
@@ -86,7 +86,7 @@ void CCeiling::Imgui()
 
 		ImGui::Begin("Ceiling", &lw_is_open, lw_flag);
 
-		ImGui::Checkbox("isEnableCollision", &m_EnableCollision);
+		ImGui::Checkbox("EnableCollision", &m_EnableCollision);
 
 		ImGui::Text("MeshCount : %d / %d", m_MeshCount, m_MeshMax);
 

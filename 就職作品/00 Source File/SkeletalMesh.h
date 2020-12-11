@@ -63,7 +63,7 @@ public:
 	int m_iFrame = 0;
 
 	void LoadModel(const char* FileName,D3DXVECTOR3 pos);
-	void LoadTexture(std::string file_name);
+	void LoadTexture();
 	void LoadAnimation(const char* FileName, const char* AnimationName);
 
 	void Unload();

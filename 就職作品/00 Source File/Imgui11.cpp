@@ -19,7 +19,8 @@ void IMGUI_Init(HWND m_hWnd)
 	io.BackendRendererName = "imgui_impl_dx11";
 	io.BackendFlags |= ImGuiBackendFlags_RendererHasVtxOffset;  // We can honor the ImDrawCmd::VtxOffset field, allowing for large meshes.
 	io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\meiryo.ttc", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
-	
+	io.DisplaySize.x = WINDOW_WIDTH;
+	io.DisplaySize.y = WINDOW_HEIGHT;
 	// Enable docking(available in imgui `docking` branch at the moment)
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;//ドッキング機能追加
 }

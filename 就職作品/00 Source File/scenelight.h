@@ -8,10 +8,12 @@ class CSceneLight : public CGameObject
 private:
 	DIRECTIONALLIGHT m_DirectionalLight;
 
-public:
-	CSceneLight(){}
-	~CSceneLight(){}
+	StaticMesh* m_pMesh;
 
+	ID3D11VertexShader* m_VertexShader;
+	ID3D11PixelShader* m_PixelShader;
+public:
+	
 	void Init();
 	void Uninit();
 	void Update();

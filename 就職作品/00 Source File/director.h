@@ -54,7 +54,7 @@
 
 //
 //　マクロ
-#define APP_NAME "岡原　大起　就職作品3"//アプリ名
+#define APP_NAME "LMD Engine ：　Okahara Taiki"//アプリ名
 #define WINDOW_WIDTH 1920	//　サイズ横
 #define WINDOW_HEIGHT 1080	//　サイズ縦
 //
@@ -80,22 +80,7 @@ struct INI
 	}
 };
 
-struct TEXTURE
-{
-	
-	std::string	TextureType; //種類（diffuse、normal）など
-	std::string TextureName; //名前
-};
 
-
-class TEXTUREINI
-{
-public:
-	TEXTUREINI() { TextureCount = 0; }
-	~TEXTUREINI() { delete TextureData; }
-	int			TextureCount;//総数
-	TEXTURE*	TextureData = nullptr;
-};
 
 //
 //プロトタイプ

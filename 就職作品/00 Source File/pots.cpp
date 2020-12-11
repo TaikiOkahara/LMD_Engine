@@ -97,7 +97,7 @@ void CPots::Imgui()
 
 		ImGui::Begin("Pots", &lw_is_open, lw_flag);
 
-		ImGui::Checkbox("isEnableCollision", &m_EnableCollision);
+		ImGui::Checkbox("EnableCollision", &m_EnableCollision);
 
 		ImGui::Text("MeshCount : %d / %d", m_MeshCount,m_MeshMax);
 	

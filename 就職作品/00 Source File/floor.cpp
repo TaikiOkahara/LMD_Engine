@@ -12,7 +12,7 @@ void CFloor::Init()
 	m_pField = new Tile();
 
 
-	m_pField->Init("BrickFloor//T_BrickFloor_Clean_A.png", "BrickFloor//T_BrickFloor_Clean_N.BMP",100,100,1.0f);
+	m_pField->Init("BrickFloor//T_BrickFloor_Clean_A.png", "BrickFloor//T_BrickFloor_Clean_N.BMP", "BrickFloor//T_BrickFloor_Clean_C.BMP",100,100,1.0f);
 	
 	m_Transform.rotation = D3DXVECTOR3(0, -D3DX_PI/2, 0.0f);
 	

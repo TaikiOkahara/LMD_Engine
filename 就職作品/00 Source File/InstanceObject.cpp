@@ -128,6 +128,8 @@ void CInstanceGameObject::InitInstance()
     culling.cullingPos[5] = D3DXVECTOR4( m_Collision.GetVertex()[5].x ,m_Collision.GetVertex()[5].y,m_Collision.GetVertex()[5].z ,0);
     culling.cullingPos[6] = D3DXVECTOR4( m_Collision.GetVertex()[6].x ,m_Collision.GetVertex()[6].y,m_Collision.GetVertex()[6].z ,0);
     culling.cullingPos[7] = D3DXVECTOR4( m_Collision.GetVertex()[7].x ,m_Collision.GetVertex()[7].y,m_Collision.GetVertex()[7].z ,0);
+
+
 }
 
 void CInstanceGameObject::UninitInstance()
@@ -149,10 +151,10 @@ void CInstanceGameObject::UpdateInstance()
     
     CCamera* camera = Base::GetScene()->GetGameObject<CCamera>(0);
 
-    culling.cullingCenterPos[0] = camera->m_CullingWPos[0];
-    culling.cullingCenterPos[1] = camera->m_CullingWPos[1];
-    culling.cullingCenterPos[2] = camera->m_CullingWPos[2];
-    culling.cullingCenterPos[3] = camera->m_CullingWPos[3];
+    culling.cullingCameraPos[0] = camera->m_CullingWPos[0];
+    culling.cullingCameraPos[1] = camera->m_CullingWPos[1];
+    culling.cullingCameraPos[2] = camera->m_CullingWPos[2];
+    culling.cullingCameraPos[3] = camera->m_CullingWPos[3];
 
     RENDERER::SetCulling(culling);
 

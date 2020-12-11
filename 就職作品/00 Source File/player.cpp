@@ -19,11 +19,11 @@ void CPlayer::Init()
 	
 	m_AnimModel = new CAnimationModel();
 
-	m_AnimModel->LoadModel("../02 Visual File//Knight//Knight.fbx", D3DXVECTOR3(0,0.1f,0));
+	m_AnimModel->LoadModel("../02 Visual File//Knight//KnightPBR.fbx", D3DXVECTOR3(0,0.1f,0));
 	
-	m_AnimModel->LoadTexture("");
-	//m_AnimModel->LoadAnimation("../02 Visual File//Knight//untitled3.fbx", "Run");
-	m_AnimModel->LoadAnimation("../02 Visual File//Knight//Knight_Idle_Anim.fbx", "Idle");
+	m_AnimModel->LoadTexture();
+	m_AnimModel->LoadAnimation("../02 Visual File//Knight//Run_Blender.fbx", "Run");
+	m_AnimModel->LoadAnimation("../02 Visual File//Knight//Idle_Blender.fbx", "Idle");
 
 	m_Transform.position = D3DXVECTOR3(-2.5f, 0.01f, -3.5f);
 	m_Transform.scale = D3DXVECTOR3(0.8f, 0.8f, 0.8f);
@@ -34,8 +34,8 @@ void CPlayer::Init()
 	//　入力レイアウト生成
 	D3D11_INPUT_ELEMENT_DESC layout[]{
 	{ "POSITION",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0,							   0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "NORMAL",			0, DXGI_FORMAT_R32G32B32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "TEXCOORD",		0, DXGI_FORMAT_R32G32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "NORMAL",			0, DXGI_FORMAT_R32G32B32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "TANGENT",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "BINORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "BONEINDEX",		0, DXGI_FORMAT_R32G32B32A32_UINT,	0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -110,6 +110,10 @@ void CPlayer::Uninit()
 	delete m_AnimModel;
 
 	m_Collision.Uninit();
+
+	m_VertexShader->Release();
+	m_VertexLayout->Release();
+	m_PixelShader->Release();
 }
 //
 //
@@ -173,17 +177,21 @@ void CPlayer::Update()
 	
 
 	D3DXVec3Normalize(&position, &position);
-	m_Transform.position += position * 0.1f;
+	m_Transform.position += position * 0.08f;
 	
 	if (rotation != 0){
 		m_Transform.rotation.y = rotation;
 	}
 	
 	//壁との当たり判定
-	CWall* wall = Base::GetScene()->GetGameObject<CWall>(1);
-	m_Transform.position = LenOBBToPoint(*wall, m_Transform.position,10.0f);
-	CPillar* pillar = Base::GetScene()->GetGameObject<CPillar>(1);
-	m_Transform.position = LenOBBToPoint(*pillar, m_Transform.position,2.0f);
+	if (m_EnableHit)
+	{
+		CWall* wall = Base::GetScene()->GetGameObject<CWall>(1);
+		m_Transform.position = LenOBBToPoint(*wall, m_Transform.position, 7.0f);
+		CPillar* pillar = Base::GetScene()->GetGameObject<CPillar>(1);
+		m_Transform.position = LenOBBToPoint(*pillar, m_Transform.position, 2.0f);
+	}
+	
 
 	
 	m_Collision.Update();
@@ -201,13 +209,12 @@ void CPlayer::Update()
 
 
 
-	/*if (CInput::KeyPress(DIK_W) || 
+	if (CInput::KeyPress(DIK_W) || 
 		CInput::KeyPress(DIK_A) ||
 		CInput::KeyPress(DIK_S) ||
 		CInput::KeyPress(DIK_D))
 		m_AnimModel->Update("Run", m_AnimModel->m_iFrame);
 	else
-		*/
 		m_AnimModel->Update("Idle", m_AnimModel->m_iFrame);
 
 	
@@ -228,7 +235,7 @@ void CPlayer::Draw()
 	//モデル
 	D3DXMATRIX world, scale, rot, trans;
 	D3DXMatrixScaling(&scale, m_Transform.scale.x / 100.0f, m_Transform.scale.y / 100.0f, m_Transform.scale.z / 100.0f);//アニメーションデータをスケール変更できないため、/100をして調節
-	D3DXMatrixRotationYawPitchRoll(&rot, m_Transform.rotation.y + D3DX_PI, m_Transform.rotation.x, m_Transform.rotation.z);
+	D3DXMatrixRotationYawPitchRoll(&rot, m_Transform.rotation.y - D3DX_PI, m_Transform.rotation.x, m_Transform.rotation.z);
 	D3DXMatrixTranslation(&trans, m_Transform.position.x, m_Transform.position.y, m_Transform.position.z);
 	world = scale * rot * trans;
 	
@@ -288,7 +295,7 @@ void CPlayer::Draw()
 	worldMatrix.worldMatrix = world;
 	RENDERER::SetWorldMatrix(worldMatrix);
 
-	if (!isEnableCollision)
+	if (m_EnableCollision)
 		m_Collision.Draw();
 }
 
@@ -348,9 +355,11 @@ D3DXVECTOR3 CPlayer:: LenOBBToPoint(CInstanceGameObject& obj, D3DXVECTOR3& p,flo
 				Vec += (1 - s) * LenZ * rot;   // はみ出した部分のベクトル算出
 		}
 
-
+		
 		if (D3DXVec3Length(&Vec) <= 0)
 			position = RayIntersect(&obj, i);
+
+
 
 		Vec = D3DXVECTOR3(0, 0, 0);
 	}
@@ -482,14 +491,15 @@ void CPlayer::Imgui()
 
 		ImGui::Begin("Player", &lw_is_open, lw_flag);
 
-		ImGui::Checkbox("isEnableCollision", &isEnableCollision);
+		ImGui::Checkbox("EnableCollision", &m_EnableCollision);
+		ImGui::Checkbox("EnableHit", &m_EnableHit);
 		
 		
 		/*if(m_hit)
 			ImGui::Text("Hit!!!");*/
 
-		ImGui::InputFloat3("Position", m_Transform.position, 1);
-		ImGui::InputFloat3("Rotation", m_Transform.rotation, 1);
+		ImGui::Text("Position : %f,%f,%f", m_Transform.position.x,m_Transform.position.y,m_Transform.position.z);
+		ImGui::Text("Rotation : %f,%f,%f", m_Transform.rotation.x,m_Transform.rotation.y,m_Transform.rotation.z);
 
 		ImGui::End();
 	}

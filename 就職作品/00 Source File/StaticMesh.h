@@ -28,7 +28,7 @@ private:
 
 public:
 	void LoadModel(const char* FileName);
-	void LoadTexture(std::string file_name);//Textureファイルパス
+	void LoadTexture(std::string file_name);
 
 	void Unload();
 	void Update();

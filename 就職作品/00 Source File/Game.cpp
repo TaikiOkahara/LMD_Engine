@@ -52,7 +52,7 @@ void Game::Update() {
 	if (timeStop) return;
 	CScene::Update();
 
-	RENDERER::SetDeferred(D3DXVECTOR4(deferredType, 0, 0, 0));
+	RENDERER::SetDeferred(D3DXVECTOR4(deferredType * 1.0f, 0, 0, 0));
 }
 
 void Game::Imgui()
@@ -68,7 +68,7 @@ void Game::Imgui()
 	//Sceneのデバッグ
 	static bool show_scene_window = true;
 
-	if (CInput::KeyTrigger(DIK_F1))
+	if (CInput::KeyTrigger(DIK_F2))
 		show_scene_window = !show_scene_window;
 
 	if (show_scene_window)
@@ -94,19 +94,22 @@ void Game::Imgui()
 		ImGui::Checkbox("PointLight", &RENDERER::togglePoint);
 		//ImGui::Checkbox("Trigger", &show_another_window);
 
-		ImGui::SliderFloat("float", &f1, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+		//ImGui::SliderFloat("float", &f1, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		//ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
 		ImGui::Text("RendereType");
 		ImGui::RadioButton("Color", &radio, 0); ImGui::SameLine();
 		ImGui::RadioButton("Normal", &radio, 1); ImGui::SameLine();
-		ImGui::RadioButton("Position", &radio, 2); ImGui::SameLine();
+		ImGui::RadioButton("Position", &radio, 2);
 		ImGui::RadioButton("Motion", &radio, 4); ImGui::SameLine();
-		ImGui::RadioButton("Depth", &radio, 5);
+		ImGui::RadioButton("Depth", &radio, 5); ImGui::SameLine();
+		ImGui::RadioButton("Roughness", &radio, 6);
+		ImGui::RadioButton("Metallic", &radio, 7);
+		ImGui::RadioButton("Lighting(tmp)", &radio, 8);
 		deferredType = radio;
 
-		if (ImGui::Button("Button"))	// "Button"が押されるとtrueになる
-			counter1++;
+		//if (ImGui::Button("Button"))	// "Button"が押されるとtrueになる
+		//	counter1++;
 
 
 		/*
@@ -116,9 +119,9 @@ void Game::Imgui()
 
 		*/
 
-		ImGui::SameLine(); // 次に書くUIパーツを現在と同じ行に配置します。
+		//ImGui::SameLine(); // 次に書くUIパーツを現在と同じ行に配置します。
 
-		ImGui::Text("counter = %d", counter1);
+		//ImGui::Text("counter = %d", counter1);
 
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();

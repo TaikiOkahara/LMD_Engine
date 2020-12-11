@@ -51,8 +51,7 @@ void Base::MainLoop()
 	{
 		m_Scene->DrawEffect();
 		RENDERER::EffectDraw();
-	}
-	
+	}	
 
 
 	m_Scene->Imgui();
@@ -102,14 +101,11 @@ HRESULT Base::Init(HINSTANCE phInstance)
 	}
 	MFAIL(m_pWindow->InitWindow(m_hInstance, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, APP_NAME), "ウィンドウ作成失敗");
 	m_hWnd = m_pWindow->m_hWnd;
-	//direct3D11
-	D3D_INIT di;
-	di.hWnd = m_hWnd;
-
+	
 
 	
 
-	RENDERER::Init(&di);
+	RENDERER::Init(m_hWnd);
 
 	
 

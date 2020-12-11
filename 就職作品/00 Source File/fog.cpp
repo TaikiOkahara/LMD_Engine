@@ -102,30 +102,46 @@ void CFog::Imgui()
 		ImGuiWindowFlags lw_flag = 0;
 		static bool lw_is_open;
 
-		ImGui::Begin("Fog", &lw_is_open, lw_flag);
+		ImGui::Begin("Effect", &lw_is_open, lw_flag);
 
-		ImGui::Checkbox("isEnableCollision", &m_Enable);
+		if (ImGui::TreeNode("Fog"))
+		{
 
-		//static D3DXVECTOR2 fogoffset = m_Effect.fogOffset[0];
-		static ImVec4 clear_color = ImVec4(m_Fog.color.x, m_Fog.color.y, m_Fog.color.z, 1.00f);
+			ImGui::Checkbox("EnableCollision", &m_Enable);
 
-		m_Fog.color.x = clear_color.x;
-		m_Fog.color.y = clear_color.y;
-		m_Fog.color.z = clear_color.z;
+			//static D3DXVECTOR2 fogoffset = m_Effect.fogOffset[0];
+			static ImVec4 clear_color = ImVec4(m_Fog.color.x, m_Fog.color.y, m_Fog.color.z, 1.00f);
+
+			m_Fog.color.x = clear_color.x;
+			m_Fog.color.y = clear_color.y;
+			m_Fog.color.z = clear_color.z;
 
 
-		ImGui::ColorEdit3("Color", (float*)&clear_color);
+			ImGui::ColorEdit3("Color", (float*)&clear_color);
 
-		ImGui::SliderFloat2("fogOffset0", m_Fog.fogOffset[0], 0.0f, 1.0f);
-		ImGui::SliderFloat2("fogOffset1", m_Fog.fogOffset[1], 0.0f, 1.0f);
-		/*ImGui::SliderFloat("foggoffset:x", &m_Fog.fogOffset[0].x, 0.0f, 1.0f);
-		ImGui::SliderFloat("foggoffset:y", &m_Fog.fogOffset[0].y, 0.0f, 1.0f);
-		ImGui::SliderFloat("foggoffset2:x", &m_Fog.fogOffset[1].x, 0.0f, 1.0f);
-		ImGui::SliderFloat("foggoffset2:y", &m_Fog.fogOffset[1].y, 0.0f, 1.0f);*/
+			ImGui::SliderFloat2("fogOffset0", m_Fog.fogOffset[0], 0.0f, 1.0f);
+			ImGui::SliderFloat2("fogOffset1", m_Fog.fogOffset[1], 0.0f, 1.0f);
+			/*ImGui::SliderFloat("foggoffset:x", &m_Fog.fogOffset[0].x, 0.0f, 1.0f);
+			ImGui::SliderFloat("foggoffset:y", &m_Fog.fogOffset[0].y, 0.0f, 1.0f);
+			ImGui::SliderFloat("foggoffset2:x", &m_Fog.fogOffset[1].x, 0.0f, 1.0f);
+			ImGui::SliderFloat("foggoffset2:y", &m_Fog.fogOffset[1].y, 0.0f, 1.0f);*/
 
-		ImGui::SliderFloat("texScale", &m_Fog.texScale, 0.0f, 1.0f);
-		ImGui::SliderFloat("maxhHeight", &m_Fog.maxHeight, 0.0f, 2.0f);
-		ImGui::SliderFloat("minhHeight", &m_Fog.minHeight, -2.0f, 1.0f);
+			ImGui::SliderFloat("texScale", &m_Fog.texScale, 0.0f, 1.0f);
+			ImGui::SliderFloat("maxhHeight", &m_Fog.maxHeight, 0.0f, 2.0f);
+			ImGui::SliderFloat("minhHeight", &m_Fog.minHeight, -2.0f, 1.0f);
+
+
+			ImGui::TreePop();
+		}
+		
+		ImGui::Separator();
+
+		if (ImGui::TreeNode("MotionBlur"))
+		{
+			//ImGui::Checkbox("EnableCollision", &m_Enable);
+
+			ImGui::TreePop();
+		}
 
 		ImGui::End();
 	}

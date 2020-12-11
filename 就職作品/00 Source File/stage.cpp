@@ -19,9 +19,9 @@ void CStage::Init()
 	m_Transform.position = D3DXVECTOR3(-2.5f, 0.0f, 0.0f);
 	m_Transform.rotation = D3DXVECTOR3(0.0f, D3DX_PI/2, 0.0f);
 	
-	m_Transform.scale = D3DXVECTOR3(0.85f, 0.85f, 0.85f);
+	m_Transform.scale = D3DXVECTOR3(1.5, 0.85f,1);
 
-	m_Collision.Init(D3DXVECTOR3(0.85, 0.85, 0.85), D3DXVECTOR3(0, 0, 0));
+	m_Collision.Init(D3DXVECTOR3(0.5, 5, 5), D3DXVECTOR3(0, 2.5, 0));
 	
 	//シェーダー作成
 	RENDERER::CreateVertexShader(&m_pVertexShader, &RENDERER::m_pCommonVertexLayout, nullptr, 0, "InstanceVertexShader.cso");
@@ -97,7 +97,7 @@ void CStage::Imgui()
 
 		ImGui::Begin("DoorWay", &lw_is_open, lw_flag);
 
-		ImGui::Checkbox("isEnableCollision", &m_EnableCollision);
+		ImGui::Checkbox("EnableCollision", &m_EnableCollision);
 
 		ImGui::Text("MeshCount : %d / %d", m_MeshCount, m_MeshMax);
 

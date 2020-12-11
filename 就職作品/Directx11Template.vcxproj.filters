@@ -109,12 +109,6 @@
     <Filter Include="Shader-----------------------\tile">
       <UniqueIdentifier>{825af0dd-0d00-4b4f-bcf5-ad5d875dee41}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Manager --------------------\resource">
-      <UniqueIdentifier>{34840016-615e-441d-945c-eb4e919c558e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Manager --------------------\resource\Imgui">
-      <UniqueIdentifier>{e583db62-c03c-4ae5-adb5-a7391279b166}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameObjects----------------\ceilingArch">
       <UniqueIdentifier>{ed7c5f2f-6199-4aae-b09b-96f0177734d1}</UniqueIdentifier>
     </Filter>
@@ -135,6 +129,15 @@
     </Filter>
     <Filter Include="Shader-----------------------\playerShadow">
       <UniqueIdentifier>{d681d1bc-375d-4d3b-9253-d3a1f44b9459}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager --------------------\thirdparty">
+      <UniqueIdentifier>{34840016-615e-441d-945c-eb4e919c558e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager --------------------\thirdparty\Imgui">
+      <UniqueIdentifier>{e583db62-c03c-4ae5-adb5-a7391279b166}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader-----------------------\cursorModel">
+      <UniqueIdentifier>{5e669cba-8a98-4f9e-b944-e45f4e4a10ba}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -175,7 +178,7 @@
       <Filter>GameObjects----------------\instance</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\Imgui11.cpp">
-      <Filter>Manager --------------------\resource\Imgui</Filter>
+      <Filter>Manager --------------------\thirdparty\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\wall.cpp">
       <Filter>GameObjects----------------\wall</Filter>
@@ -184,22 +187,22 @@
       <Filter>GameObjects----------------\stage</Filter>
     </ClCompile>
     <ClCompile Include="05 Resource File\imgui\imgui.cpp">
-      <Filter>Manager --------------------\resource\Imgui</Filter>
+      <Filter>Manager --------------------\thirdparty\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="05 Resource File\imgui\imgui_demo.cpp">
-      <Filter>Manager --------------------\resource\Imgui</Filter>
+      <Filter>Manager --------------------\thirdparty\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="05 Resource File\imgui\imgui_draw.cpp">
-      <Filter>Manager --------------------\resource\Imgui</Filter>
+      <Filter>Manager --------------------\thirdparty\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="05 Resource File\imgui\imgui_impl_dx11.cpp">
-      <Filter>Manager --------------------\resource\Imgui</Filter>
+      <Filter>Manager --------------------\thirdparty\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="05 Resource File\imgui\imgui_impl_win32.cpp">
-      <Filter>Manager --------------------\resource\Imgui</Filter>
+      <Filter>Manager --------------------\thirdparty\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="05 Resource File\imgui\imgui_widgets.cpp">
-      <Filter>Manager --------------------\resource\Imgui</Filter>
+      <Filter>Manager --------------------\thirdparty\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\trim.cpp">
       <Filter>GameObjects----------------\trim</Filter>
@@ -282,7 +285,7 @@
       <Filter>GameObjects----------------\instance</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\Imgui11.h">
-      <Filter>Manager --------------------\resource\Imgui</Filter>
+      <Filter>Manager --------------------\thirdparty\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\wall.h">
       <Filter>GameObjects----------------\wall</Filter>
@@ -291,28 +294,28 @@
       <Filter>GameObjects----------------\stage</Filter>
     </ClInclude>
     <ClInclude Include="05 Resource File\imgui\imconfig.h">
-      <Filter>Manager --------------------\resource\Imgui</Filter>
+      <Filter>Manager --------------------\thirdparty\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="05 Resource File\imgui\imgui.h">
-      <Filter>Manager --------------------\resource\Imgui</Filter>
+      <Filter>Manager --------------------\thirdparty\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="05 Resource File\imgui\imgui_impl_dx11.h">
-      <Filter>Manager --------------------\resource\Imgui</Filter>
+      <Filter>Manager --------------------\thirdparty\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="05 Resource File\imgui\imgui_impl_win32.h">
-      <Filter>Manager --------------------\resource\Imgui</Filter>
+      <Filter>Manager --------------------\thirdparty\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="05 Resource File\imgui\imgui_internal.h">
-      <Filter>Manager --------------------\resource\Imgui</Filter>
+      <Filter>Manager --------------------\thirdparty\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="05 Resource File\imgui\imstb_rectpack.h">
-      <Filter>Manager --------------------\resource\Imgui</Filter>
+      <Filter>Manager --------------------\thirdparty\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="05 Resource File\imgui\imstb_textedit.h">
-      <Filter>Manager --------------------\resource\Imgui</Filter>
+      <Filter>Manager --------------------\thirdparty\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="05 Resource File\imgui\imstb_truetype.h">
-      <Filter>Manager --------------------\resource\Imgui</Filter>
+      <Filter>Manager --------------------\thirdparty\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\trim.h">
       <Filter>GameObjects----------------\trim</Filter>
@@ -358,6 +361,9 @@
     </ClInclude>
     <ClInclude Include="00 Source File\staticMesh.h">
       <Filter>Components----------------\staticMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\struct.h">
+      <Filter>Manager --------------------\renderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -418,10 +424,16 @@
     <FxCompile Include="03 Shader File\hlsl\PlayerShadowPixelShader.hlsl">
       <Filter>Shader-----------------------\playerShadow</Filter>
     </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\CursorPixelShader.hlsl">
+      <Filter>Shader-----------------------\cursorModel</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\CursorVertexShader.hlsl">
+      <Filter>Shader-----------------------\cursorModel</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Manual.txt">
-      <Filter>Manager --------------------\resource</Filter>
+      <Filter>Manager --------------------\thirdparty</Filter>
     </Text>
   </ItemGroup>
 </Project>

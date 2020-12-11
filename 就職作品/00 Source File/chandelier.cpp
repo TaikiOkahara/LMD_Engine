@@ -16,7 +16,7 @@ void CChandelier::Init()
 
 	
 
-	m_Collision.Init(D3DXVECTOR3(1.0f,1.0f,1.0f),D3DXVECTOR3(0,-1.0f,0));
+	m_Collision.Init(D3DXVECTOR3(1.0f,1.0f,1.0f),D3DXVECTOR3(0,-1,0));
 
 
 
@@ -27,16 +27,21 @@ void CChandelier::Init()
 	
 
 	TRANSFORM vector;
-	
+
+	vector.rotation = m_Transform.rotation;
 	vector.scale = m_Transform.scale;
+
+	//スタート地点
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f,5.0f,-10.0f),vector.rotation,vector.scale });
+
+
 	for (int i = 0; i < 3; i++)
 	{
-
-		////　マトリクス設定
-		vector.position = D3DXVECTOR3(-2.5f, 4.0f, 5.0f + 10.0f * i);
-		vector.rotation = m_Transform.rotation;
-		m_TransformList.push_back(vector);
+		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 4.0f, 5.0f + 10.0f * i),vector.rotation,vector.scale });
 	}
+	//一番奥
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f,4.0f,32.5f),vector.rotation,vector.scale });
+
 
 
 	InitInstance();
@@ -90,7 +95,7 @@ void CChandelier::Imgui()
 
 		ImGui::Begin("Chandelier", &lw_is_open, lw_flag);
 
-		ImGui::Checkbox("isEnableCollision", &m_EnableCollision);
+		ImGui::Checkbox("EnableCollision", &m_EnableCollision);
 
 		ImGui::Text("MeshCount : %d / %d", m_MeshCount, m_MeshMax);
 	

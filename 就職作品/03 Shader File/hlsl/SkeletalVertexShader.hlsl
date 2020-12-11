@@ -9,19 +9,15 @@
 matrix GetAnimMatrix(uint index)
 {
     return g_Animation[index];
-  
-    
-    //インデックスが要素数最大になっていたら、そのボーンウェイトは影響がないため、正規化のマトリクスを返す
-    //return (index == ANIMATION_MATRIX_MAX - 1) ? mat : g_Animation[index];
 }
 
 
 VS_OUT main(
 	float4 Pos : POSITION,
-	float4 Normal : NORMAL,
 	float2 Tex : TEXCOORD0,
-	float4 Tangent : TANGENT,
-	float4 Binormal : BINORMAL,
+	float3 Normal : NORMAL,
+	float3 Tangent : TANGENT,
+	float3 Binormal : BINORMAL,
     uint4  BoneIndex : BONEINDEX,
     float4 BoneWeight : BONEWEIGHT)
 {
@@ -47,30 +43,33 @@ VS_OUT main(
     //
     mat = GetAnimMatrix(index.x);
     position += mul(Pos, mat) * weight.x;
-    normal += mul(Normal, mat * weight.x);
-    binormal += mul(Binormal, mat * weight.x);
-    tangent += mul(Tangent, mat * weight.x);
+    normal += mul(float4(Normal.xyz,0), mat) * weight.x;
+    binormal += mul(float4(Binormal.xyz, 0), mat) * weight.x;
+    tangent += mul(float4(Tangent.xyz, 0), mat) * weight.x;
     //
     mat = GetAnimMatrix(index.y);
     position += mul(Pos, mat) * weight.y;
-    normal += mul(Normal, mat) * weight.y;
-    binormal += mul(Binormal, mat * weight.y);
-    tangent += mul(Tangent, mat * weight.y);
+    normal += mul(float4(Normal.xyz, 0), mat) * weight.y;
+    binormal += mul(float4(Binormal.xyz, 0), mat) * weight.y;
+    tangent += mul(float4(Tangent.xyz, 0), mat) * weight.y;
     //
     mat = GetAnimMatrix(index.z);
     position += mul(Pos, mat) * weight.z;
-    normal += mul(Normal, mat * weight.z);
-    binormal += mul(Binormal, mat * weight.z);
-    tangent += mul(Tangent, mat * weight.z);
+    normal += mul(float4(Normal.xyz, 0), mat) * weight.z;
+    binormal += mul(float4(Binormal.xyz, 0), mat) * weight.z;
+    tangent += mul(float4(Tangent.xyz, 0), mat) * weight.z;
     //
     mat = GetAnimMatrix(index.w);
     position += mul(Pos, mat) * weight.w;
-    normal += mul(Normal, mat * weight.w);
-    binormal += mul(Binormal, mat * weight.w);
-    tangent += mul(Tangent, mat * weight.w);
+    normal += mul(float4(Normal.xyz, 0), mat) * weight.w;
+    binormal += mul(float4(Binormal.xyz, 0), mat) * weight.w;
+    tangent += mul(float4(Tangent.xyz, 0), mat) * weight.w;
     
     //--------------------------------------------
     //position = Pos;
+    //normal = float4(Normal, 0);
+    //binormal = float4(Binormal, 0);
+    //tangent = float4(Tangent, 0);
     
     matrix wvp;
     wvp = mul(g_mWorld, g_mView);
@@ -82,10 +81,10 @@ VS_OUT main(
     
     
     output.Pos = mul(position, wvp);
-    output.WorldNormal = mul(normal.xyz, (float3x3)g_mWorld);  
     output.WorldPos = mul(position, g_mWorld);
-    output.WorldTangent = mul(tangent.xyz, (float3x3)g_mWorld);
-    output.WorldBinormal = mul(binormal.xyz, (float3x3) g_mWorld);
+    output.WorldNormal = normalize(mul(normal.xyz, (float3x3) g_mWorld));
+    output.WorldTangent = normalize(mul(tangent.xyz, (float3x3) g_mWorld));
+    output.WorldBinormal = normalize(mul(binormal.xyz, (float3x3) g_mWorld));
     output.Tex = Tex;
 	
     output.Depth = output.Pos.z / output.Pos.w;
@@ -97,9 +96,9 @@ VS_OUT main(
     float2 velocity = (curPos.xy / curPos.w) - (lastPos.xy / lastPos.w);
 	
 	// The velocity is now between (-2,2) so divide by 2 to get it to (-1,1)
-    velocity /= 2.0f;
+    //velocity /= 2.0f;
 	
-    output.MotionDir = float3(velocity, 0);
+    output.Velocity = velocity;
     //float3 motionDir = output.Pos.xyz - output.MotionDir;
     //output.MotionDir = motionDir;
 

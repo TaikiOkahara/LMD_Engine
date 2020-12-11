@@ -10,7 +10,7 @@ cbuffer CullingBuffer : register(b0)
     float3 dummy;
     
     //matrix cameraMatrix;
-    float4 g_fCullingCenterpos[4];
+    float4 g_fCullingCamerapos[4];
     
     float4 g_fCullingPos[8];
 }
@@ -61,8 +61,9 @@ void main(uint3 DTid : SV_DispatchThreadID)
         
         float3 pos = float3(world._41, world._42, world._43);
         
-        
-        pos += g_fCullingPos[i];
+        float3 cullpos = mul(g_fCullingPos[i].xyz, (float3x3)world);
+
+        pos += cullpos;
         
         float3 v, v1, v2,v3,v4, n1,n2;
     
@@ -70,16 +71,16 @@ void main(uint3 DTid : SV_DispatchThreadID)
         v = normalize(v);
     
         //ç∂ñ 
-        v1 = g_fCullingCenterpos[0].xyz - g_vEye.xyz;
-        v2 = g_fCullingCenterpos[2].xyz - g_vEye.xyz;
+        v1 = g_fCullingCamerapos[0].xyz - g_vEye.xyz;
+        v2 = g_fCullingCamerapos[2].xyz - g_vEye.xyz;
         n1 = cross(v1, v2);
         n1 = normalize(n1);
     
             
     
         //âEñ 
-        v3 = g_fCullingCenterpos[3].xyz - g_vEye.xyz;
-        v4 = g_fCullingCenterpos[1].xyz - g_vEye.xyz;
+        v3 = g_fCullingCamerapos[3].xyz - g_vEye.xyz;
+        v4 = g_fCullingCamerapos[1].xyz - g_vEye.xyz;
         n2 = cross(v3, v4);
         n2 = normalize(n2);
     

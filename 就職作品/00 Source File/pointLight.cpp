@@ -5,6 +5,7 @@
 #include "StaticMesh.h"
 #include "pointLight.h"
 #include "chandelier.h"
+#include "player.h"
 
 void CPointLight::Init()
 {
@@ -21,19 +22,31 @@ void CPointLight::Init()
 			m_TransformList[i].scale.x = -1;
 		}*/
 
+		D3DXVECTOR3 rot,scale;
+		rot = D3DXVECTOR3(0, 0, 0);
+		scale = D3DXVECTOR3(12.0f, 12.0f, 1.0f);
+
+	
+
 		for (int i = 0; i < 3; i++)
 		{
-			TRANSFORM transform;
-			transform.position = D3DXVECTOR3(-2.5f, 2.0f, 10.0f * i + 5.0f);
-			transform.scale = D3DXVECTOR3(5.0f, 5.0f, 1.0f);
-			transform.rotation = D3DXVECTOR3(0, 0, 0);
-			m_TransformList.push_back(transform);
-			m_PointLight.pointList[i].color = D3DXVECTOR3(1.0f, 0.5f, 0.0f);
-			m_PointLight.pointList[i].intensity = 1;
-			m_PointLight.pointList[i].calc = D3DXVECTOR3(0.1f, 1.0f, 0.1f);
-			m_PointLight.pointList[i].specular = 30;
+			
+			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 2.0f, 10.0f * i + 5.0f),rot, scale });
+
+			m_PointLight.pointList[i] = PointLightInfo{ D3DXVECTOR3(1.0f, 0.5f, 0.0f) ,100,D3DXVECTOR3(0.1f, 0.25f, 0.1f) ,30};
 		}
-		
+
+
+		//一番奥の壁のライト
+		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 2.0f, 32.5f),rot, scale });
+		m_PointLight.pointList[3] = PointLightInfo{ D3DXVECTOR3(1.0f, 0.5f, 0.0f) ,100,D3DXVECTOR3(0.1f, 0.15f, 0.1f) ,30 };
+
+
+		//Playerlight
+		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(5.0f, 5.0f, 1.0f),rot, scale });
+		m_PointLight.pointList[4] = PointLightInfo{ D3DXVECTOR3(1.0f, 1.0f, 1.0f) ,100,D3DXVECTOR3(1.0f, 1.0f, 0.1f) ,30 };
+
+
 		
 	}
 
@@ -43,7 +56,7 @@ void CPointLight::Init()
 	RENDERER::CreateVertexShader(&m_pVertexShader, &RENDERER::m_pCommonVertexLayout,nullptr, 0, "PointLightVertexShader.cso");
 	RENDERER::CreatePixelShader(&m_pPixelShader, "PointLightPixelShader.cso");
 
-	InitInstance();
+	//InitInstance();
 	//UpdateInstance();//視錐台カリングを行う場合入れる
 	
 }
@@ -69,20 +82,8 @@ void CPointLight::Uninit()
 
 void CPointLight::Update()
 {
-	CChandelier* chandelier = Base::GetScene()->GetGameObject<CChandelier>(1);
-
-	/*for (int i = 1; i < chandelier->GetMeshCount(); i++)
-	{
-		m_TransformList[i].position = chandelier->GetPosition(i) + D3DXVECTOR3(0, -1, 0);
-		m_TransformList[i].scale = D3DXVECTOR3(5.0f, 5.0f, 1.0f);
-
-		m_PointLight.pointList[i].color = D3DXVECTOR3(1.0f, 0.5f, 0.0f);
-		m_PointLight.pointList[i].intensity = 1;
-		m_PointLight.pointList[i].calc = D3DXVECTOR3(0.1f, 1.0f, 0.1f);
-		m_PointLight.pointList[i].specular = 30;
-	}*/
-
-
+	CPlayer* player = Base::GetScene()->GetGameObject<CPlayer>(1);
+	m_TransformList[4].position = player->GetPosition();
 	
 }
 
@@ -103,8 +104,12 @@ void CPointLight::Draw()
 
 	for (int i = 0; i < m_TransformList.size() && LIGHT_MAX; i++)
 	{
-		
 		D3DXMatrixScaling(&scale, m_TransformList[i].scale.x, m_TransformList[i].scale.y, i * 1.0f);//xに本当のサイズを入れる、zにインデックス番号を入れる
+		
+		if (i == 4 && !m_EnablePlayerPointLight)
+			D3DXMatrixScaling(&scale, m_TransformList[i].scale.x, m_TransformList[i].scale.y, -1);
+
+		
 
 		D3DXMatrixTranslation(&trans, m_TransformList[i].position.x, m_TransformList[i].position.y, m_TransformList[i].position.z);
 		world = scale * rot * trans;
@@ -118,19 +123,13 @@ void CPointLight::Draw()
 
 
 	
-	
-	
-
-
-	
-	//m_pMesh->DrawInstanced(m_MeshCount);
 }
 
 void CPointLight::Imgui()
 {
 	static bool show_light_window = true;
 
-	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+	//ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 	if (CInput::KeyTrigger(DIK_F1))
 		show_light_window = !show_light_window;
@@ -140,30 +139,107 @@ void CPointLight::Imgui()
 		ImGuiWindowFlags lw_flag = 0;
 		static bool lw_is_open;
 		ImGuiWindowFlags flag = 0;
-		static ImVec4 clear_color = ImVec4(m_PointLight.pointList[0].color.x, m_PointLight.pointList[0].color.y, m_PointLight.pointList[0].color.z, 1.00f);
-
-		m_PointLight.pointList[0].color.x = clear_color.x;
-		m_PointLight.pointList[0].color.y = clear_color.y;
-		m_PointLight.pointList[0].color.z = clear_color.z;
-
+		
 		ImGui::Begin("PointLight", &lw_is_open, lw_flag);
 
-	
-		for (int i = 0; i < m_TransformList.size(); i++)
+		//PlayerPointLight-----------------------------------------------------------
+		if (ImGui::TreeNode("Player Light"))
 		{
 			D3DXVECTOR3 pos;
-			pos = m_Transform.position;
+			pos = m_TransformList[4].position;
 			ImGui::InputFloat3("Position", pos, 1);
-			//ImGui::SliderFloat3("Color", &m_PointLight.Color[0].x, 0.0f, 1.0f);
 
+			ImGui::Checkbox("Enable", &m_EnablePlayerPointLight);
+
+			static ImVec4 player_clear_color = ImVec4(m_PointLight.pointList[4].color.x, m_PointLight.pointList[4].color.y, m_PointLight.pointList[4].color.z, 1.00f);
+
+			m_PointLight.pointList[4].color.x = player_clear_color.x;
+			m_PointLight.pointList[4].color.y = player_clear_color.y;
+			m_PointLight.pointList[4].color.z = player_clear_color.z;
+			ImGui::ColorEdit3("Color", (float*)&player_clear_color);
+
+			ImGui::SliderFloat("Constant Attenuation coefficient ", &m_PointLight.pointList[4].calc.x, 0.0f, 5.0f);
+			ImGui::SliderFloat("Linear Attenuation coefficient", &m_PointLight.pointList[4].calc.y, 0.0f, 1.0f);
+			ImGui::SliderFloat("2nd Constant Attenuation coefficient", &m_PointLight.pointList[4].calc.z, 0.0f, 10.0f);
+			ImGui::SliderFloat("Intensity", &m_PointLight.pointList[4].intensity, 0.0f, 200.0f);
+			ImGui::SliderFloat("Specular", &m_PointLight.pointList[4].specular, 0.0f, 30.0f);
+
+			ImGui::TreePop();
+		}
+	
+		
+
+		ImGui::Separator();
+		//ScenePointLight-----------------------------------------------------------
+
+		
+
+		if (ImGui::TreeNode("Point Light List"))
+		{
+
+			static ImVec4 clear_color = ImVec4(m_PointLight.pointList[0].color.x, m_PointLight.pointList[0].color.y, m_PointLight.pointList[0].color.z, 1.00f);
+
+			m_PointLight.pointList[0].color.x = clear_color.x;
+			m_PointLight.pointList[0].color.y = clear_color.y;
+			m_PointLight.pointList[0].color.z = clear_color.z;
 			ImGui::ColorEdit3("Color", (float*)&clear_color);
 
-			ImGui::SliderFloat("x : ", &m_PointLight.pointList[0].calc.x,0.0f,5.0f);
-			ImGui::SliderFloat("y : ", &m_PointLight.pointList[0].calc.y,0.0f,1.0f);
-			ImGui::SliderFloat("z : ", &m_PointLight.pointList[0].calc.z,0.0f,10.0f);
-			ImGui::SliderFloat("Specular", &m_PointLight.pointList[0].specular, 0.0f, 1.0f);
-			//ImGui::InputFloat("input float", &f0, 0.01f, 1.0f, "%.3f");
+			ImGui::SliderFloat("Constant Attenuation coefficient ", &m_PointLight.pointList[0].calc.x, 0.0f, 5.0f);
+			ImGui::SliderFloat("Linear Attenuation coefficient", &m_PointLight.pointList[0].calc.y, 0.0f, 1.0f);
+			ImGui::SliderFloat("2nd Constant Attenuation coefficient", &m_PointLight.pointList[0].calc.z, 0.0f, 10.0f);
+			ImGui::SliderFloat("Intensity", &m_PointLight.pointList[0].intensity, 0.0f, 200.0f);
+			ImGui::SliderFloat("Specular", &m_PointLight.pointList[0].specular, 0.0f, 30.0f);
 
+			
+
+			// Child 1: no border, enable horizontal scrollbar
+			{
+				ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
+				if (true)
+					window_flags |= ImGuiWindowFlags_NoScrollWithMouse;
+				ImGui::BeginChild("ChildL", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f, 260), false, window_flags);
+				for (int i = 0; i < 100; i++)
+					ImGui::Text("%04d: scrollable region", i);
+				ImGui::EndChild();
+			}
+
+			//ImGui::SameLine();
+
+			// Child 2: rounded border
+			//{
+			//	ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
+			//	if (true)
+			//		window_flags |= ImGuiWindowFlags_NoScrollWithMouse;
+			//	if (!true)
+			//		window_flags |= ImGuiWindowFlags_MenuBar;
+			//	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
+			//	ImGui::BeginChild("ChildR", ImVec2(0, 260), true, window_flags);
+			//	if (!true && ImGui::BeginMenuBar())
+			//	{
+			//		if (ImGui::BeginMenu("Menu"))
+			//		{
+			//			//ShowExampleMenuFile();
+			//			ImGui::EndMenu();
+			//		}
+			//		ImGui::EndMenuBar();
+			//	}
+			//	ImGui::Columns(2);
+			//	for (int i = 0; i < 100; i++)
+			//	{
+			//		char buf[32];
+			//		sprintf(buf, "%03d", i);
+			//		ImGui::Button(buf, ImVec2(-FLT_MIN, 0.0f));
+			//		ImGui::NextColumn();
+			//	}
+			//	ImGui::EndChild();
+			//	ImGui::PopStyleVar();
+			//}
+
+			ImGui::Separator();
+
+			
+
+			ImGui::TreePop();
 		}
 
 		ImGui::End();

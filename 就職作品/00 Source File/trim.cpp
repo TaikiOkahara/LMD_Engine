@@ -13,12 +13,12 @@ void CTrim::Init()
 	m_pMesh = new StaticMesh();
 
 
-	m_pMesh->LoadModel("../02 Visual File//Trim//trim.fbx");
+	m_pMesh->LoadModel("../02 Visual File//Trim//trim_Center.fbx");
 	m_pMesh->LoadTexture("../02 Visual File//Trim");
 
-	m_Transform.rotation = D3DXVECTOR3(0.0f, D3DX_PI/2, 0.0f);
-	
-	m_Collision.Init(D3DXVECTOR3(1, 1, 1), D3DXVECTOR3(0, 0, 0));
+	//m_Transform.rotation = D3DXVECTOR3(0.0f, D3DX_PI/2, 0.0f);
+
+	m_Collision.Init(D3DXVECTOR3(5.0f, 0.5f, 0.5f), D3DXVECTOR3(0 ,0, 0));
 
 	//シェーダー作成
 	RENDERER::CreateVertexShader(&m_pVertexShader, &RENDERER::m_pCommonVertexLayout, nullptr, 0, "InstanceVertexShader.cso");
@@ -31,33 +31,38 @@ void CTrim::Init()
 	D3DXVECTOR3 scale, verticalRot, horizonalRot;
 
 	scale = m_Transform.scale;
-	verticalRot = m_Transform.rotation;
-	horizonalRot = m_Transform.rotation + D3DXVECTOR3(0,D3DX_PI/2,0);
+	verticalRot = D3DXVECTOR3(0.0f, D3DX_PI / 2, 0.0f);;
+	horizonalRot = m_Transform.rotation;//D3DXVECTOR3(0,D3DX_PI,0);
 
 
 
 	for (int i = 0; i < 6; i++)
 	{
-		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(0,0,i * 5.0f),verticalRot, scale });
+		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(0,0,i * 5.0f + 2.5f),verticalRot, scale });
 	}
 	for (int i = 0; i < 6; i++)
 	{
-		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-5.0f,0,i * 5.0f),verticalRot, scale });
+		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-5.0f,0,i * 5.0f + 2.5f),verticalRot, scale });
 	}
 
 	//スタート地点横
-	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-8.8f, 0, 0),horizonalRot, scale });
-	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-1.2f, 0, 0),horizonalRot, scale });
-	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-5.0f,0, -5.1),verticalRot, scale });
-	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(0,0, -5.1),verticalRot, scale });
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-6.3f, 0, 0),horizonalRot, scale });
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3( 1.3f, 0, 0),horizonalRot, scale });
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-5.0f,0, -2.6),verticalRot, scale });
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(0,0, -2.6),verticalRot, scale });
 
 	//スタート地点囲い
-	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-0.15f, 0, -4.95),horizonalRot, scale });
-	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-9.85f,0,-4.95),horizonalRot, scale });
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(2.35f, 0, -4.95),horizonalRot, scale });
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-7.35f,0,-4.95),horizonalRot, scale });
 
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-10.0f,0, -7.5),verticalRot, scale });
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(5,0, -7.5),verticalRot, scale });
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-10.0f,0, -12.5),verticalRot, scale });
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(5,0, -12.5),verticalRot, scale });
 
-
-
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-7.5f,0, -15),horizonalRot, scale });
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f,0, -15),horizonalRot, scale });
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(2.5,0, -15),horizonalRot, scale });
 
 
 
@@ -113,7 +118,7 @@ void CTrim::Imgui()
 
 		ImGui::Begin("Trim", &lw_is_open, lw_flag);
 
-		ImGui::Checkbox("isEnableCollision", &m_EnableCollision);
+		ImGui::Checkbox("EnableCollision", &m_EnableCollision);
 
 		ImGui::Text("MeshCount : %d / %d", m_MeshCount, m_MeshMax);
 

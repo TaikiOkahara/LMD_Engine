@@ -24,7 +24,7 @@ private:
 	D3DXVECTOR3 m_OldPosition;
 	D3DXVECTOR3 m_OldForward;
 
-	bool isEnableCollision = true;
+	bool m_EnableHit = false;
 public:
 	CPlayer(){}
 	~CPlayer(){}

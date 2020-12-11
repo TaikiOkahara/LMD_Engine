@@ -5,11 +5,7 @@
 #pragma once
 #include "window.h"
 #include "scene.h"
-//#include "Scene.h"
-//　プロトタイプ
-//HRESULT GameInit(HINSTANCE phInstance);
-//void	GameRun();
-//HRESULT GameUninit();
+
 
 class CScene;
 

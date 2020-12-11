@@ -22,7 +22,7 @@ void CCamera::Init()
 
 	m_Angle = D3DX_PI / 4;
 	m_Aspect = (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT;
-	m_Near = 1.0f;
+	m_Near = 0.1f;
 	m_Far = 1000.0f;
 }
 //

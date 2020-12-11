@@ -11,7 +11,7 @@
 void CPillar::Init()
 {
 	m_pMesh = new StaticMesh();
-	m_pMesh->LoadModel("../02 Visual File//Pillar//pillar.fbx");
+	m_pMesh->LoadModel("../02 Visual File//Pillar//pillarPBR.fbx");
 	m_pMesh->LoadTexture("");
 
 
@@ -42,7 +42,11 @@ void CPillar::Init()
 		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-4.5f, 0.0f,5.0f + 5.0f*i),rot, scale });
 	}
 
-	
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(4.5f, 0.0f,-5.5f),rot, scale });
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-9.5f, 0.0f,-5.5f),rot, scale });
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(4.5f, 0.0f,-14.5f),rot, scale });
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-9.5f, 0.0f,-14.5f),rot, scale });
+
 
 	InitInstance();
 }
@@ -95,7 +99,7 @@ void CPillar::Imgui()
 
 		ImGui::Begin("Pillar", &lw_is_open, lw_flag);
 
-		ImGui::Checkbox("isEnableCollision", &m_EnableCollision);
+		ImGui::Checkbox("EnableCollision", &m_EnableCollision);
 
 		ImGui::Text("MeshCount : %d / %d", m_MeshCount, m_MeshMax);
 
