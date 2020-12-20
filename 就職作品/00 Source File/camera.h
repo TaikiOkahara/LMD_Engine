@@ -22,6 +22,7 @@ public:
 
 
 	D3DXVECTOR4 m_CullingWPos[4];
+	D3DXVECTOR3 GetTarget() {return m_Target;}
 private:
 	
 	D3DXVECTOR3 m_Target;
@@ -32,8 +33,8 @@ private:
 	D3DXMATRIX m_ViewMatrix;
 	D3DXMATRIX m_OldViewMatrix;
 	D3DXMATRIX m_OldProjMatrix;*/
-	VIEWMATRIX m_ViewMatrix;
-	PROJMATRIX m_ProjMatrix;
+	D3DXMATRIX m_ViewMatrix;
+	D3DXMATRIX m_ProjMatrix;
 
 
 	float m_Angle;

@@ -22,9 +22,11 @@ cbuffer ProjectionBuffer : register(b2)
     matrix g_mOldProj;
 }
 
-cbuffer EyeBuffer : register(b3)
+cbuffer CameraBuffer : register(b3)
 {
     float4 g_vEyePos;
+    
+    float4 g_vWordldCameraPos[4];//ワールド座標の画面端4頂点
 }
 
 
@@ -62,7 +64,7 @@ cbuffer EffectBuffer : register(b6)
     float4 g_fFogData; //x :テクセルのスケーリング値 y :頂点の高さの最大値 z : 頂点の高さの最小値 w : ダミー
   
     float3 g_fFogColor;
-    float g_fFogEnable;
+    bool g_fFogEnable;
     
     
 }
@@ -70,4 +72,11 @@ cbuffer EffectBuffer : register(b6)
 cbuffer AnimationBuffer : register(b7)
 {
     matrix g_Animation[ANIMATION_MATRIX_MAX];
+}
+
+cbuffer ToggleBuffer : register(b8)
+{
+    bool g_FrustumCullingEnable;
+    
+    float3 dummy_b8;
 }

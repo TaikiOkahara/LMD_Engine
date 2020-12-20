@@ -33,18 +33,18 @@ void CPointLight::Init()
 			
 			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 2.0f, 10.0f * i + 5.0f),rot, scale });
 
-			m_PointLight.pointList[i] = PointLightInfo{ D3DXVECTOR3(1.0f, 0.5f, 0.0f) ,100,D3DXVECTOR3(0.1f, 0.25f, 0.1f) ,30};
+			m_PointLight[i] = POINTLIGHT{ D3DXVECTOR3(1.0f, 0.5f, 0.0f) ,100,D3DXVECTOR3(0.1f, 0.25f, 0.1f) ,30};
 		}
 
 
 		//一番奥の壁のライト
 		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 2.0f, 32.5f),rot, scale });
-		m_PointLight.pointList[3] = PointLightInfo{ D3DXVECTOR3(1.0f, 0.5f, 0.0f) ,100,D3DXVECTOR3(0.1f, 0.15f, 0.1f) ,30 };
+		m_PointLight[3] = POINTLIGHT{ D3DXVECTOR3(1.0f, 0.5f, 0.0f) ,100,D3DXVECTOR3(0.1f, 0.15f, 0.1f) ,30 };
 
 
 		//Playerlight
 		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(5.0f, 5.0f, 1.0f),rot, scale });
-		m_PointLight.pointList[4] = PointLightInfo{ D3DXVECTOR3(1.0f, 1.0f, 1.0f) ,100,D3DXVECTOR3(1.0f, 1.0f, 0.1f) ,30 };
+		m_PointLight[4] = POINTLIGHT{ D3DXVECTOR3(1.0f, 1.0f, 1.0f) ,100,D3DXVECTOR3(1.0f, 1.0f, 0.1f) ,30 };
 
 
 		
@@ -53,8 +53,8 @@ void CPointLight::Init()
 	
 	//シェーダー作成
 	
-	RENDERER::CreateVertexShader(&m_pVertexShader, &RENDERER::m_pCommonVertexLayout,nullptr, 0, "PointLightVertexShader.cso");
-	RENDERER::CreatePixelShader(&m_pPixelShader, "PointLightPixelShader.cso");
+	RENDERER::CreateVertexShader(&m_pVertexShader, &m_pCommonVertexLayout,nullptr, 0, "pointLightVS.cso");
+	RENDERER::CreatePixelShader(&m_pPixelShader, "pointLightPS.cso");
 
 	//InitInstance();
 	//UpdateInstance();//視錐台カリングを行う場合入れる
@@ -75,26 +75,30 @@ void CPointLight::Uninit()
 	
 	SAFE_RELEASE(m_pVertexShader);
 	SAFE_RELEASE(m_pPixelShader);
-	SAFE_RELEASE(m_pVertexLayout);
-	SAFE_RELEASE(m_pPointLightBuffer);
-	SAFE_RELEASE(m_pPointLightBufferSRV);
+	//SAFE_RELEASE(m_pVertexLayout);
+	/*SAFE_RELEASE(m_pPointLightBuffer);
+	SAFE_RELEASE(m_pPointLightBufferSRV);*/
 }
 
 void CPointLight::Update()
 {
-	CPlayer* player = Base::GetScene()->GetGameObject<CPlayer>(1);
+	CPlayer* player = Base::GetScene()->GetGameObject<CPlayer>();
 	m_TransformList[4].position = player->GetPosition();
 	
 }
 
 void CPointLight::Draw()
 {
-	
+	RENDERER::PointLighting();
+
+
+
+
 	RENDERER::m_pDeviceContext->VSSetShader(m_pVertexShader, NULL, 0);
 	RENDERER::m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);
-	RENDERER::m_pDeviceContext->IASetInputLayout(RENDERER::m_pCommonVertexLayout);
+	RENDERER::m_pDeviceContext->IASetInputLayout(m_pCommonVertexLayout);
 
-	RENDERER::SetPointLight(m_PointLight);
+	RENDERER::m_ConstantBufferList.GetStruct<PointLightBuffer>()->Set(m_PointLight);
 	
 	
 	//　マトリクス設定
@@ -113,9 +117,9 @@ void CPointLight::Draw()
 
 		D3DXMatrixTranslation(&trans, m_TransformList[i].position.x, m_TransformList[i].position.y, m_TransformList[i].position.z);
 		world = scale * rot * trans;
-		WORLDMATRIX worldMatrix;
-		worldMatrix.worldMatrix = world;
-		RENDERER::SetWorldMatrix(worldMatrix);
+		/*WORLDMATRIX worldMatrix;
+		worldMatrix.worldMatrix = world;*/
+		RENDERER::m_ConstantBufferList.GetStruct<WorldBuffer>()->Set(world);
 		
 		
 		m_pMesh->Draw();
@@ -151,18 +155,18 @@ void CPointLight::Imgui()
 
 			ImGui::Checkbox("Enable", &m_EnablePlayerPointLight);
 
-			static ImVec4 player_clear_color = ImVec4(m_PointLight.pointList[4].color.x, m_PointLight.pointList[4].color.y, m_PointLight.pointList[4].color.z, 1.00f);
+			static ImVec4 player_clear_color = ImVec4(m_PointLight[4].color.x, m_PointLight[4].color.y, m_PointLight[4].color.z, 1.00f);
 
-			m_PointLight.pointList[4].color.x = player_clear_color.x;
-			m_PointLight.pointList[4].color.y = player_clear_color.y;
-			m_PointLight.pointList[4].color.z = player_clear_color.z;
+			m_PointLight[4].color.x = player_clear_color.x;
+			m_PointLight[4].color.y = player_clear_color.y;
+			m_PointLight[4].color.z = player_clear_color.z;
 			ImGui::ColorEdit3("Color", (float*)&player_clear_color);
 
-			ImGui::SliderFloat("Constant Attenuation coefficient ", &m_PointLight.pointList[4].calc.x, 0.0f, 5.0f);
-			ImGui::SliderFloat("Linear Attenuation coefficient", &m_PointLight.pointList[4].calc.y, 0.0f, 1.0f);
-			ImGui::SliderFloat("2nd Constant Attenuation coefficient", &m_PointLight.pointList[4].calc.z, 0.0f, 10.0f);
-			ImGui::SliderFloat("Intensity", &m_PointLight.pointList[4].intensity, 0.0f, 200.0f);
-			ImGui::SliderFloat("Specular", &m_PointLight.pointList[4].specular, 0.0f, 30.0f);
+			ImGui::SliderFloat("Constant Attenuation coefficient ", &m_PointLight[4].calc.x, 0.0f, 5.0f);
+			ImGui::SliderFloat("Linear Attenuation coefficient", &m_PointLight[4].calc.y, 0.0f, 1.0f);
+			ImGui::SliderFloat("2nd Constant Attenuation coefficient", &m_PointLight[4].calc.z, 0.0f, 10.0f);
+			ImGui::SliderFloat("Intensity", &m_PointLight[4].intensity, 0.0f, 200.0f);
+			ImGui::SliderFloat("Specular", &m_PointLight[4].specular, 0.0f, 30.0f);
 
 			ImGui::TreePop();
 		}
@@ -177,31 +181,31 @@ void CPointLight::Imgui()
 		if (ImGui::TreeNode("Point Light List"))
 		{
 
-			static ImVec4 clear_color = ImVec4(m_PointLight.pointList[0].color.x, m_PointLight.pointList[0].color.y, m_PointLight.pointList[0].color.z, 1.00f);
+			static ImVec4 clear_color = ImVec4(m_PointLight[0].color.x, m_PointLight[0].color.y, m_PointLight[0].color.z, 1.00f);
 
-			m_PointLight.pointList[0].color.x = clear_color.x;
-			m_PointLight.pointList[0].color.y = clear_color.y;
-			m_PointLight.pointList[0].color.z = clear_color.z;
+			m_PointLight[0].color.x = clear_color.x;
+			m_PointLight[0].color.y = clear_color.y;
+			m_PointLight[0].color.z = clear_color.z;
 			ImGui::ColorEdit3("Color", (float*)&clear_color);
 
-			ImGui::SliderFloat("Constant Attenuation coefficient ", &m_PointLight.pointList[0].calc.x, 0.0f, 5.0f);
-			ImGui::SliderFloat("Linear Attenuation coefficient", &m_PointLight.pointList[0].calc.y, 0.0f, 1.0f);
-			ImGui::SliderFloat("2nd Constant Attenuation coefficient", &m_PointLight.pointList[0].calc.z, 0.0f, 10.0f);
-			ImGui::SliderFloat("Intensity", &m_PointLight.pointList[0].intensity, 0.0f, 200.0f);
-			ImGui::SliderFloat("Specular", &m_PointLight.pointList[0].specular, 0.0f, 30.0f);
+			ImGui::SliderFloat("Constant Attenuation coefficient ", &m_PointLight[0].calc.x, 0.0f, 5.0f);
+			ImGui::SliderFloat("Linear Attenuation coefficient", &m_PointLight[0].calc.y, 0.0f, 1.0f);
+			ImGui::SliderFloat("2nd Constant Attenuation coefficient", &m_PointLight[0].calc.z, 0.0f, 10.0f);
+			ImGui::SliderFloat("Intensity", &m_PointLight[0].intensity, 0.0f, 200.0f);
+			ImGui::SliderFloat("Specular", &m_PointLight[0].specular, 0.0f, 30.0f);
 
 			
 
-			// Child 1: no border, enable horizontal scrollbar
-			{
-				ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
-				if (true)
-					window_flags |= ImGuiWindowFlags_NoScrollWithMouse;
-				ImGui::BeginChild("ChildL", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f, 260), false, window_flags);
-				for (int i = 0; i < 100; i++)
-					ImGui::Text("%04d: scrollable region", i);
-				ImGui::EndChild();
-			}
+			//// Child 1: no border, enable horizontal scrollbar
+			//{
+			//	ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
+			//	if (true)
+			//		window_flags |= ImGuiWindowFlags_NoScrollWithMouse;
+			//	ImGui::BeginChild("ChildL", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f, 260), false, window_flags);
+			//	for (int i = 0; i < 100; i++)
+			//		ImGui::Text("%04d: scrollable region", i);
+			//	ImGui::EndChild();
+			//}
 
 			//ImGui::SameLine();
 

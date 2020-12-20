@@ -6,7 +6,7 @@
 class CInstanceGameObject : public CGameObject
 {
 private:
-	ID3D11ComputeShader* m_pComputeShader = nullptr;
+	static ID3D11ComputeShader* m_pComputeShader;
 
 	//構造体バッファとビュー
 	ID3D11Buffer* m_pMatrixBuffer = nullptr;
@@ -20,6 +20,7 @@ private:
 
 
 	ID3D11Buffer* m_pCounterBuffer = nullptr;
+	ID3D11Buffer* m_pCullingBuffer = nullptr;
 	
 protected:
 	
@@ -28,18 +29,21 @@ protected:
 
 	UINT m_MeshCount = 0;
 	UINT m_MeshMax = 0;
-	CULLING culling;
+	//CULLING culling;
 
-
+	UINT m_CullingCount;
+	D3DXVECTOR4 m_CullingPos[8];
 
 	void InitInstance();
 	void UpdateInstance();
 	void UninitInstance();
 	void DrawInstance();
 
+	static ID3D11VertexShader* m_pInstanceVertexShader;
+
 public:
-	CInstanceGameObject()
-	{}
+	/*CInstanceGameObject()
+	{}*/
 	~CInstanceGameObject(){}
 
 	//オーバーロード
@@ -95,4 +99,7 @@ public:
 
 	int GetMeshCount() { return m_MeshCount; }
 	int GetMeshMax() { return m_MeshMax; }
+
+	static void Load();
+	static void Unload();
 };

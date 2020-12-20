@@ -12,7 +12,7 @@ void CStage::Init()
 {
 	
 	m_pMesh = new StaticMesh();
-	m_pMesh->LoadModel("../02 Visual File//DoorWay//doorWay.fbx");
+	m_pMesh->LoadModel("../02 Visual File//DoorWay//doorWayPBR.fbx");
 	m_pMesh->LoadTexture("");
 
 
@@ -23,12 +23,6 @@ void CStage::Init()
 
 	m_Collision.Init(D3DXVECTOR3(0.5, 5, 5), D3DXVECTOR3(0, 2.5, 0));
 	
-	//シェーダー作成
-	RENDERER::CreateVertexShader(&m_pVertexShader, &RENDERER::m_pCommonVertexLayout, nullptr, 0, "InstanceVertexShader.cso");
-	RENDERER::CreatePixelShader(&m_pPixelShader, "PixelShader.cso");
-
-	
-
 	
 	{
 		////　扉
@@ -51,9 +45,7 @@ void CStage::Uninit()
 	UninitInstance();
 
 	m_Collision.Uninit();
-	
-	SAFE_RELEASE(m_pVertexShader);
-	SAFE_RELEASE(m_pPixelShader);
+
 }
 
 
@@ -71,9 +63,10 @@ void CStage::Draw()
 	DrawInstance();
 
 
-	RENDERER::m_pDeviceContext->VSSetShader(m_pVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);
-	RENDERER::m_pDeviceContext->IASetInputLayout(RENDERER::m_pCommonVertexLayout);
+	//RENDERER::m_pDeviceContext->VSSetShader(RENDERER::m_pInstanceVertexShader, NULL, 0);
+	RENDERER::m_pDeviceContext->VSSetShader(m_pInstanceVertexShader, NULL, 0);
+	RENDERER::m_pDeviceContext->PSSetShader(m_pCommonPixelShader, NULL, 0);
+	RENDERER::m_pDeviceContext->IASetInputLayout(m_pCommonVertexLayout);
 
 
 	m_pMesh->DrawInstanced(m_MeshCount);

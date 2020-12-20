@@ -7,9 +7,6 @@ private:
 	//Tile* m_pMesh = nullptr;
 	StaticMesh* m_pMesh = nullptr;
 
-	ID3D11VertexShader* m_pVertexShader;
-	ID3D11PixelShader* m_pPixelShader;
-
 public:
 	CStage() {}
 	~CStage() {}

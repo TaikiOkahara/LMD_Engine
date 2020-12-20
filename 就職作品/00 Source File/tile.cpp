@@ -121,10 +121,6 @@ void Tile::MakeVertexField()
 void Tile::Init(std::string Tex_name,std::string Nor_name,std::string RM_name, int tile_X_count, int tile_Y_count, float tile_size)
 {
 
-	m_Material.Ambient = D3DXVECTOR4(0.1, 0.1, 0.1, 1);
-	m_Material.Diffuse = D3DXVECTOR4(0.8, 0.8, 0.8, 1);
-	m_Material.Specular = D3DXVECTOR4(0.2, 0.2, 0.2, 1);
-
 	m_sTexture_Name = Tex_name;
 	m_sNormalTexture_Name = Nor_name;
 	m_sMRATexture_Name = RM_name;

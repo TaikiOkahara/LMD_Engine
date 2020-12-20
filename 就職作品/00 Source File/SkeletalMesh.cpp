@@ -3,6 +3,8 @@
 #include "skeletalMesh.h"
 #include <fstream>
 
+
+
 void CAnimationModel::LoadModel(const char* FileName, D3DXVECTOR3 pos)
 {
 	const std::string modelPath(FileName);
@@ -24,13 +26,15 @@ void CAnimationModel::LoadModel(const char* FileName, D3DXVECTOR3 pos)
 	//再帰的にボーン生成
 	CreateBone(m_pAiScene->mRootNode);
 
-	ANIMVERTEX_3D* vertex;
+	
+
+
 
 	for (unsigned int m = 0; m < m_pAiScene->mNumMeshes; m++)
 	{
 		aiMesh* mesh = m_pAiScene->mMeshes[m];
-
-		vertex = new ANIMVERTEX_3D[mesh->mNumVertices];
+		
+		ANIMVERTEX_3D* vertex = new ANIMVERTEX_3D[mesh->mNumVertices];
 			 
 		//頂点バッファ生成
 		{
@@ -76,6 +80,7 @@ void CAnimationModel::LoadModel(const char* FileName, D3DXVECTOR3 pos)
 
 			delete[] index;
 		}
+
 
 		//変形後頂点データ初期化
 		for (unsigned int v = 0; v < mesh->mNumVertices; v++)
@@ -153,7 +158,9 @@ void CAnimationModel::LoadModel(const char* FileName, D3DXVECTOR3 pos)
 		RENDERER::m_pDevice->CreateBuffer(&bd, &sd, &m_pVertexBuffer[m]);
 
 		delete[] vertex;
+
 	}
+
 }
 
 void CAnimationModel::Unload()
@@ -173,6 +180,9 @@ void CAnimationModel::Unload()
 		if(pair.second != nullptr)
 			pair.second->Release();
 	}
+	m_mapTexture.clear();
+
+
 	/*for (auto pair : m_Texture) でもいい*/
 
 	for (std::pair<const std::string, const aiScene*> pair : m_mapAnimation)
@@ -180,8 +190,23 @@ void CAnimationModel::Unload()
 		if(pair.second != nullptr)
 			aiReleaseImport(pair.second);
 	}
+	m_mapAnimation.clear();
+
+
+	
+	m_mapBone.clear();
+	
+
+
+	for (int i = 0;i <  m_pAiScene->mNumMeshes; i++)
+	{
+		std::vector<DEFORM_ANIMVERTEX>().swap(m_vectorDeformVertex[i]);
+		m_vectorDeformVertex[i].clear();
+	}
+	delete[] m_vectorDeformVertex;
 
 	aiReleaseImport(m_pAiScene);
+
 }
 
 
@@ -321,7 +346,7 @@ void CAnimationModel::Draw()
 	for (unsigned int m = 0; m < m_pAiScene->mNumMeshes; m++)
 	{
 
-		RENDERER::SetAnimationMatrix(m_AnimationMatrix[m]);
+		RENDERER::m_ConstantBufferList.GetStruct<AnimationBuffer>()->Set(m_AnimationMatrix[m]);
 
 		aiMesh* mesh = m_pAiScene->mMeshes[m];
 

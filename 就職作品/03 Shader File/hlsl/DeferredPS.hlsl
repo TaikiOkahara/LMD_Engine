@@ -81,13 +81,11 @@ float4 main(VS_OUT input) : SV_Target
     
     if (type == 8)
     {
-        //lighting‚Ì—\’è
-        Color = g_texPointLight.Sample(g_samDeferredLinear, input.Tex);
+        float ao = g_texDepthPBR.Sample(g_samDeferredLinear, input.Tex).a;
+        Color = float4(ao, ao, ao, 1);
         return Color;
         
     }
-    
-    //PointLight‚ÌŒ‹‰Ê‚¾‚¯‚ð•`‰æ    
        
     return Color;
 }

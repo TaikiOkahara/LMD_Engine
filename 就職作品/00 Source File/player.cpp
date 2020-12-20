@@ -43,9 +43,9 @@ void CPlayer::Init()
 
 
 	//シェーダー作成
-	RENDERER::CreateVertexShader(&m_VertexShader,&m_VertexLayout,layout,7,"SkeletalVertexShader.cso");
-	RENDERER::CreatePixelShader(&m_PixelShader, "SkeletalPixelShader.cso");
-	RENDERER::CreatePixelShader(&m_ShadowPixelShader, "PlayerShadowPixelShader.cso");
+	RENDERER::CreateVertexShader(&m_VertexShader,&m_VertexLayout,layout,7,"skeletalVS.cso");
+	RENDERER::CreatePixelShader(&m_PixelShader, "skeletalPS.cso");
+	RENDERER::CreatePixelShader(&m_ShadowPixelShader, "playerShadowPS.cso");
 
 
 	m_OldPosition = m_Transform.position;
@@ -122,7 +122,7 @@ void CPlayer::Update()
 {
 
 
-	CCamera* camera = Base::GetScene()->GetGameObject<CCamera>(0);
+	CCamera* camera = Base::GetScene()->GetGameObject<CCamera>();
 
 	D3DXVECTOR3 cameraright = camera->GetRight();
 	cameraright.y = 0;
@@ -186,9 +186,9 @@ void CPlayer::Update()
 	//壁との当たり判定
 	if (m_EnableHit)
 	{
-		CWall* wall = Base::GetScene()->GetGameObject<CWall>(1);
+		CWall* wall = Base::GetScene()->GetGameObject<CWall>();
 		m_Transform.position = LenOBBToPoint(*wall, m_Transform.position, 7.0f);
-		CPillar* pillar = Base::GetScene()->GetGameObject<CPillar>(1);
+		CPillar* pillar = Base::GetScene()->GetGameObject<CPillar>();
 		m_Transform.position = LenOBBToPoint(*pillar, m_Transform.position, 2.0f);
 	}
 	
@@ -231,7 +231,7 @@ void CPlayer::Draw()
 	RENDERER::m_pDeviceContext->PSSetShader(m_PixelShader, NULL, 0);
 	RENDERER::m_pDeviceContext->IASetInputLayout(m_VertexLayout);
 
-	WORLDMATRIX worldMatrix;
+	//WORLDMATRIX worldMatrix;
 	//モデル
 	D3DXMATRIX world, scale, rot, trans;
 	D3DXMatrixScaling(&scale, m_Transform.scale.x / 100.0f, m_Transform.scale.y / 100.0f, m_Transform.scale.z / 100.0f);//アニメーションデータをスケール変更できないため、/100をして調節
@@ -239,8 +239,10 @@ void CPlayer::Draw()
 	D3DXMatrixTranslation(&trans, m_Transform.position.x, m_Transform.position.y, m_Transform.position.z);
 	world = scale * rot * trans;
 	
-	worldMatrix.worldMatrix = world;
-	RENDERER::SetWorldMatrix(worldMatrix);
+	/*worldMatrix.worldMatrix = world;
+	RENDERER::SetWorldMatrix(worldMatrix);*/
+	RENDERER::m_ConstantBufferList.GetStruct<WorldBuffer>()->Set(world);
+
 
 	m_AnimModel->Draw();
 
@@ -292,8 +294,10 @@ void CPlayer::Draw()
 	//コリジョン	
 	D3DXMatrixScaling(&scale, m_Transform.scale.x, m_Transform.scale.y, m_Transform.scale.z);
 	world = scale * rot * trans;
-	worldMatrix.worldMatrix = world;
-	RENDERER::SetWorldMatrix(worldMatrix);
+	/*worldMatrix.worldMatrix = world;
+	RENDERER::SetWorldMatrix(worldMatrix);*/
+	RENDERER::m_ConstantBufferList.GetStruct<WorldBuffer>()->Set(world);
+
 
 	if (m_EnableCollision)
 		m_Collision.Draw();

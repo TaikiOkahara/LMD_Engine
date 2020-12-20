@@ -9,9 +9,6 @@ class Tile
 {
 public:
 
-	MATERIAL m_Material;
-
-	
 
 	void Init(std::string Tex_name, std::string Nor_name, std::string RM_name, int tile_X_count, int tile_Y_count,float tile_Xsize);
 	void Uninit();

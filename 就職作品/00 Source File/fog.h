@@ -1,9 +1,12 @@
 #pragma once
-#pragma once
 #include "gameobject.h"
 #include "collision.h"
+#include "effect.h"
 
-class CFog : public CGameObject
+
+
+
+class CFogEffect : public CEffect
 {
 private:
 	FOG m_Fog;
@@ -11,11 +14,12 @@ private:
 	ID3D11VertexShader* m_pVertexShader;
 	ID3D11PixelShader* m_pPixelShader;
 
-	ID3D11ShaderResourceView* m_FogTexture = NULL;
+
+	ID3D11ShaderResourceView* m_FogTexture = nullptr;
 	bool m_Enable = true;
 public:
-	CFog() {}
-	~CFog() {}
+	CFogEffect(){}
+	~CFogEffect(){}
 
 	void Init();
 	void Uninit();

@@ -25,18 +25,20 @@ struct DEFORM_ANIMVERTEX
 
 };
 
+//ボーン構造体
+struct BONE
+{
+	aiMatrix4x4 Matrix;
+	aiMatrix4x4 AnimationMatrix;
+	aiMatrix4x4 OffsetMatrix;
+};
+
 class CAnimationModel
 {
 
 	
 
-	//ボーン構造体
-	struct BONE
-	{
-		aiMatrix4x4 Matrix;
-		aiMatrix4x4 AnimationMatrix;
-		aiMatrix4x4 OffsetMatrix;
-	};
+	
 
 
 private:

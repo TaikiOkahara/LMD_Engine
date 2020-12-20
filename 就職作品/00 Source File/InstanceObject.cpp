@@ -3,10 +3,12 @@
 #include "base.h"
 #include "camera.h"
 
+ID3D11ComputeShader* CInstanceGameObject::m_pComputeShader = nullptr;
+ID3D11VertexShader* CInstanceGameObject::m_pInstanceVertexShader = NULL;
 
 void CInstanceGameObject::InitInstance()
 {
-    RENDERER::CreateComputeShader("InstanceComputeShader.cso", &m_pComputeShader);
+   
 
     
     std::vector<D3DXMATRIX> matrix;
@@ -118,23 +120,22 @@ void CInstanceGameObject::InitInstance()
 
 
     //コリジョン
-    culling.cullingCount = m_MeshCount = m_MeshMax;
+    m_CullingCount = m_MeshCount = m_MeshMax;
     
-    culling.cullingPos[0] = D3DXVECTOR4( m_Collision.GetVertex()[0].x ,m_Collision.GetVertex()[0].y,m_Collision.GetVertex()[0].z ,0);
-    culling.cullingPos[1] = D3DXVECTOR4( m_Collision.GetVertex()[1].x ,m_Collision.GetVertex()[1].y,m_Collision.GetVertex()[1].z ,0);
-    culling.cullingPos[2] = D3DXVECTOR4( m_Collision.GetVertex()[2].x ,m_Collision.GetVertex()[2].y,m_Collision.GetVertex()[2].z ,0);
-    culling.cullingPos[3] = D3DXVECTOR4( m_Collision.GetVertex()[3].x ,m_Collision.GetVertex()[3].y,m_Collision.GetVertex()[3].z ,0);
-    culling.cullingPos[4] = D3DXVECTOR4( m_Collision.GetVertex()[4].x ,m_Collision.GetVertex()[4].y,m_Collision.GetVertex()[4].z ,0);
-    culling.cullingPos[5] = D3DXVECTOR4( m_Collision.GetVertex()[5].x ,m_Collision.GetVertex()[5].y,m_Collision.GetVertex()[5].z ,0);
-    culling.cullingPos[6] = D3DXVECTOR4( m_Collision.GetVertex()[6].x ,m_Collision.GetVertex()[6].y,m_Collision.GetVertex()[6].z ,0);
-    culling.cullingPos[7] = D3DXVECTOR4( m_Collision.GetVertex()[7].x ,m_Collision.GetVertex()[7].y,m_Collision.GetVertex()[7].z ,0);
+    m_CullingPos[0] = D3DXVECTOR4( m_Collision.GetVertex()[0].x ,m_Collision.GetVertex()[0].y,m_Collision.GetVertex()[0].z ,0);
+    m_CullingPos[1] = D3DXVECTOR4( m_Collision.GetVertex()[1].x ,m_Collision.GetVertex()[1].y,m_Collision.GetVertex()[1].z ,0);
+    m_CullingPos[2] = D3DXVECTOR4( m_Collision.GetVertex()[2].x ,m_Collision.GetVertex()[2].y,m_Collision.GetVertex()[2].z ,0);
+    m_CullingPos[3] = D3DXVECTOR4( m_Collision.GetVertex()[3].x ,m_Collision.GetVertex()[3].y,m_Collision.GetVertex()[3].z ,0);
+    m_CullingPos[4] = D3DXVECTOR4( m_Collision.GetVertex()[4].x ,m_Collision.GetVertex()[4].y,m_Collision.GetVertex()[4].z ,0);
+    m_CullingPos[5] = D3DXVECTOR4( m_Collision.GetVertex()[5].x ,m_Collision.GetVertex()[5].y,m_Collision.GetVertex()[5].z ,0);
+    m_CullingPos[6] = D3DXVECTOR4( m_Collision.GetVertex()[6].x ,m_Collision.GetVertex()[6].y,m_Collision.GetVertex()[6].z ,0);
+    m_CullingPos[7] = D3DXVECTOR4( m_Collision.GetVertex()[7].x ,m_Collision.GetVertex()[7].y,m_Collision.GetVertex()[7].z ,0);
 
 
 }
 
 void CInstanceGameObject::UninitInstance()
 {
-    SAFE_RELEASE(m_pComputeShader);
 
     SAFE_RELEASE(m_pMatrixBuffer);
     SAFE_RELEASE(m_pMatrixBufferSRV);
@@ -144,19 +145,25 @@ void CInstanceGameObject::UninitInstance()
     SAFE_RELEASE(m_pOutIndexBufferSRV);
 
     SAFE_RELEASE(m_pCounterBuffer);
+
+    std::vector<TRANSFORM>().swap(m_TransformList);
+
 }
 
 void CInstanceGameObject::UpdateInstance()
 {
-    
-    CCamera* camera = Base::GetScene()->GetGameObject<CCamera>(0);
 
-    culling.cullingCameraPos[0] = camera->m_CullingWPos[0];
-    culling.cullingCameraPos[1] = camera->m_CullingWPos[1];
-    culling.cullingCameraPos[2] = camera->m_CullingWPos[2];
-    culling.cullingCameraPos[3] = camera->m_CullingWPos[3];
+    if (!RENDERER::m_ConstantBufferList.GetStruct<ToggleBuffer>()->GetFrustumCullingEnable())
+    {
+        m_MeshCount = m_MeshMax;
+        return;
+    }
 
-    RENDERER::SetCulling(culling);
+
+    RENDERER::m_ConstantBufferList.GetStruct<CullingBuffer>()->Set(m_CullingCount,m_CullingPos);
+    //RENDERER::BuffList.GetStruct<CullingBuffer>().
+
+
 
     //視錐台カリング用コンピュートシェーディング
     
@@ -200,4 +207,19 @@ void CInstanceGameObject::DrawInstance()
     RENDERER::m_pDeviceContext->VSSetShaderResources(0, 1, &m_pMatrixBufferSRV);
     RENDERER::m_pDeviceContext->VSSetShaderResources(1, 1, &m_pOutIndexBufferSRV);
 
+}
+
+void CInstanceGameObject::Load()
+{
+    RENDERER::CreateComputeShader("instanceCS.cso", &m_pComputeShader);
+    assert(m_pComputeShader);
+
+    RENDERER::CreateVertexShader(&m_pInstanceVertexShader, nullptr, nullptr, 0, "instanceVS.cso");
+    assert(m_pInstanceVertexShader);
+}
+
+void CInstanceGameObject::Unload()
+{
+    m_pComputeShader->Release();
+    m_pInstanceVertexShader->Release();
 }

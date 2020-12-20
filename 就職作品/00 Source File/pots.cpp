@@ -11,7 +11,7 @@
 void CPots::Init()
 {
 	m_pMesh = new StaticMesh();
-	m_pMesh->LoadModel("../02 Visual File//Pots//PotB.fbx");
+	m_pMesh->LoadModel("../02 Visual File//Pots//PotBPBR.fbx");
 	m_pMesh->LoadTexture("");
 
 
@@ -20,11 +20,6 @@ void CPots::Init()
 
 	
 
-	//シェーダー作成
-	RENDERER::CreateVertexShader(&m_pVertexShader, &RENDERER::m_pCommonVertexLayout, nullptr, 0, "InstanceVertexShader.cso");
-	RENDERER::CreatePixelShader(&m_pPixelShader, "PixelShader.cso");
-
-	
 
 	TRANSFORM vector;
 	
@@ -55,9 +50,6 @@ void CPots::Uninit()
 
 	UninitInstance();
 	m_Collision.Uninit();
-
-	SAFE_RELEASE(m_pVertexShader);
-	SAFE_RELEASE(m_pPixelShader);
 }
 
 void CPots::Update()
@@ -70,9 +62,10 @@ void CPots::Draw()
 {
 	DrawInstance();
 
-	RENDERER::m_pDeviceContext->VSSetShader(m_pVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);
-	RENDERER::m_pDeviceContext->IASetInputLayout(RENDERER::m_pCommonVertexLayout);
+	//RENDERER::m_pDeviceContext->VSSetShader(RENDERER::m_pInstanceVertexShader, NULL, 0);
+	RENDERER::m_pDeviceContext->VSSetShader(m_pInstanceVertexShader, NULL, 0);
+	RENDERER::m_pDeviceContext->PSSetShader(m_pCommonPixelShader, NULL, 0);
+	RENDERER::m_pDeviceContext->IASetInputLayout(m_pCommonVertexLayout);
 
 
 	m_pMesh->DrawInstanced(m_MeshCount);

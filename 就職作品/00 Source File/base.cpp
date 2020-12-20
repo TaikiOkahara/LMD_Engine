@@ -11,6 +11,8 @@
 #include "scene.h"
 #include "game.h"
 
+#include "postProcess.h"
+
 static HINSTANCE	m_hInstance;
 static WINDOW*		m_pWindow;
 static HWND			m_hWnd;
@@ -19,7 +21,7 @@ static HWND			m_hWnd;
 
 
 CScene* Base::m_Scene = nullptr;
-
+CPostProcess Base::m_PostProcess;
 //
 //　メインループ
 //
@@ -27,7 +29,7 @@ void Base::MainLoop()
 {
 	CInput::Update();
 	m_Scene->Update();
-	
+	m_PostProcess.Update();
 	
 
 	RENDERER::Clear();//　画面塗りつぶし
@@ -35,26 +37,35 @@ void Base::MainLoop()
 	
 	m_Scene->Draw();
 	
-	
-	if (RENDERER::togglePoint){
+	/*if (RENDERER::togglePoint){
 		RENDERER::PointLighting();
 		m_Scene->DrawLighting();
-	}
+	}*/
 	
 	RENDERER::Deferred();
 	
-	if (RENDERER::toggleDirectional){
+	/*if (RENDERER::toggleDirectional){
 		RENDERER::DirectionlLighting();
-	}
+	}*/
 
-	for (int i = 0; i < m_Scene->GetLayerGameObjectsCount(3); i++)
-	{
-		m_Scene->DrawEffect();
-		RENDERER::EffectDraw();
-	}	
+	
+	m_PostProcess.Draw();
+
+
+	// IMGUI　Frame start
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
 
 
 	m_Scene->Imgui();
+	m_PostProcess.Imgui();
+
+	ImGui::EndFrame();
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+	// IMGUI　Frame end
+
 
 
 	RENDERER::Present();
@@ -110,6 +121,7 @@ HRESULT Base::Init(HINSTANCE phInstance)
 	
 
 	SetScene<Game>();
+	m_PostProcess.Init();
 
 	//　外部データ読み込み
 	LoadIni();
@@ -137,6 +149,9 @@ HRESULT Base::Uninit()
 
 	m_Scene->UnInit();
 	delete m_Scene;
+
+	m_PostProcess.Uninit();
+
 
 	IMGUI_Uninit();
 

@@ -15,9 +15,8 @@ protected:
 	{
 		DRAW_LAYER_HIDE = 0,//非描画レイヤー
 		DRAW_LAYER_DRAW = 1,//一般的なオブジェクトレイヤー
-		DRAW_LAYER_LIGHT = 2,//ライティングレイヤー
-		DRAW_LAYER_EFFECT = 3,//フォグ等のエフェクト
-		DRAW_LAYER_MAX = 4,//レイヤー数
+		DRAW_LAYER_LIGHT= 2,//ライティングレイヤー
+		DRAW_LAYER_MAX  = 3,//レイヤー数
 	};
 
 	std::list<CGameObject*> m_GameObject[LAYER::DRAW_LAYER_MAX];
@@ -43,28 +42,12 @@ public:
 	}
 
 	virtual void Draw() {
-		for (int i = 0; i <= LAYER::DRAW_LAYER_DRAW; i++)
+		for (int i = 0; i < LAYER::DRAW_LAYER_MAX; i++)
 		{
 			for (CGameObject* object : m_GameObject[i])
 			{
 				object->Draw();
 			}
-		}
-	}
-
-	virtual void DrawLighting() {
-		//Lightingパスだけ描画
-		for (CGameObject* object : m_GameObject[DRAW_LAYER_LIGHT])
-		{
-			object->Draw();
-		}
-	}
-
-	virtual void DrawEffect() {
-		//Effectパスだけ描画
-		for (CGameObject* object : m_GameObject[DRAW_LAYER_EFFECT])
-		{
-			object->Draw();
 		}
 	}
 
@@ -108,31 +91,33 @@ public:
 	}
 
 	template <typename T>
-	T* GetGameObject(int Layer)
+	T* GetGameObject()
 	{
-		for (CGameObject* object : m_GameObject[Layer])
+		for (int i = 0; i < LAYER::DRAW_LAYER_MAX; i++)
 		{
-			if (typeid(*object) == typeid(T))//　型を調べる
+			for (CGameObject* object : m_GameObject[i])
 			{
-				return (T*)object;
+				if (typeid(*object) == typeid(T))//　型を調べる
+				{
+					return (T*)object;
+				}
 			}
 		}
-
 		return NULL;
 	}
 
-	template <typename T>
-	std::vector<T*>GetGameObjects(int Layer)
-	{
-		std::vector<T*> objects;
-		for (CGameObject* object : m_GameObject[Layer])
-		{
-			if (typeid(*object) == typeid(T))//　型を調べる
-			{
-				objects.push_back((T*)object);
-			}
-		}
+	//template <typename T>
+	//std::vector<T*>GetGameObjects(int Layer)
+	//{
+	//	std::vector<T*> objects;
+	//	for (CGameObject* object : m_GameObject[Layer])
+	//	{
+	//		if (typeid(*object) == typeid(T))//　型を調べる
+	//		{
+	//			objects.push_back((T*)object);
+	//		}
+	//	}
 
-		return objects;
-	}
+	//	return objects;
+	//}
 };

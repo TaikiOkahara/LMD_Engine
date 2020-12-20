@@ -26,8 +26,8 @@ void CFloor::Init()
 
 
 	//シェーダー作成
-	RENDERER::CreateVertexShader(&m_VertexShader, &m_VertexLayout, layout, 5, "VertexShader.cso");
-	RENDERER::CreatePixelShader(&m_PixelShader, "Tile_PixelShader.cso");
+	RENDERER::CreateVertexShader(&m_VertexShader, &m_VertexLayout, layout, 5, "commonVS.cso");
+	RENDERER::CreatePixelShader(&m_PixelShader, "tilePS.cso");
 
 }
 //

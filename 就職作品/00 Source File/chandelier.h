@@ -7,9 +7,6 @@ class CChandelier : public CInstanceGameObject
 private:
 	StaticMesh* m_pMesh = nullptr;
 	//Collision m_Collision;
-	ID3D11VertexShader* m_pVertexShader;
-	ID3D11PixelShader* m_pPixelShader;
-
 
 public:
 	CChandelier() {}

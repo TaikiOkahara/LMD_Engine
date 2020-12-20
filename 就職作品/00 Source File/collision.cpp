@@ -101,9 +101,9 @@ void Collision::Init(D3DXVECTOR3 size, D3DXVECTOR3 center)
 
 
 	//シェーダー作成
-	RENDERER::CreateVertexShader(&m_pVertexShader, &m_pVertexLayout, layout, ARRAYSIZE(layout), "CollisionVertexShader.cso");
-	RENDERER::CreateVertexShader(&m_pInstanceVertexShader, &m_pVertexLayout, layout, ARRAYSIZE(layout), "CollisionInstanceVertexShader.cso");
-	RENDERER::CreatePixelShader(&m_pPixelShader, "CollisionPixelShader.cso");
+	RENDERER::CreateVertexShader(&m_pVertexShader, &m_pVertexLayout, layout, ARRAYSIZE(layout), "collisionVS.cso");
+	RENDERER::CreateVertexShader(&m_pInstanceVertexShader, &m_pVertexLayout, layout, ARRAYSIZE(layout), "collisionInstanceVS.cso");
+	RENDERER::CreatePixelShader(&m_pPixelShader, "collisionPS.cso");
 }
 
 void Collision::Uninit()

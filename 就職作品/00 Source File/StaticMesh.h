@@ -24,7 +24,7 @@ private:
 
 	std::map<std::string, ID3D11ShaderResourceView*> m_mapTexture;
 
-	std::vector<DEFORM_VERTEX>* m_vectorDeformVertex;//変形後頂点データ
+	//std::vector<DEFORM_VERTEX>* m_vectorDeformVertex;//変形後頂点データ
 
 public:
 	void LoadModel(const char* FileName);

@@ -13,8 +13,13 @@ protected:
 	D3DXQUATERNION  m_Quaternion;
 	bool			m_Destroy = false;
 	D3DXMATRIX		m_WorldMatrix;
-	Collision m_Collision;
 	bool			m_EnableCollision = false;
+
+	Collision m_Collision;
+	
+	static ID3D11VertexShader* m_pCommonVertexShader;
+	static ID3D11PixelShader* m_pCommonPixelShader;
+	static ID3D11InputLayout* m_pCommonVertexLayout;
 public:
 	CGameObject() {}
 	virtual ~CGameObject() {}
@@ -103,9 +108,11 @@ public:
 		D3DXMatrixRotationYawPitchRoll(&rot, m_Transform.rotation.y, m_Transform.rotation.x, m_Transform.rotation.z);
 		D3DXMatrixTranslation(&trans, m_Transform.position.x, m_Transform.position.y, m_Transform.position.z);
 		world = scale * rot * trans;
-		WORLDMATRIX worldMatrix;
-		worldMatrix.worldMatrix = world;
-		RENDERER::SetWorldMatrix(worldMatrix);
+		
+		RENDERER::m_ConstantBufferList.GetStruct<WorldBuffer>()->Set(world);
 	}
+
+	static void Load();
+	static void Unload();
 };
 

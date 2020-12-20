@@ -18,10 +18,6 @@ void StaticMesh::LoadModel(const char* FileName)
 	m_ppIndexBuffer = new ID3D11Buffer * [m_pAiScene->mNumMeshes];
 
 
-	//変形後頂点配列生成
-	m_vectorDeformVertex = new std::vector<DEFORM_VERTEX>[m_pAiScene->mNumMeshes];
-
-
 	for (unsigned int m = 0; m < m_pAiScene->mNumMeshes; m++)
 	{
 		aiMesh* mesh = m_pAiScene->mMeshes[m];
@@ -111,6 +107,8 @@ void StaticMesh::Unload()
 	}
 	/*for (auto pair : m_Texture) でもいい*/
 
+
+	
 
 	aiReleaseImport(m_pAiScene);
 }
@@ -205,16 +203,11 @@ void StaticMesh::DrawInstanced(UINT instanceCount)
 			RENDERER::m_pDeviceContext->PSSetShaderResources(1, 1, &m_mapTexture[path.data]);
 		}
 		path.Clear();
-		//Roughness
-		material->GetTexture(aiTextureType_SHININESS, 0, &path);
-		if (m_mapTexture[path.data]) {
-			RENDERER::m_pDeviceContext->PSSetShaderResources(2, 1, &m_mapTexture[path.data]);
-		}
-		path.Clear();
-		//metallic
+		
+		//MRA
 		material->GetTexture(aiTextureType_EMISSIVE, 0, &path);
 		if (m_mapTexture[path.data]) {
-			RENDERER::m_pDeviceContext->PSSetShaderResources(3, 1, &m_mapTexture[path.data]);
+			RENDERER::m_pDeviceContext->PSSetShaderResources(2, 1, &m_mapTexture[path.data]);
 		}
 		path.Clear();
 
@@ -242,8 +235,7 @@ void StaticMesh::LoadTexture(std::string file_name)
 
 	texTypeList[0] = aiTextureType_DIFFUSE;
 	texTypeList[1] = aiTextureType_NORMALS;
-	texTypeList[2] = aiTextureType_SHININESS;//roughnessをなぜかSHININESSで取得可能（なぜかエラーになるから）
-	texTypeList[3] = aiTextureType_EMISSIVE;//Blender側でmetallicをemissiveに入れるとなぜかEMISSIVEで取得可能（なぜかエラーになるから）
+	texTypeList[2] = aiTextureType_EMISSIVE;//Blender側でMRAをemissiveに入れるとなぜかEMISSIVEで取得可能（なぜかエラーになるから）
 
 
 
@@ -277,9 +269,34 @@ void StaticMesh::LoadTexture(std::string file_name)
 						m_mapTexture[path.data] = texture;
 					}
 				}
+				else
+				{
+					ID3D11ShaderResourceView* texture;
+
+					std::string tex_name;
+
+					tex_name = file_name;
+					tex_name += "//";
+
+					tex_name += path.C_Str();
+
+					D3DX11CreateShaderResourceViewFromFile(
+						RENDERER::m_pDevice,
+						tex_name.c_str(),
+						NULL,
+						NULL,
+						&texture,
+						NULL);
+					assert(texture);
+
+					m_mapTexture[path.data] = texture;
+				}
 			}
 			else
 			{
+
+
+
 				m_mapTexture[path.data] = NULL;
 			}
 		}

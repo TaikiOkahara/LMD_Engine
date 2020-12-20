@@ -7,31 +7,13 @@
 
 
 
+
 class RENDERER
 {
-	static EFFECT m_Effect;
-	static VIEWMATRIX m_ViewMatrix;
-	static PROJMATRIX m_ProjMatrix;
-
-	static void SetEffect();
-
 	static void CreateGBufferFormat(GBuffer* pGbuffer, DXGI_FORMAT dxgi_format);
 	static void CreateConstantBuffers();
 
 	static IDXGISwapChain* m_pSwapChain;
-	
-	
-	//定数バッファ	
-	static ID3D11Buffer* m_pWorldBuffer;
-	static ID3D11Buffer* m_pViewBuffer;
-	static ID3D11Buffer* m_pProjectionBuffer;
-	
-	static ID3D11Buffer* m_pDirectionalLightBuffer;
-	static ID3D11Buffer* m_pPointLightBuffer;
-	static ID3D11Buffer* m_pEyeBuffer;
-	static ID3D11Buffer* m_pAnimationMatrixBuffer;
-	static ID3D11Buffer* m_pEffectBuffer;
-	static ID3D11Buffer* m_pCullingBuffer;
 	
 	//======================================================
 	//GBuffer
@@ -43,6 +25,9 @@ class RENDERER
 	static GBuffer m_DepthPBR_GBuffer;
 
 	//======================================================
+
+
+
 
 	//ディファード
 	static ID3D11Buffer* m_pScreenPolyVB;
@@ -56,8 +41,7 @@ class RENDERER
 	static ID3D11SamplerState* m_pDeferredSamplerState;
 	static ID3D11RasterizerState* m_pDeferredRasterizerState;
 	static ID3D11BlendState* m_pPointLightBlendState;
-	//ディレクショナルライト
-	static ID3D11PixelShader* m_pDirectionalPixelShader;
+
 
 	//ポイントライティング
 	static ID3D11RasterizerState* m_pPointLightingRasterizerState;
@@ -68,45 +52,23 @@ class RENDERER
 	//デプスステンシルステート
 	static ID3D11DepthStencilState* m_pBuckBuffer_DSTexState;
 
+
 public:
+	static ConstantBufferList m_ConstantBufferList;
+	
+
 
 	//通常
 	static ID3D11RasterizerState* m_pCommonRasterizerState;
 	static ID3D11SamplerState*	m_pCommonSamplerState;
 	
-	static ID3D11VertexShader*	m_pCommonVertexShader;
-	static ID3D11PixelShader*	m_pCommonPixelShader;
-	static ID3D11InputLayout*	m_pCommonVertexLayout;
+
 
 	static ID3D11Device*		m_pDevice;			
 	static ID3D11DeviceContext*	m_pDeviceContext;	
 
-	
-	static bool toggleDirectional;
-	static bool togglePoint;
-	static bool toggleColor;
-	
 
 
-	//定数バッファセット
-	static void SetDepthEnable(bool Enable);
-	static void SetWorldViewProjection2D();
-	static void SetWorldMatrix(WORLDMATRIX WorldMatrix);
-	static void SetViewMatrix(VIEWMATRIX ViewMatrix);
-	static void SetProjectionMatrix(PROJMATRIX ProjectionMatrix);
-	static void SetAnimationMatrix(ANIMATIONMATRIX Animation);
-
-	static void SetDirectionalLight(DIRECTIONALLIGHT light);
-	static void SetPointLight(POINTLIGHT light);
-	static void SetEye(EYE Eye);
-	static void SetCulling(CULLING count);
-	static void SetFog(FOG fog);
-	static void SetDeferred(D3DXVECTOR4 param);
-
-	static void SetRasterizerState(D3D11_CULL_MODE mode);
-
-	static VIEWMATRIX GetViewMatrix() { return m_ViewMatrix; }
-	static PROJMATRIX GeProjMatrix() { return m_ProjMatrix; }
 
 	//メンバ関数
 	static HRESULT Init(HWND hWnd);//　初期化
@@ -120,9 +82,16 @@ public:
 	static void CreateComputeShader(const char*, ID3D11ComputeShader**);
 	static void CreateStructuredBuffer(UINT elementSize,UINT count,void* pInitData,ID3D11Buffer** ppBufferOut);
 
+
+
+	static void SetWorldViewProjection2D();
+	
+	static void SetRasterizerState(D3D11_CULL_MODE mode);
+	static void SetBlendState_Lighting();
+
+	//static ConstantBufferList GetConstantBufferList() { return m_ConstantBufferList; }
 	static void Deferred();//ディファード
-	static void DirectionlLighting();//ライティング
 	static void PointLighting();	//ポイントライト
-	static void EffectDraw();	//ポストエフェクト
+	static void PostProcessDraw();
 	static void Present();		//　画面更新
 };

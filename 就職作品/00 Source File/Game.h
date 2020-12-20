@@ -6,9 +6,8 @@ class Game : public CScene
 private:
 	bool timeStop = false;
 	int  deferredType = 0;
+	bool frustumEnable = false;
 public:
-	Game(){}
-	~Game(){}
 
 	void Init();
 	void UnInit();

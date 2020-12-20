@@ -39,7 +39,16 @@ struct VS_PL_OUT
 };
 struct PS_PL_OUT
 {
-    float4 vPointLight  : SV_Target0;
+    float4 PointLight  : SV_Target0;
+};
+
+
+struct VS_CUBEMAP_OUT
+{
+    float4 Pos      : SV_POSITION;
+    float3 Normal   : NORMAL;
+    float2 Tex      : TEXCOORD0;
+    uint   TexNum   : TEXCOORD1;
 };
 
 
@@ -49,7 +58,7 @@ float3 NormalizedLambert(float3 diffuseColor)
 {
     return diffuseColor / PI;
 }
-
+//ƒtƒŒƒlƒ‹
 float3 F_Schlick(float3 F0, float3 H, float3 V)
 {
     return (F0 + (1.0 - F0) * pow(1.0 - max(dot(V, H), 0), 5.0));

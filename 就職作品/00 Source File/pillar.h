@@ -7,9 +7,6 @@ class CPillar : public CInstanceGameObject
 {
 private:
 	StaticMesh* m_pMesh = nullptr;
-	ID3D11VertexShader* m_pVertexShader;
-	ID3D11PixelShader* m_pPixelShader;
-
 
 public:
 	CPillar() {}

@@ -18,17 +18,9 @@ void CWall::Init()
 
 	m_Transform.rotation = D3DXVECTOR3(D3DX_PI/2,D3DX_PI/2, 0.0f);
 
-	//　入力レイアウト生成
-	D3D11_INPUT_ELEMENT_DESC layout[]{
-	{ "POSITION",		0, DXGI_FORMAT_R32G32B32_FLOAT,	0,							   0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "NORMAL",			0, DXGI_FORMAT_R32G32B32_FLOAT,	0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TEXCOORD",		0, DXGI_FORMAT_R32G32_FLOAT,	0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TANGENT",		0, DXGI_FORMAT_R32G32B32_FLOAT,	0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "BINORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,	0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 } };
-
+	
 	//シェーダー作成
-	RENDERER::CreateVertexShader(&m_pVertexShader, &m_pVertexLayout, layout, 5, "InstanceVertexShader.cso");
-	RENDERER::CreatePixelShader(&m_pPixelShader, "Tile_PixelShader.cso");
+	RENDERER::CreatePixelShader(&m_pPixelShader, "tilePS.cso");
 	
 	
 	
@@ -114,9 +106,7 @@ void CWall::Uninit()
 
 	UninitInstance();
 	m_Collision.Uninit();
-	SAFE_RELEASE(m_pVertexShader);
 	SAFE_RELEASE(m_pPixelShader);
-	SAFE_RELEASE(m_pVertexLayout);
 }
 //
 //
@@ -133,9 +123,10 @@ void CWall::Draw()
 	DrawInstance();
 	
 
-	RENDERER::m_pDeviceContext->VSSetShader(m_pVertexShader, NULL, 0);
+	//RENDERER::m_pDeviceContext->VSSetShader(RENDERER::m_pInstanceVertexShader, NULL, 0);
+	RENDERER::m_pDeviceContext->VSSetShader(m_pInstanceVertexShader, NULL, 0);
 	RENDERER::m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);
-	RENDERER::m_pDeviceContext->IASetInputLayout(m_pVertexLayout);
+	RENDERER::m_pDeviceContext->IASetInputLayout(m_pCommonVertexLayout);
 
 	m_pWall->DrawInstanced(m_MeshCount);
 

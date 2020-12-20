@@ -1,19 +1,25 @@
 #pragma once
-#include "gameobject.h"
 #include "StaticMesh.h"
+#include "effect.h"
 
 
-class CSceneLight : public CGameObject
+class CDirectionalLight : public CEffect
 {
 private:
-	DIRECTIONALLIGHT m_DirectionalLight;
+	D3DXVECTOR4 m_DLightDir;
+	D3DXVECTOR4 m_DLightPos;
+	D3DXVECTOR4 m_DLightCol;
 
-	StaticMesh* m_pMesh;
+	TRANSFORM m_Transform;
 
-	ID3D11VertexShader* m_VertexShader;
-	ID3D11PixelShader* m_PixelShader;
+	ID3D11VertexShader* m_pVertexShader;
+	ID3D11PixelShader* m_pPixelShader;
+
+	bool m_Enable = true;
 public:
-	
+	CDirectionalLight(){}
+	~CDirectionalLight(){}
+
 	void Init();
 	void Uninit();
 	void Update();

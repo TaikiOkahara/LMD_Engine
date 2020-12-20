@@ -13,20 +13,14 @@ void CTrim::Init()
 	m_pMesh = new StaticMesh();
 
 
-	m_pMesh->LoadModel("../02 Visual File//Trim//trim_Center.fbx");
+	m_pMesh->LoadModel("../02 Visual File//Trim//trimPBR.fbx");
 	m_pMesh->LoadTexture("../02 Visual File//Trim");
 
 	//m_Transform.rotation = D3DXVECTOR3(0.0f, D3DX_PI/2, 0.0f);
 
 	m_Collision.Init(D3DXVECTOR3(5.0f, 0.5f, 0.5f), D3DXVECTOR3(0 ,0, 0));
 
-	//シェーダー作成
-	RENDERER::CreateVertexShader(&m_pVertexShader, &RENDERER::m_pCommonVertexLayout, nullptr, 0, "InstanceVertexShader.cso");
-	RENDERER::CreatePixelShader(&m_pPixelShader, "PixelShader.cso");
-
 	
-
-
 
 	D3DXVECTOR3 scale, verticalRot, horizonalRot;
 
@@ -78,8 +72,6 @@ void CTrim::Uninit()
 
 	m_Collision.Uninit();
 
-	SAFE_RELEASE(m_pVertexShader);
-	SAFE_RELEASE(m_pPixelShader);
 }
 
 void CTrim::Update()
@@ -92,9 +84,10 @@ void CTrim::Draw()
 {
 	DrawInstance();
 
-	RENDERER::m_pDeviceContext->VSSetShader(m_pVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);
-	RENDERER::m_pDeviceContext->IASetInputLayout(RENDERER::m_pCommonVertexLayout);
+	//RENDERER::m_pDeviceContext->VSSetShader(RENDERER::m_pInstanceVertexShader, NULL, 0);
+	RENDERER::m_pDeviceContext->VSSetShader(m_pInstanceVertexShader, NULL, 0);
+	RENDERER::m_pDeviceContext->PSSetShader(m_pCommonPixelShader, NULL, 0);
+	RENDERER::m_pDeviceContext->IASetInputLayout(m_pCommonVertexLayout);
 
 
 	m_pMesh->DrawInstanced(m_MeshCount);

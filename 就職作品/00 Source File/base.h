@@ -5,14 +5,15 @@
 #pragma once
 #include "window.h"
 #include "scene.h"
+#include "postProcess.h"
 
-
-class CScene;
 
 class Base
 {
 private:
 	static class CScene* m_Scene;
+	static class CPostProcess m_PostProcess;
+
 	static void MainLoop();
 	static void FixFPS60();
 public:

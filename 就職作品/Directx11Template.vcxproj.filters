@@ -139,6 +139,18 @@
     <Filter Include="Shader-----------------------\cursorModel">
       <UniqueIdentifier>{5e669cba-8a98-4f9e-b944-e45f4e4a10ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObjects----------------\cubeMap">
+      <UniqueIdentifier>{669731ca-8f22-458d-813c-31ef416f1d27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader-----------------------\cubeMap">
+      <UniqueIdentifier>{5b573fca-c096-405e-bcff-49a55ad2ed63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager --------------------\postProcess">
+      <UniqueIdentifier>{2970a085-ec66-4faf-8b55-f36fafacd676}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components----------------\effect">
+      <UniqueIdentifier>{c141f78d-74e9-418a-bcc4-205ea546b464}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="00 Source File\Entry.cpp">
@@ -246,6 +258,17 @@
     <ClCompile Include="00 Source File\staticMesh.cpp">
       <Filter>Components----------------\staticMesh</Filter>
     </ClCompile>
+    <ClCompile Include="00 Source File\struct.cpp">
+      <Filter>Manager --------------------\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\cubeMap.cpp">
+      <Filter>GameObjects----------------\cubeMap</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\postProcess.cpp">
+      <Filter>Manager --------------------\postProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\gameobject.cpp" />
+    <ClCompile Include="00 Source File\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="00 Source File\camera.h">
@@ -365,70 +388,85 @@
     <ClInclude Include="00 Source File\struct.h">
       <Filter>Manager --------------------\renderer</Filter>
     </ClInclude>
+    <ClInclude Include="00 Source File\cubeMap.h">
+      <Filter>GameObjects----------------\cubeMap</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\postProcess.h">
+      <Filter>Manager --------------------\postProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\effect.h">
+      <Filter>Components----------------\effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="03 Shader File\hlsl\ConstantBuffer.hlsl">
       <Filter>Shader-----------------------\resource</Filter>
     </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\DeferredPS.hlsl">
-      <Filter>Shader-----------------------\deferred</Filter>
-    </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\DeferredVS.hlsl">
-      <Filter>Shader-----------------------\deferred</Filter>
-    </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\SkeletalPixelShader.hlsl">
-      <Filter>Shader-----------------------\skeletalMesh</Filter>
-    </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\SkeletalVertexShader.hlsl">
-      <Filter>Shader-----------------------\skeletalMesh</Filter>
-    </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\Tile_PixelShader.hlsl">
-      <Filter>Shader-----------------------\tile</Filter>
-    </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\CollisionVertexShader.hlsl">
-      <Filter>Shader-----------------------\collision</Filter>
-    </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\CollisionPixelShader.hlsl">
-      <Filter>Shader-----------------------\collision</Filter>
-    </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\CollisionInstanceVertexShader.hlsl">
-      <Filter>Shader-----------------------\collision</Filter>
-    </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\VertexShader.hlsl">
-      <Filter>Shader-----------------------\common</Filter>
-    </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\PixelShader.hlsl">
-      <Filter>Shader-----------------------\common</Filter>
-    </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\InstanceComputeShader.hlsl">
-      <Filter>Shader-----------------------\compute</Filter>
-    </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\Geometry.hlsl">
       <Filter>Shader-----------------------\resource</Filter>
     </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\PointLightPixelShader.hlsl">
-      <Filter>Shader-----------------------\pointLight</Filter>
+    <FxCompile Include="03 Shader File\hlsl\cubeMapPS.hlsl">
+      <Filter>Shader-----------------------\cubeMap</Filter>
     </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\PointLightVertexShader.hlsl">
-      <Filter>Shader-----------------------\pointLight</Filter>
+    <FxCompile Include="03 Shader File\hlsl\cubeMapVS.hlsl">
+      <Filter>Shader-----------------------\cubeMap</Filter>
     </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\InstanceVertexShader.hlsl">
+    <FxCompile Include="03 Shader File\hlsl\collisionInstanceVS.hlsl">
+      <Filter>Shader-----------------------\collision</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\collisionPS.hlsl">
+      <Filter>Shader-----------------------\collision</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\collisionVS.hlsl">
+      <Filter>Shader-----------------------\collision</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\instanceVS.hlsl">
       <Filter>Shader-----------------------\common</Filter>
     </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\DirectionalLightPixelShader.hlsl">
-      <Filter>Shader-----------------------\directionalLight</Filter>
+    <FxCompile Include="03 Shader File\hlsl\commonPS.hlsl">
+      <Filter>Shader-----------------------\common</Filter>
     </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\FogPixelShader.hlsl">
+    <FxCompile Include="03 Shader File\hlsl\commonVS.hlsl">
+      <Filter>Shader-----------------------\common</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\tilePS.hlsl">
+      <Filter>Shader-----------------------\tile</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\deferredPS.hlsl">
+      <Filter>Shader-----------------------\deferred</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\deferredVS.hlsl">
+      <Filter>Shader-----------------------\deferred</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\fogPS.hlsl">
       <Filter>Shader-----------------------\fog</Filter>
     </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\PlayerShadowPixelShader.hlsl">
+    <FxCompile Include="03 Shader File\hlsl\skeletalPS.hlsl">
+      <Filter>Shader-----------------------\skeletalMesh</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\skeletalVS.hlsl">
+      <Filter>Shader-----------------------\skeletalMesh</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\playerShadowPS.hlsl">
       <Filter>Shader-----------------------\playerShadow</Filter>
     </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\CursorPixelShader.hlsl">
+    <FxCompile Include="03 Shader File\hlsl\pointLightPS.hlsl">
+      <Filter>Shader-----------------------\pointLight</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\pointLightVS.hlsl">
+      <Filter>Shader-----------------------\pointLight</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\cursorPS.hlsl">
       <Filter>Shader-----------------------\cursorModel</Filter>
     </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\CursorVertexShader.hlsl">
+    <FxCompile Include="03 Shader File\hlsl\cursorVS.hlsl">
       <Filter>Shader-----------------------\cursorModel</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\directionalLightPS.hlsl">
+      <Filter>Shader-----------------------\directionalLight</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\instanceCS.hlsl">
+      <Filter>Shader-----------------------\compute</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

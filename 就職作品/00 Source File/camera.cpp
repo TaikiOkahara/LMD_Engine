@@ -37,7 +37,7 @@ void CCamera::Uninit()
 void CCamera::Update()
 {
 
-	CPlayer* player = Base::GetScene()->GetGameObject<CPlayer>(1);
+	CPlayer* player = Base::GetScene()->GetGameObject<CPlayer>();
 
 	
 	m_OffsetPosition = player->GetPosition();
@@ -86,9 +86,9 @@ void CCamera::Update()
 	//カメラとプレイヤーの間に障害物があった場合、カメラ位置を移動させる
 	if (m_CameraControl)
 	{
-		CWall* wall = Base::GetScene()->GetGameObject<CWall>(1);
+		CWall* wall = Base::GetScene()->GetGameObject<CWall>();
 		m_Transform.position = CameraRayIntersect(wall);
-		CPillar* pillar = Base::GetScene()->GetGameObject<CPillar>(1);
+		CPillar* pillar = Base::GetScene()->GetGameObject<CPillar>();
 		m_Transform.position = CameraRayIntersect(pillar);
 
 	}
@@ -96,24 +96,35 @@ void CCamera::Update()
 
 	//　マトリクス設定
 
-	m_ViewMatrix.viewOldMatrix = m_ViewMatrix.viewMatrix;
-	m_ProjMatrix.projOldMatrix = m_ProjMatrix.projMatrix;
+	D3DXMATRIX viewOldMatrix;
+	D3DXMATRIX projOldMatrix;
+
+	viewOldMatrix = m_ViewMatrix;
+	projOldMatrix = m_ProjMatrix;
 
 
-	D3DXMatrixLookAtLH(&m_ViewMatrix.viewMatrix, &m_Transform.position, &m_Target, &D3DXVECTOR3(0, 1, 0));
-	RENDERER::SetViewMatrix(m_ViewMatrix);
+	D3DXMatrixLookAtLH(&m_ViewMatrix, &m_Transform.position, &m_Target, &D3DXVECTOR3(0, 1, 0));
+	//RENDERER::SetViewMatrix(m_ViewMatrix);
+	RENDERER::m_ConstantBufferList.GetStruct<ViewBuffer>()->Set(m_ViewMatrix,viewOldMatrix);
 
+	D3DXMatrixPerspectiveFovLH(&m_ProjMatrix, m_Angle, m_Aspect, m_Near, m_Far);
+	RENDERER::m_ConstantBufferList.GetStruct<ProjBuffer>()->Set(m_ProjMatrix,projOldMatrix);
 
-	D3DXMatrixPerspectiveFovLH(&m_ProjMatrix.projMatrix, m_Angle, m_Aspect, m_Near, m_Far);
-	RENDERER::SetProjectionMatrix(m_ProjMatrix);
 
 	EYE eye;
-	eye.Eye = D3DXVECTOR4(m_Transform.position.x, m_Transform.position.y, m_Transform.position.z, 0);
-	RENDERER::SetEye(eye);
+	eye.eyePos = D3DXVECTOR4(m_Transform.position.x, m_Transform.position.y, m_Transform.position.z, 0);
+	
+	eye.worldCamera[0] = m_CullingWPos[0];
+	eye.worldCamera[1] = m_CullingWPos[1];
+	eye.worldCamera[2] = m_CullingWPos[2];
+	eye.worldCamera[3] = m_CullingWPos[3];
+	
+	
+	RENDERER::m_ConstantBufferList.GetStruct<EyeBuffer>()->Set(eye);
 
 	D3DXMATRIX vp, invvp;
 
-	vp = m_ViewMatrix.viewMatrix * m_ProjMatrix.projMatrix;
+	vp = m_ViewMatrix * m_ProjMatrix;
 
 	D3DXMatrixInverse(&invvp, NULL, &vp);
 
@@ -148,7 +159,7 @@ void CCamera::Draw()
 D3DXVECTOR3 CCamera::CameraRayIntersect(CInstanceGameObject* object)
 {
 
-	CPlayer* player = Base::GetScene()->GetGameObject<CPlayer>(1);
+	CPlayer* player = Base::GetScene()->GetGameObject<CPlayer>();
 
 
 	D3DXVECTOR3 playerPos = player->GetPosition() + D3DXVECTOR3(0, 1, 0);//プレイヤーの中心
