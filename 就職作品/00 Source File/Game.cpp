@@ -1,11 +1,9 @@
-//#include "Scene.h"
 #include "base.h"
 #include "game.h"
 #include "Imgui11.h"
 #include "input.h"
 
 #include "camera.h"
-#include "scenelight.h"
 #include "pointLight.h"
 
 #include "player.h"
@@ -64,9 +62,8 @@ void Game::Update() {
 	CScene::Update();
 
 	RENDERER::m_ConstantBufferList.GetStruct<EffectBuffer>()->SetDeferredParam(D3DXVECTOR4(deferredType * 1.0f, 0, 0, 0));
+	RENDERER::m_ConstantBufferList.GetStruct<EffectBuffer>()->SetAO(D3DXVECTOR4(ambientOcclusionPower,0,0,0));
 
-	//RENDERER::toggleFrustumCulling = frustumEnable;
-	//RENDERER::SetToggle();
 
 	RENDERER::m_ConstantBufferList.GetStruct<ToggleBuffer>()->SetFrustumCullingEnable(frustumEnable);
 	RENDERER::m_ConstantBufferList.GetStruct<ToggleBuffer>()->Set();
@@ -132,7 +129,7 @@ void Game::Imgui()
 			deferredType = render_radio;
 		}
 		
-
+		ImGui::SliderFloat("Ambient Occlusion", &ambientOcclusionPower, 0.0f, 1.0f);
 
 		ImGui::Text("Culling Mode");
 		ImGui::RadioButton("None", &culling_radio, 0);

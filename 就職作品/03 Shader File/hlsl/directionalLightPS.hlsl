@@ -47,6 +47,10 @@ float4 main(VS_OUT input) : SV_Target
     float4 Color = diffuse;
     
     
+    //AO設定
+    float ao = g_fAmbientOcclusion.x;
+    Color.rgb += PBR.w * ao;
+    
     //Color.rgb *= diffuse.xyz * NL * color.xyz;
     Color.rgb *= (normal.w == 2.0f) ? diffuse.xyz : diffuse.xyz * NL * color.xyz; //ライティングを行か
     Color.a = diffuse.a;

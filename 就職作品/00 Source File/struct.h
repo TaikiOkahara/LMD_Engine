@@ -212,11 +212,14 @@ private:
 	{
 		D3DXVECTOR4 deferred;
 		FOG	fog;
+
+		D3DXVECTOR4 ambientOcclusion;
 	};
 	Struct str;
 public:
 	void Set();
 	void SetFog(FOG set) { str.fog = set; }
+	void SetAO(D3DXVECTOR4 set) { str.ambientOcclusion = set; }
 	void SetDeferredParam(D3DXVECTOR4 set) { str.deferred = set; }
 	D3DXVECTOR4 GetDeferredParam() { return str.deferred; }
 

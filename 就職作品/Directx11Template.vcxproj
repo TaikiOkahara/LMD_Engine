@@ -43,12 +43,11 @@
     <ClCompile Include="00 Source File\stage.cpp" />
     <ClCompile Include="00 Source File\staticMesh.cpp" />
     <ClCompile Include="00 Source File\struct.cpp" />
-    <ClCompile Include="00 Source File\texture.cpp" />
     <ClCompile Include="00 Source File\tile.cpp" />
     <ClCompile Include="00 Source File\floor.cpp" />
     <ClCompile Include="00 Source File\calculation.cpp" />
     <ClCompile Include="00 Source File\player.cpp" />
-    <ClCompile Include="00 Source File\scenelight.cpp" />
+    <ClCompile Include="00 Source File\directionalLight.cpp" />
     <ClCompile Include="00 Source File\sound.cpp" />
     <ClCompile Include="00 Source File\trim.cpp" />
     <ClCompile Include="00 Source File\wall.cpp" />
@@ -90,7 +89,7 @@
     <ClInclude Include="00 Source File\Imgui11.h" />
     <ClInclude Include="00 Source File\player.h" />
     <ClInclude Include="00 Source File\scene.h" />
-    <ClInclude Include="00 Source File\scenelight.h" />
+    <ClInclude Include="00 Source File\directionalLight.h" />
     <ClInclude Include="00 Source File\sound.h" />
     <ClInclude Include="00 Source File\trim.h" />
     <ClInclude Include="00 Source File\wall.h" />

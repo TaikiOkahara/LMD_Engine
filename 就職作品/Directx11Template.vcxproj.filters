@@ -58,9 +58,6 @@
     <Filter Include="GameObjects----------------\pointLight">
       <UniqueIdentifier>{136ed20f-c2e5-4365-8860-2a4011aee6c4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameObjects----------------\sceneLight">
-      <UniqueIdentifier>{960b2378-7fd4-4347-b32a-c5690f643334}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameObjects----------------\stage">
       <UniqueIdentifier>{ed3ff828-0f7c-49b6-abc5-be9c9c41ab22}</UniqueIdentifier>
     </Filter>
@@ -121,9 +118,6 @@
     <Filter Include="Manager --------------------\base">
       <UniqueIdentifier>{6a8f36ea-cf58-4886-9c18-11fa4d6e80c9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameObjects----------------\fog">
-      <UniqueIdentifier>{5355ddf3-ac3f-4c73-8808-a1386269e6c2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shader-----------------------\fog">
       <UniqueIdentifier>{abbb36bf-d7f3-4af4-a1b7-cea638334861}</UniqueIdentifier>
     </Filter>
@@ -145,11 +139,20 @@
     <Filter Include="Shader-----------------------\cubeMap">
       <UniqueIdentifier>{5b573fca-c096-405e-bcff-49a55ad2ed63}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Manager --------------------\postProcess">
+    <Filter Include="PostProcess-----------------">
+      <UniqueIdentifier>{a11fb791-9d30-4290-8c0b-b7b8884158a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PostProcess-----------------\effect">
+      <UniqueIdentifier>{c141f78d-74e9-418a-bcc4-205ea546b464}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PostProcess-----------------\postProcess">
       <UniqueIdentifier>{2970a085-ec66-4faf-8b55-f36fafacd676}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Components----------------\effect">
-      <UniqueIdentifier>{c141f78d-74e9-418a-bcc4-205ea546b464}</UniqueIdentifier>
+    <Filter Include="PostProcess-----------------\fog">
+      <UniqueIdentifier>{5355ddf3-ac3f-4c73-8808-a1386269e6c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PostProcess-----------------\directionalLight">
+      <UniqueIdentifier>{960b2378-7fd4-4347-b32a-c5690f643334}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -167,9 +170,6 @@
     </ClCompile>
     <ClCompile Include="00 Source File\player.cpp">
       <Filter>GameObjects----------------\player</Filter>
-    </ClCompile>
-    <ClCompile Include="00 Source File\scenelight.cpp">
-      <Filter>GameObjects----------------\sceneLight</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\base.cpp">
       <Filter>Manager --------------------\base</Filter>
@@ -250,7 +250,7 @@
       <Filter>Manager --------------------\input</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\fog.cpp">
-      <Filter>GameObjects----------------\fog</Filter>
+      <Filter>PostProcess-----------------\fog</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\skeletalMesh.cpp">
       <Filter>Components----------------\skeletalMesh</Filter>
@@ -265,10 +265,14 @@
       <Filter>GameObjects----------------\cubeMap</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\postProcess.cpp">
-      <Filter>Manager --------------------\postProcess</Filter>
+      <Filter>PostProcess-----------------\postProcess</Filter>
     </ClCompile>
-    <ClCompile Include="00 Source File\gameobject.cpp" />
-    <ClCompile Include="00 Source File\texture.cpp" />
+    <ClCompile Include="00 Source File\directionalLight.cpp">
+      <Filter>PostProcess-----------------\directionalLight</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\gameobject.cpp">
+      <Filter>GameObjects----------------</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="00 Source File\camera.h">
@@ -282,9 +286,6 @@
     </ClInclude>
     <ClInclude Include="00 Source File\player.h">
       <Filter>GameObjects----------------\player</Filter>
-    </ClInclude>
-    <ClInclude Include="00 Source File\scenelight.h">
-      <Filter>GameObjects----------------\sceneLight</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\base.h">
       <Filter>Manager --------------------\base</Filter>
@@ -377,7 +378,7 @@
       <Filter>Manager --------------------\input</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\fog.h">
-      <Filter>GameObjects----------------\fog</Filter>
+      <Filter>PostProcess-----------------\fog</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\skeletalMesh.h">
       <Filter>Components----------------\skeletalMesh</Filter>
@@ -392,10 +393,13 @@
       <Filter>GameObjects----------------\cubeMap</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\postProcess.h">
-      <Filter>Manager --------------------\postProcess</Filter>
+      <Filter>PostProcess-----------------\postProcess</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\effect.h">
-      <Filter>Components----------------\effect</Filter>
+      <Filter>PostProcess-----------------\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\directionalLight.h">
+      <Filter>PostProcess-----------------\directionalLight</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

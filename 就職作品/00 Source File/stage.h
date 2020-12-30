@@ -1,5 +1,6 @@
 #pragma once
 #include "InstanceObject.h"
+#include "StaticMesh.h"
 
 class CStage : public CInstanceGameObject
 {

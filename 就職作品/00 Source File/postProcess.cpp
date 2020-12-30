@@ -1,6 +1,6 @@
 #include "postProcess.h"
 #include "fog.h"
-#include "scenelight.h"
+#include "directionalLight.h"
 
 void CPostProcess::Init()
 {

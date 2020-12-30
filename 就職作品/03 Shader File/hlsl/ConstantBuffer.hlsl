@@ -66,7 +66,7 @@ cbuffer EffectBuffer : register(b6)
     float3 g_fFogColor;
     bool g_fFogEnable;
     
-    
+    float4 g_fAmbientOcclusion;
 }
 
 cbuffer AnimationBuffer : register(b7)

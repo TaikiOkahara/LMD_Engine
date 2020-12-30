@@ -1,7 +1,7 @@
 #include "director.h"
 #include "renderer.h"
 #include "input.h"
-#include "scenelight.h"
+#include "directionalLight.h"
 #include "Imgui11.h"
 
 
