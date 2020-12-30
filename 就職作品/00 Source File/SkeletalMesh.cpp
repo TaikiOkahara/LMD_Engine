@@ -218,86 +218,10 @@ void CAnimationModel::LoadAnimation(const char* FileName, const char* AnimationN
 	m_sCurAnimationName = AnimationName;
 }
 
-void CAnimationModel::Update(const char* AnimationName,int Frame)
+void CAnimationModel::Update()
 {
-	if (m_sCurAnimationName != AnimationName)
-	{
-		m_fBlendTime -= 0.1f;
-		if (m_fBlendTime <= 0)
-		{
-			m_fBlendTime = 1.0f;
-			m_sCurAnimationName = AnimationName;
-		}
-	}
-
 	
 
-
-	const aiScene* scene0 = m_mapAnimation[m_sCurAnimationName];
-	const aiScene* scene1 = m_mapAnimation[AnimationName];
-
-	if (!scene0->HasAnimations()){ return;}
-	if (!scene1->HasAnimations()){ return;}
-
-
-	
-
-	if (m_sCurAnimationName == AnimationName)
-	{
-		//アニメーションデータからボーンマトリクス算出
-		aiAnimation* animation = scene0->mAnimations[0];
-
-		for (unsigned int c = 0; c < animation->mNumChannels; c++)
-		{
-			aiNodeAnim* nodeAnim = animation->mChannels[c];
-
-			BONE* bone = &m_mapBone[nodeAnim->mNodeName.C_Str()];
-
-			int frot,fpos;
-			
-			frot = Frame % nodeAnim->mNumRotationKeys;//簡易実装
-			fpos = Frame % nodeAnim->mNumPositionKeys;//簡易実装
-
-
-			aiQuaternion rot = nodeAnim->mRotationKeys[frot].mValue;
-			aiVector3D pos = nodeAnim->mPositionKeys[fpos].mValue;
-
-
-			bone->AnimationMatrix = aiMatrix4x4(aiVector3D(1.0f, 1.0f, 1.0f), rot, pos);
-		}
-	}
-	else
-	{
-		//アニメーションデータからボーンマトリクス算出
-		aiAnimation* animation0 = scene0->mAnimations[0];
-		aiAnimation* animation1 = scene1->mAnimations[0];
-
-		for (unsigned int c = 0; c < animation0->mNumChannels; c++)
-		{
-			aiNodeAnim* nodeAnim0 = animation0->mChannels[c];
-			aiNodeAnim* nodeAnim1 = animation1->mChannels[c];
-			BONE* bone = &m_mapBone[nodeAnim0->mNodeName.C_Str()];
-
-			int f0, f1;
-			f0 = Frame % nodeAnim0->mNumRotationKeys;//簡易実装
-			f1 = Frame % nodeAnim1->mNumRotationKeys;//簡易実装
-
-			aiQuaternion rot;
-			aiQuaternion::Interpolate(rot, nodeAnim1->mRotationKeys[f1].mValue, nodeAnim0->mRotationKeys[f0].mValue, m_fBlendTime);
-
-			f0 = Frame % nodeAnim0->mNumPositionKeys;//簡易実装
-			f1 = Frame % nodeAnim1->mNumPositionKeys;//簡易実装
-
-			aiVector3D pos;
-
-			pos = nodeAnim0->mPositionKeys[f0].mValue * m_fBlendTime + nodeAnim1->mPositionKeys[f1].mValue * (1.0f - m_fBlendTime);
-
-			bone->AnimationMatrix = aiMatrix4x4(aiVector3D(1.0f, 1.0f, 1.0f), rot, pos);
-
-		}
-	}
-
-	
 
 	//再帰的にボーンマトリクスを更新
 	UpdateBoneMatrix(m_pAiScene->mRootNode, aiMatrix4x4());
@@ -331,6 +255,93 @@ void CAnimationModel::Update(const char* AnimationName,int Frame)
 			m_AnimationMatrix[m].Animation[b]._42 = m_mapBone[bone->mName.C_Str()].Matrix.d2;
 			m_AnimationMatrix[m].Animation[b]._43 = m_mapBone[bone->mName.C_Str()].Matrix.d3;
 			m_AnimationMatrix[m].Animation[b]._44 = m_mapBone[bone->mName.C_Str()].Matrix.d4;
+
+		}
+	}
+
+
+	m_iFrame++;
+
+}
+
+void CAnimationModel::SetAnimation(const char* AnimationName, bool animLock)
+{
+	
+
+
+	if (m_sCurAnimationName != AnimationName)
+	{
+		m_fBlendTime -= 0.1f;
+		if (m_fBlendTime <= 0)
+		{
+			m_fBlendTime = 1.0f;
+			m_sCurAnimationName = AnimationName;
+		}
+	}
+
+
+
+
+	const aiScene* scene0 = m_mapAnimation[m_sCurAnimationName];
+	const aiScene* scene1 = m_mapAnimation[AnimationName];
+
+	if (!scene0->HasAnimations()) { return; }
+	if (!scene1->HasAnimations()) { return; }
+
+
+
+
+	if (m_sCurAnimationName == AnimationName)
+	{
+		//アニメーションデータからボーンマトリクス算出
+		aiAnimation* animation = scene0->mAnimations[0];
+
+		for (unsigned int c = 0; c < animation->mNumChannels; c++)
+		{
+			aiNodeAnim* nodeAnim = animation->mChannels[c];
+
+			BONE* bone = &m_mapBone[nodeAnim->mNodeName.C_Str()];
+
+			int frot, fpos;
+
+			frot = m_iFrame % nodeAnim->mNumRotationKeys;//簡易実装
+			fpos = m_iFrame % nodeAnim->mNumPositionKeys;//簡易実装
+
+
+			aiQuaternion rot = nodeAnim->mRotationKeys[frot].mValue;
+			aiVector3D pos = nodeAnim->mPositionKeys[fpos].mValue;
+
+
+			bone->AnimationMatrix = aiMatrix4x4(aiVector3D(1.0f, 1.0f, 1.0f), rot, pos);
+		}
+	}
+	else
+	{
+		//アニメーションデータからボーンマトリクス算出
+		aiAnimation* animation0 = scene0->mAnimations[0];
+		aiAnimation* animation1 = scene1->mAnimations[0];
+
+		for (unsigned int c = 0; c < animation0->mNumChannels; c++)
+		{
+			aiNodeAnim* nodeAnim0 = animation0->mChannels[c];
+			aiNodeAnim* nodeAnim1 = animation1->mChannels[c];
+			BONE* bone = &m_mapBone[nodeAnim0->mNodeName.C_Str()];
+
+			int f0, f1;
+			f0 = m_iFrame % nodeAnim0->mNumRotationKeys;//簡易実装
+			f1 = m_iFrame % nodeAnim1->mNumRotationKeys;//簡易実装
+
+			aiQuaternion rot;
+			aiQuaternion::Interpolate(rot, nodeAnim1->mRotationKeys[f1].mValue, nodeAnim0->mRotationKeys[f0].mValue, m_fBlendTime);
+
+			f0 = m_iFrame % nodeAnim0->mNumPositionKeys;//簡易実装
+			f1 = m_iFrame % nodeAnim1->mNumPositionKeys;//簡易実装
+
+			aiVector3D pos;
+
+			pos = nodeAnim0->mPositionKeys[f0].mValue * m_fBlendTime + nodeAnim1->mPositionKeys[f1].mValue * (1.0f - m_fBlendTime);
+
+			bone->AnimationMatrix = aiMatrix4x4(aiVector3D(1.0f, 1.0f, 1.0f), rot, pos);
 
 		}
 	}

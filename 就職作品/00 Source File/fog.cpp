@@ -13,7 +13,7 @@ void CFogEffect::Init()
 	RENDERER::CreatePixelShader(&m_pPixelShader, "fogPS.cso");
 
 
-	D3DX11CreateShaderResourceViewFromFile(RENDERER::m_pDevice, "../02 Visual File//fog.jpg", NULL, NULL, &m_FogTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(RENDERER::m_pDevice, "../02 Visual File//fog.dds", NULL, NULL, &m_FogTexture, NULL);
 	assert(m_FogTexture);
 
 
@@ -71,8 +71,6 @@ void CFogEffect::Draw()
 
 	RENDERER::m_pDeviceContext->VSSetShader(m_pVertexShader, NULL, 0);
 	RENDERER::m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);
-	//RENDERER::m_pDeviceContext->IASetInputLayout(RENDERER::m_pCommonVertexLayout);
-
 
 
 	//フォグテクスチャのセット

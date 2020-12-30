@@ -69,7 +69,8 @@ public:
 	void LoadAnimation(const char* FileName, const char* AnimationName);
 
 	void Unload();
-	void Update(const char* AnimationName,int Frame);
+	void Update();
+	void SetAnimation(const char* AnimationName, bool animLock);
 	void Draw();
 	void DrawInstance();
 

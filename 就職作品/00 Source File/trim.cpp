@@ -13,10 +13,9 @@ void CTrim::Init()
 	m_pMesh = new StaticMesh();
 
 
-	m_pMesh->LoadModel("../02 Visual File//Trim//trimPBR.fbx");
+	m_pMesh->LoadModel("../02 Visual File//Trim//trimPBR_NoTex.fbx");
 	m_pMesh->LoadTexture("../02 Visual File//Trim");
 
-	//m_Transform.rotation = D3DXVECTOR3(0.0f, D3DX_PI/2, 0.0f);
 
 	m_Collision.Init(D3DXVECTOR3(5.0f, 0.5f, 0.5f), D3DXVECTOR3(0 ,0, 0));
 

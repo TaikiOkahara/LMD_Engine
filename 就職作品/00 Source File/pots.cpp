@@ -11,8 +11,8 @@
 void CPots::Init()
 {
 	m_pMesh = new StaticMesh();
-	m_pMesh->LoadModel("../02 Visual File//Pots//PotBPBR.fbx");
-	m_pMesh->LoadTexture("");
+	m_pMesh->LoadModel("../02 Visual File//Pots//PotBPBR_NoTex.fbx");
+	m_pMesh->LoadTexture("../02 Visual File//Pots");
 
 
 

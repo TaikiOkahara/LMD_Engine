@@ -231,7 +231,7 @@ void StaticMesh::DrawInstanced(UINT instanceCount)
 void StaticMesh::LoadTexture(std::string file_name)
 {
 	//テクスチャ読み込み
-	std::map<int, aiTextureType> texTypeList;
+	int* texTypeList = new int[3];
 
 	texTypeList[0] = aiTextureType_DIFFUSE;
 	texTypeList[1] = aiTextureType_NORMALS;
@@ -239,14 +239,14 @@ void StaticMesh::LoadTexture(std::string file_name)
 
 
 
-	for (int i = 0; i < texTypeList.size(); i++)
+	for (int i = 0; i < 3; i++)
 	{
 
 		for (unsigned int m = 0; m < m_pAiScene->mNumMaterials; m++)
 		{
 			aiString path;
 
-			if (m_pAiScene->mMaterials[m]->GetTexture(texTypeList[i], 0, &path)
+			if (m_pAiScene->mMaterials[m]->GetTexture((aiTextureType)texTypeList[i], 0, &path)
 				== AI_SUCCESS)
 			{
 				if (path.data[0] == '*')
@@ -305,118 +305,7 @@ void StaticMesh::LoadTexture(std::string file_name)
 	}
 
 
-	/*for (unsigned int m = 0; m < m_pAiScene->mNumMaterials; m++)
-	{
-		aiString pathD;
-		aiString pathN;
+	
 
-
-
-
-
-		//aiTextureType::aiTextureType_UNKNOWN
-		//Diffuse
-		if (m_pAiScene->mMaterials[m]->GetTexture(aiTextureType_DIFFUSE, 0, &pathD)
-			== AI_SUCCESS)
-		{
-			if (pathD.data[0] == '*')
-			{
-				//FBXファイル内から読み込み
-				if (m_mapTexture[pathD.data] == NULL)
-				{
-					ID3D11ShaderResourceView* texture;
-					int id = atoi(&pathD.data[1]);
-
-					D3DX11CreateShaderResourceViewFromMemory(
-						RENDERER::m_pDevice,
-						(const unsigned char*)m_pAiScene->mTextures[id]->pcData,
-						m_pAiScene->mTextures[id]->mWidth,
-						NULL,
-						NULL,
-						&texture,
-						NULL);
-
-					m_mapTexture[pathD.data] = texture;
-				}
-			}
-			else
-			{
-				//外部ファイルから読み込み
-
-				//テクスチャの数分テクスチャ名読み込み
-
-				std::string textureName;
-
-
-
-				ID3D11ShaderResourceView* texture;
-				//std::string texturename;
-				textureName = file_name;
-				textureName += "//";
-				textureName += pathD.data;
-
-				D3DX11CreateShaderResourceViewFromFile(RENDERER::m_pDevice, textureName.c_str(), NULL, NULL, &texture, NULL);
-
-				m_mapTexture[pathD.data] = texture;
-
-			}
-		}
-		else
-		{
-			m_mapTexture[pathD.data] = NULL;
-		}
-
-		//Normal
-		if (m_pAiScene->mMaterials[m]->GetTexture(aiTextureType_NORMALS, 0, &pathN)
-			== AI_SUCCESS)
-		{
-			if (pathN.data[0] == '*')
-			{
-				//FBXファイル内から読み込み
-				if (m_mapTexture[pathN.data] == NULL)
-				{
-					ID3D11ShaderResourceView* texture;
-					int id = atoi(&pathN.data[1]);
-
-					D3DX11CreateShaderResourceViewFromMemory(
-						RENDERER::m_pDevice,
-						(const unsigned char*)m_pAiScene->mTextures[id]->pcData,
-						m_pAiScene->mTextures[id]->mWidth,
-						NULL,
-						NULL,
-						&texture,
-						NULL);
-
-					m_mapTexture[pathN.data] = texture;
-				}
-			}
-			else
-			{
-				//外部ファイルから読み込み
-
-				//テクスチャの数分テクスチャ名読み込み
-
-				std::string textureName;
-
-
-				ID3D11ShaderResourceView* texture;
-
-				textureName = file_name;
-				textureName += "//";
-				textureName += pathN.data;
-
-				D3DX11CreateShaderResourceViewFromFile(RENDERER::m_pDevice, textureName.c_str(), NULL, NULL, &texture, NULL);
-
-				m_mapTexture[pathN.data] = texture;
-			}
-		}
-		else
-		{
-			m_mapTexture[pathN.data] = NULL;
-		}
-	}
-	*/
-
-	texTypeList.clear();
-
+	delete[] texTypeList;
 }

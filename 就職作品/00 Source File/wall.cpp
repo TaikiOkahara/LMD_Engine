@@ -11,7 +11,7 @@ void CWall::Init()
 {
 	
 	m_pWall = new Tile();
-	m_pWall->Init("Wall//T_StoneWall_A.BMP", "Wall//T_StoneWall_N.BMP", "Wall//T_StoneWall_C.BMP", 2,2, 2.5f);
+	m_pWall->Init("Wall//T_StoneWall_A.dds", "Wall//T_StoneWall_N.dds", "Wall//T_StoneWall_C.dds", 2,2, 2.5f);
 
 	m_Collision.Init(D3DXVECTOR3(5.5f, 0.5f, 5.5f), D3DXVECTOR3(0, 0, 0));
 

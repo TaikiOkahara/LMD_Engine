@@ -13,8 +13,8 @@ void CCeilingArch::Init()
 	m_pMesh = new StaticMesh();
 
 
-	m_pMesh->LoadModel("../02 Visual File//CeilingArch//ceilingArchPBR.fbx");
-	m_pMesh->LoadTexture("");
+	m_pMesh->LoadModel("../02 Visual File//CeilingArch//CeilingArchPBR_NoTex.fbx");
+	m_pMesh->LoadTexture("../02 Visual File//CeilingArch");
 
 	m_Transform.position = D3DXVECTOR3(0.0f, 0.0f, 2.5f);
 

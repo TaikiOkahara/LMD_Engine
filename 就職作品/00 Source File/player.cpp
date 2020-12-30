@@ -24,6 +24,7 @@ void CPlayer::Init()
 	m_AnimModel->LoadTexture();
 	m_AnimModel->LoadAnimation("../02 Visual File//Knight//Run_Blender.fbx", "Run");
 	m_AnimModel->LoadAnimation("../02 Visual File//Knight//Idle_Blender.fbx", "Idle");
+	m_AnimModel->LoadAnimation("../02 Visual File//Knight//Sword_And_Shield_Attack.fbx", "Attack");
 
 	m_Transform.position = D3DXVECTOR3(-2.5f, 0.01f, -3.5f);
 	m_Transform.scale = D3DXVECTOR3(0.8f, 0.8f, 0.8f);
@@ -209,18 +210,23 @@ void CPlayer::Update()
 
 
 
-	if (CInput::KeyPress(DIK_W) || 
+	if (CInput::KeyPress(DIK_W) ||
 		CInput::KeyPress(DIK_A) ||
 		CInput::KeyPress(DIK_S) ||
 		CInput::KeyPress(DIK_D))
-		m_AnimModel->Update("Run", m_AnimModel->m_iFrame);
+		m_AnimModel->SetAnimation("Run",false);
+	/*else if (CInput::KeyPress(DIK_SPACE))
+		m_AnimModel->SetAnimation("Attack",true);*/
 	else
-		m_AnimModel->Update("Idle", m_AnimModel->m_iFrame);
+		m_AnimModel->SetAnimation("Idle",false);
 
 	
 
+	m_AnimModel->Update();
+	
+
+
 	m_OldPosition = m_Transform.position;
-	m_AnimModel->m_iFrame++;
 }
 //
 //
