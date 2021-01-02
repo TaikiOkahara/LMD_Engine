@@ -154,6 +154,15 @@
     <Filter Include="PostProcess-----------------\directionalLight">
       <UniqueIdentifier>{960b2378-7fd4-4347-b32a-c5690f643334}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Manager --------------------\thirdparty\cereal">
+      <UniqueIdentifier>{ee3037e9-b691-470d-bae2-2a58e8e09cc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PostProcess-----------------\projectionShadow">
+      <UniqueIdentifier>{5b525e70-9b4a-44a2-88f0-c29e6a76844c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader-----------------------\projectionTextureMappingShadow">
+      <UniqueIdentifier>{596abc37-b938-4932-ba8b-aa506f949858}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="00 Source File\Entry.cpp">
@@ -272,6 +281,9 @@
     </ClCompile>
     <ClCompile Include="00 Source File\gameobject.cpp">
       <Filter>GameObjects----------------</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\projectionShadow.cpp">
+      <Filter>PostProcess-----------------\projectionShadow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -401,6 +413,12 @@
     <ClInclude Include="00 Source File\directionalLight.h">
       <Filter>PostProcess-----------------\directionalLight</Filter>
     </ClInclude>
+    <ClInclude Include="00 Source File\data_IO.h">
+      <Filter>Manager --------------------\thirdparty\cereal</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\projectionShadow.h">
+      <Filter>PostProcess-----------------\projectionShadow</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="03 Shader File\hlsl\ConstantBuffer.hlsl">
@@ -471,6 +489,15 @@
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\instanceCS.hlsl">
       <Filter>Shader-----------------------\compute</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\projectionTextureMappingShadowVS.hlsl">
+      <Filter>Shader-----------------------\projectionTextureMappingShadow</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\projectionTextureMappingShadowPS.hlsl">
+      <Filter>Shader-----------------------\projectionTextureMappingShadow</Filter>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\playerShadowVS.hlsl">
+      <Filter>Shader-----------------------\playerShadow</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

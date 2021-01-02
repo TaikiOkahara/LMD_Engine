@@ -24,6 +24,7 @@ struct PS_OUT
 	float4 vPointLight	: SV_Target3;
 	float2 vMotion		: SV_Target4;
 	float4 vDepthPBR	: SV_Target5;
+	float4 vShadow  	: SV_Target6;
 };
 
 //PointLight
@@ -43,6 +44,17 @@ struct PS_PL_OUT
 };
 
 
+struct VS_SHADOW_OUT
+{
+    float4 Pos                  : SV_POSITION;
+    float4 ProjectorSpacePos    : TEXCOORD0;
+    float3 WorldPos             : TEXCOORD1;
+    float3 CenterPos            : TEXCOORD2;
+    float2 Tex                  : TEXCOORD3;
+};
+
+
+
 struct VS_CUBEMAP_OUT
 {
     float4 Pos      : SV_POSITION;
@@ -51,7 +63,12 @@ struct VS_CUBEMAP_OUT
     uint   TexNum   : TEXCOORD1;
 };
 
-
+struct VS_DLIGHT_OUT
+{
+    float4 Pos : SV_POSITION;
+    float2 Tex : TEXCOORD0;
+    //float4 
+};
 
 //ê≥ãKâªLambert
 float3 NormalizedLambert(float3 diffuseColor)

@@ -37,17 +37,9 @@ void Base::MainLoop()
 	
 	m_Scene->Draw();
 	
-	/*if (RENDERER::togglePoint){
-		RENDERER::PointLighting();
-		m_Scene->DrawLighting();
-	}*/
 	
 	RENDERER::Deferred();
 	
-	/*if (RENDERER::toggleDirectional){
-		RENDERER::DirectionlLighting();
-	}*/
-
 	
 	m_PostProcess.Draw();
 

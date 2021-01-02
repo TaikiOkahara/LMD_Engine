@@ -196,48 +196,7 @@ void CPointLight::Imgui()
 
 			
 
-			//// Child 1: no border, enable horizontal scrollbar
-			//{
-			//	ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
-			//	if (true)
-			//		window_flags |= ImGuiWindowFlags_NoScrollWithMouse;
-			//	ImGui::BeginChild("ChildL", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f, 260), false, window_flags);
-			//	for (int i = 0; i < 100; i++)
-			//		ImGui::Text("%04d: scrollable region", i);
-			//	ImGui::EndChild();
-			//}
 
-			//ImGui::SameLine();
-
-			// Child 2: rounded border
-			//{
-			//	ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
-			//	if (true)
-			//		window_flags |= ImGuiWindowFlags_NoScrollWithMouse;
-			//	if (!true)
-			//		window_flags |= ImGuiWindowFlags_MenuBar;
-			//	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
-			//	ImGui::BeginChild("ChildR", ImVec2(0, 260), true, window_flags);
-			//	if (!true && ImGui::BeginMenuBar())
-			//	{
-			//		if (ImGui::BeginMenu("Menu"))
-			//		{
-			//			//ShowExampleMenuFile();
-			//			ImGui::EndMenu();
-			//		}
-			//		ImGui::EndMenuBar();
-			//	}
-			//	ImGui::Columns(2);
-			//	for (int i = 0; i < 100; i++)
-			//	{
-			//		char buf[32];
-			//		sprintf(buf, "%03d", i);
-			//		ImGui::Button(buf, ImVec2(-FLT_MIN, 0.0f));
-			//		ImGui::NextColumn();
-			//	}
-			//	ImGui::EndChild();
-			//	ImGui::PopStyleVar();
-			//}
 
 			ImGui::Separator();
 

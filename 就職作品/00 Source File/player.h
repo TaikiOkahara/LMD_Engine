@@ -3,6 +3,7 @@
 #include "skeletalMesh.h"
 #include "collision.h"
 #include "InstanceObject.h"
+#include "tile.h"
 
 class CPlayer : public CGameObject
 {
@@ -11,9 +12,8 @@ private:
 
 	ID3D11VertexShader* m_VertexShader;
 	ID3D11PixelShader* m_PixelShader;
-	ID3D11PixelShader* m_ShadowPixelShader;
-
 	ID3D11InputLayout* m_VertexLayout;
+
 	ID3D11BlendState* m_pPointLightBlendState;
 	ID3D11DepthStencilState* m_pBuckBuffer_DSTexState;
 	//ID3D11RasterizerState* m_pCommonRasterizerState;
@@ -25,6 +25,14 @@ private:
 	D3DXVECTOR3 m_OldForward;
 
 	bool m_EnableHit = false;
+
+	//影用地面テクスチャ
+	Tile* m_pTile = nullptr;
+	ID3D11VertexShader* m_TileVertexShader;
+	ID3D11PixelShader* m_TilePixelShader;
+
+	TRANSFORM m_pTileTransform;
+
 public:
 	CPlayer(){}
 	~CPlayer(){}
@@ -33,5 +41,7 @@ public:
 	void Uninit();
 	void Update();
 	void Draw();
+	void DrawShadow();
 	void Imgui();
+
 };

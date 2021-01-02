@@ -1,14 +1,16 @@
+#include "base.h"
 #include "director.h"
 #include "renderer.h"
 #include "input.h"
 #include "directionalLight.h"
 #include "Imgui11.h"
+#include "camera.h"
 
 
 
 void CDirectionalLight::Init()
 {
-	m_Transform.rotation = D3DXVECTOR3(0.5f, 0.0f, -0.5f);
+	m_Transform.rotation = D3DXVECTOR3(15, 15, 0);
 	m_Transform.position = D3DXVECTOR3(-2.5, 1, 0);
 	m_Transform.scale = D3DXVECTOR3(10, 10, 10);
 
@@ -18,7 +20,7 @@ void CDirectionalLight::Init()
 	////シェーダー作成
 	//RENDERER::CreatePixelShader(&m_PixelShader, "cursorPS.cso");
 
-		//シェーダー作成
+	//シェーダー作成
 	RENDERER::CreateVertexShader(&m_pVertexShader, nullptr, nullptr, 0, "deferredVS.cso");
 	RENDERER::CreatePixelShader(&m_pPixelShader, "directionalLightPS.cso");
 
@@ -53,6 +55,9 @@ void CDirectionalLight::Update()
 	{
 		m_Transform.rotation.x += 0.1f;
 	}
+
+
+	RENDERER::m_ConstantBufferList.GetStruct<DirectionalLightBuffer>()->SetDirectinalLight(m_DLightDir, m_DLightPos, m_DLightCol);
 }
 
 void CDirectionalLight::Draw()
@@ -73,29 +78,12 @@ void CDirectionalLight::Draw()
 	D3DXVec4Normalize(&m_DLightDir, &m_DLightDir);
 	m_DLightDir.w = 1.0f;
 
-	RENDERER::m_ConstantBufferList.GetStruct<DirectionalLightBuffer>()->Set(m_DLightDir, m_DLightPos, m_DLightCol);
-
-
-
-	/*RENDERER::m_pDeviceContext->VSSetShader(m_VertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->PSSetShader(m_PixelShader, NULL, 0);
-	RENDERER::m_pDeviceContext->IASetInputLayout(RENDERER::m_pCommonVertexLayout);*/
-
-
-	////　マトリクス設定
-	//D3DXMATRIX world, scale, rot, trans, view;
-
-	//D3DXMatrixScaling(&scale, m_Transform.scale.x, m_Transform.scale.y, m_Transform.scale.z);
-	//D3DXMatrixRotationYawPitchRoll(&rot, m_Transform.rotation.y, m_Transform.rotation.x, m_Transform.rotation.z);
-	//D3DXMatrixTranslation(&trans, m_Transform.position.x, m_Transform.position.y, m_Transform.position.z);
-	//world = scale * rot * trans;
-
-	//RENDERER::BuffList.GetStruct<WorldBuffer>()->Set(world);
 
 	RENDERER::m_pDeviceContext->VSSetShader(m_pVertexShader, NULL, 0);
 	RENDERER::m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);
 	//RENDERER::m_pDeviceContext->IASetInputLayout(RENDERER::m_pCommonVertexLayout);
 
+	RENDERER::PostProcessDraw();
 }
 
 void CDirectionalLight::Imgui()

@@ -1,51 +1,39 @@
 #include "Geometry.hlsl"
 #include "ConstantBuffer.hlsl"
 
+Texture2D g_texCol : register(t0);
+Texture2D g_Nor : register(t1);
+Texture2D g_MRA : register(t2);
+Texture2D g_texPointLight : register(t3);
 
+SamplerState g_samLinear : register(s0);
+SamplerState g_samDeferredLinear : register(s1);
 
-PS_OUT main(VS_OUT input)
+float4 main(VS_SHADOW_OUT input) : SV_Target
 {
-	PS_OUT Out = (PS_OUT)0;
+    input.ProjectorSpacePos.xyz /= input.ProjectorSpacePos.w;
+    float2 uv = input.ProjectorSpacePos.xy;
+    
 
-	
-    float3 lightPos = float3(g_mWIT._41, g_mWIT._42, g_mWIT._43);
-    float dist = length(input.WorldPos.xyz - lightPos);
-    dist = abs(dist);
-    float lightRange = g_mWIT._31;
+    float projectTex = g_texPointLight.Sample(g_samDeferredLinear, uv).a;
     
     
-    float att = max(0, 1.0f - (dist / lightRange));
-	//カラーテクスチャーへ出力 
-    Out.vColor = float4(1, 0, 0, 1);//float4(0.5, 0.5, 0.5, 0.5f);
-	
-    //if (dist < lightRange)
-    //{
-    //    Out.vColor = float4(0, 0, 0, 0);
-    //}
+    // // カメラの範囲外には適用しない
+    //float3 isOut = step((input.ProjectorSpacePos - 0.5) * sign(input.ProjectorSpacePos), 0.5);
+    //float alpha = isOut.x * isOut.y * isOut.z;
+    //            // プロジェクターから見て裏側の面には適用しない
+    //alpha *= step(-dot(lerp(-g_vDirectionalLightPos.xyz, g_vDirectionalLightPos.xyz - input.WorldPos, g_vDirectionalLightPos.w), i.worldNormal), 0);
+    //return lerp(1, projectorTex, alpha);
+    
+    //return g_texPointLight.Sample(g_samLinear, input.Tex);
+    
+    //float shadow = 1.0f - projectTex.a;
+    
+    //projectTex.w = 1;
+    
+    float dist = 1 - (distance(input.WorldPos, input.CenterPos) / 2);
+    
+    projectTex *= dist;
+    return float4(projectTex, 0, 0, 1); //float4(1, 1, 1, 1);
 
-	
-	//座標テクスチャ―へ出力
-    //Out.vPosition = input.WorldPos;
-	
-	//ワールド法線テクスチャーへ出力
-
- //   float4 bump;
-	//bump = g_texNor.Sample(g_samLinear, input.Tex);
- //   bump = (bump * 2.0f) - 1.0f;
-	
- //   float3 bumpNormal;
- //   bumpNormal = (-bump.x * input.WorldTangent) + (-bump.y * input.WorldBinormal) + (bump.z * input.WorldNormal);
-   
-    //float4 normal;
-    //normal.x = -bumpNormal.x;
-    //normal.y = bumpNormal.y;
-    //normal.z = bumpNormal.z;
-    //normal.w = 0.0f;
-	
-    //normal = normalize(normal);
-    //Out.vNormal = normal;
-	
-    //Out.vMotion = float4(input.MotionDir, 1);
-
-	return Out;
 }

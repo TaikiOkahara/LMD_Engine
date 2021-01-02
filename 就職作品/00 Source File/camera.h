@@ -9,20 +9,6 @@
 //
 class CCamera : public CGameObject
 {
-public:
-	CCamera(){}
-	~CCamera(){}
-
-
-	void Init();
-	void Update();
-	void Uninit();
-	void Draw();
-	void Imgui();
-
-
-	D3DXVECTOR4 m_CullingWPos[4];
-	D3DXVECTOR3 GetTarget() {return m_Target;}
 private:
 	
 	D3DXVECTOR3 m_Target;
@@ -45,5 +31,19 @@ private:
 	bool m_CameraControl = true;
 	
 	D3DXVECTOR3 CameraRayIntersect(CInstanceGameObject* object);
+public:
+	CCamera(){}
+	~CCamera(){}
+
+
+	void Init();
+	void Update();
+	void Uninit();
+	void Draw();
+	void Imgui();
+
+
+	D3DXVECTOR4 m_CullingWPos[4];
+	D3DXVECTOR3 GetTarget() {return m_Target;}
 };
 

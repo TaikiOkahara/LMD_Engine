@@ -249,10 +249,21 @@ public:
 
 class DirectionalLightBuffer : public ConstantBuffer
 {
+	struct Struct
+	{
+		D3DXVECTOR4 dir;
+		D3DXVECTOR4 pos;
+		D3DXVECTOR4 col;
+		
+		D3DXMATRIX projView;
+	};
+	Struct str;
 public:
-	void Set(D3DXVECTOR4 setDir, D3DXVECTOR4 setPos, D3DXVECTOR4 setCol);
+	void SetDirectinalLight(D3DXVECTOR4 setDir, D3DXVECTOR4 setPos, D3DXVECTOR4 setCol);
+	void SetMatrix(D3DXMATRIX set);
 
-	DirectionalLightBuffer() { m_StructSize = sizeof(D3DXVECTOR4) * 3; }
+
+	DirectionalLightBuffer() { m_StructSize = sizeof(Struct); }
 	~DirectionalLightBuffer() {}
 };
 

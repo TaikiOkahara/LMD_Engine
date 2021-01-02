@@ -58,14 +58,20 @@ void EyeBuffer::Set(EYE set)
 	RENDERER::m_pDeviceContext->UpdateSubresource(m_pBuffer, 0, NULL, &set, 0, 0);
 }
 
-void DirectionalLightBuffer::Set(D3DXVECTOR4 setDir, D3DXVECTOR4 setPos, D3DXVECTOR4 setCol)
+void DirectionalLightBuffer::SetDirectinalLight(D3DXVECTOR4 setDir, D3DXVECTOR4 setPos, D3DXVECTOR4 setCol)
 {
-	D3DXVECTOR4 set[3];
-	set[0] = setDir;
-	set[1] = setPos;
-	set[2] = setCol;
+	str.dir = setDir;
+	str.pos = setPos;
+	str.col = setCol;
 
-	RENDERER::m_pDeviceContext->UpdateSubresource(m_pBuffer, 0, NULL, &set, 0, 0);
+	RENDERER::m_pDeviceContext->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
+}
+
+void DirectionalLightBuffer::SetMatrix(D3DXMATRIX set)
+{
+	str.projView = set;
+	RENDERER::m_pDeviceContext->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
+
 }
 
 void PointLightBuffer::Set(POINTLIGHT* set)

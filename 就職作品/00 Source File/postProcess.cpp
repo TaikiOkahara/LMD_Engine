@@ -33,7 +33,7 @@ void CPostProcess::Draw()
 	for (CEffect* effect : m_Effect)
 	{
 		effect->Draw();
-		RENDERER::PostProcessDraw();
+		//RENDERER::PostProcessDraw();
 	}
 }
 

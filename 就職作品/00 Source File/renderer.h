@@ -23,7 +23,7 @@ class RENDERER
 	static GBuffer m_Lighting_GBuffer;
 	static GBuffer m_Velocity_GBuffer;
 	static GBuffer m_DepthPBR_GBuffer;
-
+	static GBuffer m_Shadow_GBuffer;
 	//======================================================
 
 
@@ -92,6 +92,8 @@ public:
 	//static ConstantBufferList GetConstantBufferList() { return m_ConstantBufferList; }
 	static void Deferred();//ディファード
 	static void PointLighting();	//ポイントライト
+	static void CommonDraw();
 	static void PostProcessDraw();
+	static void ShadowDraw();
 	static void Present();		//　画面更新
 };

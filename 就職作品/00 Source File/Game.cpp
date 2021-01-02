@@ -16,9 +16,8 @@
 #include "ceiling.h"
 #include "ceilingArch.h"
 #include "chandelier.h"
-#include "fog.h"
 #include "cubeMap.h"
-
+#include "projectionShadow.h"
 
 void Game::Init() {
 
@@ -27,24 +26,27 @@ void Game::Init() {
 
 
 
-	AddGameObject<CCamera>(LAYER::DRAW_LAYER_HIDE);
-	AddGameObject<CPointLight>(LAYER::DRAW_LAYER_LIGHT);//一番最後に描画
+	AddGameObject<CCamera>(LAYER::HIDE);
+	AddGameObject<CPointLight>(LAYER::LIGHT);//一番最後に描画
 
-	AddGameObject<CCubeMap>(LAYER::DRAW_LAYER_HIDE);
+	AddGameObject<CCubeMap>(LAYER::HIDE);
 
 
-	AddGameObject<CWall>(LAYER::DRAW_LAYER_DRAW);	//壁
-	AddGameObject<CPillar>(LAYER::DRAW_LAYER_DRAW);	//柱
-	AddGameObject<CFloor>(LAYER::DRAW_LAYER_DRAW);	//地面
+	AddGameObject<CFloor>(LAYER::DRAW);
+	AddGameObject<CWall>(LAYER::DRAW);
+	AddGameObject<CPillar>(LAYER::DRAW);
 	//AddGameObject<CStage>(LAYER::DRAW_LAYER_DRAW);	//ドア
-	AddGameObject<CTrim>(LAYER::DRAW_LAYER_DRAW);	//つなぎ目
-	AddGameObject<CCeiling>(LAYER::DRAW_LAYER_DRAW);//天井
-	AddGameObject<CCeilingArch>(LAYER::DRAW_LAYER_DRAW);//天井のアーチ
-	AddGameObject<CPots>(LAYER::DRAW_LAYER_DRAW);//ポット
-	AddGameObject<CChandelier>(LAYER::DRAW_LAYER_DRAW);//シャンデリア
+	AddGameObject<CTrim>(LAYER::DRAW);
+	AddGameObject<CCeiling>(LAYER::DRAW);
+	AddGameObject<CCeilingArch>(LAYER::DRAW);
+	AddGameObject<CPots>(LAYER::DRAW);
+	AddGameObject<CChandelier>(LAYER::DRAW);
 
 
-	AddGameObject<CPlayer>(LAYER::DRAW_LAYER_DRAW);//プレイヤー
+	AddGameObject<CProjShadow>(LAYER::DRAW);
+
+	AddGameObject<CPlayer>(LAYER::DRAW);//プレイヤー
+
 
 }
 
@@ -114,18 +116,16 @@ void Game::Imgui()
 		{
 			ImGui::Text("Render Type");
 			ImGui::RadioButton("Color", &render_radio, 0);
-			ImGui::SameLine();
 			ImGui::RadioButton("Normal", &render_radio, 1);
-			ImGui::SameLine();
 			ImGui::RadioButton("Position", &render_radio, 2);
+			ImGui::RadioButton("Lighting(tmp)", &render_radio, 3);
 			ImGui::RadioButton("Motion", &render_radio, 4);
-			ImGui::SameLine();
 			ImGui::RadioButton("Depth", &render_radio, 5);
-			ImGui::SameLine();
 			ImGui::RadioButton("Roughness", &render_radio, 6);
 			ImGui::RadioButton("Metallic", &render_radio, 7);
 			ImGui::RadioButton("AmbientOcclusion", &render_radio, 8);
-			ImGui::RadioButton("Lighting(tmp)", &render_radio, 3);
+			ImGui::RadioButton("ProjectionShadowMapping", &render_radio, 9);
+			ImGui::RadioButton("Shadow", &render_radio, 10);
 			deferredType = render_radio;
 		}
 		

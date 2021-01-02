@@ -36,6 +36,7 @@
     <ClCompile Include="00 Source File\pointLight.cpp" />
     <ClCompile Include="00 Source File\postProcess.cpp" />
     <ClCompile Include="00 Source File\pots.cpp" />
+    <ClCompile Include="00 Source File\projectionShadow.cpp" />
     <ClCompile Include="00 Source File\skeletalMesh.cpp" />
     <ClCompile Include="00 Source File\renderer.cpp" />
     <ClCompile Include="00 Source File\base.cpp" />
@@ -65,6 +66,7 @@
     <ClInclude Include="00 Source File\chandelier.h" />
     <ClInclude Include="00 Source File\collision.h" />
     <ClInclude Include="00 Source File\cubeMap.h" />
+    <ClInclude Include="00 Source File\data_IO.h" />
     <ClInclude Include="00 Source File\director.h" />
     <ClInclude Include="00 Source File\camera.h" />
     <ClInclude Include="00 Source File\effect.h" />
@@ -77,6 +79,7 @@
     <ClInclude Include="00 Source File\pointLight.h" />
     <ClInclude Include="00 Source File\postProcess.h" />
     <ClInclude Include="00 Source File\pots.h" />
+    <ClInclude Include="00 Source File\projectionShadow.h" />
     <ClInclude Include="00 Source File\skeletalMesh.h" />
     <ClInclude Include="00 Source File\renderer.h" />
     <ClInclude Include="00 Source File\base.h" />
@@ -269,6 +272,16 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)\03 Shader File\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)\03 Shader File\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\playerShadowVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)\03 Shader File\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)\03 Shader File\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\pointLightPS.hlsl">
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)\03 Shader File\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)\03 Shader File\%(Filename).cso</ObjectFileOutput>
@@ -281,6 +294,22 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)\03 Shader File\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)\03 Shader File\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\projectionTextureMappingShadowVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)\03 Shader File\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)\03 Shader File\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\projectionTextureMappingShadowPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)\03 Shader File\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)\03 Shader File\%(Filename).cso</ObjectFileOutput>

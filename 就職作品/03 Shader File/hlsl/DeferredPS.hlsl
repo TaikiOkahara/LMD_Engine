@@ -9,6 +9,7 @@ Texture2D g_texPosition	: register(t2);
 Texture2D g_texPointLight: register(t3);
 Texture2D g_texMotion	: register(t4);
 Texture2D g_texDepthPBR : register(t5);
+Texture2D g_texShadow : register(t6);
 
 SamplerState g_samLinear : register(s0);
 SamplerState g_samDeferredLinear : register(s1);
@@ -86,6 +87,30 @@ float4 main(VS_OUT input) : SV_Target
         return Color;
         
     }
+    
+    if (type == 9)
+    {
+        
+        //input.Tex = mul(input.Tex, g_vDirectionalLightVP);
+        
+        
+        //投影テクスチャシャドウマップ
+        float shadow = 1.0f - g_texPointLight.Sample(g_samDeferredLinear, input.Tex).a;
+        Color = float4(shadow, shadow, shadow, 1);
+        return Color;
+        
+    }
+    
+    if (type == 10)
+    {
+        //シャドウ
+        float4 shadow = g_texShadow.Sample(g_samDeferredLinear, input.Tex);
+        shadow.a = 1;
+        Color = shadow;
+        return Color;
+        
+    }
+    
        
     return Color;
 }

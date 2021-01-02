@@ -74,10 +74,12 @@ void CFogEffect::Draw()
 
 
 	//フォグテクスチャのセット
-	RENDERER::m_pDeviceContext->PSSetShaderResources(6, 1, &m_FogTexture);
+	RENDERER::m_pDeviceContext->PSSetShaderResources(7, 1, &m_FogTexture);
 
 	RENDERER::SetBlendState_Lighting();
 
+
+	RENDERER::PostProcessDraw();
 }
 
 void CFogEffect::Imgui()

@@ -36,7 +36,7 @@ cbuffer DirectionalLightBuffer : register(b4)
     float4 g_vDirectionalLightDir; //ライトの座標
     float4 g_vDirectionalLightPos; //ライトの座標
 	float4 g_vLightColor;//色	
-	
+    matrix g_vDirectionalLightVP;
 }
 
 

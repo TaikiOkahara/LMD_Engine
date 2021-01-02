@@ -13,13 +13,13 @@ protected:
 
 	enum LAYER
 	{
-		DRAW_LAYER_HIDE = 0,//非描画レイヤー
-		DRAW_LAYER_DRAW = 1,//一般的なオブジェクトレイヤー
-		DRAW_LAYER_LIGHT= 2,//ライティングレイヤー
-		DRAW_LAYER_MAX  = 3,//レイヤー数
+		HIDE = 0,//非描画レイヤー
+		DRAW = 1,//一般的なオブジェクトレイヤー
+		LIGHT= 2,//ライティングレイヤー
+		MAX  = 3,//レイヤー数
 	};
 
-	std::list<CGameObject*> m_GameObject[LAYER::DRAW_LAYER_MAX];
+	std::list<CGameObject*> m_GameObject[LAYER::MAX];
 
 public:	
 	CScene(){}
@@ -29,7 +29,7 @@ public:
 	virtual void Init() = 0;
 
 	virtual void UnInit() {
-		for (int i = 0; i < LAYER::DRAW_LAYER_MAX; i++)
+		for (int i = 0; i < LAYER::MAX; i++)
 		{
 			for (CGameObject* object : m_GameObject[i])
 			{
@@ -42,7 +42,7 @@ public:
 	}
 
 	virtual void Draw() {
-		for (int i = 0; i < LAYER::DRAW_LAYER_MAX; i++)
+		for (int i = 0; i < LAYER::MAX; i++)
 		{
 			for (CGameObject* object : m_GameObject[i])
 			{
@@ -52,7 +52,7 @@ public:
 	}
 
 	virtual void Update() {
-		for (int i = 0; i < LAYER::DRAW_LAYER_MAX; i++)
+		for (int i = 0; i < LAYER::MAX; i++)
 		{
 			for (CGameObject* object : m_GameObject[i])
 			{
@@ -62,7 +62,7 @@ public:
 	}
 
 	virtual void Imgui() {	
-		for (int i = 0; i < LAYER::DRAW_LAYER_MAX; i++)
+		for (int i = 0; i < LAYER::MAX; i++)
 		{
 			for (CGameObject* object : m_GameObject[i])
 			{
@@ -73,7 +73,7 @@ public:
 	
 	int GetLayerGameObjectsCount(int layer)
 	{
-		if (layer >= LAYER::DRAW_LAYER_MAX)
+		if (layer >= LAYER::MAX)
 			assert(layer);
 
 		return m_GameObject[layer].size();
@@ -93,7 +93,7 @@ public:
 	template <typename T>
 	T* GetGameObject()
 	{
-		for (int i = 0; i < LAYER::DRAW_LAYER_MAX; i++)
+		for (int i = 0; i < LAYER::MAX; i++)
 		{
 			for (CGameObject* object : m_GameObject[i])
 			{

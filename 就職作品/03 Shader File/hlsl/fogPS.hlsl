@@ -8,7 +8,8 @@ Texture2D g_texPointLight : register(t3);
 Texture2D g_texMotion : register(t4);
 
 Texture2D g_texPBR : register(t5);
-Texture2D g_texFog : register(t6);
+Texture2D g_teShadow : register(t6);
+Texture2D g_texFog : register(t7);
 
 
 SamplerState g_samLinear : register(s0);

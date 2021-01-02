@@ -24,7 +24,7 @@ void CPlayer::Init()
 	m_AnimModel->LoadTexture();
 	m_AnimModel->LoadAnimation("../02 Visual File//Knight//Run_Blender.fbx", "Run");
 	m_AnimModel->LoadAnimation("../02 Visual File//Knight//Idle_Blender.fbx", "Idle");
-	m_AnimModel->LoadAnimation("../02 Visual File//Knight//Sword_And_Shield_Attack.fbx", "Attack");
+	//m_AnimModel->LoadAnimation("../02 Visual File//Knight//Sword_And_Shield_Attack.fbx", "Attack");
 
 	m_Transform.position = D3DXVECTOR3(-2.5f, 0.01f, -3.5f);
 	m_Transform.scale = D3DXVECTOR3(0.8f, 0.8f, 0.8f);
@@ -46,60 +46,22 @@ void CPlayer::Init()
 	//シェーダー作成
 	RENDERER::CreateVertexShader(&m_VertexShader,&m_VertexLayout,layout,7,"skeletalVS.cso");
 	RENDERER::CreatePixelShader(&m_PixelShader, "skeletalPS.cso");
-	RENDERER::CreatePixelShader(&m_ShadowPixelShader, "playerShadowPS.cso");
 
 
 	m_OldPosition = m_Transform.position;
 	m_OldForward = GetForward();
 	m_OldForward.y = 0;
 
-	//D3D11_BLEND_DESC dblend;
-	//ZeroMemory(&dblend, sizeof(D3D11_BLEND_DESC));
-	//dblend.IndependentBlendEnable = false;
-	//dblend.AlphaToCoverageEnable = false;
-	//dblend.RenderTarget[0].BlendEnable = true;
-	//dblend.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;//メッシュのレンダリングイメージ
-	//dblend.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;//レンダーターゲットサーファスのイメージ
-	//dblend.RenderTarget[0].BlendOp = D3D11_BLEND_OP_REV_SUBTRACT;
-	////dblend.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	////dblend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
-	////dblend.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	//dblend.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-	//if (FAILED(RENDERER::m_pDevice->CreateBlendState(&dblend, &m_pPointLightBlendState)))
-	//{
-	//	return ;
-	//}
 
-	////通常用ラスタライズ設定
-	//D3D11_RASTERIZER_DESC rdc;
-	//ZeroMemory(&rdc, sizeof(rdc));
-	//rdc.CullMode = D3D11_CULL_MODE::D3D11_CULL_FRONT;
-	//rdc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-	////rdc.FrontCounterClockwise = FALSE;//デフォルト
-	//rdc.DepthClipEnable = FALSE;
+	m_pTile = new Tile();
 
-	//rdc.MultisampleEnable = FALSE;
 
-	//RENDERER::m_pDevice->CreateRasterizerState(&rdc, &m_pCommonRasterizerState);
-	//m_pDeviceContext->RSSetState(m_pCommonRasterizerState);
+	m_pTile->Init("Wall//T_StoneWall_A.dds", "Wall//T_StoneWall_N.dds", "Wall//T_StoneWall_C.dds", 1, 1, 30);
+	RENDERER::CreateVertexShader(&m_TileVertexShader,nullptr, nullptr,0,"playerShadowVS.cso");
+	RENDERER::CreatePixelShader(&m_TilePixelShader, "playerShadowPS.cso");
 
-	//D3D11_DEPTH_STENCIL_DESC dc;
-	//ZeroMemory(&dc, sizeof(dc));
-	//dc.DepthEnable = true;
 
-	//dc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK::D3D11_DEPTH_WRITE_MASK_ZERO;
-	////dc.DepthWriteMask=D3D11_DEPTH_WRITE_MASK_ALL;
-	//dc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
-	////dc.DepthFunc=D3D11_COMPARISON_LESS;
-	////dc.StencilEnable=false;
-	//
-	//if (FAILED(RENDERER::m_pDevice->CreateDepthStencilState(&dc, &m_pBuckBuffer_DSTexState)))
-	//{
-	//	return;// E_FAIL;
-	//}
-	//深度ステンシルステートを適用
-	//m_pDeviceContext->OMSetDepthStencilState(m_pBuckBuffer_DSTexState,NULL);
 
 }
 //
@@ -109,6 +71,9 @@ void CPlayer::Uninit()
 {
 	m_AnimModel->Unload();
 	delete m_AnimModel;
+
+	m_pTile->Uninit();
+	delete m_pTile;
 
 	m_Collision.Uninit();
 
@@ -233,68 +198,39 @@ void CPlayer::Update()
 //
 void CPlayer::Draw()
 {
+
+	RENDERER::ShadowDraw();
+
+	D3DXMATRIX world, scale, rot, trans;
+
+	D3DXMatrixScaling(&scale, 1, 1, 1);
+	D3DXMatrixRotationYawPitchRoll(&rot, 0, 0, 0);
+	D3DXMatrixTranslation(&trans, m_Transform.position.x, m_Transform.position.y +  0.01, m_Transform.position.z);//影は少し地面から離す
+	world = scale * rot * trans;
+
+	RENDERER::m_ConstantBufferList.GetStruct<WorldBuffer>()->Set(world);
+	RENDERER::m_pDeviceContext->VSSetShader(m_TileVertexShader, NULL, 0);
+	RENDERER::m_pDeviceContext->PSSetShader(m_TilePixelShader, NULL, 0);
+	RENDERER::m_pDeviceContext->IASetInputLayout(m_pCommonVertexLayout);
+
+	m_pTile->Draw();
+
+	RENDERER::CommonDraw();
+
 	RENDERER::m_pDeviceContext->VSSetShader(m_VertexShader, NULL, 0);
 	RENDERER::m_pDeviceContext->PSSetShader(m_PixelShader, NULL, 0);
 	RENDERER::m_pDeviceContext->IASetInputLayout(m_VertexLayout);
 
-	//WORLDMATRIX worldMatrix;
 	//モデル
-	D3DXMATRIX world, scale, rot, trans;
 	D3DXMatrixScaling(&scale, m_Transform.scale.x / 100.0f, m_Transform.scale.y / 100.0f, m_Transform.scale.z / 100.0f);//アニメーションデータをスケール変更できないため、/100をして調節
 	D3DXMatrixRotationYawPitchRoll(&rot, m_Transform.rotation.y - D3DX_PI, m_Transform.rotation.x, m_Transform.rotation.z);
 	D3DXMatrixTranslation(&trans, m_Transform.position.x, m_Transform.position.y, m_Transform.position.z);
 	world = scale * rot * trans;
 	
-	/*worldMatrix.worldMatrix = world;
-	RENDERER::SetWorldMatrix(worldMatrix);*/
 	RENDERER::m_ConstantBufferList.GetStruct<WorldBuffer>()->Set(world);
 
 
 	m_AnimModel->Draw();
-
-
-	//影
-	//{
-	//	//ブレンドステート
-	//	float blend[4] = { 1,1,1,1 };
-	//	RENDERER::m_pDeviceContext->OMSetBlendState(m_pPointLightBlendState, blend, 0xffffffff);
-	//	RENDERER::m_pDeviceContext->OMSetDepthStencilState(m_pBuckBuffer_DSTexState, NULL);
-	//	//RENDERER::m_pDeviceContext->RSSetState(m_pCommonRasterizerState);
-
-	//	RENDERER::m_pDeviceContext->PSSetShader(m_ShadowPixelShader, NULL, 0);
-	//	CPointLight* pointLight = Base::GetScene()->GetGameObject<CPointLight>(2);
-	//	int lightNum = pointLight->GetMeshCount();
-	//	for (int i = 0; i < lightNum; i++)
-	//	{
-	//		D3DXVECTOR3 lightPos = pointLight->GetPosition(i);
-	//		float distance;
-	//		distance = D3DXVec3Length(&D3DXVECTOR3(lightPos - m_Transform.position));
-	//		if (distance > pointLight->GetScale(i).x)
-	//			continue;
-
-	//		D3DXMATRIX shadow;
-	//		D3DXPLANE plane;
-
-	//		D3DXPlaneFromPointNormal(&plane, &D3DXVECTOR3(0, 0.01f, 0), &D3DXVECTOR3(0, 1, 0));
-	//		D3DXMatrixShadow(&shadow, &D3DXVECTOR4(lightPos.x, lightPos.y, lightPos.z, 1), &plane);
-	//		worldMatrix.worldMatrix = world * shadow;
-	//		//WORLDMATRIXのInverseにポイントライトの座標とサイズをマトリクスを入れる
-	//		D3DXMatrixTranslation(&worldMatrix.worldInverseMatrix, lightPos.x, lightPos.y, lightPos.z);
-	//		//サイズ(どこでもいいが31)
-	//		worldMatrix.worldInverseMatrix._31 = pointLight->GetScale(i).x;
-
-
-	//		RENDERER::SetWorldMatrix(worldMatrix);
-
-	//		m_AnimModel->Draw();
-	//	}
-
-	//	//ブレンドステート
-
-	//	RENDERER::m_pDeviceContext->OMSetBlendState(nullptr, blend, 0xffffffff);
-	//	RENDERER::m_pDeviceContext->PSSetShader(m_PixelShader, NULL, 0);
-	//}
-	
 
 
 	//コリジョン	
@@ -304,9 +240,30 @@ void CPlayer::Draw()
 	RENDERER::SetWorldMatrix(worldMatrix);*/
 	RENDERER::m_ConstantBufferList.GetStruct<WorldBuffer>()->Set(world);
 
-
 	if (m_EnableCollision)
 		m_Collision.Draw();
+
+
+
+
+
+	
+
+}
+
+void CPlayer::DrawShadow()
+{
+	//モデル
+	D3DXMATRIX world, scale, rot, trans;
+	D3DXMatrixScaling(&scale, m_Transform.scale.x / 100.0f, m_Transform.scale.y / 100.0f, m_Transform.scale.z / 100.0f);//アニメーションデータをスケール変更できないため、/100をして調節
+	D3DXMatrixRotationYawPitchRoll(&rot, m_Transform.rotation.y - D3DX_PI, m_Transform.rotation.x, m_Transform.rotation.z);
+	D3DXMatrixTranslation(&trans, m_Transform.position.x, m_Transform.position.y, m_Transform.position.z);
+	world = scale * rot * trans;
+
+	RENDERER::m_ConstantBufferList.GetStruct<WorldBuffer>()->Set(world);
+
+
+	m_AnimModel->Draw();
 }
 
 //インスタンスオブジェクト専用

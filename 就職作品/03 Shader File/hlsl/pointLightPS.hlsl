@@ -38,7 +38,7 @@ PS_PL_OUT main(VS_PL_OUT input)
     
     if (input.LightIndex < 0)
     {
-        Out.PointLight = float4(0, 0, 0, 1);
+        Out.PointLight = float4(0, 0, 0, 0);
         //Out.vColor = float4(0,0,0, 1);
         return Out;
     }
@@ -94,7 +94,7 @@ PS_PL_OUT main(VS_PL_OUT input)
     //totalColor.rgb += SpecularBRDF(diffuse.xyz, PBR.z, PBR.y, normal.xyz, V, L, H) * irradiance;
     
     Out.PointLight.rgb = BRDF(diffuse.xyz, PBR.z, PBR.y, normal.xyz, V, L, H) * irradiance;
-    Out.PointLight.w = 1;
+    Out.PointLight.w = 0;//wは投影テクスチャシャドウマップで利用する
     
     //return totalColor;
     
