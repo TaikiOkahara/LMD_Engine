@@ -1,7 +1,7 @@
 #pragma once
 
 
-#define	LIGHT_MAX		(128)	//ライトの数を有限にする
+#define	LIGHT_MAX		(8)	//ライトの数を有限にする
 #define	ANIMATION_MATRIX_MAX	(64)
 
 

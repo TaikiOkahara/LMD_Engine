@@ -49,6 +49,8 @@ private:
 	std::map<std::string, ID3D11ShaderResourceView*> m_mapTexture;
 	std::map < std::string, const aiScene*> m_mapAnimation;
 
+	const aiScene* m_LockAnimation;
+
 	std::vector<DEFORM_ANIMVERTEX>* m_vectorDeformVertex;//変形後頂点データ
 	std::map < const std::string, BONE> m_mapBone;//ボーンデータ（名前で参照）
 	std::string m_sCurAnimationName;
@@ -63,10 +65,13 @@ private:
 	void UpdateBoneMatrix(aiNode* node, aiMatrix4x4 matrix);
 public:
 	int m_iFrame = 0;
+	bool m_isLock = false;
+
 
 	void LoadModel(const char* FileName,D3DXVECTOR3 pos);
 	void LoadTexture();
 	void LoadAnimation(const char* FileName, const char* AnimationName);
+	void SetLockAnimation(std::string name) { m_LockAnimation = m_mapAnimation[name]; }
 
 	void Unload();
 	void Update();

@@ -21,7 +21,7 @@ static HWND			m_hWnd;
 
 
 CScene* Base::m_Scene = nullptr;
-CPostProcess Base::m_PostProcess;
+//CPostProcess Base::m_PostProcess;
 //
 //　メインループ
 //
@@ -29,7 +29,7 @@ void Base::MainLoop()
 {
 	CInput::Update();
 	m_Scene->Update();
-	m_PostProcess.Update();
+	//m_PostProcess.Update();
 	
 
 	RENDERER::Clear();//　画面塗りつぶし
@@ -41,8 +41,9 @@ void Base::MainLoop()
 	RENDERER::Deferred();
 	
 	
-	m_PostProcess.Draw();
+	//m_PostProcess.Draw();
 
+	m_Scene->PostProcessDraw();
 
 	// IMGUI　Frame start
 	ImGui_ImplDX11_NewFrame();
@@ -51,7 +52,7 @@ void Base::MainLoop()
 
 
 	m_Scene->Imgui();
-	m_PostProcess.Imgui();
+	//m_PostProcess.Imgui();
 
 	ImGui::EndFrame();
 	ImGui::Render();
@@ -113,7 +114,7 @@ HRESULT Base::Init(HINSTANCE phInstance)
 	
 
 	SetScene<Game>();
-	m_PostProcess.Init();
+	//m_PostProcess.Init();
 
 	//　外部データ読み込み
 	LoadIni();
@@ -142,7 +143,7 @@ HRESULT Base::Uninit()
 	m_Scene->UnInit();
 	delete m_Scene;
 
-	m_PostProcess.Uninit();
+	//m_PostProcess.Uninit();
 
 
 	IMGUI_Uninit();

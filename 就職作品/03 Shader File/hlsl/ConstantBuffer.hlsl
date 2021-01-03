@@ -1,5 +1,5 @@
 #define ANIMATION_MATRIX_MAX (64)
-#define LIGHT_NUM (128)
+#define LIGHT_NUM (8)
 
 
 

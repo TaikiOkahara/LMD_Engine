@@ -273,9 +273,6 @@
     <ClCompile Include="00 Source File\cubeMap.cpp">
       <Filter>GameObjects----------------\cubeMap</Filter>
     </ClCompile>
-    <ClCompile Include="00 Source File\postProcess.cpp">
-      <Filter>PostProcess-----------------\postProcess</Filter>
-    </ClCompile>
     <ClCompile Include="00 Source File\directionalLight.cpp">
       <Filter>PostProcess-----------------\directionalLight</Filter>
     </ClCompile>
@@ -284,6 +281,12 @@
     </ClCompile>
     <ClCompile Include="00 Source File\projectionShadow.cpp">
       <Filter>PostProcess-----------------\projectionShadow</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\title.cpp">
+      <Filter>Scene -----------------------</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\GameScenePostProcess.h">
+      <Filter>PostProcess-----------------\postProcess</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -418,6 +421,9 @@
     </ClInclude>
     <ClInclude Include="00 Source File\projectionShadow.h">
       <Filter>PostProcess-----------------\projectionShadow</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\title.h">
+      <Filter>Scene -----------------------</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

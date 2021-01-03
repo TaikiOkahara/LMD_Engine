@@ -13,14 +13,8 @@ void CPointLight::Init()
 	m_pMesh->LoadModel("../02 Visual File//UV.fbx");
 	
 	m_Collision.Init(D3DXVECTOR3(1, 1, 1), D3DXVECTOR3(0, 0, 0));
-	//m_TransformList = new TRANSFORM[LIGHT_MAX];
+	
 	{
-
-		/*for (int i = 0; i < LIGHT_MAX; i++)
-		{
-			
-			m_TransformList[i].scale.x = -1;
-		}*/
 
 		D3DXVECTOR3 rot,scale;
 		rot = D3DXVECTOR3(0, 0, 0);
@@ -117,8 +111,7 @@ void CPointLight::Draw()
 
 		D3DXMatrixTranslation(&trans, m_TransformList[i].position.x, m_TransformList[i].position.y, m_TransformList[i].position.z);
 		world = scale * rot * trans;
-		/*WORLDMATRIX worldMatrix;
-		worldMatrix.worldMatrix = world;*/
+		
 		RENDERER::m_ConstantBufferList.GetStruct<WorldBuffer>()->Set(world);
 		
 		
@@ -133,7 +126,6 @@ void CPointLight::Imgui()
 {
 	static bool show_light_window = true;
 
-	//ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 	if (CInput::KeyTrigger(DIK_F1))
 		show_light_window = !show_light_window;

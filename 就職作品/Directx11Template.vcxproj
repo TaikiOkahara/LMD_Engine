@@ -34,7 +34,7 @@
     <ClCompile Include="00 Source File\InstanceObject.cpp" />
     <ClCompile Include="00 Source File\pillar.cpp" />
     <ClCompile Include="00 Source File\pointLight.cpp" />
-    <ClCompile Include="00 Source File\postProcess.cpp" />
+    <ClCompile Include="00 Source File\GameScenePostProcess.h" />
     <ClCompile Include="00 Source File\pots.cpp" />
     <ClCompile Include="00 Source File\projectionShadow.cpp" />
     <ClCompile Include="00 Source File\skeletalMesh.cpp" />
@@ -50,6 +50,7 @@
     <ClCompile Include="00 Source File\player.cpp" />
     <ClCompile Include="00 Source File\directionalLight.cpp" />
     <ClCompile Include="00 Source File\sound.cpp" />
+    <ClCompile Include="00 Source File\title.cpp" />
     <ClCompile Include="00 Source File\trim.cpp" />
     <ClCompile Include="00 Source File\wall.cpp" />
     <ClCompile Include="00 Source File\window.cpp" />
@@ -94,6 +95,7 @@
     <ClInclude Include="00 Source File\scene.h" />
     <ClInclude Include="00 Source File\directionalLight.h" />
     <ClInclude Include="00 Source File\sound.h" />
+    <ClInclude Include="00 Source File\title.h" />
     <ClInclude Include="00 Source File\trim.h" />
     <ClInclude Include="00 Source File\wall.h" />
     <ClInclude Include="00 Source File\window.h" />

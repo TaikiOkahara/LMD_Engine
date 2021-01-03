@@ -9,12 +9,47 @@ class CPostProcess
 private:
 	std::list<CEffect*> m_Effect;
 public:
-	
-	void Init();
-	void Uninit();
-	void Update();
-	void Draw();
-	void Imgui();
+	CPostProcess() {}
+	virtual ~CPostProcess() {}
+
+
+	virtual void Init() = 0;
+	virtual void Uninit()
+	{
+		for (CEffect* effect : m_Effect)
+		{
+			effect->Uninit();
+			delete effect;
+		}
+
+		m_Effect.clear();
+	}
+
+	virtual void Update() 
+	{
+		for (CEffect* effect : m_Effect)
+		{
+			effect->Update();
+		}
+	}
+
+	virtual void Draw()
+	{
+		//
+		for (CEffect* effect : m_Effect)
+		{
+			effect->Draw();
+			//RENDERER::PostProcessDraw();
+		}
+	}
+
+	virtual void Imgui()
+	{
+		for (CEffect* effect : m_Effect)
+		{
+			effect->Imgui();
+		}
+	}
 
 	template <typename T>
 	T* AddPostProcess(void)

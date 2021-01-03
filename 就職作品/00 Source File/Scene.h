@@ -3,9 +3,7 @@
 #include "director.h"
 #include "gameobject.h"
 #include "Imgui11.h"
-
-
-
+#include "postProcess.h"
 
 class CScene
 {
@@ -19,8 +17,11 @@ protected:
 		MAX  = 3,//ÉåÉCÉÑÅ[êî
 	};
 
+	
+
 	std::list<CGameObject*> m_GameObject[LAYER::MAX];
 
+	CPostProcess* m_pPostProcess;
 public:	
 	CScene(){}
 	virtual ~CScene(){}
@@ -38,6 +39,12 @@ public:
 			}
 
 			m_GameObject[i].clear();
+		}
+
+		if (m_pPostProcess != nullptr)
+		{
+			m_pPostProcess->Uninit();
+			delete m_pPostProcess;
 		}
 	}
 
@@ -59,6 +66,9 @@ public:
 				object->Update();
 			}
 		}
+
+		if (m_pPostProcess != nullptr)
+			m_pPostProcess->Update();
 	}
 
 	virtual void Imgui() {	
@@ -69,16 +79,16 @@ public:
 				object->Imgui();
 			}
 		}
-	}
-	
-	int GetLayerGameObjectsCount(int layer)
-	{
-		if (layer >= LAYER::MAX)
-			assert(layer);
 
-		return m_GameObject[layer].size();
+		if (m_pPostProcess != nullptr)
+			m_pPostProcess->Imgui();
 	}
 
+	virtual void PostProcessDraw(){
+
+		if (m_pPostProcess != nullptr)
+			m_pPostProcess->Draw();
+	}
 
 	template <typename T>
 	T* AddGameObject(int Layer)
@@ -106,18 +116,5 @@ public:
 		return NULL;
 	}
 
-	//template <typename T>
-	//std::vector<T*>GetGameObjects(int Layer)
-	//{
-	//	std::vector<T*> objects;
-	//	for (CGameObject* object : m_GameObject[Layer])
-	//	{
-	//		if (typeid(*object) == typeid(T))//Å@å^Çí≤Ç◊ÇÈ
-	//		{
-	//			objects.push_back((T*)object);
-	//		}
-	//	}
-
-	//	return objects;
-	//}
+	
 };

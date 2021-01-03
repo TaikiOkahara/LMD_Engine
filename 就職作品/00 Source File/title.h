@@ -1,14 +1,7 @@
 #pragma once
 #include "scene.h"
-#include "GameScenePostProcess.h"
 
-enum GAME_STAGE
-{
-	DUNGEON = 0,
-	OUTDOOR
-};
-
-class Game : public CScene
+class Title : public CScene
 {
 private:
 	bool timeStop = false;
@@ -16,7 +9,6 @@ private:
 	bool frustumEnable = false;
 	float ambientOcclusionPower = 0.0f;
 
-	GAME_STAGE m_CurStage;
 public:
 
 	void Init();

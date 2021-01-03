@@ -4,6 +4,7 @@
 #include <fstream>
 
 
+bool LockLowerBody(aiString bone_name);
 
 void CAnimationModel::LoadModel(const char* FileName, D3DXVECTOR3 pos)
 {
@@ -231,7 +232,7 @@ void CAnimationModel::Update()
 	{
 		aiMesh* mesh = m_pAiScene->mMeshes[m];
 
-
+		aiString name = mesh->mName;
 		for (unsigned int  b = 0; b < mesh->mNumBones; b++)
 		{
 			aiBone* bone = mesh->mBones[b];
@@ -291,7 +292,7 @@ void CAnimationModel::SetAnimation(const char* AnimationName, bool animLock)
 
 
 
-	if (m_sCurAnimationName == AnimationName)
+	if (false)
 	{
 		//アニメーションデータからボーンマトリクス算出
 		aiAnimation* animation = scene0->mAnimations[0];
@@ -327,21 +328,52 @@ void CAnimationModel::SetAnimation(const char* AnimationName, bool animLock)
 			aiNodeAnim* nodeAnim1 = animation1->mChannels[c];
 			BONE* bone = &m_mapBone[nodeAnim0->mNodeName.C_Str()];
 
-			int f0, f1;
-			f0 = m_iFrame % nodeAnim0->mNumRotationKeys;//簡易実装
-			f1 = m_iFrame % nodeAnim1->mNumRotationKeys;//簡易実装
+			if (m_isLock && LockLowerBody(nodeAnim0->mNodeName))
+			{
+				if (m_mapAnimation[m_sCurAnimationName] == m_LockAnimation)
 
-			aiQuaternion rot;
-			aiQuaternion::Interpolate(rot, nodeAnim1->mRotationKeys[f1].mValue, nodeAnim0->mRotationKeys[f0].mValue, m_fBlendTime);
+				{
 
-			f0 = m_iFrame % nodeAnim0->mNumPositionKeys;//簡易実装
-			f1 = m_iFrame % nodeAnim1->mNumPositionKeys;//簡易実装
+					aiAnimation* lockAnimation = m_LockAnimation->mAnimations[0];
+					aiNodeAnim* lockNodeAnim = lockAnimation->mChannels[c];
 
-			aiVector3D pos;
 
-			pos = nodeAnim0->mPositionKeys[f0].mValue * m_fBlendTime + nodeAnim1->mPositionKeys[f1].mValue * (1.0f - m_fBlendTime);
+					int frot, fpos;
 
-			bone->AnimationMatrix = aiMatrix4x4(aiVector3D(1.0f, 1.0f, 1.0f), rot, pos);
+					frot = m_iFrame % lockNodeAnim->mNumRotationKeys;//簡易実装
+					fpos = m_iFrame % lockNodeAnim->mNumPositionKeys;//簡易実装
+
+
+					aiQuaternion rot = lockNodeAnim->mRotationKeys[frot].mValue;
+					aiVector3D pos = lockNodeAnim->mPositionKeys[fpos].mValue;
+
+
+					bone->AnimationMatrix = aiMatrix4x4(aiVector3D(1.0f, 1.0f, 1.0f), rot, pos);
+
+				}
+			}
+			else
+			{
+
+				int f0, f1;
+				f0 = m_iFrame % nodeAnim0->mNumRotationKeys;//簡易実装
+				f1 = m_iFrame % nodeAnim1->mNumRotationKeys;//簡易実装
+
+				aiQuaternion rot;
+				aiQuaternion::Interpolate(rot, nodeAnim1->mRotationKeys[f1].mValue, nodeAnim0->mRotationKeys[f0].mValue, m_fBlendTime);
+
+				f0 = m_iFrame % nodeAnim0->mNumPositionKeys;//簡易実装
+				f1 = m_iFrame % nodeAnim1->mNumPositionKeys;//簡易実装
+
+				aiVector3D pos;
+
+				pos = nodeAnim0->mPositionKeys[f0].mValue * m_fBlendTime + nodeAnim1->mPositionKeys[f1].mValue * (1.0f - m_fBlendTime);
+
+				bone->AnimationMatrix = aiMatrix4x4(aiVector3D(1.0f, 1.0f, 1.0f), rot, pos);
+			}
+			
+
+
 
 		}
 	}
@@ -530,4 +562,35 @@ void CAnimationModel::LoadTexture()
 	}
 
 	texTypeList.clear();
+}
+
+const char* lock_bone_list[] = {
+	"mixamorig:Hips",
+	"mixamorig:LeftUpLeg",
+	"mixamorig:LeftLeg",
+	"mixamorig:LeftFoot",
+	"mixamorig:LeftToeBase",
+	"mixamorig:LeftToeBase_end",
+	"mixamorig:RightUpLeg",
+	"mixamorig:RightLeg",
+	"mixamorig:RightFoot",
+	"mixamorig:RightToeBase",
+	"mixamorig:RightToeBase_end",
+	NULL
+};
+
+bool LockLowerBody(aiString bone_name)
+{
+
+	std::string name = bone_name.C_Str();
+	for (int i = 0; lock_bone_list[i] != NULL; i++)
+	{
+		std::string list_name = lock_bone_list[i];
+		if (name == list_name)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }

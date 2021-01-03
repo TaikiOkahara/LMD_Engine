@@ -23,7 +23,11 @@ void CPlayer::Init()
 	
 	m_AnimModel->LoadTexture();
 	m_AnimModel->LoadAnimation("../02 Visual File//Knight//Run_Blender.fbx", "Run");
+	m_AnimModel->LoadAnimation("../02 Visual File//Knight//Slash.fbx", "Slash");
+	m_AnimModel->LoadAnimation("../02 Visual File//Knight//Walk.fbx", "Walk");
 	m_AnimModel->LoadAnimation("../02 Visual File//Knight//Idle_Blender.fbx", "Idle");
+	m_AnimModel->SetLockAnimation("Slash");
+	
 	//m_AnimModel->LoadAnimation("../02 Visual File//Knight//Sword_And_Shield_Attack.fbx", "Attack");
 
 	m_Transform.position = D3DXVECTOR3(-2.5f, 0.01f, -3.5f);
@@ -90,6 +94,7 @@ void CPlayer::Update()
 
 	CCamera* camera = Base::GetScene()->GetGameObject<CCamera>();
 
+
 	D3DXVECTOR3 cameraright = camera->GetRight();
 	cameraright.y = 0;
 	D3DXVECTOR3 cameraforward = camera->GetForward();
@@ -142,8 +147,17 @@ void CPlayer::Update()
 	}
 	
 
+
 	D3DXVec3Normalize(&position, &position);
-	m_Transform.position += position * 0.08f;
+
+	float moveSpeed = 0.03f;
+
+	if (CInput::KeyPress(DIK_SPACE))
+	{
+		moveSpeed = 0.08f;
+	}
+
+	m_Transform.position += position * moveSpeed;
 	
 	if (rotation != 0){
 		m_Transform.rotation.y = rotation;
@@ -173,17 +187,27 @@ void CPlayer::Update()
 	}
 	m_hit = ishit;*/
 
-
-
-	if (CInput::KeyPress(DIK_W) ||
+	if (CInput::KeyPress(DIK_RETURN)) 
+	{
+		m_AnimModel->SetAnimation("Slash", false);
+	}
+	else if (CInput::KeyPress(DIK_W) ||
 		CInput::KeyPress(DIK_A) ||
 		CInput::KeyPress(DIK_S) ||
 		CInput::KeyPress(DIK_D))
-		m_AnimModel->SetAnimation("Run",false);
-	/*else if (CInput::KeyPress(DIK_SPACE))
-		m_AnimModel->SetAnimation("Attack",true);*/
+	{
+		if (CInput::KeyPress(DIK_SPACE))
+			m_AnimModel->SetAnimation("Run", false);
+		else
+			m_AnimModel->SetAnimation("Walk",false);
+
+		
+	}
 	else
+	{
 		m_AnimModel->SetAnimation("Idle",false);
+
+	}
 
 	
 
@@ -205,7 +229,7 @@ void CPlayer::Draw()
 
 	D3DXMatrixScaling(&scale, 1, 1, 1);
 	D3DXMatrixRotationYawPitchRoll(&rot, 0, 0, 0);
-	D3DXMatrixTranslation(&trans, m_Transform.position.x, m_Transform.position.y +  0.01, m_Transform.position.z);//âeÇÕè≠Çµínñ Ç©ÇÁó£Ç∑
+	D3DXMatrixTranslation(&trans, m_Transform.position.x, m_Transform.position.y +  0.01f, m_Transform.position.z);//âeÇÕè≠Çµínñ Ç©ÇÁó£Ç∑
 	world = scale * rot * trans;
 
 	RENDERER::m_ConstantBufferList.GetStruct<WorldBuffer>()->Set(world);

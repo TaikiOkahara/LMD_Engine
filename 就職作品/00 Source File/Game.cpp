@@ -1,5 +1,6 @@
 #include "base.h"
 #include "game.h"
+#include "title.h"
 #include "Imgui11.h"
 #include "input.h"
 
@@ -48,6 +49,8 @@ void Game::Init() {
 	AddGameObject<CPlayer>(LAYER::DRAW);//プレイヤー
 
 
+	m_pPostProcess = new CGameScenePostProcess();
+	m_pPostProcess->Init();
 }
 
 void Game::UnInit() {
@@ -70,6 +73,10 @@ void Game::Update() {
 	RENDERER::m_ConstantBufferList.GetStruct<ToggleBuffer>()->SetFrustumCullingEnable(frustumEnable);
 	RENDERER::m_ConstantBufferList.GetStruct<ToggleBuffer>()->Set();
 
+
+	//タイトルScene移動
+	if (CInput::KeyTrigger(DIK_F8))
+		Base::SetScene<Title>();
 }
 
 void Game::Imgui()
