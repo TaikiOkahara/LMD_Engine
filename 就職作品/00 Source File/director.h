@@ -92,7 +92,7 @@ void SetVisualDirectory(std::string file_name);//‚³‚ç‚É‰º‚ÌŠK‘w‚ğQÆ
 void SetShaderDirectory();
 void SetSoundDirectory();
 
-std::string FindFile(const std::string path_name, const std::string file_name, const std::string file_format);
+//std::string FindFile(const std::string path_name, const std::string file_name, const std::string file_format);
 
 HRESULT LoadIni();
 INI* GetIni();

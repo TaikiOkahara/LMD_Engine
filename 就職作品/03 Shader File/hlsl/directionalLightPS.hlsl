@@ -32,7 +32,7 @@ float4 main(VS_OUT input) : SV_Target
     
     float3 vLightVector = normalize(g_vDirectionalLightDir).xyz;
     float NL = saturate(-dot(normal.xyz, vLightVector));
-    //NL = NL * 0.8f + 0.2f;//ê¢äEäœìIÇ…à√Çﬂ
+    //NL = NL * 0.8f + 0.2f;//   ç≈í·ílï‚ê≥
    
     float3 color = g_vLightColor.xyz;
     

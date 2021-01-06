@@ -3,8 +3,7 @@
 
 Texture2D g_texDif : register(t0); //Diffuseテクスチャ
 Texture2D g_texNor : register(t1); //Normalテクスチャ
-Texture2D g_texRoughness : register(t2); //Roughnessテクスチャ
-Texture2D g_texMetallic : register(t3); //Metallicテクスチャ
+Texture2D g_texMRA : register(t2); //Roughnessテクスチャ
 
 
 SamplerState g_samLinear : register(s0);
@@ -42,14 +41,15 @@ PS_OUT main(VS_OUT input)
 
     
     
-    float roughness = g_texRoughness.Sample(g_samLinear, input.Tex).x;
-    float metallic = g_texMetallic.Sample(g_samLinear, input.Tex).x;
+    float ambientOcclusion = g_texMRA.Sample(g_samLinear, input.Tex).r;
+    float roughness = g_texMRA.Sample(g_samLinear, input.Tex).g;
+    float metallic = g_texMRA.Sample(g_samLinear, input.Tex).b;
     
     
     
   
     
-    Out.vDepthPBR = float4(input.Depth, roughness, metallic, 0);
+    Out.vDepthPBR = float4(input.Depth, roughness, metallic, ambientOcclusion);
     
     return Out;
 }

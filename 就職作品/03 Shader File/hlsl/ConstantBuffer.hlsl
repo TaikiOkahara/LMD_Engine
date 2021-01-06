@@ -33,9 +33,9 @@ cbuffer CameraBuffer : register(b3)
 //　ディレクショナルライト
 cbuffer DirectionalLightBuffer : register(b4)
 {
-    float4 g_vDirectionalLightDir; //ライトの座標
-    float4 g_vDirectionalLightPos; //ライトの座標
-	float4 g_vLightColor;//色	
+    float4 g_vDirectionalLightDir;
+    float4 g_vDirectionalLightPos;
+	float4 g_vLightColor;
     matrix g_vDirectionalLightVP;
 }
 
@@ -45,7 +45,7 @@ struct POINT
     float3 color;
     float intensity;
     float3 calc;
-    float specular;
+    float p_dummy;
 };
 
 cbuffer PointLightBuffer : register(b5)

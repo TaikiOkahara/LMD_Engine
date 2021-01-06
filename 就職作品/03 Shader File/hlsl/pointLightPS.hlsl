@@ -57,21 +57,21 @@ PS_PL_OUT main(VS_PL_OUT input)
     
     float att;
     att = (g_vPointLight[index].calc.x + (g_vPointLight[index].calc.y * dist) + (g_vPointLight[index].calc.z * dist * dist));
+    att = 1/att;
     
    
     
     
-    att = 1/att;
     
     
-    float vanish = 1.0f - dist / input.LightRange;//中心から遠くなると暗くなる
+   /// float vanish = 1.0f - dist / input.LightRange;//中心から遠くなると暗くなる
     
     //float lightAmount = saturate(dot(normal, L));
-    float lightAmount = (dot(normal.xyz, L) + 1.0f) / 2.0f;
+    float lightAmount = max(dot(normal.xyz, L),0);
     
     float3 lightColor = g_vPointLight[index].color;
-    float3 color = lightAmount * lightColor * att * vanish;
-    //color = (att == 0) ? float3(0, 0, 1) : color;
+    float3 color = lightAmount * lightColor * att; // * (g_vPointLight[index].intensity / (4.0 * PI)); // * vanish;
+   
     
     //Specular calc
     float3 V = position.xyz - g_vEyePos.xyz;
@@ -80,20 +80,19 @@ PS_PL_OUT main(VS_PL_OUT input)
     //float inputSpecularValue = g_vPointLight[index].specular;
     //float specular = pow(saturate(dot(normal.xyz, H)), inputSpecularValue) * att;
 
-    //float3 finalDiffuse = color * diffuse;
+    float3 finalDiffuse = color * diffuse;
     //float3 finalSpecular = specular * diffuse * att;
 
     //float4 totalColor = float4(finalDiffuse + finalSpecular, 1.0f);
 
     
-    //float4 totalColor = float4(color, 1.0f);
+    float4 totalColor = float4(color, 1.0f);
     float attenuation = DistanceAttenuation(distance(lpos, position.xyz), input.LightRange);
-    float3 irradiance = g_vPointLight[index].intensity / (4.0 * PI) * attenuation * g_vPointLight[index].color * max(dot(normal.xyz, L), 0);
-    //totalColor.xyz = BRDF(diffuse.xyz, PBR.z, PBR.y, normal.xyz, V, L, H) * irradiance; // * att;
-    //totalColor.rgb = NormalizedLambert(diffuse.xyz) * irradiance;
-    //totalColor.rgb += SpecularBRDF(diffuse.xyz, PBR.z, PBR.y, normal.xyz, V, L, H) * irradiance;
+    float3 irradiance = attenuation * g_vPointLight[index].color * (g_vPointLight[index].intensity / (4.0 * PI)) * max(dot(normal.xyz, L), 0);
+   
     
-    Out.PointLight.rgb = BRDF(diffuse.xyz, PBR.z, PBR.y, normal.xyz, V, L, H) * irradiance;
+    
+    Out.PointLight.rgb = BRDF(diffuse.xyz, PBR.z, PBR.y, normal.xyz, V, L, H) * irradiance + finalDiffuse;
     Out.PointLight.w = 0;//wは投影テクスチャシャドウマップで利用する
     
     //return totalColor;

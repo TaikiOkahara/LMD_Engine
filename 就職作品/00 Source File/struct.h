@@ -4,6 +4,15 @@
 #define	LIGHT_MAX		(8)	//ÉâÉCÉgÇÃêîÇóLå¿Ç…Ç∑ÇÈ
 #define	ANIMATION_MATRIX_MAX	(64)
 
+enum PRIORITY_LEVEL
+{
+	LEVEL_0,
+	LEVEL_1,
+	LEVEL_2,
+	LEVEL_3,
+	LEVEL_4,
+	LEVEL_5,
+};
 
 
 
@@ -60,7 +69,7 @@ struct POINTLIGHT
 	D3DXVECTOR3 color;
 	FLOAT		intensity;
 	D3DXVECTOR3 calc;
-	FLOAT		specular;
+	FLOAT		dummy;
 };
 
 

@@ -116,43 +116,43 @@ void SetShaderDirectory()
 //
 //
 //
-std::string FindFile(const std::string path_name, const std::string file_name, const std::string file_format)
-{
-	SetRootDirectory();
-
-	HANDLE hFind;
-	WIN32_FIND_DATA fd;
-
-
-	std::string name;
-	name = path_name;
-	name += "\\";
-	name += file_name;
-	name += "\\*";
-	name += file_format;
-
-
-	hFind = FindFirstFile(name.c_str(), &fd);
-
-	// 検索失敗? 
-	if (hFind == INVALID_HANDLE_VALUE) {
-		MSG("Fbx読み込み失敗！(多分パスをミスってるかも)");
-		return "Error!";
-	}
-
-	// 検索終了
-	FindClose(hFind);
-
-	std::string fbx_name = fd.cFileName;
-	int char_num = 0;
-	for (int i = 0; fbx_name[i] != NULL; i++)
-	{
-		char_num++;
-	}
-	std::string return_name;
-
-	//strncpy(return_name, fd.cFileName, char_num);
-	return_name = fbx_name.erase(char_num);
-
-	return return_name;
-}
+//std::string FindFile(const std::string path_name, const std::string file_name, const std::string file_format)
+//{
+//	SetRootDirectory();
+//
+//	HANDLE hFind;
+//	WIN32_FIND_DATA fd;
+//
+//
+//	std::string name;
+//	name = path_name;
+//	name += "\\";
+//	name += file_name;
+//	name += "\\*";
+//	name += file_format;
+//
+//
+//	hFind = FindFirstFile(name.c_str(), &fd);
+//
+//	// 検索失敗? 
+//	if (hFind == INVALID_HANDLE_VALUE) {
+//		MSG("Fbx読み込み失敗！(多分パスをミスってるかも)");
+//		return "Error!";
+//	}
+//
+//	// 検索終了
+//	FindClose(hFind);
+//
+//	std::string fbx_name = fd.cFileName;
+//	int char_num = 0;
+//	for (int i = 0; fbx_name[i] != NULL; i++)
+//	{
+//		char_num++;
+//	}
+//	std::string return_name;
+//
+//	//strncpy(return_name, fd.cFileName, char_num);
+//	return_name = fbx_name.erase(char_num);
+//
+//	return return_name;
+//}

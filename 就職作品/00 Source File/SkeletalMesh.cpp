@@ -186,14 +186,19 @@ void CAnimationModel::Unload()
 
 	/*for (auto pair : m_Texture) でもいい*/
 
-	for (std::pair<const std::string, const aiScene*> pair : m_mapAnimation)
+	for (std::pair<std::string,Animation*> pair : m_mapAnimation)
 	{
-		if(pair.second != nullptr)
-			aiReleaseImport(pair.second);
+		if(pair.second->GetScene() != nullptr)
+			aiReleaseImport(pair.second->GetScene());
 	}
 	m_mapAnimation.clear();
 
-
+	/*for (std::pair<const std::string, CCondition> pair : m_mapCondition)
+	{
+		if (pair.second != nullptr)
+			aiReleaseImport(pair.second);
+	}*/
+	//m_mapCondition.clear();
 	
 	m_mapBone.clear();
 	
@@ -211,17 +216,205 @@ void CAnimationModel::Unload()
 }
 
 
-void CAnimationModel::LoadAnimation(const char* FileName, const char* AnimationName)
+void CAnimationModel::LoadAnimation(const char* FileName, const char* AnimationName, int maxFrame,bool rigidity)
 {
-	m_mapAnimation[AnimationName] = aiImportFile(FileName, aiProcess_ConvertToLeftHanded);
-	assert(m_mapAnimation[AnimationName]);
+	m_mapAnimation[AnimationName] = new Animation(aiImportFile(FileName, aiProcess_ConvertToLeftHanded), maxFrame, rigidity);
+	assert(m_mapAnimation[AnimationName]->GetScene());
 
-	m_sCurAnimationName = AnimationName;
+
+	//m_mapAnimation[AnimationName].scene = aiImportFile(FileName, aiProcess_ConvertToLeftHanded);
+	
+	
+
+	/*m_mapAnimation[AnimationName].maxFrame = maxFrame;
+	m_mapAnimation[AnimationName].curFrame = 1;
+	m_mapAnimation[AnimationName].level = level;
+	m_mapAnimation[AnimationName].rigidity = rigidity;*/
+
+
+	m_sCurAnimationName = m_sNexAnimationName = AnimationName;
 }
 
 void CAnimationModel::Update()
 {
+	//m_iFrame++;
 	
+
+	const int curFrame = m_mapAnimation[m_sCurAnimationName]->GetCurFrame();
+	const int nexFrame = m_mapAnimation[m_sNexAnimationName]->GetCurFrame();
+	const int curMaxFrame = m_mapAnimation[m_sCurAnimationName]->GetMaxFrame();
+	
+	
+	const aiScene* curScene = m_mapAnimation[m_sCurAnimationName]->GetScene();
+	const aiScene* nexScene = m_mapAnimation[m_sNexAnimationName]->GetScene();
+
+	/*if (!curScene->HasAnimations()) { return; }
+	if (!nexScene->HasAnimations()) { return; }*/
+
+	//継続更新
+	if (m_sCurAnimationName == m_sNexAnimationName)
+	{
+		//アニメーションデータからボーンマトリクス算出
+		aiAnimation* animation = curScene->mAnimations[0];
+
+		for (unsigned int c = 0; c < animation->mNumChannels; c++)
+		{
+			aiNodeAnim* nodeAnim = animation->mChannels[c];
+			BONE* bone = &m_mapBone[nodeAnim->mNodeName.C_Str()];
+
+
+
+			int frot, fpos;
+
+			frot = curFrame % nodeAnim->mNumRotationKeys;//簡易実装
+			fpos = curFrame % nodeAnim->mNumPositionKeys;//簡易実装
+
+
+			aiQuaternion rot = nodeAnim->mRotationKeys[frot].mValue;
+			aiVector3D pos = nodeAnim->mPositionKeys[fpos].mValue;
+
+
+			bone->AnimationMatrix = aiMatrix4x4(aiVector3D(1.0f, 1.0f, 1.0f), rot, pos);
+			
+		}
+
+		//硬直状態なら、時間制限のチェックを行う
+		if (m_mapAnimation[m_sCurAnimationName]->GetRigidity())
+		{
+			if (m_mapAnimation[m_sCurAnimationName]->MotionLock())
+				m_CurRigidity = true;
+			else
+				m_CurRigidity = false;
+		}
+
+		m_mapAnimation[m_sCurAnimationName]->UpdateFrame();
+	}
+	//通常→通常　もしくは　通常→硬直　ブレンディング
+	else if (!m_mapAnimation[m_sCurAnimationName]->GetRigidity())
+	{
+		
+
+				
+		//アニメーションデータからボーンマトリクス算出
+		aiAnimation* curAnimation = curScene->mAnimations[0];
+		aiAnimation* nexAnimation = nexScene->mAnimations[0];
+		
+		for (unsigned int c = 0; c < curAnimation->mNumChannels; c++)
+		{
+			aiNodeAnim* curNodeAnim = curAnimation->mChannels[c];
+			aiNodeAnim* nexNodeAnim = nexAnimation->mChannels[c];
+			BONE* bone = &m_mapBone[curNodeAnim->mNodeName.C_Str()];
+
+			int fc, fn;
+			fc = curFrame % curNodeAnim->mNumRotationKeys;//簡易実装
+			fn = nexFrame % nexNodeAnim->mNumRotationKeys;//簡易実装
+
+			aiQuaternion rot;
+			aiQuaternion::Interpolate(rot, nexNodeAnim->mRotationKeys[fn].mValue, curNodeAnim->mRotationKeys[fc].mValue, 1.0f - m_fBlendTime);
+
+			fc = curFrame % curNodeAnim->mNumPositionKeys;//簡易実装
+			fn = nexFrame % nexNodeAnim->mNumPositionKeys;//簡易実装
+
+			aiVector3D pos;
+
+			pos = curNodeAnim->mPositionKeys[fc].mValue * (1.0f - m_fBlendTime) + nexNodeAnim->mPositionKeys[fn].mValue * m_fBlendTime;
+
+			bone->AnimationMatrix = aiMatrix4x4(aiVector3D(1.0f, 1.0f, 1.0f), rot, pos);
+
+			
+		}
+
+
+
+		m_mapAnimation[m_sCurAnimationName]->UpdateFrame();
+		m_mapAnimation[m_sNexAnimationName]->UpdateFrame();
+
+
+
+
+		m_fBlendTime += 0.1f;
+		if (m_fBlendTime >= 1)
+		{
+			m_fBlendTime = 0.0f;
+			m_mapAnimation[m_sCurAnimationName]->FrameReset();
+			m_sCurAnimationName = m_sNexAnimationName;
+
+		}
+
+		//硬直状態なら、時間制限のチェックを行う
+		if (m_mapAnimation[m_sNexAnimationName]->GetRigidity())
+		{
+			m_CurRigidity = true;
+		}
+
+
+	}
+	//硬直→通常　のブレンド
+	else //(!m_mapAnimation[m_sCurAnimationName]->GetRigidity() && m_mapAnimation[m_sNexAnimationName]->GetRigidity())
+	{
+		m_CurRigidity = false;
+
+
+		
+		//int frame_0 = m_mapAnimation[m_sCurAnimationName]->GetMaxFrame();
+		//int frame_1 = m_mapAnimation[m_sNexAnimationName]->GetCurFrame();
+
+		//アニメーションデータからボーンマトリクス算出
+		aiAnimation* curAnimation = curScene->mAnimations[0];
+		aiAnimation* nexAnimation = nexScene->mAnimations[0];
+
+		for (unsigned int c = 0; c < curAnimation->mNumChannels; c++)
+		{
+			aiNodeAnim* curNodeAnim = curAnimation->mChannels[c];
+			aiNodeAnim* nexCodeAnim = nexAnimation->mChannels[c];
+			BONE* bone = &m_mapBone[curNodeAnim->mNodeName.C_Str()];
+
+			int fc, fn;
+			fc = curMaxFrame % curNodeAnim->mNumRotationKeys;//簡易実装
+			fn = nexFrame % nexCodeAnim->mNumRotationKeys;//簡易実装
+
+			aiQuaternion rot;
+			aiQuaternion::Interpolate(rot, nexCodeAnim->mRotationKeys[fn].mValue, curNodeAnim->mRotationKeys[fc].mValue, 1.0f - m_fBlendTime);
+
+			fc = curMaxFrame % curNodeAnim->mNumPositionKeys;//簡易実装
+			fn = nexFrame % nexCodeAnim->mNumPositionKeys;//簡易実装
+
+			aiVector3D pos;
+
+			pos = curNodeAnim->mPositionKeys[fc].mValue * (1.0f - m_fBlendTime) + nexCodeAnim->mPositionKeys[fn].mValue * m_fBlendTime;
+
+			bone->AnimationMatrix = aiMatrix4x4(aiVector3D(1.0f, 1.0f, 1.0f), rot, pos);
+		}
+
+
+
+
+
+		m_mapAnimation[m_sNexAnimationName]->UpdateFrame();
+
+
+
+
+
+
+		m_fBlendTime += 0.1f;
+		if (m_fBlendTime >= 1)
+		{
+			m_fBlendTime = 0.0f;
+
+			m_mapAnimation[m_sCurAnimationName]->FrameReset();
+			m_sCurAnimationName = m_sNexAnimationName;
+
+		}
+
+
+		//m_mapAnimation[m_sCurAnimationName].level = PRIORITY_LEVEL::LEVEL_0;
+
+
+	}
+
+
+
 
 
 	//再帰的にボーンマトリクスを更新
@@ -233,7 +426,7 @@ void CAnimationModel::Update()
 		aiMesh* mesh = m_pAiScene->mMeshes[m];
 
 		aiString name = mesh->mName;
-		for (unsigned int  b = 0; b < mesh->mNumBones; b++)
+		for (unsigned int b = 0; b < mesh->mNumBones; b++)
 		{
 			aiBone* bone = mesh->mBones[b];
 
@@ -259,10 +452,6 @@ void CAnimationModel::Update()
 
 		}
 	}
-
-
-	m_iFrame++;
-
 }
 
 void CAnimationModel::SetAnimation(const char* AnimationName, bool animLock)
@@ -270,7 +459,7 @@ void CAnimationModel::SetAnimation(const char* AnimationName, bool animLock)
 	
 
 
-	if (m_sCurAnimationName != AnimationName)
+	/*if (m_sCurAnimationName != AnimationName)
 	{
 		m_fBlendTime -= 0.1f;
 		if (m_fBlendTime <= 0)
@@ -278,106 +467,98 @@ void CAnimationModel::SetAnimation(const char* AnimationName, bool animLock)
 			m_fBlendTime = 1.0f;
 			m_sCurAnimationName = AnimationName;
 		}
-	}
+	}*/
 
-
-
-
-	const aiScene* scene0 = m_mapAnimation[m_sCurAnimationName];
-	const aiScene* scene1 = m_mapAnimation[AnimationName];
-
-	if (!scene0->HasAnimations()) { return; }
-	if (!scene1->HasAnimations()) { return; }
-
-
-
-
-	if (false)
+	//終わるまで入力できない攻撃
+	if (m_CurRigidity)
 	{
-		//アニメーションデータからボーンマトリクス算出
-		aiAnimation* animation = scene0->mAnimations[0];
-
-		for (unsigned int c = 0; c < animation->mNumChannels; c++)
-		{
-			aiNodeAnim* nodeAnim = animation->mChannels[c];
-
-			BONE* bone = &m_mapBone[nodeAnim->mNodeName.C_Str()];
-
-			int frot, fpos;
-
-			frot = m_iFrame % nodeAnim->mNumRotationKeys;//簡易実装
-			fpos = m_iFrame % nodeAnim->mNumPositionKeys;//簡易実装
-
-
-			aiQuaternion rot = nodeAnim->mRotationKeys[frot].mValue;
-			aiVector3D pos = nodeAnim->mPositionKeys[fpos].mValue;
-
-
-			bone->AnimationMatrix = aiMatrix4x4(aiVector3D(1.0f, 1.0f, 1.0f), rot, pos);
-		}
+		//m_sNexAnimationName = m_sCurAnimationName;
+		return;
 	}
-	else
+
+	//同じアニメーションなら、継続更新するので、セットは必要ない。
+	if (m_sCurAnimationName == AnimationName)
 	{
-		//アニメーションデータからボーンマトリクス算出
-		aiAnimation* animation0 = scene0->mAnimations[0];
-		aiAnimation* animation1 = scene1->mAnimations[0];
 
-		for (unsigned int c = 0; c < animation0->mNumChannels; c++)
-		{
-			aiNodeAnim* nodeAnim0 = animation0->mChannels[c];
-			aiNodeAnim* nodeAnim1 = animation1->mChannels[c];
-			BONE* bone = &m_mapBone[nodeAnim0->mNodeName.C_Str()];
-
-			if (m_isLock && LockLowerBody(nodeAnim0->mNodeName))
-			{
-				if (m_mapAnimation[m_sCurAnimationName] == m_LockAnimation)
-
-				{
-
-					aiAnimation* lockAnimation = m_LockAnimation->mAnimations[0];
-					aiNodeAnim* lockNodeAnim = lockAnimation->mChannels[c];
-
-
-					int frot, fpos;
-
-					frot = m_iFrame % lockNodeAnim->mNumRotationKeys;//簡易実装
-					fpos = m_iFrame % lockNodeAnim->mNumPositionKeys;//簡易実装
-
-
-					aiQuaternion rot = lockNodeAnim->mRotationKeys[frot].mValue;
-					aiVector3D pos = lockNodeAnim->mPositionKeys[fpos].mValue;
-
-
-					bone->AnimationMatrix = aiMatrix4x4(aiVector3D(1.0f, 1.0f, 1.0f), rot, pos);
-
-				}
-			}
-			else
-			{
-
-				int f0, f1;
-				f0 = m_iFrame % nodeAnim0->mNumRotationKeys;//簡易実装
-				f1 = m_iFrame % nodeAnim1->mNumRotationKeys;//簡易実装
-
-				aiQuaternion rot;
-				aiQuaternion::Interpolate(rot, nodeAnim1->mRotationKeys[f1].mValue, nodeAnim0->mRotationKeys[f0].mValue, m_fBlendTime);
-
-				f0 = m_iFrame % nodeAnim0->mNumPositionKeys;//簡易実装
-				f1 = m_iFrame % nodeAnim1->mNumPositionKeys;//簡易実装
-
-				aiVector3D pos;
-
-				pos = nodeAnim0->mPositionKeys[f0].mValue * m_fBlendTime + nodeAnim1->mPositionKeys[f1].mValue * (1.0f - m_fBlendTime);
-
-				bone->AnimationMatrix = aiMatrix4x4(aiVector3D(1.0f, 1.0f, 1.0f), rot, pos);
-			}
-			
-
-
-
-		}
+		m_sNexAnimationName = AnimationName;
+		return;
 	}
+
+
+
+	//m_fBlendTime = 1.0f;
+	m_sNexAnimationName = AnimationName;
+	//m_CurRigidity = m_mapAnimation[m_sNexAnimationName]->GetRigidity();
 }
+
+//void CAnimationModel::SetAnimation(unsigned int curAnimTime, unsigned int nexAnimTime, std::string curAnimName, std::string nexAnimName,float blendTime)
+//{
+//
+//	const aiScene* scene0 = m_mapAnimation[curAnimName.c_str()];
+//	const aiScene* scene1 = m_mapAnimation[nexAnimName.c_str()];
+//
+//	if (!scene0->HasAnimations()) { return; }
+//	if (!scene1->HasAnimations()) { return; }
+//
+//	//アニメーションデータからボーンマトリクス算出
+//	aiAnimation* animation0 = scene0->mAnimations[0];
+//	aiAnimation* animation1 = scene1->mAnimations[0];
+//
+//	for (unsigned int c = 0; c < animation0->mNumChannels; c++)
+//	{
+//		aiNodeAnim* nodeAnim0 = animation0->mChannels[c];
+//		aiNodeAnim* nodeAnim1 = animation1->mChannels[c];
+//		BONE* bone = &m_mapBone[nodeAnim0->mNodeName.C_Str()];
+//
+//		//if (m_isLock && LockLowerBody(nodeAnim0->mNodeName))
+//		//{
+//		//	if (m_mapAnimation[m_sCurAnimationName] == m_LockAnimation)
+//
+//		//	{
+//
+//		//		aiAnimation* lockAnimation = m_LockAnimation->mAnimations[0];
+//		//		aiNodeAnim* lockNodeAnim = lockAnimation->mChannels[c];
+//
+//
+//		//		int frot, fpos;
+//
+//		//		frot = m_iFrame % lockNodeAnim->mNumRotationKeys;//簡易実装
+//		//		fpos = m_iFrame % lockNodeAnim->mNumPositionKeys;//簡易実装
+//
+//
+//		//		aiQuaternion rot = lockNodeAnim->mRotationKeys[frot].mValue;
+//		//		aiVector3D pos = lockNodeAnim->mPositionKeys[fpos].mValue;
+//
+//
+//		//		bone->AnimationMatrix = aiMatrix4x4(aiVector3D(1.0f, 1.0f, 1.0f), rot, pos);
+//
+//		//	}
+//		//}
+//		//else
+//		{
+//
+//			int f0, f1;
+//			f0 = curAnimTime % nodeAnim0->mNumRotationKeys;//簡易実装
+//			f1 = curAnimTime % nodeAnim1->mNumRotationKeys;//簡易実装
+//
+//			aiQuaternion rot;
+//			aiQuaternion::Interpolate(rot, nodeAnim1->mRotationKeys[f1].mValue, nodeAnim0->mRotationKeys[f0].mValue, blendTime);
+//
+//			f0 = nexAnimTime % nodeAnim0->mNumPositionKeys;//簡易実装
+//			f1 = nexAnimTime % nodeAnim1->mNumPositionKeys;//簡易実装
+//
+//			aiVector3D pos;
+//
+//			pos = nodeAnim0->mPositionKeys[f0].mValue * blendTime + nodeAnim1->mPositionKeys[f1].mValue * (1.0f - blendTime);
+//
+//			bone->AnimationMatrix = aiMatrix4x4(aiVector3D(1.0f, 1.0f, 1.0f), rot, pos);
+//		}
+//
+//
+//
+//
+//	}
+//}
 
 void CAnimationModel::Draw()
 {
@@ -410,16 +591,10 @@ void CAnimationModel::Draw()
 			RENDERER::m_pDeviceContext->PSSetShaderResources(1, 1, &m_mapTexture[path.data]);
 		}
 		path.Clear();
-		//Roughness
-		material->GetTexture(aiTextureType_SHININESS, 0, &path);
-		if (m_mapTexture[path.data]) {
-			RENDERER::m_pDeviceContext->PSSetShaderResources(2, 1, &m_mapTexture[path.data]);
-		}
-		path.Clear();
-		//metallic
+		//MRA
 		material->GetTexture(aiTextureType_EMISSIVE, 0, &path);
 		if (m_mapTexture[path.data]) {
-			RENDERER::m_pDeviceContext->PSSetShaderResources(3, 1, &m_mapTexture[path.data]);
+			RENDERER::m_pDeviceContext->PSSetShaderResources(2, 1, &m_mapTexture[path.data]);
 		}
 		path.Clear();
 
@@ -506,24 +681,25 @@ void CAnimationModel::UpdateBoneMatrix(aiNode* node, aiMatrix4x4 matrix)
 }
 //　テクスチャ読み込み
 
-void CAnimationModel::LoadTexture()
+void CAnimationModel::LoadTexture(std::string file_name)
 {
 	//テクスチャ読み込み
-	std::map<int, aiTextureType> texTypeList;
+	int* texTypeList = new int[3];
 
-	texTypeList[0] = aiTextureType::aiTextureType_DIFFUSE;
-	texTypeList[1] = aiTextureType::aiTextureType_NORMALS;
-	texTypeList[2] = aiTextureType::aiTextureType_SHININESS;//roughnessをshiness入れた（なぜかエラーになるから）
-	texTypeList[3] = aiTextureType::aiTextureType_EMISSIVE;//metallicをemissive入れた（なぜかエラーになるから）
+	texTypeList[0] = aiTextureType_DIFFUSE;
+	texTypeList[1] = aiTextureType_NORMALS;
+	texTypeList[2] = aiTextureType_EMISSIVE;//Blender側でMRAをemissiveに入れるとなぜかEMISSIVEで取得可能（なぜかエラーになるから）
 
-	for (int i = 0; i < texTypeList.size(); i++)
+
+
+	for (int i = 0; i < 3; i++)
 	{
 
 		for (unsigned int m = 0; m < m_pAiScene->mNumMaterials; m++)
 		{
 			aiString path;
 
-			if (m_pAiScene->mMaterials[m]->GetTexture(texTypeList[i], 0, &path)
+			if (m_pAiScene->mMaterials[m]->GetTexture((aiTextureType)texTypeList[i], 0, &path)
 				== AI_SUCCESS)
 			{
 				if (path.data[0] == '*')
@@ -546,22 +722,42 @@ void CAnimationModel::LoadTexture()
 						m_mapTexture[path.data] = texture;
 					}
 				}
+				else
+				{
+					ID3D11ShaderResourceView* texture;
+
+					std::string tex_name;
+
+					tex_name = file_name;
+					tex_name += "//";
+
+					tex_name += path.C_Str();
+
+					D3DX11CreateShaderResourceViewFromFile(
+						RENDERER::m_pDevice,
+						tex_name.c_str(),
+						NULL,
+						NULL,
+						&texture,
+						NULL);
+					assert(texture);
+
+					m_mapTexture[path.data] = texture;
+				}
 			}
 			else
 			{
+
+
+
 				m_mapTexture[path.data] = NULL;
-
-
-				//外部ファイルから読み込む
-
-
 			}
 		}
 
 
 	}
 
-	texTypeList.clear();
+	delete[] texTypeList;
 }
 
 const char* lock_bone_list[] = {

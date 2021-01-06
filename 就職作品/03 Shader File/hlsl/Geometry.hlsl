@@ -141,24 +141,3 @@ float DistanceAttenuation(float distance, float lightRange)
     smoothatt = smoothatt * smoothatt;
     return att * smoothatt;
 }
-
-float3 SpecularBRDF(float3 albedo, float metallic, float roughness, float3 N, float3 V, float3 L, float3 H)
-{
-    float EPSILON = 0.001;
-    float3 F0 = lerp(float3(0.04, 0.04, 0.04), albedo, metallic);
-    float NoH = max(dot(N, H), 0);
-    float NoV = max(dot(N, V), 0);
-    float NoL = max(dot(N, L), 0);
-    float a = roughness * roughness;
-
-  // specular
-    float3 F = F_Schlick(F0, H, V);
-    float D = D_GGX(a, NoH);
-    float G = G_Smith(a, NoV, NoL);
-    float3 up = F * (D * G);
-    float down = max(4.0 * NoV * NoL, EPSILON);
-    float3 specular = up / down;
-
-  
-    return  specular;
-}

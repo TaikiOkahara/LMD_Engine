@@ -19,14 +19,18 @@ void CPlayer::Init()
 	
 	m_AnimModel = new CAnimationModel();
 
-	m_AnimModel->LoadModel("../02 Visual File//Knight//KnightPBR.fbx", D3DXVECTOR3(0,0.1f,0));
+	SetVisualDirectory("../02 Visual File//Knight//");
+	m_AnimModel->LoadModel("KnightPBR_NoTex.fbx", D3DXVECTOR3(0,0.1f,0));
+	m_AnimModel->LoadTexture("texture");
 	
-	m_AnimModel->LoadTexture();
-	m_AnimModel->LoadAnimation("../02 Visual File//Knight//Run_Blender.fbx", "Run");
-	m_AnimModel->LoadAnimation("../02 Visual File//Knight//Slash.fbx", "Slash");
-	m_AnimModel->LoadAnimation("../02 Visual File//Knight//Walk.fbx", "Walk");
-	m_AnimModel->LoadAnimation("../02 Visual File//Knight//Idle_Blender.fbx", "Idle");
-	m_AnimModel->SetLockAnimation("Slash");
+	m_AnimModel->LoadAnimation("Run_Blender.fbx", "Run",48,false);
+	m_AnimModel->LoadAnimation("Slash.fbx", "Slash",122,true);
+	m_AnimModel->LoadAnimation("Walk.fbx", "Walk",65,false);
+	m_AnimModel->LoadAnimation("Idle_Blender.fbx", "Idle",117,false);
+	//m_AnimModel->SetLockAnimation("Slash");
+
+
+	//m_ConditionList["idle"] = new CCondition(PRIORITY_LEVEL::LEVEL_1, 0, 1, false);
 	
 	//m_AnimModel->LoadAnimation("../02 Visual File//Knight//Sword_And_Shield_Attack.fbx", "Attack");
 
@@ -76,6 +80,8 @@ void CPlayer::Uninit()
 	m_AnimModel->Unload();
 	delete m_AnimModel;
 
+	
+
 	m_pTile->Uninit();
 	delete m_pTile;
 
@@ -109,7 +115,11 @@ void CPlayer::Update()
 	D3DXVECTOR3 position(0,0,0);
 	float rotation = 0;
 
-	if (CInput::KeyPress(DIK_W))
+	if(m_AnimModel->GetMotionLock())
+	{
+		//ˆÚ“®‚È‚µ
+	}
+	else if (CInput::KeyPress(DIK_W))
 	{
 		position += cameraforward;
 		rotation = camerarotation.y + 2 * D3DX_PI;
@@ -187,7 +197,7 @@ void CPlayer::Update()
 	}
 	m_hit = ishit;*/
 
-	if (CInput::KeyPress(DIK_RETURN)) 
+	if (CInput::KeyTrigger(DIK_RETURN)) 
 	{
 		m_AnimModel->SetAnimation("Slash", false);
 	}

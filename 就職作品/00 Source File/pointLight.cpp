@@ -27,18 +27,18 @@ void CPointLight::Init()
 			
 			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 2.0f, 10.0f * i + 5.0f),rot, scale });
 
-			m_PointLight[i] = POINTLIGHT{ D3DXVECTOR3(1.0f, 0.5f, 0.0f) ,100,D3DXVECTOR3(0.1f, 0.25f, 0.1f) ,30};
+			m_PointLight[i] = POINTLIGHT{ D3DXVECTOR3(1.0f, 0.5f, 0.0f) ,100,D3DXVECTOR3(0.1f, 0.25f, 0.1f) ,0};
 		}
 
 
 		//ˆê”Ô‰œ‚Ì•Ç‚Ìƒ‰ƒCƒg
 		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 2.0f, 32.5f),rot, scale });
-		m_PointLight[3] = POINTLIGHT{ D3DXVECTOR3(1.0f, 0.5f, 0.0f) ,100,D3DXVECTOR3(0.1f, 0.15f, 0.1f) ,30 };
+		m_PointLight[3] = POINTLIGHT{ D3DXVECTOR3(1.0f, 0.5f, 0.0f) ,100,D3DXVECTOR3(0.1f, 0.15f, 0.1f) ,0 };
 
 
 		//Playerlight
 		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(5.0f, 5.0f, 1.0f),rot, scale });
-		m_PointLight[4] = POINTLIGHT{ D3DXVECTOR3(1.0f, 1.0f, 1.0f) ,100,D3DXVECTOR3(1.0f, 1.0f, 0.1f) ,30 };
+		m_PointLight[4] = POINTLIGHT{ D3DXVECTOR3(1.0f, 1.0f, 1.0f) ,100,D3DXVECTOR3(1.0f, 1.0f, 0.1f) ,0 };
 
 
 		
@@ -158,7 +158,6 @@ void CPointLight::Imgui()
 			ImGui::SliderFloat("Linear Attenuation coefficient", &m_PointLight[4].calc.y, 0.0f, 1.0f);
 			ImGui::SliderFloat("2nd Constant Attenuation coefficient", &m_PointLight[4].calc.z, 0.0f, 10.0f);
 			ImGui::SliderFloat("Intensity", &m_PointLight[4].intensity, 0.0f, 200.0f);
-			ImGui::SliderFloat("Specular", &m_PointLight[4].specular, 0.0f, 30.0f);
 
 			ImGui::TreePop();
 		}
@@ -184,7 +183,6 @@ void CPointLight::Imgui()
 			ImGui::SliderFloat("Linear Attenuation coefficient", &m_PointLight[0].calc.y, 0.0f, 1.0f);
 			ImGui::SliderFloat("2nd Constant Attenuation coefficient", &m_PointLight[0].calc.z, 0.0f, 10.0f);
 			ImGui::SliderFloat("Intensity", &m_PointLight[0].intensity, 0.0f, 200.0f);
-			ImGui::SliderFloat("Specular", &m_PointLight[0].specular, 0.0f, 30.0f);
 
 			
 
