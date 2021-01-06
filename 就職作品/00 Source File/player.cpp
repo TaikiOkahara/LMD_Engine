@@ -23,10 +23,10 @@ void CPlayer::Init()
 	m_AnimModel->LoadModel("KnightPBR_NoTex.fbx", D3DXVECTOR3(0,0.1f,0));
 	m_AnimModel->LoadTexture("texture");
 	
-	m_AnimModel->LoadAnimation("Run_Blender.fbx", "Run",48,false);
+	m_AnimModel->LoadAnimation("Run.fbx", "Run",48,false);
 	m_AnimModel->LoadAnimation("Slash.fbx", "Slash",122,true);
 	m_AnimModel->LoadAnimation("Walk.fbx", "Walk",65,false);
-	m_AnimModel->LoadAnimation("Idle_Blender.fbx", "Idle",117,false);
+	m_AnimModel->LoadAnimation("Idle.fbx", "Idle",117,false);
 	//m_AnimModel->SetLockAnimation("Slash");
 
 
