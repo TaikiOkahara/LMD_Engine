@@ -18,27 +18,29 @@ void CPointLight::Init()
 
 		D3DXVECTOR3 rot,scale;
 		rot = D3DXVECTOR3(0, 0, 0);
-		scale = D3DXVECTOR3(12.0f, 12.0f, 1.0f);
+		scale = D3DXVECTOR3(12.0f, 12.0f, 12.0f);
 
 	
 
 		for (int i = 0; i < 3; i++)
 		{
-			
 			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 2.0f, 10.0f * i + 5.0f),rot, scale });
-
-			m_PointLight[i] = POINTLIGHT{ D3DXVECTOR3(1.0f, 0.5f, 0.0f) ,100,D3DXVECTOR3(0.1f, 0.25f, 0.1f) ,0};
+			m_PointLight[i] = POINTLIGHT{ D3DXVECTOR3(1.0f, 0.5f, 0.0f) ,100,D3DXVECTOR3(0.1f, 0.25f, 0.1f) ,scale.x,m_TransformList[i].position,(UINT)pow(2,i)};
+			UINT tmp =(UINT)pow(2,0);
+			tmp = (UINT)pow(2,1);
+			tmp = (UINT)pow(2,2);
+			tmp = tmp;
 		}
 
 
 		//一番奥の壁のライト
 		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 2.0f, 32.5f),rot, scale });
-		m_PointLight[3] = POINTLIGHT{ D3DXVECTOR3(1.0f, 0.5f, 0.0f) ,100,D3DXVECTOR3(0.1f, 0.15f, 0.1f) ,0 };
+		m_PointLight[3] = POINTLIGHT{ D3DXVECTOR3(1.0f, 0.5f, 0.0f) ,100,D3DXVECTOR3(0.1f, 0.15f, 0.1f) ,scale.x ,m_TransformList[3].position,(UINT)pow(2,3) };
 
 
 		//Playerlight
 		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(5.0f, 5.0f, 1.0f),rot, scale });
-		m_PointLight[4] = POINTLIGHT{ D3DXVECTOR3(1.0f, 1.0f, 1.0f) ,100,D3DXVECTOR3(1.0f, 1.0f, 0.1f) ,0 };
+		m_PointLight[4] = POINTLIGHT{ D3DXVECTOR3(1.0f, 1.0f, 1.0f) ,100,D3DXVECTOR3(1.0f, 1.0f, 0.1f) ,scale.x ,m_TransformList[4].position,0 };
 
 
 		
@@ -50,34 +52,29 @@ void CPointLight::Init()
 	RENDERER::CreateVertexShader(&m_pVertexShader, &m_pCommonVertexLayout,nullptr, 0, "pointLightVS.cso");
 	RENDERER::CreatePixelShader(&m_pPixelShader, "pointLightPS.cso");
 
-	//InitInstance();
-	//UpdateInstance();//視錐台カリングを行う場合入れる
 	
 }
 
 void CPointLight::Uninit()
 {
 
-	//delete[] m_TransformList;
-
 	m_pMesh->Unload();
 	delete m_pMesh;
 
 	m_Collision.Uninit();
 
-	//UninitInstance();
 	
 	SAFE_RELEASE(m_pVertexShader);
 	SAFE_RELEASE(m_pPixelShader);
-	//SAFE_RELEASE(m_pVertexLayout);
-	/*SAFE_RELEASE(m_pPointLightBuffer);
-	SAFE_RELEASE(m_pPointLightBufferSRV);*/
+	
 }
 
 void CPointLight::Update()
 {
 	CPlayer* player = Base::GetScene()->GetGameObject<CPlayer>();
 	m_TransformList[4].position = player->GetPosition();
+	m_PointLight[4].pos = m_TransformList[4].position;
+
 	
 }
 
@@ -92,7 +89,6 @@ void CPointLight::Draw()
 	RENDERER::m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);
 	RENDERER::m_pDeviceContext->IASetInputLayout(m_pCommonVertexLayout);
 
-	RENDERER::m_ConstantBufferList.GetStruct<PointLightBuffer>()->Set(m_PointLight);
 	
 	
 	//　マトリクス設定
@@ -102,18 +98,20 @@ void CPointLight::Draw()
 
 	for (int i = 0; i < m_TransformList.size() && LIGHT_MAX; i++)
 	{
-		D3DXMatrixScaling(&scale, m_TransformList[i].scale.x, m_TransformList[i].scale.y, i * 1.0f);//xに本当のサイズを入れる、zにインデックス番号を入れる
+		
 		
 		if (i == 4 && !m_EnablePlayerPointLight)
-			D3DXMatrixScaling(&scale, m_TransformList[i].scale.x, m_TransformList[i].scale.y, -1);
+			continue;
 
-		
-
+		D3DXMatrixScaling(&scale, m_TransformList[i].scale.x, m_TransformList[i].scale.y, m_TransformList[i].scale.z);
 		D3DXMatrixTranslation(&trans, m_TransformList[i].position.x, m_TransformList[i].position.y, m_TransformList[i].position.z);
 		world = scale * rot * trans;
 		
-		RENDERER::m_ConstantBufferList.GetStruct<WorldBuffer>()->Set(world);
 		
+
+		RENDERER::m_ConstantBufferList.GetStruct<WorldBuffer>()->Set(world);
+		RENDERER::m_ConstantBufferList.GetStruct<PointLightBuffer>()->Set(m_PointLight[i]);
+
 		
 		m_pMesh->Draw();
 	}

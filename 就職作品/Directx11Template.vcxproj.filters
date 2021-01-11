@@ -145,9 +145,6 @@
     <Filter Include="PostProcess-----------------\effect">
       <UniqueIdentifier>{c141f78d-74e9-418a-bcc4-205ea546b464}</UniqueIdentifier>
     </Filter>
-    <Filter Include="PostProcess-----------------\postProcess">
-      <UniqueIdentifier>{2970a085-ec66-4faf-8b55-f36fafacd676}</UniqueIdentifier>
-    </Filter>
     <Filter Include="PostProcess-----------------\fog">
       <UniqueIdentifier>{5355ddf3-ac3f-4c73-8808-a1386269e6c2}</UniqueIdentifier>
     </Filter>
@@ -285,9 +282,6 @@
     <ClCompile Include="00 Source File\title.cpp">
       <Filter>Scene -----------------------</Filter>
     </ClCompile>
-    <ClCompile Include="00 Source File\GameScenePostProcess.h">
-      <Filter>PostProcess-----------------\postProcess</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="00 Source File\camera.h">
@@ -406,9 +400,6 @@
     </ClInclude>
     <ClInclude Include="00 Source File\cubeMap.h">
       <Filter>GameObjects----------------\cubeMap</Filter>
-    </ClInclude>
-    <ClInclude Include="00 Source File\postProcess.h">
-      <Filter>PostProcess-----------------\postProcess</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\effect.h">
       <Filter>PostProcess-----------------\effect</Filter>

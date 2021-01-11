@@ -8,30 +8,6 @@ void CCubeMap::Init()
 {
 	
 
-	//D3DXCreateCubeTextureFromFile(RENDERER::m_pDevice,tex_front.c_str(),)
-	/*SetVisualDirectory();
-	D3DX11CreateShaderResourceViewFromFileA(RENDERER::m_pDevice, tex_front.c_str(), NULL, NULL, &m_pTextureSRV, NULL);*/
-
-	/*VERTEX_3D* pVtx = new VERTEX_3D[4];
-
-
-	pVtx[0] = VERTEX_3D(D3DXVECTOR3(0,0,0),D3DXVECTOR3(0,0,0))
-
-	D3D11_BUFFER_DESC bd;
-	bd.Usage = D3D11_USAGE_DYNAMIC;
-	bd.ByteWidth = sizeof(VERTEX_3D) * 4;
-	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	bd.MiscFlags = 0;
-	D3D11_SUBRESOURCE_DATA vrData;
-	vrData.pSysMem = pVtx;
-	RENDERER::m_pDevice->CreateBuffer(&bd, &vrData, &m_pVertexBuffer);
-
-
-	delete[] pVtx;*/
-
-
-	//CCamera* camera = Base::GetScene()->GetGameObject<CCamera>(0);
 
 	VERTEX_3D vertex[36];
 
@@ -328,8 +304,4 @@ void CCubeMap::Draw()
 
 
 	RENDERER::m_pDeviceContext->Draw(36, 0);
-}
-
-void CCubeMap::Imgui()
-{
 }

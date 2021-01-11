@@ -32,10 +32,10 @@ struct VS_PL_OUT
 {
     float4 Pos			: SV_POSITION;
     float2 Tex          : TEXCOORD0;
-    float3 LightPos		: TEXCOORD1;
-    float  LightRange	: TEXCOORD2;
-    int    LightIndex	: TEXCOORD3;
-    float4 WorldPos		: POSITION;
+    //float3 LightPos		: TEXCOORD1;
+    //float  LightRange	: TEXCOORD2;
+    //int    LightIndex	: TEXCOORD3;
+    //float4 WorldPos		: POSITION;
     float3 WorldNormal	: NORMAL;
 };
 struct PS_PL_OUT

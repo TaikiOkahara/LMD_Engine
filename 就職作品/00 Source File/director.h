@@ -5,11 +5,11 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
+#include <stdlib.h>
 
 #define NOMINMAX
 #include <windows.h>
 #include <assert.h>
-
 
 #pragma warning(push)
 //åxçêîÒï\é¶

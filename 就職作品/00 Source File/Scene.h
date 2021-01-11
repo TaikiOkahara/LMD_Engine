@@ -3,7 +3,7 @@
 #include "director.h"
 #include "gameobject.h"
 #include "Imgui11.h"
-#include "postProcess.h"
+#include "effect.h"
 
 class CScene
 {
@@ -21,10 +21,30 @@ protected:
 
 	std::list<CGameObject*> m_GameObject[LAYER::MAX];
 
-	CPostProcess* m_pPostProcess;
+	std::list<CEffect*> m_pPostProcessList;
 public:	
 	CScene(){}
-	virtual ~CScene(){}
+	virtual ~CScene()
+	{
+		for (int i = 0; i < LAYER::MAX; i++)
+		{
+			for (CGameObject* object : m_GameObject[i])
+			{
+				object->Uninit();
+				delete object;
+			}
+
+			m_GameObject[i].clear();
+		}
+
+		for (CEffect* effect : m_pPostProcessList)
+		{
+			effect->Uninit();
+			delete effect;
+		}
+
+		m_pPostProcessList.clear();
+	}
 
 
 	virtual void Init() = 0;
@@ -41,11 +61,13 @@ public:
 			m_GameObject[i].clear();
 		}
 
-		if (m_pPostProcess != nullptr)
+		for (CEffect* effect : m_pPostProcessList)
 		{
-			m_pPostProcess->Uninit();
-			delete m_pPostProcess;
+			effect->Uninit();
+			delete effect;
 		}
+
+		m_pPostProcessList.clear();
 	}
 
 	virtual void Draw() {
@@ -67,8 +89,11 @@ public:
 			}
 		}
 
-		if (m_pPostProcess != nullptr)
-			m_pPostProcess->Update();
+		
+		for (CEffect* effect : m_pPostProcessList)
+		{
+			effect->Update();
+		}
 	}
 
 	virtual void Imgui() {	
@@ -80,14 +105,18 @@ public:
 			}
 		}
 
-		if (m_pPostProcess != nullptr)
-			m_pPostProcess->Imgui();
+		for (CEffect* effect : m_pPostProcessList)
+		{
+			effect->Imgui();
+		}
 	}
 
 	virtual void PostProcessDraw(){
 
-		if (m_pPostProcess != nullptr)
-			m_pPostProcess->Draw();
+		for (CEffect* effect : m_pPostProcessList)
+		{
+			effect->Draw();
+		}
 	}
 
 	template <typename T>
@@ -116,5 +145,28 @@ public:
 		return NULL;
 	}
 
+	template <typename T>
+	T* AddPostProcess()
+	{
+		T* effect = new T();
+		m_pPostProcessList.push_back(effect);
+		effect->Init();
+
+		return effect;
+	}
+
+	template <typename T>
+	T* GetPostProcess()
+	{
+		for (CEffect* effect : m_pPostProcessList)
+		{
+			if (typeid(*effect) == typeid(T))//Å@å^Çí≤Ç◊ÇÈ
+			{
+				return (T*)effect;
+			}
+		}
+
+		return NULL;
+	}
 	
 };

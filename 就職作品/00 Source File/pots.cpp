@@ -20,24 +20,11 @@ void CPots::Init()
 
 	
 
-
-	TRANSFORM vector;
-	
-
-
 	{
-		//　マトリクス設定
-		vector.position = D3DXVECTOR3(-0.6f, 0.0f, -1.2f);
-		vector.rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		vector.scale = D3DXVECTOR3(1.2, 1.5, 1.2);
 
-		m_TransformList.push_back(vector);
-
-		vector.position = D3DXVECTOR3(-0.4f, 0.0f, -1.7f);
-		vector.rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		vector.scale = D3DXVECTOR3(1, 1, 1);
-
-		m_TransformList.push_back(vector);
+		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-0.6f, 0.0f, -1.2f),D3DXVECTOR3(0.0f, 0.0f, 0.0f) ,D3DXVECTOR3(1.2, 1.5, 1.2) });
+		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-0.4f, 0.0f, -1.7f) ,D3DXVECTOR3(0.0f, 0.0f, 0.0f) ,D3DXVECTOR3(1, 1, 1) });
+		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-0.75f, 0.0f, 8.5f) ,D3DXVECTOR3(0.0f, 0.0f, 0.0f) ,D3DXVECTOR3(2.7, 3,2.7) });
 	}
 
 	InitInstance();

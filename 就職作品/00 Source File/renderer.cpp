@@ -329,8 +329,6 @@ HRESULT RENDERER::Init(HWND phWnd)
 
 	
 
-	//ディレクショナルライト-------------------------------------------------------------------------------
-	//CreatePixelShader(&m_pDirectionalPixelShader, "directionalLightPS.cso");
 
 
 
@@ -345,12 +343,21 @@ HRESULT RENDERER::Init(HWND phWnd)
 //
 void RENDERER::Uninit()
 {
-	
+	m_ConstantBufferList.Uninit();
 
-	SAFE_RELEASE(m_pDeferredPixelShader);
-	SAFE_RELEASE(m_pDeferredVertexShader);
 	SAFE_RELEASE(m_pScreenPolyVB);
+	SAFE_RELEASE(m_pDeferredVertexShader);
+	SAFE_RELEASE(m_pDeferredPixelShader);
+	SAFE_RELEASE(m_pDeferredVertexLayout);
+	SAFE_RELEASE(m_pDeferred_TexRTV);
+	SAFE_RELEASE(m_pDeferred_DSTexDSV);
+	SAFE_RELEASE(m_pDeferred_SRV);
 	SAFE_RELEASE(m_pDepthStencil);
+	SAFE_RELEASE(m_pDeferredSamplerState);
+	SAFE_RELEASE(m_pDeferredRasterizerState);
+	SAFE_RELEASE(m_pPointLightBlendState);
+
+	SAFE_RELEASE(m_pPointLightingRasterizerState);
 
 	SAFE_RELEASE(m_pBuckBuffer_DSTexState);
 
@@ -364,20 +371,7 @@ void RENDERER::Uninit()
 	m_DepthPBR_GBuffer.Release();
 	m_Shadow_GBuffer.Release();
 
-	SAFE_RELEASE(m_pDeferred_DSTexDSV);
-	SAFE_RELEASE(m_pDeferred_SRV);
-	SAFE_RELEASE(m_pDeferred_TexRTV);
-	SAFE_RELEASE(m_pDeferredVertexLayout);
-	SAFE_RELEASE(m_pDeferredSamplerState);
-	SAFE_RELEASE(m_pDeferredRasterizerState);
 
-	//DirectionaｌLight
-	//SAFE_RELEASE(m_pDirectionalPixelShader);
-	//PointLight
-	SAFE_RELEASE(m_pPointLightingRasterizerState);
-	SAFE_RELEASE(m_pPointLightBlendState);
-
-	
 	SAFE_RELEASE(m_pCommonSamplerState);
 	SAFE_RELEASE(m_pCommonRasterizerState);
 	

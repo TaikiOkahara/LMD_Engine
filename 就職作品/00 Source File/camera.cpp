@@ -11,13 +11,13 @@
 #include "pillar.h"
 #include "Imgui11.h"
 #include "calculation.h"
+#include "ceiling.h"
+#include "floor.h"
 
 //@‰Šú‰»
 void CCamera::Init()
 {
-	//D3DXVECTOR3 Eye(0, 1, -4);
-	//D3DXVECTOR3 LookAt(0, -2, 0);
-
+	
 	m_Distance = D3DXVECTOR3(0, 1.5, -5);
 
 	m_Angle = D3DX_PI / 4;
@@ -87,10 +87,27 @@ void CCamera::Update()
 	if (m_CameraControl)
 	{
 		CWall* wall = Base::GetScene()->GetGameObject<CWall>();
-		m_Transform.position = CameraRayIntersect(wall);
+		if (wall != NULL)
+		{
+			m_Transform.position = CameraRayIntersect(wall);
+		}
 		CPillar* pillar = Base::GetScene()->GetGameObject<CPillar>();
-		m_Transform.position = CameraRayIntersect(pillar);
+		if (pillar != NULL)
+		{
+			m_Transform.position = CameraRayIntersect(pillar);
+		}
+		CCeiling* ceiling = Base::GetScene()->GetGameObject<CCeiling>();
+		if (ceiling != NULL)
+		{
+			m_Transform.position = CameraRayIntersect(ceiling);
+		}
+		CFloor* floor = Base::GetScene()->GetGameObject<CFloor>();
+		if (floor != NULL)
+		{
+			m_Transform.position = CameraRayIntersect(floor);
+		}
 
+		
 	}
 
 

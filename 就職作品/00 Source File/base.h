@@ -5,7 +5,6 @@
 #pragma once
 #include "window.h"
 #include "scene.h"
-#include "postProcess.h"
 
 
 class Base
@@ -35,5 +34,10 @@ public:
 		m_Scene = scene;
 
 		scene->Init();
+	}
+
+	~Base()
+	{
+		delete m_Scene;
 	}
 };

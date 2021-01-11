@@ -1,6 +1,6 @@
 #pragma once
 #include "scene.h"
-#include "GameScenePostProcess.h"
+
 
 enum GAME_STAGE
 {

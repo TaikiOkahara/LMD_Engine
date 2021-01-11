@@ -26,14 +26,14 @@ HRESULT WINDOW::InitWindow(HINSTANCE hInstance,
 	WNDCLASSEX wc;
 	ZeroMemory(&wc,sizeof(wc));
 	wc.cbSize = sizeof(wc);
-	wc.style = CS_HREDRAW | CS_VREDRAW;
-	wc.lpfnWndProc = WndProc;
-	wc.hInstance = hInstance;
-	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-	wc.lpszClassName = WindowName;
-	wc.hIconSm = LoadIcon(NULL,IDI_APPLICATION);
+	wc.style			= CS_HREDRAW | CS_VREDRAW;
+	wc.lpfnWndProc		= WndProc;
+	wc.hInstance		= hInstance;
+	wc.hIcon			= LoadIcon(NULL, IDI_APPLICATION);
+	wc.hCursor			= LoadCursor(NULL, IDC_ARROW);
+	wc.hbrBackground	= (HBRUSH)GetStockObject(BLACK_BRUSH);
+	wc.lpszClassName	= WindowName;
+	wc.hIconSm			= LoadIcon(NULL,IDI_APPLICATION);
 	RegisterClassEx(&wc);
 
 	
@@ -76,14 +76,11 @@ HRESULT WINDOW::InitWindow(HINSTANCE hInstance,
 		);
 
 
-
 	if(!m_hWnd)
 	{
 		return E_FAIL;
 	}
-	////ウインドウの表示
-	//ShowWindow(m_hWnd,SW_SHOW);
-	//UpdateWindow(m_hWnd);
+
 	
 	return S_OK;
 }

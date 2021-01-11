@@ -18,7 +18,7 @@ void CCeiling::Init()
 
 	m_Transform.position = D3DXVECTOR3(-0.5f, 3.5f, 2.5f);
 
-	m_Collision.Init(D3DXVECTOR3(1, 1, 1), D3DXVECTOR3(0, 0, 0));
+	m_Collision.Init(D3DXVECTOR3(5, 0.2, 5), D3DXVECTOR3(-2.0f, 0, 0));
 	
 
 	TRANSFORM vector;

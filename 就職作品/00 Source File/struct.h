@@ -1,7 +1,7 @@
 #pragma once
 
 
-#define	LIGHT_MAX		(8)	//ライトの数を有限にする
+#define	LIGHT_MAX		(6)	//ライトの数を有限にする
 #define	ANIMATION_MATRIX_MAX	(64)
 
 enum PRIORITY_LEVEL
@@ -69,7 +69,9 @@ struct POINTLIGHT
 	D3DXVECTOR3 color;
 	FLOAT		intensity;
 	D3DXVECTOR3 calc;
-	FLOAT		dummy;
+	FLOAT		size;
+	D3DXVECTOR3 pos;
+	UINT		index;//二進数に直すので少し複雑
 };
 
 
@@ -135,7 +137,8 @@ private:
 	std::list<ConstantBuffer*> m_CBufferList;
 
 public:
-	~ConstantBufferList()
+
+	void Uninit()
 	{
 		for (ConstantBuffer* buff : m_CBufferList)
 		{
@@ -143,7 +146,6 @@ public:
 		}
 		m_CBufferList.clear();
 	}
-
 
 	template <typename T>
 	T* AddConstantBuffer(unsigned int slot)
@@ -278,10 +280,11 @@ public:
 
 class PointLightBuffer : public ConstantBuffer
 {
+	POINTLIGHT str;
 public:
-	void Set(POINTLIGHT* set);
-
-	PointLightBuffer() { m_StructSize = sizeof(POINTLIGHT) * LIGHT_MAX; }
+	void Set(POINTLIGHT set);
+	void SetIndex(int index);
+	PointLightBuffer() { m_StructSize = sizeof(POINTLIGHT); }
 	~PointLightBuffer() {}
 };
 

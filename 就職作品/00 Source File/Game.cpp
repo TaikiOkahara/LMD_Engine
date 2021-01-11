@@ -20,6 +20,9 @@
 #include "cubeMap.h"
 #include "projectionShadow.h"
 
+#include "directionalLight.h"
+#include "fog.h"
+
 void Game::Init() {
 
 	CGameObject::Load();
@@ -36,7 +39,7 @@ void Game::Init() {
 	AddGameObject<CFloor>(LAYER::DRAW);
 	AddGameObject<CWall>(LAYER::DRAW);
 	AddGameObject<CPillar>(LAYER::DRAW);
-	//AddGameObject<CStage>(LAYER::DRAW_LAYER_DRAW);	//ドア
+	AddGameObject<CStage>(LAYER::DRAW);	//ドア
 	AddGameObject<CTrim>(LAYER::DRAW);
 	AddGameObject<CCeiling>(LAYER::DRAW);
 	AddGameObject<CCeilingArch>(LAYER::DRAW);
@@ -49,13 +52,15 @@ void Game::Init() {
 	AddGameObject<CPlayer>(LAYER::DRAW);//プレイヤー
 
 
-	m_pPostProcess = new CGameScenePostProcess();
-	m_pPostProcess->Init();
+	AddPostProcess<CDirectionalLight>();
+	AddPostProcess<CFogEffect>();
+	//m_pPostProcess->Init();
 }
 
 void Game::UnInit() {
 	
 	CScene::UnInit();
+
 
 	CInstanceGameObject::Unload();
 	CGameObject::Unload();

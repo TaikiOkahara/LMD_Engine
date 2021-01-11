@@ -46,12 +46,18 @@ class CAnimationModel
 		const bool rigidity;//硬直モーションかどうか
 		//PRIORITY_LEVEL level;
 		const aiScene* scene;
-		int maxFrame;
-		int curFrame;
+		const int maxFrame;
+		float curFrame;
+		const float FrameSpeed;
+		//const bool upper;
+
+		const bool lowerRigidity;
+		const bool upperRigidity;
+
 	public:
 
-		Animation(const aiScene* sce,int maxf, bool rigid)
-			: scene(sce),maxFrame(maxf),rigidity(rigid),curFrame(1){}
+		Animation(const aiScene* sce,int maxf, bool rigid,float sp)
+			: scene(sce),maxFrame(maxf),rigidity(rigid),curFrame(1.0f),FrameSpeed(sp){}
 
 
 		bool MotionLock() {
@@ -79,20 +85,25 @@ class CAnimationModel
 			return maxFrame;
 		}
 
-		int GetCurFrame()
+		float GetCurFrame()
 		{
 			return curFrame;
 		}
 
 		void UpdateFrame()
 		{
-			curFrame++;
+			if (rigidity && curFrame >= maxFrame)
+				return;
+
+			curFrame += FrameSpeed;
 		}
 
 		void FrameReset()
 		{
-			curFrame = 1;
+			curFrame = 1.0f;
 		}
+
+		
 	};
 
 private:
@@ -102,10 +113,7 @@ private:
 
 	std::map<std::string, ID3D11ShaderResourceView*> m_mapTexture;
 	std::map<std::string, Animation*> m_mapAnimation;
-	//std::map<std::string, CCondition*> m_mapCondition;//アニメーション遷移クラスのマップ
 
-
-	const aiScene* m_LockAnimation;
 
 	std::vector<DEFORM_ANIMVERTEX>* m_vectorDeformVertex;//変形後頂点データ
 	std::map < const std::string, BONE> m_mapBone;//ボーンデータ（名前で参照）
@@ -119,20 +127,14 @@ private:
 
 
 	float m_fBlendTime = 0;
-	//int m_iFrame = 1;
-
 
 	void CreateBone(aiNode* node);
 	void UpdateBoneMatrix(aiNode* node, aiMatrix4x4 matrix);
 public:
-	//bool m_isLock = false;
-
-
 	void LoadModel(const char* FileName,D3DXVECTOR3 pos);
 	void LoadTexture(std::string file_name);
-
-	//LEVEL_0:低、LEVEL_1：高、LEVEL_2：アニメーションロック
-	void LoadAnimation(const char* FileName, const char* AnimationName,int maxFrame,bool rigidity);
+	
+	void LoadAnimation(const char* FileName, const char* AnimationName,int maxFrame,bool rigidity,float speed);
 	
 
 	void Unload();
@@ -141,54 +143,4 @@ public:
 	void Draw();
 	void DrawInstance();
 	bool GetMotionLock() { return m_mapAnimation[m_sCurAnimationName]->GetRigidity(); }
-};
-
-class CCondition
-{
-protected:
-	unsigned int m_level;
-	const unsigned int m_frameMax;
-	const unsigned int m_frameSpeed;
-	unsigned int m_frame;
-
-	const bool m_upper;//上半身だけのモーションか
-public:
-	CCondition(unsigned int level, unsigned int frame, unsigned int speed, bool upper)
-		: m_level(level), m_frameMax(frame), m_frameSpeed(speed), m_upper(upper), m_frame(0) {}
-	virtual ~CCondition() {}
-
-	bool MotionLock()
-	{
-		return (m_frame >= m_frameMax) ? false : true;
-	};
-
-	void FrameUpdate()
-	{
-		m_frame += m_frameSpeed;
-
-	}
-
-	void FrameReset()
-	{
-		m_frame = 0;
-	}
-
-	bool GetLowerLock()
-	{
-		return m_upper;
-	}
-
-	unsigned int GetFrameMax()
-	{
-		return m_frameMax;
-	}
-	unsigned int GetCurFrame()
-	{
-		return m_frame;
-	}
-
-	unsigned int GetLevel()
-	{
-		return m_level;
-	}
 };

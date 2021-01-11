@@ -11,7 +11,6 @@
 #include "scene.h"
 #include "game.h"
 
-#include "postProcess.h"
 
 static HINSTANCE	m_hInstance;
 static WINDOW*		m_pWindow;
@@ -111,7 +110,7 @@ HRESULT Base::Init(HINSTANCE phInstance)
 	SetScene<Game>();
 
 	//　外部データ読み込み
-	LoadIni();
+	//LoadIni();
 
 
 	IMGUI_Init(m_hWnd);
@@ -120,10 +119,10 @@ HRESULT Base::Init(HINSTANCE phInstance)
 	CInput::Init(m_hInstance, m_hWnd);
 
 
+	
 	//ウインドウの表示
 	ShowWindow(m_hWnd, SW_SHOW);
 	UpdateWindow(m_hWnd);
-
 
 	return S_OK;
 }
@@ -134,17 +133,18 @@ HRESULT Base::Init(HINSTANCE phInstance)
 HRESULT Base::Uninit()
 {
 
+	CInput::Uninit();
+
+	IMGUI_Uninit();
+
 	m_Scene->UnInit();
 	delete m_Scene;
 
 
-
-	IMGUI_Uninit();
-
 	RENDERER::Uninit();
 
-	CInput::Uninit();
 
+	DestroyWindow(m_pWindow->m_hWnd);
 	SAFE_DELETE(m_pWindow);
 
 	return S_OK;

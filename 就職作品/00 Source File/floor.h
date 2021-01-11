@@ -1,8 +1,9 @@
 #pragma once
 #include "gameobject.h"
+#include "InstanceObject.h"
 #include "tile.h"
 
-class CFloor : public CGameObject
+class CFloor : public CInstanceGameObject
 {
 private:
 	Tile* m_pField = nullptr;
@@ -19,4 +20,5 @@ public:
 	void Uninit();
 	void Update();
 	void Draw();
+	void Imgui();
 };

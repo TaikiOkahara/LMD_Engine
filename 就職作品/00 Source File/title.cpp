@@ -19,17 +19,42 @@
 #include "chandelier.h"
 #include "cubeMap.h"
 #include "projectionShadow.h"
+#include "directionalLight.h"
 
 void Title::Init() {
 
+	CGameObject::Load();
+	CInstanceGameObject::Load();
+
+
+	AddGameObject<CCamera>(LAYER::HIDE);
+
+	AddGameObject<CCubeMap>(LAYER::HIDE);
+
+
+	AddGameObject<CFloor>(LAYER::DRAW);
+
+
+	AddGameObject<CPlayer>(LAYER::DRAW);//プレイヤー
+
+
+
+	AddPostProcess<CDirectionalLight>();
 }
 
 void Title::UnInit() {
 	
 	CScene::UnInit();
+
+
+	CInstanceGameObject::Unload();
+	CGameObject::Unload();
+
 }
 
 void Title::Update() {
+
+	CScene::Update();
 
 	//タイトルScene移動
 	if (CInput::KeyTrigger(DIK_F8))
@@ -38,6 +63,11 @@ void Title::Update() {
 
 void Title::Imgui()
 {
+
+	CScene::Imgui();
+
+
+
 	if (true)
 	{
 		ImGuiWindowFlags flag = 0;

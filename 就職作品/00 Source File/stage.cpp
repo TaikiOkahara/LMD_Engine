@@ -12,8 +12,8 @@ void CStage::Init()
 {
 	
 	m_pMesh = new StaticMesh();
-	m_pMesh->LoadModel("../02 Visual File//DoorWay//doorWayPBR.fbx");
-	m_pMesh->LoadTexture("");
+	m_pMesh->LoadModel("../02 Visual File//DoorWay//doorWayPBR_NoTex.fbx");
+	m_pMesh->LoadTexture("../02 Visual File//DoorWay//texture");
 
 
 	m_Transform.position = D3DXVECTOR3(-2.5f, 0.0f, 0.0f);

@@ -69,12 +69,6 @@ void CProjShadow::Draw()
 	RENDERER::PointLighting();
 
 
-	//ブレンドステート
-	/*float blend[4] = { 1,1,1,1 };
-	RENDERER::m_pDeviceContext->OMSetBlendState(nullptr, blend, 0xffffffff);*/
-
-	//RENDERER::m_pDeviceContext->OMSetDepthStencilState(NULL, 0);
-
 	RENDERER::SetRasterizerState(D3D11_CULL_MODE::D3D11_CULL_NONE);
 
 	RENDERER::m_pDeviceContext->VSSetShader(m_pVertexShader, NULL, 0);

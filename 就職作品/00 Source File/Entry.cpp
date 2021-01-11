@@ -9,15 +9,13 @@
 =============================================================*/
 #define _CRTDBG_MAP_ALLOC
 
-#include <windows.h>
 #include "base.h"
 
 //メモリリーク検出
-#include <stdlib.h>
 #include <crtdbg.h>
 
 
-INT WINAPI WinMain(HINSTANCE hInstance,HINSTANCE,LPSTR,INT)
+INT WINAPI WinMain(_In_ HINSTANCE hInstance,_In_opt_ HINSTANCE,_In_ LPSTR,_In_ INT)
 {
 
 	{
@@ -26,6 +24,7 @@ INT WINAPI WinMain(HINSTANCE hInstance,HINSTANCE,LPSTR,INT)
 		Base::Run();
 
 		Base::Uninit();
+
 	}
 
 	////メモリリーク検出
@@ -34,4 +33,4 @@ INT WINAPI WinMain(HINSTANCE hInstance,HINSTANCE,LPSTR,INT)
 	_CrtDumpMemoryLeaks();
 
 	return 0;
-}
+ }

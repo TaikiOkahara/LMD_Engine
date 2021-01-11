@@ -23,11 +23,17 @@ void CPlayer::Init()
 	m_AnimModel->LoadModel("KnightPBR_NoTex.fbx", D3DXVECTOR3(0,0.1f,0));
 	m_AnimModel->LoadTexture("texture");
 	
-	m_AnimModel->LoadAnimation("Run.fbx", "Run",48,false);
-	m_AnimModel->LoadAnimation("Slash.fbx", "Slash",122,true);
-	m_AnimModel->LoadAnimation("Walk.fbx", "Walk",65,false);
-	m_AnimModel->LoadAnimation("Idle.fbx", "Idle",117,false);
-	//m_AnimModel->SetLockAnimation("Slash");
+	m_AnimModel->LoadAnimation("Run.fbx", "Run",48,false,1.0f);
+	m_AnimModel->LoadAnimation("Slash.fbx", "Slash",122,true,1.0f);
+	m_AnimModel->LoadAnimation("Sword_And_Shield_Idle_152.fbx", "Idle",152,false,1.0f);
+	m_AnimModel->LoadAnimation("Sword_And_Shield_Walk_65.fbx", "Walk",65,false,1.0f);
+	m_AnimModel->LoadAnimation("Kick_71.fbx", "Kick",71,true,1.0f);
+	m_AnimModel->LoadAnimation("Slash_146.fbx", "Slash2",146, true,1.3f);
+	m_AnimModel->LoadAnimation("Slash2_100.fbx", "Slash3",100, true,1.3f);
+	m_AnimModel->LoadAnimation("Sword_And_Shield_Slash_3_90.fbx", "Slash4",90, true,1.3f);
+	m_AnimModel->LoadAnimation("Standing_Melee_Combo_Attack_Ver_2_252.fbx", "Slash5",252, true,1.3f);
+	
+	//m_AnimModel->SetLockAnimation("Walk");
 
 
 	//m_ConditionList["idle"] = new CCondition(PRIORITY_LEVEL::LEVEL_1, 0, 1, false);
@@ -90,6 +96,13 @@ void CPlayer::Uninit()
 	m_VertexShader->Release();
 	m_VertexLayout->Release();
 	m_PixelShader->Release();
+
+	m_TileVertexShader->Release();
+	m_TilePixelShader->Release();
+
+
+	delete m_pPointLightBlendState;
+	delete m_pBuckBuffer_DSTexState;
 }
 //
 //
@@ -176,10 +189,18 @@ void CPlayer::Update()
 	//•Ç‚Æ‚Ì“–‚½‚è”»’è
 	if (m_EnableHit)
 	{
+
 		CWall* wall = Base::GetScene()->GetGameObject<CWall>();
-		m_Transform.position = LenOBBToPoint(*wall, m_Transform.position, 7.0f);
+		if(wall != NULL)
+		{
+			m_Transform.position = LenOBBToPoint(*wall, m_Transform.position, 7.0f);
+		}
 		CPillar* pillar = Base::GetScene()->GetGameObject<CPillar>();
-		m_Transform.position = LenOBBToPoint(*pillar, m_Transform.position, 2.0f);
+		if (pillar != NULL)
+		{
+			m_Transform.position = LenOBBToPoint(*pillar, m_Transform.position, 5.0f);
+		}
+
 	}
 	
 
@@ -200,6 +221,26 @@ void CPlayer::Update()
 	if (CInput::KeyTrigger(DIK_RETURN)) 
 	{
 		m_AnimModel->SetAnimation("Slash", false);
+	}
+	else if (CInput::KeyTrigger(DIK_F7))
+	{
+
+		m_AnimModel->SetAnimation("Slash2", false);
+	}
+	else if (CInput::KeyTrigger(DIK_F6))
+	{
+
+		m_AnimModel->SetAnimation("Slash3", false);
+	}
+	else if (CInput::KeyTrigger(DIK_F5))
+	{
+
+		m_AnimModel->SetAnimation("Slash5", false);
+	}
+	else if (CInput::KeyTrigger(DIK_F4))
+	{
+
+		m_AnimModel->SetAnimation("Slash4", false);
 	}
 	else if (CInput::KeyPress(DIK_W) ||
 		CInput::KeyPress(DIK_A) ||
@@ -268,21 +309,14 @@ void CPlayer::Draw()
 
 
 	//ƒRƒŠƒWƒ‡ƒ“	
-	D3DXMatrixScaling(&scale, m_Transform.scale.x, m_Transform.scale.y, m_Transform.scale.z);
-	world = scale * rot * trans;
-	/*worldMatrix.worldMatrix = world;
-	RENDERER::SetWorldMatrix(worldMatrix);*/
-	RENDERER::m_ConstantBufferList.GetStruct<WorldBuffer>()->Set(world);
 
 	if (m_EnableCollision)
+	{
+		D3DXMatrixScaling(&scale, m_Transform.scale.x, m_Transform.scale.y, m_Transform.scale.z);
+		world = scale * rot * trans;
+		RENDERER::m_ConstantBufferList.GetStruct<WorldBuffer>()->Set(world);
 		m_Collision.Draw();
-
-
-
-
-
-	
-
+	}
 }
 
 void CPlayer::DrawShadow()

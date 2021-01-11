@@ -74,9 +74,16 @@ void DirectionalLightBuffer::SetMatrix(D3DXMATRIX set)
 
 }
 
-void PointLightBuffer::Set(POINTLIGHT* set)
+void PointLightBuffer::Set(POINTLIGHT set)
 {
-	RENDERER::m_pDeviceContext->UpdateSubresource(m_pBuffer, 0, NULL, set, 0, 0);
+	str = set;
+	RENDERER::m_pDeviceContext->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
+}
+
+void PointLightBuffer::SetIndex(int index)
+{
+	str.index = index;
+	RENDERER::m_pDeviceContext->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
 }
 
 void WorldBuffer::Set(D3DXMATRIX mat)

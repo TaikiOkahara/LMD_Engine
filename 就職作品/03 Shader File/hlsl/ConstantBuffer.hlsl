@@ -1,5 +1,5 @@
 #define ANIMATION_MATRIX_MAX (64)
-#define LIGHT_NUM (8)
+#define LIGHT_NUM (6)
 
 
 
@@ -45,12 +45,14 @@ struct POINT
     float3 color;
     float intensity;
     float3 calc;
-    float p_dummy;
+    float size;
+    float3 pos;
+    uint index;
 };
 
 cbuffer PointLightBuffer : register(b5)
 {
-    POINT g_vPointLight[LIGHT_NUM];
+    POINT g_vPointLight;//[LIGHT_NUM];
 }
 
 

@@ -190,24 +190,23 @@ void CAnimationModel::Unload()
 	{
 		if(pair.second->GetScene() != nullptr)
 			aiReleaseImport(pair.second->GetScene());
-	}
-	m_mapAnimation.clear();
 
-	/*for (std::pair<const std::string, CCondition> pair : m_mapCondition)
-	{
-		if (pair.second != nullptr)
-			aiReleaseImport(pair.second);
-	}*/
-	//m_mapCondition.clear();
+		delete pair.second;
+	}
+
+	m_mapAnimation.clear();
+	
+	
 	
 	m_mapBone.clear();
 	
 
-
-	for (int i = 0;i <  m_pAiScene->mNumMeshes; i++)
+	
+	for (int i = 0;i < m_pAiScene->mNumMeshes; i++)
 	{
 		std::vector<DEFORM_ANIMVERTEX>().swap(m_vectorDeformVertex[i]);
 		m_vectorDeformVertex[i].clear();
+
 	}
 	delete[] m_vectorDeformVertex;
 
@@ -216,9 +215,9 @@ void CAnimationModel::Unload()
 }
 
 
-void CAnimationModel::LoadAnimation(const char* FileName, const char* AnimationName, int maxFrame,bool rigidity)
+void CAnimationModel::LoadAnimation(const char* FileName, const char* AnimationName, int maxFrame,bool rigidity,float speed)
 {
-	m_mapAnimation[AnimationName] = new Animation(aiImportFile(FileName, aiProcess_ConvertToLeftHanded), maxFrame, rigidity);
+	m_mapAnimation[AnimationName] = new Animation(aiImportFile(FileName, aiProcess_ConvertToLeftHanded), maxFrame, rigidity,speed);
 	assert(m_mapAnimation[AnimationName]->GetScene());
 
 
@@ -240,8 +239,8 @@ void CAnimationModel::Update()
 	//m_iFrame++;
 	
 
-	const int curFrame = m_mapAnimation[m_sCurAnimationName]->GetCurFrame();
-	const int nexFrame = m_mapAnimation[m_sNexAnimationName]->GetCurFrame();
+	const int curFrame = (int)m_mapAnimation[m_sCurAnimationName]->GetCurFrame();
+	const int nexFrame = (int)m_mapAnimation[m_sNexAnimationName]->GetCurFrame();
 	const int curMaxFrame = m_mapAnimation[m_sCurAnimationName]->GetMaxFrame();
 	
 	
@@ -262,8 +261,7 @@ void CAnimationModel::Update()
 			aiNodeAnim* nodeAnim = animation->mChannels[c];
 			BONE* bone = &m_mapBone[nodeAnim->mNodeName.C_Str()];
 
-
-
+			
 			int frot, fpos;
 
 			frot = curFrame % nodeAnim->mNumRotationKeys;//簡易実装
@@ -278,6 +276,8 @@ void CAnimationModel::Update()
 			
 		}
 
+		m_mapAnimation[m_sCurAnimationName]->UpdateFrame();
+
 		//硬直状態なら、時間制限のチェックを行う
 		if (m_mapAnimation[m_sCurAnimationName]->GetRigidity())
 		{
@@ -287,13 +287,17 @@ void CAnimationModel::Update()
 				m_CurRigidity = false;
 		}
 
-		m_mapAnimation[m_sCurAnimationName]->UpdateFrame();
+		//m_fBlendTime = 0.0f;
 	}
 	//通常→通常　もしくは　通常→硬直　ブレンディング
 	else if (!m_mapAnimation[m_sCurAnimationName]->GetRigidity())
 	{
 		
-
+		//硬直状態なら、時間制限のチェックを行う
+		if (m_mapAnimation[m_sNexAnimationName]->GetRigidity())
+		{
+			m_CurRigidity = true;
+		}
 				
 		//アニメーションデータからボーンマトリクス算出
 		aiAnimation* curAnimation = curScene->mAnimations[0];
@@ -322,6 +326,8 @@ void CAnimationModel::Update()
 			bone->AnimationMatrix = aiMatrix4x4(aiVector3D(1.0f, 1.0f, 1.0f), rot, pos);
 
 			
+
+			
 		}
 
 
@@ -329,10 +335,13 @@ void CAnimationModel::Update()
 		m_mapAnimation[m_sCurAnimationName]->UpdateFrame();
 		m_mapAnimation[m_sNexAnimationName]->UpdateFrame();
 
-
-
-
-		m_fBlendTime += 0.1f;
+		//攻撃のアクションはすぐ遷移させる
+		if (m_mapAnimation[m_sNexAnimationName]->GetRigidity())
+			m_fBlendTime += 0.3f;
+		else
+			m_fBlendTime += 0.1f;
+	
+		
 		if (m_fBlendTime >= 1)
 		{
 			m_fBlendTime = 0.0f;
@@ -341,23 +350,19 @@ void CAnimationModel::Update()
 
 		}
 
-		//硬直状態なら、時間制限のチェックを行う
-		if (m_mapAnimation[m_sNexAnimationName]->GetRigidity())
-		{
-			m_CurRigidity = true;
-		}
-
-
-	}
-	//硬直→通常　のブレンド
-	else //(!m_mapAnimation[m_sCurAnimationName]->GetRigidity() && m_mapAnimation[m_sNexAnimationName]->GetRigidity())
-	{
-		m_CurRigidity = false;
-
-
 		
-		//int frame_0 = m_mapAnimation[m_sCurAnimationName]->GetMaxFrame();
-		//int frame_1 = m_mapAnimation[m_sNexAnimationName]->GetCurFrame();
+
+
+	}	
+	//硬直→通常　もしくは　硬直→硬直　ブレンド  //(!m_mapAnimation[m_sCurAnimationName]->GetRigidity() && m_mapAnimation[m_sNexAnimationName]->GetRigidity())
+	else
+	{
+
+		if (m_mapAnimation[m_sNexAnimationName]->GetRigidity())
+			m_CurRigidity = true;
+		else
+			m_CurRigidity = false;
+		
 
 		//アニメーションデータからボーンマトリクス算出
 		aiAnimation* curAnimation = curScene->mAnimations[0];
@@ -406,9 +411,6 @@ void CAnimationModel::Update()
 			m_sCurAnimationName = m_sNexAnimationName;
 
 		}
-
-
-		//m_mapAnimation[m_sCurAnimationName].level = PRIORITY_LEVEL::LEVEL_0;
 
 
 	}
@@ -477,7 +479,7 @@ void CAnimationModel::SetAnimation(const char* AnimationName, bool animLock)
 	}
 
 	//同じアニメーションなら、継続更新するので、セットは必要ない。
-	if (m_sCurAnimationName == AnimationName)
+	if (m_sNexAnimationName == AnimationName)
 	{
 
 		m_sNexAnimationName = AnimationName;
@@ -486,8 +488,9 @@ void CAnimationModel::SetAnimation(const char* AnimationName, bool animLock)
 
 
 
-	//m_fBlendTime = 1.0f;
+	m_fBlendTime = 0.0f;
 	m_sNexAnimationName = AnimationName;
+	m_mapAnimation[m_sNexAnimationName]->FrameReset();
 	//m_CurRigidity = m_mapAnimation[m_sNexAnimationName]->GetRigidity();
 }
 

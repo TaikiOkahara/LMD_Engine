@@ -34,7 +34,6 @@
     <ClCompile Include="00 Source File\InstanceObject.cpp" />
     <ClCompile Include="00 Source File\pillar.cpp" />
     <ClCompile Include="00 Source File\pointLight.cpp" />
-    <ClCompile Include="00 Source File\GameScenePostProcess.h" />
     <ClCompile Include="00 Source File\pots.cpp" />
     <ClCompile Include="00 Source File\projectionShadow.cpp" />
     <ClCompile Include="00 Source File\skeletalMesh.cpp" />
@@ -78,7 +77,6 @@
     <ClInclude Include="00 Source File\calculation.h" />
     <ClInclude Include="00 Source File\pillar.h" />
     <ClInclude Include="00 Source File\pointLight.h" />
-    <ClInclude Include="00 Source File\postProcess.h" />
     <ClInclude Include="00 Source File\pots.h" />
     <ClInclude Include="00 Source File\projectionShadow.h" />
     <ClInclude Include="00 Source File\skeletalMesh.h" />

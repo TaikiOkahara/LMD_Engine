@@ -44,7 +44,14 @@ protected:
 public:
 	/*CInstanceGameObject()
 	{}*/
-	~CInstanceGameObject(){}
+	~CInstanceGameObject()
+	{
+		for (int i = 0; i < m_TransformList.size(); i++)
+		{
+			std::vector<TRANSFORM>().swap(m_TransformList);
+			m_TransformList.clear();
+		}
+	}
 
 	//オーバーロード
 	D3DXVECTOR3  GetPosition(int index) { return m_TransformList[index].position; }

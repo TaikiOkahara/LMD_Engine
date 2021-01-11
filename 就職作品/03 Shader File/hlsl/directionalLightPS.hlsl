@@ -55,22 +55,10 @@ float4 main(VS_OUT input) : SV_Target
     //Color.rgb *= diffuse.xyz * NL * color.xyz;
     Color.rgb *= (normal.w == 2.0f) ? diffuse.xyz : diffuse.xyz * NL * color.xyz; //ライティングを行か
     Color.a = diffuse.a;
-    //アンビエント---------------------------------------------------
-    //float4 Ambient = float4(0, 0, 0, 0);
-    //Color.rgb += Ambient.xyz;
-    //---------------------------------------------------------------
-    //スぺキュラ-----------------------------------------------------
-    //float4 Specular = pow(saturate(dot(Eye, Reflect)), 100);
     
-    //float specularMap = g_texDepthPBR.Load(sampleIndices).g;
-    //Specular *= specularMap;
-    
-    //Color.rgb = saturate(Color.rgb + Specular.rgb);
    
-    //---------------------------------------------------------------
-	
 	//リム-----------------------------------------------------
-    //float Rim = 1.0f + dot(vLightVector, normal.xyz);
+    //float Rim = max(dot(-vLightVector, normal.xyz), 0);
     //Rim = pow(Rim, 2) * 0.6;
     //Color.rgb += Rim;
     //---------------------------------------------------------------

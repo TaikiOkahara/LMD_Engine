@@ -16,8 +16,6 @@ PS_PL_OUT main(VS_PL_OUT input)
     int3 sampleIndices = int3(input.Pos.xy, 0);
 
     float4 normal = g_texNormal.Load(sampleIndices);
-    //normal.w = 0.0f;
-    //normal = normalize(normal);
 
     float4 position = g_texPosition.Load(sampleIndices);
     float3 diffuse = g_texColor.Load(sampleIndices).xyz;
@@ -25,30 +23,18 @@ PS_PL_OUT main(VS_PL_OUT input)
 
    
 
-    float3 lpos  = input.LightPos;
+    float3 lpos  = g_vPointLight.pos;
     float3 L = position.xyz - lpos;
     float dist = length(L);
     dist = abs(dist);
     
-    //if (dist > input.LightRange.x)//‹——£
-    //{
-    //    Out.vPointLight = float4(0, 0, 0, 1);
-    //    return Out;
-    //}
-    
-    if (input.LightIndex < 0)
-    {
-        Out.PointLight = float4(0, 0, 0, 0);
-        //Out.vColor = float4(0,0,0, 1);
-        return Out;
-    }
-     
+  
         
         //“_ŒõŒ¹‚Ì•ûŒü‚ð³‹K‰»
         //L /= dist; //L = normalize(L)‚Æ“¯‚¶
     L = normalize(L);
     
-    uint index = input.LightIndex;
+    //uint index = input.LightIndex;
     
     
     // att= 1/0 / (a+b*d+c*d^2) d:‹——£ a,b,cF’è”
@@ -56,7 +42,7 @@ PS_PL_OUT main(VS_PL_OUT input)
     //float att = max(0.0f, 1.0f - (dist / input.LightRange.x));
     
     float att;
-    att = (g_vPointLight[index].calc.x + (g_vPointLight[index].calc.y * dist) + (g_vPointLight[index].calc.z * dist * dist));
+    att = (g_vPointLight.calc.x + (g_vPointLight.calc.y * dist) + (g_vPointLight.calc.z * dist * dist));
     att = 1/att;
     
    
@@ -69,7 +55,7 @@ PS_PL_OUT main(VS_PL_OUT input)
     //float lightAmount = saturate(dot(normal, L));
     float lightAmount = max(dot(normal.xyz, L),0);
     
-    float3 lightColor = g_vPointLight[index].color;
+    float3 lightColor = g_vPointLight.color;
     float3 color = lightAmount * lightColor * att; // * (g_vPointLight[index].intensity / (4.0 * PI)); // * vanish;
    
     
@@ -87,8 +73,8 @@ PS_PL_OUT main(VS_PL_OUT input)
 
     
     float4 totalColor = float4(color, 1.0f);
-    float attenuation = DistanceAttenuation(distance(lpos, position.xyz), input.LightRange);
-    float3 irradiance = attenuation * g_vPointLight[index].color * (g_vPointLight[index].intensity / (4.0 * PI)) * max(dot(normal.xyz, L), 0);
+    float attenuation = DistanceAttenuation(distance(lpos, position.xyz), g_vPointLight.size);
+    float3 irradiance = attenuation * g_vPointLight.color * (g_vPointLight.intensity / (4.0 * PI)) * max(dot(normal.xyz, L), 0);
    
     
     
