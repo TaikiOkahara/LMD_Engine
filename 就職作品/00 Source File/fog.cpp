@@ -13,7 +13,7 @@ void CFogEffect::Init()
 	RENDERER::CreatePixelShader(&m_pPixelShader, "fogPS.cso");
 
 
-	D3DX11CreateShaderResourceViewFromFile(RENDERER::m_pDevice, "../02 Visual File//fog.dds", NULL, NULL, &m_FogTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(RENDERER::m_pDevice, "../02 Visual File//textures//fog.dds", NULL, NULL, &m_FogTexture, NULL);
 	assert(m_FogTexture);
 
 

@@ -15,7 +15,7 @@ void CDirectionalLight::Init()
 	m_Transform.scale = D3DXVECTOR3(10, 10, 10);
 
 
-	m_DLightCol = D3DXVECTOR4(0.4f, 0.6f, 1, 1);
+	m_DLightCol = D3DXVECTOR4(1, 1, 1, 1);
 
 	////シェーダー作成
 	//RENDERER::CreatePixelShader(&m_PixelShader, "cursorPS.cso");

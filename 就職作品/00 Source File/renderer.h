@@ -86,7 +86,7 @@ public:
 
 	static void SetWorldViewProjection2D();
 	
-	static void SetRasterizerState(D3D11_CULL_MODE mode);
+	static void SetRasterizerState(D3D11_CULL_MODE cull, D3D11_FILL_MODE fill);
 	static void SetBlendState_Lighting();
 
 	//static ConstantBufferList GetConstantBufferList() { return m_ConstantBufferList; }

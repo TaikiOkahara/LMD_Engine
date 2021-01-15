@@ -62,13 +62,13 @@ void CWall::Init()
 		}
 		{//“Vˆä
 			
-			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(2.5f, 5.0f, -12.5f),topRot, scale });
+			/*m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(2.5f, 5.0f, -12.5f),topRot, scale });
 			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(2.5f, 5.0f, -7.5f),topRot, scale });
 			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 5.0f, -12.5f),topRot, scale });
 			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 5.0f, -7.5f),topRot, scale });
 			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-7.5f, 5.0f, -12.5f),topRot, scale });
 			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-7.5f, 5.0f, -7.5f),topRot, scale });
-			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 5.0f, -2.5f),topRot, scale });
+			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 5.0f, -2.5f),topRot, scale });*/
 		}
 		
 	}

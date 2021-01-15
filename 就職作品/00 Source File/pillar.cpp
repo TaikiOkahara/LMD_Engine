@@ -36,10 +36,14 @@ void CPillar::Init()
 		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-4.5f, 0.0f,5.0f + 5.0f*i),rot, scale });
 	}
 
+	//スタート地点
 	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(4.5f, 0.0f,-5.5f),rot, scale });
 	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-9.5f, 0.0f,-5.5f),rot, scale });
 	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(4.5f, 0.0f,-14.5f),rot, scale });
 	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-9.5f, 0.0f,-14.5f),rot, scale });
+
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-5.0f, 0.0f,-5.0f),rot, scale });
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3( 0.0f, 0.0f,-5.0f),rot, scale });
 
 
 	InitInstance();

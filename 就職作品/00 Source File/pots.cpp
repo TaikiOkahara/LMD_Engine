@@ -25,6 +25,10 @@ void CPots::Init()
 		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-0.6f, 0.0f, -1.2f),D3DXVECTOR3(0.0f, 0.0f, 0.0f) ,D3DXVECTOR3(1.2, 1.5, 1.2) });
 		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-0.4f, 0.0f, -1.7f) ,D3DXVECTOR3(0.0f, 0.0f, 0.0f) ,D3DXVECTOR3(1, 1, 1) });
 		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-0.75f, 0.0f, 8.5f) ,D3DXVECTOR3(0.0f, 0.0f, 0.0f) ,D3DXVECTOR3(2.7, 3,2.7) });
+		
+		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(3.3f, 0.0f, -14.25f) ,D3DXVECTOR3(0.0f, 0.0f, 0.0f) ,D3DXVECTOR3(1, 1.5,1) });
+		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(3.1f, 0.0f, -14.65f) ,D3DXVECTOR3(0.0f, 0.0f, 0.0f) ,D3DXVECTOR3(0.9, 0.9,0.9) });
+		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(4.25f, 0.0f, -13.35f) ,D3DXVECTOR3(0.0f, 0.0f, 0.0f) ,D3DXVECTOR3(1.5, 1.5,1.5) });
 	}
 
 	InitInstance();

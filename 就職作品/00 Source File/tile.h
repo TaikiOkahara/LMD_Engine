@@ -8,14 +8,14 @@
 class Tile
 {
 public:
-
-
 	void Init(std::string Tex_name, std::string Nor_name, std::string RM_name, int tile_X_count, int tile_Y_count,float tile_Xsize);
 	void Uninit();
 	void Update();
 	void Draw();
 	void DrawInstanced(const unsigned int instanceCount);
 
+
+	float GetHeight(D3DXVECTOR3 Position);
 private:
 	void MakeVertexField();
 	
@@ -36,6 +36,8 @@ private:
 	//ID3D11ShaderResourceView* m_pMetallicTextureSRV = nullptr;
 
 	ID3D11RasterizerState* m_pRasterizerState = nullptr;
+
+	std::vector<std::vector<D3DXVECTOR3>> m_Vtx;
 
 	int m_iNumVertex;
 	int m_iNumIndex;

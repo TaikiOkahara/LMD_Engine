@@ -58,9 +58,6 @@
     <Filter Include="GameObjects----------------\pointLight">
       <UniqueIdentifier>{136ed20f-c2e5-4365-8860-2a4011aee6c4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameObjects----------------\stage">
-      <UniqueIdentifier>{ed3ff828-0f7c-49b6-abc5-be9c9c41ab22}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameObjects----------------\trim">
       <UniqueIdentifier>{2bb3750b-205b-45f0-a8fa-d8118524bfb9}</UniqueIdentifier>
     </Filter>
@@ -160,6 +157,18 @@
     <Filter Include="Shader-----------------------\projectionTextureMappingShadow">
       <UniqueIdentifier>{596abc37-b938-4932-ba8b-aa506f949858}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObjects----------------\doorWay">
+      <UniqueIdentifier>{ed3ff828-0f7c-49b6-abc5-be9c9c41ab22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects----------------\edge">
+      <UniqueIdentifier>{c0fac316-1fea-4c0c-a54b-4d587a98d33d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects----------------\table">
+      <UniqueIdentifier>{9dc0e509-79d2-4f70-a800-ed33ff41b1ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects----------------\gargoyle">
+      <UniqueIdentifier>{373ae7ea-6213-45af-9f0a-ab5e6c6d00aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="00 Source File\Entry.cpp">
@@ -200,9 +209,6 @@
     </ClCompile>
     <ClCompile Include="00 Source File\wall.cpp">
       <Filter>GameObjects----------------\wall</Filter>
-    </ClCompile>
-    <ClCompile Include="00 Source File\stage.cpp">
-      <Filter>GameObjects----------------\stage</Filter>
     </ClCompile>
     <ClCompile Include="05 Resource File\imgui\imgui.cpp">
       <Filter>Manager --------------------\thirdparty\Imgui</Filter>
@@ -282,6 +288,18 @@
     <ClCompile Include="00 Source File\title.cpp">
       <Filter>Scene -----------------------</Filter>
     </ClCompile>
+    <ClCompile Include="00 Source File\doorWay.cpp">
+      <Filter>GameObjects----------------\doorWay</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\edge.cpp">
+      <Filter>GameObjects----------------\edge</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\table.cpp">
+      <Filter>GameObjects----------------\table</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\gargoyle.cpp">
+      <Filter>GameObjects----------------\gargoyle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="00 Source File\camera.h">
@@ -322,9 +340,6 @@
     </ClInclude>
     <ClInclude Include="00 Source File\wall.h">
       <Filter>GameObjects----------------\wall</Filter>
-    </ClInclude>
-    <ClInclude Include="00 Source File\stage.h">
-      <Filter>GameObjects----------------\stage</Filter>
     </ClInclude>
     <ClInclude Include="05 Resource File\imgui\imconfig.h">
       <Filter>Manager --------------------\thirdparty\Imgui</Filter>
@@ -415,6 +430,18 @@
     </ClInclude>
     <ClInclude Include="00 Source File\title.h">
       <Filter>Scene -----------------------</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\doorWay.h">
+      <Filter>GameObjects----------------\doorWay</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\edge.h">
+      <Filter>GameObjects----------------\edge</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\table.h">
+      <Filter>GameObjects----------------\table</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\gargoyle.h">
+      <Filter>GameObjects----------------\gargoyle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

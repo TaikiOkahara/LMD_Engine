@@ -101,11 +101,11 @@ void CCamera::Update()
 		{
 			m_Transform.position = CameraRayIntersect(ceiling);
 		}
-		CFloor* floor = Base::GetScene()->GetGameObject<CFloor>();
+		/*CFloor* floor = Base::GetScene()->GetGameObject<CFloor>();
 		if (floor != NULL)
 		{
 			m_Transform.position = CameraRayIntersect(floor);
-		}
+		}*/
 
 		
 	}

@@ -7,6 +7,8 @@
 #include "chandelier.h"
 #include "player.h"
 
+#include <time.h>
+
 void CPointLight::Init()
 {
 	m_pMesh = new StaticMesh();
@@ -26,10 +28,10 @@ void CPointLight::Init()
 		{
 			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 2.0f, 10.0f * i + 5.0f),rot, scale });
 			m_PointLight[i] = POINTLIGHT{ D3DXVECTOR3(1.0f, 0.5f, 0.0f) ,100,D3DXVECTOR3(0.1f, 0.25f, 0.1f) ,scale.x,m_TransformList[i].position,(UINT)pow(2,i)};
-			UINT tmp =(UINT)pow(2,0);
+			/*UINT tmp =(UINT)pow(2,0);
 			tmp = (UINT)pow(2,1);
 			tmp = (UINT)pow(2,2);
-			tmp = tmp;
+			tmp = tmp;*/
 		}
 
 
@@ -40,7 +42,7 @@ void CPointLight::Init()
 
 		//Playerlight
 		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(5.0f, 5.0f, 1.0f),rot, scale });
-		m_PointLight[4] = POINTLIGHT{ D3DXVECTOR3(1.0f, 1.0f, 1.0f) ,100,D3DXVECTOR3(1.0f, 1.0f, 0.1f) ,scale.x ,m_TransformList[4].position,0 };
+		m_PointLight[4] = POINTLIGHT{ D3DXVECTOR3(1.0f, 1.0f, 1.0f) ,10,D3DXVECTOR3(3.0f, 0.1f, 10.0f) ,scale.x ,m_TransformList[4].position,0 };
 
 
 		
@@ -52,7 +54,7 @@ void CPointLight::Init()
 	RENDERER::CreateVertexShader(&m_pVertexShader, &m_pCommonVertexLayout,nullptr, 0, "pointLightVS.cso");
 	RENDERER::CreatePixelShader(&m_pPixelShader, "pointLightPS.cso");
 
-	
+	srand((unsigned int)time(NULL)); // åªç›éûçèÇÃèÓïÒÇ≈èâä˙âª
 }
 
 void CPointLight::Uninit()
@@ -73,8 +75,18 @@ void CPointLight::Update()
 {
 	CPlayer* player = Base::GetScene()->GetGameObject<CPlayer>();
 	m_TransformList[4].position = player->GetPosition();
-	m_PointLight[4].pos = m_TransformList[4].position;
+	m_PointLight[4].pos = m_TransformList[4].position + D3DXVECTOR3(0,1,0);
 
+
+	if (!m_FlashEnable)
+		return;
+
+	//ÉçÉEÉ\ÉNÇÃÇÊÇ§Ç…åıÇÇ‰ÇÁÇ‰ÇÁÇ≥ÇπÇÈ
+	for (int i = 0; i < 4; i++)
+	{
+		
+		m_PointLight[i].calc.x = 0.1f + (rand() % 10 -5) * 0.02f;
+	}
 	
 }
 
@@ -136,6 +148,10 @@ void CPointLight::Imgui()
 		
 		ImGui::Begin("PointLight", &lw_is_open, lw_flag);
 
+		ImGui::Checkbox("LightFrash", &m_FlashEnable);
+
+
+
 		//PlayerPointLight-----------------------------------------------------------
 		if (ImGui::TreeNode("Player Light"))
 		{
@@ -146,12 +162,18 @@ void CPointLight::Imgui()
 			ImGui::Checkbox("Enable", &m_EnablePlayerPointLight);
 
 			static ImVec4 player_clear_color = ImVec4(m_PointLight[4].color.x, m_PointLight[4].color.y, m_PointLight[4].color.z, 1.00f);
+			static float scale = m_TransformList[4].scale.x;
 
 			m_PointLight[4].color.x = player_clear_color.x;
 			m_PointLight[4].color.y = player_clear_color.y;
 			m_PointLight[4].color.z = player_clear_color.z;
 			ImGui::ColorEdit3("Color", (float*)&player_clear_color);
 
+			m_PointLight[4].size = scale;
+			m_TransformList[4].scale = D3DXVECTOR3(scale, scale, scale);
+
+			ImGui::SliderFloat("Scale", &scale, 1.0f, 20.0f);
+			
 			ImGui::SliderFloat("Constant Attenuation coefficient ", &m_PointLight[4].calc.x, 0.0f, 5.0f);
 			ImGui::SliderFloat("Linear Attenuation coefficient", &m_PointLight[4].calc.y, 0.0f, 1.0f);
 			ImGui::SliderFloat("2nd Constant Attenuation coefficient", &m_PointLight[4].calc.z, 0.0f, 10.0f);

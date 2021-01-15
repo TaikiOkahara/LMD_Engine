@@ -17,6 +17,7 @@ private:
 	
 
 	bool m_EnablePlayerPointLight = true;
+	bool m_FlashEnable = false;
 public:
 
 	void Init();

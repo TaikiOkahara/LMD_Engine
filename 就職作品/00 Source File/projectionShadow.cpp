@@ -69,7 +69,7 @@ void CProjShadow::Draw()
 	RENDERER::PointLighting();
 
 
-	RENDERER::SetRasterizerState(D3D11_CULL_MODE::D3D11_CULL_NONE);
+	RENDERER::SetRasterizerState(D3D11_CULL_MODE::D3D11_CULL_NONE,D3D11_FILL_MODE::D3D11_FILL_SOLID);
 
 	RENDERER::m_pDeviceContext->VSSetShader(m_pVertexShader, NULL, 0);
 	RENDERER::m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);

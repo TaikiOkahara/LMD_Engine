@@ -26,7 +26,7 @@ void CChandelier::Init()
 	vector.scale = m_Transform.scale;
 
 	//スタート地点
-	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f,5.0f,-10.0f),vector.rotation,vector.scale });
+	//m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f,5.0f,-10.0f),vector.rotation,vector.scale });
 
 
 	for (int i = 0; i < 3; i++)

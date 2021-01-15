@@ -51,8 +51,8 @@ class CAnimationModel
 		const float FrameSpeed;
 		//const bool upper;
 
-		const bool lowerRigidity;
-		const bool upperRigidity;
+		/*const bool lowerRigidity;
+		const bool upperRigidity;*/
 
 	public:
 
@@ -139,7 +139,7 @@ public:
 
 	void Unload();
 	void Update();
-	void SetAnimation(const char* AnimationName, bool animLock);
+	void SetAnimation(const char* AnimationName);
 	void Draw();
 	void DrawInstance();
 	bool GetMotionLock() { return m_mapAnimation[m_sCurAnimationName]->GetRigidity(); }

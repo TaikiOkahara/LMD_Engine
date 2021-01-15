@@ -456,7 +456,7 @@ void CAnimationModel::Update()
 	}
 }
 
-void CAnimationModel::SetAnimation(const char* AnimationName, bool animLock)
+void CAnimationModel::SetAnimation(const char* AnimationName)
 {
 	
 

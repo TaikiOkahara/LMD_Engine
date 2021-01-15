@@ -7,13 +7,16 @@
 #include "camera.h"
 #include "pointLight.h"
 
+#include "table.h"
 #include "player.h"
 #include "floor.h"
 #include "wall.h"
-#include "stage.h"
+#include "doorWay.h"
 #include "pillar.h"
+#include "edge.h"
 #include "pots.h"
 #include "trim.h"
+#include "gargoyle.h"
 #include "ceiling.h"
 #include "ceilingArch.h"
 #include "chandelier.h"
@@ -35,11 +38,14 @@ void Game::Init() {
 
 	AddGameObject<CCubeMap>(LAYER::HIDE);
 
-
+	AddGameObject<CTable>(LAYER::DRAW);
 	AddGameObject<CFloor>(LAYER::DRAW);
 	AddGameObject<CWall>(LAYER::DRAW);
 	AddGameObject<CPillar>(LAYER::DRAW);
-	AddGameObject<CStage>(LAYER::DRAW);	//ƒhƒA
+	AddGameObject<CEdge>(LAYER::DRAW);
+	AddGameObject<CDoorWay>(LAYER::DRAW);
+
+	AddGameObject<CGargoyle>(LAYER::DRAW);
 	AddGameObject<CTrim>(LAYER::DRAW);
 	AddGameObject<CCeiling>(LAYER::DRAW);
 	AddGameObject<CCeilingArch>(LAYER::DRAW);

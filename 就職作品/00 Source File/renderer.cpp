@@ -652,12 +652,12 @@ void RENDERER::SetWorldViewProjection2D()
 
 
 
-void RENDERER::SetRasterizerState(D3D11_CULL_MODE mode)
+void RENDERER::SetRasterizerState(D3D11_CULL_MODE cull,D3D11_FILL_MODE fill)
 {
 	D3D11_RASTERIZER_DESC rdc;
 	ZeroMemory(&rdc, sizeof(rdc));
-	rdc.CullMode = mode;
-	rdc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
+	rdc.CullMode = cull;
+	rdc.FillMode = fill;
 	rdc.DepthClipEnable = FALSE;
 	m_pDevice->CreateRasterizerState(&rdc, &m_pCommonRasterizerState);
 	m_pDeviceContext->RSSetState(m_pCommonRasterizerState);

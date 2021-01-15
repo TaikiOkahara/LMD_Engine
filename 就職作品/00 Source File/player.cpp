@@ -10,6 +10,7 @@
 #include <typeinfo>
 #include "calculation.h"
 #include "pointLight.h"
+#include "floor.h"
 
 //
 //
@@ -23,6 +24,7 @@ void CPlayer::Init()
 	m_AnimModel->LoadModel("KnightPBR_NoTex.fbx", D3DXVECTOR3(0,0.1f,0));
 	m_AnimModel->LoadTexture("texture");
 	
+	SetVisualDirectory("../02 Visual File//Knight//animation//");
 	m_AnimModel->LoadAnimation("Run.fbx", "Run",48,false,1.0f);
 	m_AnimModel->LoadAnimation("Slash.fbx", "Slash",122,true,1.0f);
 	m_AnimModel->LoadAnimation("Sword_And_Shield_Idle_152.fbx", "Idle",152,false,1.0f);
@@ -33,12 +35,7 @@ void CPlayer::Init()
 	m_AnimModel->LoadAnimation("Sword_And_Shield_Slash_3_90.fbx", "Slash4",90, true,1.3f);
 	m_AnimModel->LoadAnimation("Standing_Melee_Combo_Attack_Ver_2_252.fbx", "Slash5",252, true,1.3f);
 	
-	//m_AnimModel->SetLockAnimation("Walk");
-
-
-	//m_ConditionList["idle"] = new CCondition(PRIORITY_LEVEL::LEVEL_1, 0, 1, false);
 	
-	//m_AnimModel->LoadAnimation("../02 Visual File//Knight//Sword_And_Shield_Attack.fbx", "Attack");
 
 	m_Transform.position = D3DXVECTOR3(-2.5f, 0.01f, -3.5f);
 	m_Transform.scale = D3DXVECTOR3(0.8f, 0.8f, 0.8f);
@@ -71,7 +68,7 @@ void CPlayer::Init()
 	m_pTile = new Tile();
 
 
-	m_pTile->Init("Wall//T_StoneWall_A.dds", "Wall//T_StoneWall_N.dds", "Wall//T_StoneWall_C.dds", 1, 1, 30);
+	m_pTile->Init("Wall//T_StoneWall_A.dds", "Wall//T_StoneWall_N.dds", "Wall//T_StoneWall_C.dds", 2, 2, 2.5);
 	RENDERER::CreateVertexShader(&m_TileVertexShader,nullptr, nullptr,0,"playerShadowVS.cso");
 	RENDERER::CreatePixelShader(&m_TilePixelShader, "playerShadowPS.cso");
 
@@ -203,7 +200,14 @@ void CPlayer::Update()
 
 	}
 	
+	//’n–Ê‚Æ‚Ì“–‚½‚è”»’è
+	CFloor* floor = Base::GetScene()->GetGameObject<CFloor>();
+	
+	if (floor != NULL)
+	{
+		m_Transform.position.y = floor->GetHeight(m_Transform.position);
 
+	}
 	
 	m_Collision.Update();
 
@@ -220,27 +224,27 @@ void CPlayer::Update()
 
 	if (CInput::KeyTrigger(DIK_RETURN)) 
 	{
-		m_AnimModel->SetAnimation("Slash", false);
+		m_AnimModel->SetAnimation("Slash");
 	}
 	else if (CInput::KeyTrigger(DIK_F7))
 	{
 
-		m_AnimModel->SetAnimation("Slash2", false);
+		m_AnimModel->SetAnimation("Slash2");
 	}
 	else if (CInput::KeyTrigger(DIK_F6))
 	{
 
-		m_AnimModel->SetAnimation("Slash3", false);
+		m_AnimModel->SetAnimation("Slash3");
 	}
 	else if (CInput::KeyTrigger(DIK_F5))
 	{
 
-		m_AnimModel->SetAnimation("Slash5", false);
+		m_AnimModel->SetAnimation("Slash5");
 	}
 	else if (CInput::KeyTrigger(DIK_F4))
 	{
 
-		m_AnimModel->SetAnimation("Slash4", false);
+		m_AnimModel->SetAnimation("Slash4");
 	}
 	else if (CInput::KeyPress(DIK_W) ||
 		CInput::KeyPress(DIK_A) ||
@@ -248,15 +252,15 @@ void CPlayer::Update()
 		CInput::KeyPress(DIK_D))
 	{
 		if (CInput::KeyPress(DIK_SPACE))
-			m_AnimModel->SetAnimation("Run", false);
+			m_AnimModel->SetAnimation("Run");
 		else
-			m_AnimModel->SetAnimation("Walk",false);
+			m_AnimModel->SetAnimation("Walk");
 
 		
 	}
 	else
 	{
-		m_AnimModel->SetAnimation("Idle",false);
+		m_AnimModel->SetAnimation("Idle");
 
 	}
 
