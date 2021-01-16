@@ -20,6 +20,7 @@ void Tile::MakeVertexField()
 	const float offset_x = m_iXCount * m_fTileSize / 2;
 	const float offset_y = m_iYCount * m_fTileSize / 2;
 
+
 	// ’¸“_À•W‚Ìİ’è
 	//for (int z = 0; z <= m_iYCount; z++) {
 
