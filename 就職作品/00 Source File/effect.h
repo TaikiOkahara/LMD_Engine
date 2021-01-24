@@ -1,3 +1,9 @@
+/*---------------------------------------
+*　effect.h
+*
+* 1つのポストプロセスをクラス化するインターフェース
+*@author：Okahara Taiki
+----------------------------------------*/
 #pragma once
 
 class CEffect
@@ -8,12 +14,9 @@ public:
 	CEffect() {}
 	virtual ~CEffect() {}
 
-
 	virtual void Init() = 0;
 	virtual void Uninit() = 0;
 	virtual void Update() = 0;
 	virtual void Draw() = 0;
 	virtual void Imgui() {}
-
-
 };

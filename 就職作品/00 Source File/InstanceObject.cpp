@@ -1,4 +1,9 @@
-#include "InstanceObject.h"
+/*---------------------------------------
+*　instanceObject.cpp
+*
+*@author：Okahara Taiki
+----------------------------------------*/
+#include "instanceObject.h"
 #include <array>
 #include "base.h"
 #include "camera.h"
@@ -9,8 +14,6 @@ ID3D11VertexShader* CInstanceGameObject::m_pInstanceVertexShader = NULL;
 void CInstanceGameObject::InitInstance()
 {
    
-
-    
     std::vector<D3DXMATRIX> matrix;
 
     m_MeshMax = m_TransformList.size();
@@ -28,11 +31,6 @@ void CInstanceGameObject::InitInstance()
 
         matrix.push_back(world);
     }
-
-
-
-
-
     {//マトリクス構造体
 
         RENDERER::CreateStructuredBuffer(sizeof(D3DXMATRIX), m_MeshMax, &matrix[0], &m_pMatrixBuffer);
@@ -44,12 +42,16 @@ void CInstanceGameObject::InitInstance()
         srvDesc.Buffer.FirstElement = 0;
         srvDesc.Buffer.NumElements = m_MeshMax;
 
-        RENDERER::m_pDevice->CreateShaderResourceView(m_pMatrixBuffer, &srvDesc, &m_pMatrixBufferSRV);
+        RENDERER::GetDevice()->CreateShaderResourceView(m_pMatrixBuffer, &srvDesc, &m_pMatrixBufferSRV);
 
 
-        RENDERER::m_pDeviceContext->CSSetShader(m_pComputeShader, nullptr, 0);
-        RENDERER::m_pDeviceContext->CSSetShaderResources(0, 1, &m_pMatrixBufferSRV);
+        RENDERER::GetDeviceContext()->CSSetShader(m_pComputeShader, nullptr, 0);
+        RENDERER::GetDeviceContext()->CSSetShaderResources(0, 1, &m_pMatrixBufferSRV);
     }
+
+    std::vector<D3DXMATRIX>().swap(matrix);
+    matrix.clear();
+
 
     {//スタックバッファ
         
@@ -59,7 +61,7 @@ void CInstanceGameObject::InitInstance()
         desc.ByteWidth = sizeof(UINT) * m_MeshMax;//インデックスリスト
         desc.StructureByteStride = sizeof(UINT);
         desc.Usage = D3D11_USAGE_DEFAULT;
-        auto hr = RENDERER::m_pDevice->CreateBuffer(&desc, nullptr, &m_pIndexBuffer);
+        auto hr = RENDERER::GetDevice()->CreateBuffer(&desc, nullptr, &m_pIndexBuffer);
         assert(SUCCEEDED(hr));
 
         D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
@@ -68,10 +70,9 @@ void CInstanceGameObject::InitInstance()
         uavDesc.Buffer.FirstElement = 0;
         uavDesc.Buffer.NumElements = m_MeshMax;
         uavDesc.Buffer.Flags = D3D11_BUFFER_UAV_FLAG_APPEND;
-        hr = RENDERER::m_pDevice->CreateUnorderedAccessView(m_pIndexBuffer, &uavDesc, &m_pIndexBufferUAV);
+        hr = RENDERER::GetDevice()->CreateUnorderedAccessView(m_pIndexBuffer, &uavDesc, &m_pIndexBufferUAV);
         assert(SUCCEEDED(hr));
     }
-
     {//出力インデックスバッファ
 
 
@@ -81,44 +82,32 @@ void CInstanceGameObject::InitInstance()
         desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
         desc.StructureByteStride = sizeof(UINT);
         desc.ByteWidth = sizeof(UINT) * m_TransformList.size();
-        /*
-        desc.Usage = D3D11_USAGE_STAGING;
-        desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;*/
+     
+        RENDERER::GetDevice()->CreateBuffer(&desc, nullptr, &m_pOutIndexBuffer);
 
-
-        RENDERER::m_pDevice->CreateBuffer(&desc, nullptr, &m_pOutIndexBuffer);
-
-
-        
         D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
         srvDesc.Format = DXGI_FORMAT_UNKNOWN;
         srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
         srvDesc.Buffer.FirstElement = 0;
         srvDesc.Buffer.NumElements = m_TransformList.size();
 
-        RENDERER::m_pDevice->CreateShaderResourceView(m_pOutIndexBuffer, &srvDesc, &m_pOutIndexBufferSRV);
+        RENDERER::GetDevice()->CreateShaderResourceView(m_pOutIndexBuffer, &srvDesc, &m_pOutIndexBufferSRV);
 
-
-
-
-        RENDERER::m_pDeviceContext->CSSetShader(m_pComputeShader, nullptr, 0);
-        RENDERER::m_pDeviceContext->CSSetShaderResources(1, 1, &m_pOutIndexBufferSRV);
     }
-
-    {//
+    {// 描画インスタンス数バッファ
         D3D11_BUFFER_DESC desc = {};
         desc.ByteWidth = sizeof(UINT);
         desc.Usage = D3D11_USAGE_STAGING;
         desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-        auto hr = RENDERER::m_pDevice->CreateBuffer(&desc, nullptr, &m_pCounterBuffer);
+        auto hr = RENDERER::GetDevice()->CreateBuffer(&desc, nullptr, &m_pCounterBuffer);
         assert(SUCCEEDED(hr));
 
     }
 
-    //m_Vector.clear();
-    matrix.clear();
+    RENDERER::GetDeviceContext()->CSSetShader(m_pComputeShader, nullptr, 0);
+    RENDERER::GetDeviceContext()->CSSetShaderResources(1, 1, &m_pOutIndexBufferSRV);
 
-
+  
     //コリジョン
     m_CullingCount = m_MeshCount = m_MeshMax;
     
@@ -130,8 +119,6 @@ void CInstanceGameObject::InitInstance()
     m_CullingPos[5] = D3DXVECTOR4( m_Collision.GetVertex()[5].x ,m_Collision.GetVertex()[5].y,m_Collision.GetVertex()[5].z ,0);
     m_CullingPos[6] = D3DXVECTOR4( m_Collision.GetVertex()[6].x ,m_Collision.GetVertex()[6].y,m_Collision.GetVertex()[6].z ,0);
     m_CullingPos[7] = D3DXVECTOR4( m_Collision.GetVertex()[7].x ,m_Collision.GetVertex()[7].y,m_Collision.GetVertex()[7].z ,0);
-
-
 }
 
 void CInstanceGameObject::UninitInstance()
@@ -145,75 +132,69 @@ void CInstanceGameObject::UninitInstance()
     SAFE_RELEASE(m_pOutIndexBufferSRV);
 
     SAFE_RELEASE(m_pCounterBuffer);
+    SAFE_RELEASE(m_pCullingBuffer);
 
     std::vector<TRANSFORM>().swap(m_TransformList);
+    m_TransformList.clear();
 
 }
 
 void CInstanceGameObject::UpdateInstance()
 {
-
-    if (!RENDERER::m_ConstantBufferList.GetStruct<ToggleBuffer>()->GetFrustumCullingEnable())
+    //視錐台カリング実行判定
+    if (!RENDERER::GetConstantList().GetStruct<ToggleBuffer>()->GetFrustumCullingEnable())
     {
         m_MeshCount = m_MeshMax;
         return;
     }
 
-
-    RENDERER::m_ConstantBufferList.GetStruct<CullingBuffer>()->Set(m_CullingCount,m_CullingPos);
-    //RENDERER::BuffList.GetStruct<CullingBuffer>().
-
+    RENDERER::GetConstantList().GetStruct<CullingBuffer>()->Set(m_CullingCount,m_CullingPos);
 
 
     //視錐台カリング用コンピュートシェーディング
     
-    RENDERER::m_pDeviceContext->CSSetShader(m_pComputeShader, nullptr, 0);
-
-    RENDERER::m_pDeviceContext->CSSetShaderResources(0, 1, &m_pMatrixBufferSRV);
-    RENDERER::m_pDeviceContext->CSSetShaderResources(1, 1, &m_pOutIndexBufferSRV);
+    RENDERER::GetDeviceContext()->CSSetShader(m_pComputeShader, nullptr, 0);
+    RENDERER::GetDeviceContext()->CSSetShaderResources(0, 1, &m_pMatrixBufferSRV);
+    RENDERER::GetDeviceContext()->CSSetShaderResources(1, 1, &m_pOutIndexBufferSRV);
 
     std::array<UINT, 2> countPointer{ 0,0 };
 
-    RENDERER::m_pDeviceContext->CSSetUnorderedAccessViews(0, 1, &m_pIndexBufferUAV,countPointer.data());
+    RENDERER::GetDeviceContext()->CSSetUnorderedAccessViews(0, 1, &m_pIndexBufferUAV,countPointer.data());
 
+    //インスタンス数から最適なスレッド数を計算
     const int ThreadGroup = 32;
     UINT dcount = (m_TransformList.size() + ThreadGroup - 1) / ThreadGroup;
 
-    RENDERER::m_pDeviceContext->Dispatch(dcount, 1, 1);
+    RENDERER::GetDeviceContext()->Dispatch(dcount, 1, 1);
 
     //インデックス数をCPU側で取得する
-    RENDERER::m_pDeviceContext->CopyStructureCount(m_pCounterBuffer, 0, m_pIndexBufferUAV);
+    RENDERER::GetDeviceContext()->CopyStructureCount(m_pCounterBuffer, 0, m_pIndexBufferUAV);
 
-    RENDERER::m_pDeviceContext->CopyResource(m_pOutIndexBuffer, m_pIndexBuffer);
+    RENDERER::GetDeviceContext()->CopyResource(m_pOutIndexBuffer, m_pIndexBuffer);
 
     HRESULT hr = S_OK;
     D3D11_MAPPED_SUBRESOURCE mapped;
 
     //インデックス数取得
-    hr = RENDERER::m_pDeviceContext->Map(m_pCounterBuffer, 0, D3D11_MAP_READ, 0, &mapped);
+    hr = RENDERER::GetDeviceContext()->Map(m_pCounterBuffer, 0, D3D11_MAP_READ, 0, &mapped);
     if (SUCCEEDED(hr)) {
         auto pData = static_cast<UINT*>(mapped.pData);
-
         m_MeshCount = pData[0];
-
-        RENDERER::m_pDeviceContext->Unmap(m_pCounterBuffer, 0);
+        RENDERER::GetDeviceContext()->Unmap(m_pCounterBuffer, 0);
     }
     
 }
 
 void CInstanceGameObject::DrawInstance()
 {
-
-    RENDERER::m_pDeviceContext->VSSetShaderResources(0, 1, &m_pMatrixBufferSRV);
-    RENDERER::m_pDeviceContext->VSSetShaderResources(1, 1, &m_pOutIndexBufferSRV);
-
+    RENDERER::GetDeviceContext()->VSSetShaderResources(0, 1, &m_pMatrixBufferSRV);
+    RENDERER::GetDeviceContext()->VSSetShaderResources(1, 1, &m_pOutIndexBufferSRV);
 }
 
 void CInstanceGameObject::Load()
 {
     RENDERER::CreateComputeShader("instanceCS.cso", &m_pComputeShader);
     assert(m_pComputeShader);
-
     RENDERER::CreateVertexShader(&m_pInstanceVertexShader, nullptr, nullptr, 0, "instanceVS.cso");
     assert(m_pInstanceVertexShader);
 }

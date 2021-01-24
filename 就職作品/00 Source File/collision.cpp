@@ -1,62 +1,68 @@
 #include "collision.h"
 #include "renderer.h"
 
-void Collision::Init(D3DXVECTOR3 size, D3DXVECTOR3 center)
+
+ID3D11VertexShader* Collision::m_pVertexShader = nullptr;
+ID3D11VertexShader* Collision::m_pInstanceVertexShader = nullptr;
+ID3D11PixelShader* Collision::m_pPixelShader = nullptr;
+ID3D11InputLayout* Collision::m_pVertexLayout = nullptr;
+
+
+void Collision::Set(D3DXVECTOR3 size, D3DXVECTOR3 center)
 {
-	//頂点の座標
 	D3DXVECTOR3* vertex = new D3DXVECTOR3[24];
 
 	m_vCenter = center;
-	m_fXsize = size.x/2;
-	m_fYsize = size.y/2;
-	m_fZsize = size.z/2;
+	m_fXsize = size.x / 2;
+	m_fYsize = size.y / 2;
+	m_fZsize = size.z / 2;
 
 	{
 		m_pVertex = new D3DXVECTOR3[8];
 
-		m_pVertex[0] = D3DXVECTOR3(-m_fXsize, m_fYsize,-m_fZsize) + center;
-		m_pVertex[1] = D3DXVECTOR3( m_fXsize, m_fYsize,-m_fZsize) + center;
-		m_pVertex[2] = D3DXVECTOR3( m_fXsize,-m_fYsize,-m_fZsize) + center;
-		m_pVertex[3] = D3DXVECTOR3(-m_fXsize,-m_fYsize,-m_fZsize) + center;
+		m_pVertex[0] = D3DXVECTOR3(-m_fXsize, m_fYsize, -m_fZsize) + center;
+		m_pVertex[1] = D3DXVECTOR3(m_fXsize, m_fYsize, -m_fZsize) + center;
+		m_pVertex[2] = D3DXVECTOR3(m_fXsize, -m_fYsize, -m_fZsize) + center;
+		m_pVertex[3] = D3DXVECTOR3(-m_fXsize, -m_fYsize, -m_fZsize) + center;
 		m_pVertex[4] = D3DXVECTOR3(-m_fXsize, m_fYsize, m_fZsize) + center;
-		m_pVertex[5] = D3DXVECTOR3( m_fXsize, m_fYsize, m_fZsize) + center;
-		m_pVertex[6] = D3DXVECTOR3( m_fXsize,-m_fYsize, m_fZsize) + center;
-		m_pVertex[7] = D3DXVECTOR3(-m_fXsize,-m_fYsize, m_fZsize) + center;
-		
+		m_pVertex[5] = D3DXVECTOR3(m_fXsize, m_fYsize, m_fZsize) + center;
+		m_pVertex[6] = D3DXVECTOR3(m_fXsize, -m_fYsize, m_fZsize) + center;
+		m_pVertex[7] = D3DXVECTOR3(-m_fXsize, -m_fYsize, m_fZsize) + center;
+
 	}
 	{
 		m_pNormal = new D3DXVECTOR3[6];
 
-		m_pNormal[0] = D3DXVECTOR3( 0, 0,-1);
-		m_pNormal[1] = D3DXVECTOR3( 0, 0, 1);
-		m_pNormal[2] = D3DXVECTOR3( 0, 1, 0);
-		m_pNormal[3] = D3DXVECTOR3( 0,-1, 0);
+		m_pNormal[0] = D3DXVECTOR3(0, 0, -1);
+		m_pNormal[1] = D3DXVECTOR3(0, 0, 1);
+		m_pNormal[2] = D3DXVECTOR3(0, 1, 0);
+		m_pNormal[3] = D3DXVECTOR3(0, -1, 0);
 		m_pNormal[4] = D3DXVECTOR3(-1, 0, 0);
-		m_pNormal[5] = D3DXVECTOR3( 1, 0, 0);
+		m_pNormal[5] = D3DXVECTOR3(1, 0, 0);
 	}
 
 	{
 		vertex[0] = D3DXVECTOR3(-m_fXsize, m_fYsize, -m_fZsize);
-		vertex[1] = D3DXVECTOR3( m_fXsize, m_fYsize, -m_fZsize);
+		vertex[1] = D3DXVECTOR3(m_fXsize, m_fYsize, -m_fZsize);
 
-		vertex[2] = D3DXVECTOR3( m_fXsize,  m_fYsize, -m_fZsize);
-		vertex[3] = D3DXVECTOR3( m_fXsize, -m_fYsize, -m_fZsize);
+		vertex[2] = D3DXVECTOR3(m_fXsize, m_fYsize, -m_fZsize);
+		vertex[3] = D3DXVECTOR3(m_fXsize, -m_fYsize, -m_fZsize);
 
-		vertex[4] = D3DXVECTOR3( m_fXsize,-m_fYsize, -m_fZsize);
-		vertex[5] = D3DXVECTOR3(-m_fXsize,-m_fYsize, -m_fZsize);
+		vertex[4] = D3DXVECTOR3(m_fXsize, -m_fYsize, -m_fZsize);
+		vertex[5] = D3DXVECTOR3(-m_fXsize, -m_fYsize, -m_fZsize);
 
-		vertex[6] = D3DXVECTOR3(-m_fXsize,-m_fYsize, -m_fZsize);
+		vertex[6] = D3DXVECTOR3(-m_fXsize, -m_fYsize, -m_fZsize);
 		vertex[7] = D3DXVECTOR3(-m_fXsize, m_fYsize, -m_fZsize);
 	}
 	{
 		vertex[8] = D3DXVECTOR3(-m_fXsize, m_fYsize, m_fZsize);
-		vertex[9] = D3DXVECTOR3( m_fXsize, m_fYsize, m_fZsize);
+		vertex[9] = D3DXVECTOR3(m_fXsize, m_fYsize, m_fZsize);
 
-		vertex[10] = D3DXVECTOR3( m_fXsize, m_fYsize, m_fZsize);
-		vertex[11] = D3DXVECTOR3( m_fXsize,-m_fYsize, m_fZsize);
+		vertex[10] = D3DXVECTOR3(m_fXsize, m_fYsize, m_fZsize);
+		vertex[11] = D3DXVECTOR3(m_fXsize, -m_fYsize, m_fZsize);
 
-		vertex[12] = D3DXVECTOR3( m_fXsize,-m_fYsize, m_fZsize);
-		vertex[13] = D3DXVECTOR3(-m_fXsize,-m_fYsize, m_fZsize);
+		vertex[12] = D3DXVECTOR3(m_fXsize, -m_fYsize, m_fZsize);
+		vertex[13] = D3DXVECTOR3(-m_fXsize, -m_fYsize, m_fZsize);
 
 		vertex[14] = D3DXVECTOR3(-m_fXsize, -m_fYsize, m_fZsize);
 		vertex[15] = D3DXVECTOR3(-m_fXsize, m_fYsize, m_fZsize);
@@ -75,6 +81,7 @@ void Collision::Init(D3DXVECTOR3 size, D3DXVECTOR3 center)
 		vertex[23] = D3DXVECTOR3(-m_fXsize, -m_fYsize, m_fZsize);
 	}
 
+	//全頂点を中心点分移動
 	for (int i = 0; i < 24; i++)
 	{
 		vertex[i] += center;
@@ -88,10 +95,15 @@ void Collision::Init(D3DXVECTOR3 size, D3DXVECTOR3 center)
 	bd.MiscFlags = 0;
 
 	D3D11_SUBRESOURCE_DATA initData;
-	initData.pSysMem = &vertex[0];	
-	RENDERER::m_pDevice->CreateBuffer(&bd, &initData, &m_pVertexBuffer);
+	initData.pSysMem = &vertex[0];
+	RENDERER::GetDevice()->CreateBuffer(&bd, &initData, &m_pVertexBuffer);
 
 	delete[]  vertex;
+}
+
+void Collision::Load()
+{
+
 
 	//　入力レイアウト生成
 	D3D11_INPUT_ELEMENT_DESC layout[]{
@@ -106,12 +118,8 @@ void Collision::Init(D3DXVECTOR3 size, D3DXVECTOR3 center)
 	RENDERER::CreatePixelShader(&m_pPixelShader, "collisionPS.cso");
 }
 
-void Collision::Uninit()
+void Collision::Unload()
 {
-	delete[] m_pVertex;
-	delete[] m_pNormal;
-	
-	SAFE_RELEASE(m_pVertexBuffer);
 	SAFE_RELEASE(m_pInstanceVertexShader);
 	SAFE_RELEASE(m_pVertexShader);
 	SAFE_RELEASE(m_pPixelShader);
@@ -120,19 +128,19 @@ void Collision::Uninit()
 
 void Collision::Draw()
 {
-	RENDERER::m_pDeviceContext->VSSetShader(m_pVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);
-	RENDERER::m_pDeviceContext->IASetInputLayout(m_pVertexLayout);
+	RENDERER::GetDeviceContext()->VSSetShader(m_pVertexShader, NULL, 0);
+	RENDERER::GetDeviceContext()->PSSetShader(m_pPixelShader, NULL, 0);
+	RENDERER::GetDeviceContext()->IASetInputLayout(m_pVertexLayout);
 
-	RENDERER::m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+	RENDERER::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 	UINT stride = sizeof(D3DXVECTOR3);
 	UINT offset = 0;
-	RENDERER::m_pDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
+	RENDERER::GetDeviceContext()->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
 
-	RENDERER::m_pDeviceContext->Draw(24, 0);
+	RENDERER::GetDeviceContext()->Draw(24, 0);
 
-	RENDERER::m_pDeviceContext->VSSetShader(NULL, NULL, 0);
-	RENDERER::m_pDeviceContext->PSSetShader(NULL, NULL, 0);
+	RENDERER::GetDeviceContext()->VSSetShader(NULL, NULL, 0);
+	RENDERER::GetDeviceContext()->PSSetShader(NULL, NULL, 0);
 }
 
 void Collision::Update()
@@ -142,17 +150,17 @@ void Collision::Update()
 
 void Collision::DrawInstance(const unsigned int instanceCount)
 {
-	RENDERER::m_pDeviceContext->VSSetShader(m_pInstanceVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);
-	RENDERER::m_pDeviceContext->IASetInputLayout(m_pVertexLayout);
+	RENDERER::GetDeviceContext()->VSSetShader(m_pInstanceVertexShader, NULL, 0);
+	RENDERER::GetDeviceContext()->PSSetShader(m_pPixelShader, NULL, 0);
+	RENDERER::GetDeviceContext()->IASetInputLayout(m_pVertexLayout);
 
-	RENDERER::m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+	RENDERER::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 	UINT stride = sizeof(D3DXVECTOR3);
 	UINT offset = 0;
-	RENDERER::m_pDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
+	RENDERER::GetDeviceContext()->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
 
-	RENDERER::m_pDeviceContext->DrawInstanced(24,instanceCount, 0,0);
+	RENDERER::GetDeviceContext()->DrawInstanced(24,instanceCount, 0,0);
 
-	RENDERER::m_pDeviceContext->VSSetShader(NULL, NULL, 0);
-	RENDERER::m_pDeviceContext->PSSetShader(NULL, NULL, 0);
+	RENDERER::GetDeviceContext()->VSSetShader(NULL, NULL, 0);
+	RENDERER::GetDeviceContext()->PSSetShader(NULL, NULL, 0);
 }

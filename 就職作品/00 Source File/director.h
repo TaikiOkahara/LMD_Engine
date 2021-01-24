@@ -1,6 +1,9 @@
-/*「BASE.h」=============================================
-　　製作者：岡原大起　	(-"-)
-=============================================================*/
+/*---------------------------------------
+*　director.h
+* インクルードを一括で行う
+* ディレクトリパスを変更する関数群
+*@author：Okahara Taiki
+----------------------------------------*/
 #pragma once
 
 #define _CRT_SECURE_NO_WARNINGS
@@ -52,12 +55,12 @@
 #pragma warning(disable : 4111)
 
 
-//
-//　マクロ
+
 #define APP_NAME "LMD Engine ：　Okahara Taiki"//アプリ名
 #define WINDOW_WIDTH 1920	//　サイズ横
 #define WINDOW_HEIGHT 1080	//　サイズ縦
-//
+
+
 //動的確保の解放
 #define SAFE_DELETE(p) { if(p) { delete (p); (p)=NULL; } }
 #define SAFE_DELETE_ARRAY(p) { if(p) { delete[] (p); (p)=NULL; } }
@@ -65,8 +68,8 @@
 #define MFAIL(code,string) if(FAILED( code ) ) { MessageBox(0,string,"error",MB_OK); return E_FAIL; }
 #define MFALSE(code,string) if(!( code ) ) { MessageBox(0,string,"error",MB_OK); return E_FAIL; }
 #define MSG(t) MessageBox(0,t,0,MB_OK);
-//
-//
+
+
 //　外部保存データ構造体
 struct INI
 {
@@ -81,9 +84,7 @@ struct INI
 };
 
 
-
-//
-//プロトタイプ
+//指定のディレクトリにパスを通す関数
 void InitDirectory(const std::string root);
 void SetRootDirectory();
 void SetDataDirectory();
@@ -92,7 +93,6 @@ void SetVisualDirectory(std::string file_name);//さらに下の階層を参照
 void SetShaderDirectory();
 void SetSoundDirectory();
 
-//std::string FindFile(const std::string path_name, const std::string file_name, const std::string file_format);
 
 HRESULT LoadIni();
 INI* GetIni();

@@ -17,4 +17,3 @@ float4 Pos : POSITION)
     
     return output;
 }
-

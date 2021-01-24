@@ -1,3 +1,8 @@
+/*---------------------------------------
+*Å@directionalLight.h
+*
+*@authorÅFOkahara Taiki
+----------------------------------------*/
 #pragma once
 
 #include "effect.h"
@@ -12,13 +17,11 @@ private:
 
 	TRANSFORM m_Transform;
 
-	ID3D11VertexShader* m_pVertexShader;
-	ID3D11PixelShader* m_pPixelShader;
+	ID3D11VertexShader* m_pVertexShader = nullptr;
+	ID3D11PixelShader* m_pPixelShader = nullptr;
 
 	bool m_Enable = true;
 public:
-	CDirectionalLight(){}
-	~CDirectionalLight(){}
 
 	void Init();
 	void Uninit();

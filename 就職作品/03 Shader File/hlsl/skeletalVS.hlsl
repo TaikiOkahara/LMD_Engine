@@ -66,10 +66,7 @@ VS_OUT main(
     tangent += mul(float4(Tangent.xyz, 0), mat) * weight.w;
     
     //--------------------------------------------
-    //position = Pos;
-    //normal = float4(Normal, 0);
-    //binormal = float4(Binormal, 0);
-    //tangent = float4(Tangent, 0);
+  
     
     matrix wvp;
     wvp = mul(g_mWorld, g_mView);

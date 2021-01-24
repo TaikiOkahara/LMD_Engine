@@ -1,17 +1,18 @@
+/*---------------------------------------
+*Å@chandelier.h
+*
+*@authorÅFOkahara Taiki
+----------------------------------------*/
 #pragma once
-#include "InstanceObject.h"
+#include "instanceObject.h"
 #include "collision.h"
 
 class CChandelier : public CInstanceGameObject
 {
 private:
 	StaticMesh* m_pMesh = nullptr;
-	//Collision m_Collision;
 
 public:
-	CChandelier() {}
-	~CChandelier() {}
-
 	void Init();
 	void Uninit();
 	void Update();

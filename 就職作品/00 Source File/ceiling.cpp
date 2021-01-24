@@ -1,3 +1,8 @@
+/*---------------------------------------
+*　ceiling.cpp
+*
+*@author：Okahara Taiki
+----------------------------------------*/
 #include "director.h"
 #include "renderer.h"
 #include "staticMesh.h"
@@ -5,9 +10,7 @@
 #include "Imgui11.h"
 #include "input.h"
 
-//
-//
-//
+
 void CCeiling::Init()
 {
 	m_pMesh = new StaticMesh();
@@ -18,9 +21,10 @@ void CCeiling::Init()
 
 	m_Transform.position = D3DXVECTOR3(-0.5f, 3.5f, 2.5f);
 
-	m_Collision.Init(D3DXVECTOR3(5, 0.2, 5), D3DXVECTOR3(-2.0f, 0, 0));
+	m_Collision.Set(D3DXVECTOR3(5, 0.2, 5), D3DXVECTOR3(-2.0f, 0, 0));
 	
 
+	//スタート地点前方の5つの天井
 	TRANSFORM vector;
 	for (int i = 0; i < 7; i++)
 	{
@@ -41,8 +45,6 @@ void CCeiling::Uninit()
 	delete m_pMesh;
 
 	UninitInstance();
-
-	m_Collision.Uninit();
 }
 
 void CCeiling::Update()
@@ -54,10 +56,9 @@ void CCeiling::Draw()
 {
 	DrawInstance();
 
-	//RENDERER::m_pDeviceContext->VSSetShader(RENDERER::m_pInstanceVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->VSSetShader(m_pInstanceVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->PSSetShader(m_pCommonPixelShader, NULL, 0);
-	RENDERER::m_pDeviceContext->IASetInputLayout(m_pCommonVertexLayout);
+	RENDERER::GetDeviceContext()->VSSetShader(m_pInstanceVertexShader, NULL, 0);
+	RENDERER::GetDeviceContext()->PSSetShader(m_pCommonPixelShader, NULL, 0);
+	RENDERER::GetDeviceContext()->IASetInputLayout(m_pCommonVertexLayout);
 
 	m_pMesh->DrawInstanced(m_MeshCount);
 

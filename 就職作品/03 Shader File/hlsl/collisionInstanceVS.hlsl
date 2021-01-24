@@ -2,7 +2,6 @@
 #include "ConstantBuffer.hlsl"
 
 StructuredBuffer<matrix> WorldMatrixBuffer : register(t0);
-
 StructuredBuffer<uint> IndexBuffer : register(t1);
 
 VS_OUT main(

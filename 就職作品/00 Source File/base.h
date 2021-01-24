@@ -1,7 +1,8 @@
-/*「DIRECTOR.h」=============================================
-　・全てのシーンを統括するクラス
-　　製作者：岡原大起　	(-"-)
-=============================================================*/
+/*---------------------------------------
+*　base.h
+* メインループを実現し、すべてのシーンを統括するクラス
+*@author：Okahara Taiki
+----------------------------------------*/
 #pragma once
 #include "window.h"
 #include "scene.h"
@@ -13,7 +14,6 @@ private:
 	static class CScene* m_Scene;
 
 	static void MainLoop();
-	static void FixFPS60();
 public:
 
 	static HRESULT Init(HINSTANCE phInstance);
@@ -34,10 +34,5 @@ public:
 		m_Scene = scene;
 
 		scene->Init();
-	}
-
-	~Base()
-	{
-		delete m_Scene;
 	}
 };

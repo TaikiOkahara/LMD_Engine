@@ -1,3 +1,8 @@
+/*---------------------------------------
+*　player.cpp
+*
+*@author：Okahara Taiki
+----------------------------------------*/
 #include "base.h"
 #include "director.h"
 #include "renderer.h"
@@ -12,9 +17,7 @@
 #include "pointLight.h"
 #include "floor.h"
 
-//
-//
-//
+
 void CPlayer::Init()
 {
 	
@@ -24,6 +27,13 @@ void CPlayer::Init()
 	m_AnimModel->LoadModel("KnightPBR_NoTex.fbx", D3DXVECTOR3(0,0.1f,0));
 	m_AnimModel->LoadTexture("texture");
 	
+	m_Transform.position = D3DXVECTOR3(-2.5f, 0.01f, -3.5f);
+	m_Transform.scale = D3DXVECTOR3(0.8f, 0.8f, 0.8f);
+
+	m_Collision.Set(D3DXVECTOR3(1.0f, 1.0f, 1.0f), D3DXVECTOR3(0, 0, 0));
+
+
+	//アニメーション
 	SetVisualDirectory("../02 Visual File//Knight//animation//");
 	m_AnimModel->LoadAnimation("Run.fbx", "Run",48,false,1.0f);
 	m_AnimModel->LoadAnimation("Slash.fbx", "Slash",122,true,1.0f);
@@ -37,12 +47,6 @@ void CPlayer::Init()
 	
 	
 
-	m_Transform.position = D3DXVECTOR3(-2.5f, 0.01f, -3.5f);
-	m_Transform.scale = D3DXVECTOR3(0.8f, 0.8f, 0.8f);
-
-	m_Collision.Init(D3DXVECTOR3(1.0f, 1.0f, 1.0f), D3DXVECTOR3(0, 0, 0));
-
-
 	//　入力レイアウト生成
 	D3D11_INPUT_ELEMENT_DESC layout[]{
 	{ "POSITION",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0,							   0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -52,32 +56,25 @@ void CPlayer::Init()
 	{ "BINORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "BONEINDEX",		0, DXGI_FORMAT_R32G32B32A32_UINT,	0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "BONEWEIGHT",		0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 } };
-
-
 	//シェーダー作成
 	RENDERER::CreateVertexShader(&m_VertexShader,&m_VertexLayout,layout,7,"skeletalVS.cso");
 	RENDERER::CreatePixelShader(&m_PixelShader, "skeletalPS.cso");
+
 
 
 	m_OldPosition = m_Transform.position;
 	m_OldForward = GetForward();
 	m_OldForward.y = 0;
 
-
+	//影---------------------------------------------------------------------
 
 	m_pTile = new Tile();
-
 
 	m_pTile->Init("Wall//T_StoneWall_A.dds", "Wall//T_StoneWall_N.dds", "Wall//T_StoneWall_C.dds", 2, 2, 2.5);
 	RENDERER::CreateVertexShader(&m_TileVertexShader,nullptr, nullptr,0,"playerShadowVS.cso");
 	RENDERER::CreatePixelShader(&m_TilePixelShader, "playerShadowPS.cso");
-
-
-
 }
-//
-//
-//
+
 void CPlayer::Uninit()
 {
 	m_AnimModel->Unload();
@@ -87,8 +84,6 @@ void CPlayer::Uninit()
 
 	m_pTile->Uninit();
 	delete m_pTile;
-
-	m_Collision.Uninit();
 
 	m_VertexShader->Release();
 	m_VertexLayout->Release();
@@ -101,12 +96,9 @@ void CPlayer::Uninit()
 	delete m_pPointLightBlendState;
 	delete m_pBuckBuffer_DSTexState;
 }
-//
-//
-//
+
 void CPlayer::Update()
 {
-
 
 	CCamera* camera = Base::GetScene()->GetGameObject<CCamera>();
 
@@ -120,205 +112,188 @@ void CPlayer::Update()
 	camerarotation.z = 0;
 	
 
-
-
-	D3DXVECTOR3 position(0,0,0);
-	float rotation = 0;
-
-	if(m_AnimModel->GetMotionLock())
+	//プレイヤー移動処理-------------------------------------
 	{
-		//移動なし
-	}
-	else if (CInput::KeyPress(DIK_W))
-	{
-		position += cameraforward;
-		rotation = camerarotation.y + 2 * D3DX_PI;
-		if (CInput::KeyPress(DIK_A)){
-			position -= cameraright;
-			rotation = camerarotation.y + 2 * D3DX_PI - D3DX_PI/4;
-		}
-		else if (CInput::KeyPress(DIK_D)) {
-			position += cameraright;
-			rotation = camerarotation.y + 2 * D3DX_PI + D3DX_PI / 4;
-		}
-	}
-	else if (CInput::KeyPress(DIK_S))
-	{
-		position -= cameraforward;
-		rotation = camerarotation.y + D3DX_PI;
-		if (CInput::KeyPress(DIK_A)) {
-			position -= cameraright;
-			rotation = camerarotation.y + D3DX_PI + D3DX_PI / 4;
-		}
-		else if (CInput::KeyPress(DIK_D)) {
-			position += cameraright;
-			rotation = camerarotation.y + D3DX_PI - D3DX_PI / 4;
-		}
-	}
-	else if (CInput::KeyPress(DIK_A))
-	{
-		position -= cameraright;
-		rotation = camerarotation.y -D3DX_PI/2;
-	}
-	else if (CInput::KeyPress(DIK_D))
-	{
-		position += cameraright;
-		rotation = camerarotation.y + D3DX_PI/2;
-	}
-	
-
-
-	D3DXVec3Normalize(&position, &position);
-
-	float moveSpeed = 0.03f;
-
-	if (CInput::KeyPress(DIK_SPACE))
-	{
-		moveSpeed = 0.08f;
-	}
-
-	m_Transform.position += position * moveSpeed;
-	
-	if (rotation != 0){
-		m_Transform.rotation.y = rotation;
-	}
-	
-	//壁との当たり判定
-	if (m_EnableHit)
-	{
-
-		CWall* wall = Base::GetScene()->GetGameObject<CWall>();
-		if(wall != NULL)
+		D3DXVECTOR3 position(0, 0, 0);
+		float rotation = 0;
+		if (m_AnimModel->GetMotionLock())
 		{
-			m_Transform.position = LenOBBToPoint(*wall, m_Transform.position, 7.0f);
+			//移動なし
 		}
-		CPillar* pillar = Base::GetScene()->GetGameObject<CPillar>();
-		if (pillar != NULL)
+		else if (CInput::KeyPress(DIK_W))
 		{
-			m_Transform.position = LenOBBToPoint(*pillar, m_Transform.position, 5.0f);
+			position += cameraforward;
+			rotation = camerarotation.y + 2 * D3DX_PI;
+			if (CInput::KeyPress(DIK_A)) {
+				position -= cameraright;
+				rotation = camerarotation.y + 2 * D3DX_PI - D3DX_PI / 4;
+			}
+			else if (CInput::KeyPress(DIK_D)) {
+				position += cameraright;
+				rotation = camerarotation.y + 2 * D3DX_PI + D3DX_PI / 4;
+			}
+		}
+		else if (CInput::KeyPress(DIK_S))
+		{
+			position -= cameraforward;
+			rotation = camerarotation.y + D3DX_PI;
+			if (CInput::KeyPress(DIK_A)) {
+				position -= cameraright;
+				rotation = camerarotation.y + D3DX_PI + D3DX_PI / 4;
+			}
+			else if (CInput::KeyPress(DIK_D)) {
+				position += cameraright;
+				rotation = camerarotation.y + D3DX_PI - D3DX_PI / 4;
+			}
+		}
+		else if (CInput::KeyPress(DIK_A))
+		{
+			position -= cameraright;
+			rotation = camerarotation.y - D3DX_PI / 2;
+		}
+		else if (CInput::KeyPress(DIK_D))
+		{
+			position += cameraright;
+			rotation = camerarotation.y + D3DX_PI / 2;
+		}
+
+		D3DXVec3Normalize(&position, &position);
+
+		float moveSpeed = 0.03f;
+		if (CInput::KeyPress(DIK_SPACE)) {
+			moveSpeed = 0.08f;
+		}
+
+		m_Transform.position += position * moveSpeed;
+
+		if (rotation != 0) {
+			m_Transform.rotation.y = rotation;
+		}
+
+		m_OldPosition = m_Transform.position;
+	}
+	
+	//プレイヤー当たり判定処理-------------------------------
+	{
+		//オブジェクト当たり判定
+		if (m_EnableHit)
+		{
+
+			CWall* wall = Base::GetScene()->GetGameObject<CWall>();
+			if (wall != NULL)
+			{
+				m_Transform.position = LenOBBToPoint(*wall, m_Transform.position, 7.0f);
+			}
+			CPillar* pillar = Base::GetScene()->GetGameObject<CPillar>();
+			if (pillar != NULL)
+			{
+				m_Transform.position = LenOBBToPoint(*pillar, m_Transform.position, 5.0f);
+			}
+
+		}
+
+		//地面との当たり判定
+		CFloor* floor = Base::GetScene()->GetGameObject<CFloor>();
+
+		if (floor != NULL)
+		{
+			m_Transform.position.y = floor->GetHeight(m_Transform.position);
+
 		}
 
 	}
-	
-	//地面との当たり判定
-	CFloor* floor = Base::GetScene()->GetGameObject<CFloor>();
-	
-	if (floor != NULL)
+	//アニメーション処理-------------------------------------
 	{
-		m_Transform.position.y = floor->GetHeight(m_Transform.position);
+		if (CInput::KeyTrigger(DIK_RETURN))
+		{
+			m_AnimModel->SetAnimation("Slash");
+		}
+		else if (CInput::KeyTrigger(DIK_F7))
+		{
 
-	}
-	
-	m_Collision.Update();
+			m_AnimModel->SetAnimation("Slash2");
+		}
+		else if (CInput::KeyTrigger(DIK_F6))
+		{
 
+			m_AnimModel->SetAnimation("Slash3");
+		}
+		else if (CInput::KeyTrigger(DIK_F5))
+		{
 
-	/*bool ishit = false;
-	for (int i = 0; i < wall->GetMeshCount(); i++)
-	{
-		ishit = ColOBBs(this, wall, i);
+			m_AnimModel->SetAnimation("Slash5");
+		}
+		else if (CInput::KeyTrigger(DIK_F4))
+		{
 
-		if (ishit)
-			break;
-	}
-	m_hit = ishit;*/
+			m_AnimModel->SetAnimation("Slash4");
+		}
+		else if (CInput::KeyPress(DIK_W) ||
+			CInput::KeyPress(DIK_A) ||
+			CInput::KeyPress(DIK_S) ||
+			CInput::KeyPress(DIK_D))
+		{
+			if (CInput::KeyPress(DIK_SPACE))
+				m_AnimModel->SetAnimation("Run");
+			else
+				m_AnimModel->SetAnimation("Walk");
 
-	if (CInput::KeyTrigger(DIK_RETURN)) 
-	{
-		m_AnimModel->SetAnimation("Slash");
-	}
-	else if (CInput::KeyTrigger(DIK_F7))
-	{
-
-		m_AnimModel->SetAnimation("Slash2");
-	}
-	else if (CInput::KeyTrigger(DIK_F6))
-	{
-
-		m_AnimModel->SetAnimation("Slash3");
-	}
-	else if (CInput::KeyTrigger(DIK_F5))
-	{
-
-		m_AnimModel->SetAnimation("Slash5");
-	}
-	else if (CInput::KeyTrigger(DIK_F4))
-	{
-
-		m_AnimModel->SetAnimation("Slash4");
-	}
-	else if (CInput::KeyPress(DIK_W) ||
-		CInput::KeyPress(DIK_A) ||
-		CInput::KeyPress(DIK_S) ||
-		CInput::KeyPress(DIK_D))
-	{
-		if (CInput::KeyPress(DIK_SPACE))
-			m_AnimModel->SetAnimation("Run");
+		}
 		else
-			m_AnimModel->SetAnimation("Walk");
+		{
+			m_AnimModel->SetAnimation("Idle");
+		}
+	}	
+	//-------------------------------------------------------
 
-		
-	}
-	else
-	{
-		m_AnimModel->SetAnimation("Idle");
-
-	}
-
-	
-
+	m_Collision.Update();
 	m_AnimModel->Update();
-	
-
-
-	m_OldPosition = m_Transform.position;
 }
-//
-//
-//
+
 void CPlayer::Draw()
 {
-
+	//影描画（先に行う：射影テクスチャマッピング）--------------------------------
 	RENDERER::ShadowDraw();
 
 	D3DXMATRIX world, scale, rot, trans;
-
 	D3DXMatrixScaling(&scale, 1, 1, 1);
 	D3DXMatrixRotationYawPitchRoll(&rot, 0, 0, 0);
 	D3DXMatrixTranslation(&trans, m_Transform.position.x, m_Transform.position.y +  0.01f, m_Transform.position.z);//影は少し地面から離す
 	world = scale * rot * trans;
 
-	RENDERER::m_ConstantBufferList.GetStruct<WorldBuffer>()->Set(world);
-	RENDERER::m_pDeviceContext->VSSetShader(m_TileVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->PSSetShader(m_TilePixelShader, NULL, 0);
-	RENDERER::m_pDeviceContext->IASetInputLayout(m_pCommonVertexLayout);
+	RENDERER::GetConstantList().GetStruct<WorldBuffer>()->Set(world);
+	RENDERER::GetDeviceContext()->VSSetShader(m_TileVertexShader, NULL, 0);
+	RENDERER::GetDeviceContext()->PSSetShader(m_TilePixelShader, NULL, 0);
+	RENDERER::GetDeviceContext()->IASetInputLayout(m_pCommonVertexLayout);
 
 	m_pTile->Draw();
 
 	RENDERER::CommonDraw();
 
-	RENDERER::m_pDeviceContext->VSSetShader(m_VertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->PSSetShader(m_PixelShader, NULL, 0);
-	RENDERER::m_pDeviceContext->IASetInputLayout(m_VertexLayout);
+	//モデル描画------------------------------------------------------------------
+	RENDERER::GetDeviceContext()->VSSetShader(m_VertexShader, NULL, 0);
+	RENDERER::GetDeviceContext()->PSSetShader(m_PixelShader, NULL, 0);
+	RENDERER::GetDeviceContext()->IASetInputLayout(m_VertexLayout);
 
-	//モデル
+
 	D3DXMatrixScaling(&scale, m_Transform.scale.x / 100.0f, m_Transform.scale.y / 100.0f, m_Transform.scale.z / 100.0f);//アニメーションデータをスケール変更できないため、/100をして調節
 	D3DXMatrixRotationYawPitchRoll(&rot, m_Transform.rotation.y - D3DX_PI, m_Transform.rotation.x, m_Transform.rotation.z);
 	D3DXMatrixTranslation(&trans, m_Transform.position.x, m_Transform.position.y, m_Transform.position.z);
 	world = scale * rot * trans;
 	
-	RENDERER::m_ConstantBufferList.GetStruct<WorldBuffer>()->Set(world);
+	RENDERER::GetConstantList().GetStruct<WorldBuffer>()->Set(world);
 
 
 	m_AnimModel->Draw();
 
 
-	//コリジョン	
+	//コリジョン描画--------------------------------------------------------------
 
 	if (m_EnableCollision)
 	{
 		D3DXMatrixScaling(&scale, m_Transform.scale.x, m_Transform.scale.y, m_Transform.scale.z);
 		world = scale * rot * trans;
-		RENDERER::m_ConstantBufferList.GetStruct<WorldBuffer>()->Set(world);
+		RENDERER::GetConstantList().GetStruct<WorldBuffer>()->Set(world);
 		m_Collision.Draw();
 	}
 }
@@ -332,10 +307,37 @@ void CPlayer::DrawShadow()
 	D3DXMatrixTranslation(&trans, m_Transform.position.x, m_Transform.position.y, m_Transform.position.z);
 	world = scale * rot * trans;
 
-	RENDERER::m_ConstantBufferList.GetStruct<WorldBuffer>()->Set(world);
+	RENDERER::GetConstantList().GetStruct<WorldBuffer>()->Set(world);
 
 
 	m_AnimModel->Draw();
+}
+
+void CPlayer::Imgui()
+{
+	static bool show_player_winow = true;
+
+	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+	if (CInput::KeyTrigger(DIK_F1))
+		show_player_winow = !show_player_winow;
+
+	if (show_player_winow)
+	{
+		ImGuiWindowFlags lw_flag = 0;
+		static bool lw_is_open;
+
+		ImGui::Begin("Player", &lw_is_open, lw_flag);
+
+		ImGui::Checkbox("EnableCollision", &m_EnableCollision);
+		ImGui::Checkbox("EnableHit", &m_EnableHit);
+	
+
+		ImGui::Text("Position : %f,%f,%f", m_Transform.position.x,m_Transform.position.y,m_Transform.position.z);
+		ImGui::Text("Rotation : %f,%f,%f", m_Transform.rotation.x,m_Transform.rotation.y,m_Transform.rotation.z);
+
+		ImGui::End();
+	}
 }
 
 //インスタンスオブジェクト専用
@@ -345,15 +347,12 @@ D3DXVECTOR3 CPlayer:: LenOBBToPoint(CInstanceGameObject& obj, D3DXVECTOR3& p,flo
 	D3DXVECTOR3 Vec(0,0,0);   // 最終的に長さを求めるベクトル
 	D3DXVECTOR3 position = m_Transform.position;
 
-	//最初は1個から
 	for(unsigned int i = 0;i < obj.GetMeshMax();i++)
 	{
 		//length以内にいないものは排除する
 		float len = D3DXVec3Length(&D3DXVECTOR3(obj.GetPosition(i) + obj.GetCollision()->GetPosition() - m_Transform.position));
 		if (len > length)
-		{
 			continue;
-		}
 
 
 
@@ -410,17 +409,16 @@ D3DXVECTOR3 CPlayer:: LenOBBToPoint(CInstanceGameObject& obj, D3DXVECTOR3& p,flo
 //前回の座標から今の座標へ伸ばしたベクトルとボックスの当たり判定
 D3DXVECTOR3 CPlayer::RayIntersect(CInstanceGameObject* object, int index)
 {
-	D3DXVECTOR3 playerPos = m_Transform.position;//プレイヤー
-	D3DXVECTOR3 oldPlayerPos = m_OldPosition;//オブジェクトの中心
+	D3DXVECTOR3 playerPos = m_Transform.position;
+	D3DXVECTOR3 oldPlayerPos = m_OldPosition;
 	D3DXVECTOR3 origin = m_OldPosition;//レイを飛ばす原点
-	D3DXVECTOR3 ray = playerPos - oldPlayerPos;
+	D3DXVECTOR3 ray = playerPos - oldPlayerPos;//レイの方向
 	D3DXVec3Normalize(&ray, &ray);
 
 	D3DXVECTOR3 returnPos = m_OldPosition;
 	D3DXVECTOR3 returnNormal;//壁ずりに使う
 
-	//D3DXVECTOR3 offsetVertex[8];
-
+	
 	D3DXVECTOR3 vertex[8];
 	D3DXVECTOR3 normal[6];
 
@@ -474,16 +472,10 @@ D3DXVECTOR3 CPlayer::RayIntersect(CInstanceGameObject* object, int index)
 		for (int face = 0; face < 6; face++)
 		{
 
-			//面の逆法線側にプレイヤーがいない場合は省く
-			//float nor = D3DXPlaneDotCoord(&plane[face], &oldPlayerPos);
-			//if (nor >= 0)
-			//{
-			//	
-
-			//}
+		
 			float nor = D3DXPlaneDotCoord(&plane[face], &oldPlayerPos);
 			float nor2 = D3DXPlaneDotCoord(&plane[face], &playerPos);
-			if (nor >= -0.01f)//ちょっと甘め
+			if (nor >= -0.01f)//バイアス（ちょっと甘め）
 			{
 				if (nor2 < 0)
 				{
@@ -496,7 +488,6 @@ D3DXVECTOR3 CPlayer::RayIntersect(CInstanceGameObject* object, int index)
 						//交点から、壁ずり判定を行う
 						D3DXVECTOR3 f = D3DXVECTOR3(playerPos - oldPlayerPos);
 						D3DXVECTOR3 out = (f - D3DXVec3Dot(&f, &normal[face]) * normal[face]);
-						//D3DXVec3Normalize(&out, &(f - D3DXVec3Dot(&f, &normal[face]) * normal[face]));
 						returnPos = hit + out;// *0.1f;
 						
 					}
@@ -505,41 +496,9 @@ D3DXVECTOR3 CPlayer::RayIntersect(CInstanceGameObject* object, int index)
 				
 			}
 
-
 		}
 	}
 			
 	
 	return returnPos;
-
-}
-
-void CPlayer::Imgui()
-{
-	static bool show_player_winow = true;
-
-	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
-	if (CInput::KeyTrigger(DIK_F1))
-		show_player_winow = !show_player_winow;
-
-	if (show_player_winow)
-	{
-		ImGuiWindowFlags lw_flag = 0;
-		static bool lw_is_open;
-
-		ImGui::Begin("Player", &lw_is_open, lw_flag);
-
-		ImGui::Checkbox("EnableCollision", &m_EnableCollision);
-		ImGui::Checkbox("EnableHit", &m_EnableHit);
-		
-		
-		/*if(m_hit)
-			ImGui::Text("Hit!!!");*/
-
-		ImGui::Text("Position : %f,%f,%f", m_Transform.position.x,m_Transform.position.y,m_Transform.position.z);
-		ImGui::Text("Rotation : %f,%f,%f", m_Transform.rotation.x,m_Transform.rotation.y,m_Transform.rotation.z);
-
-		ImGui::End();
-	}
 }

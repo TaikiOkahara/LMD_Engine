@@ -1,10 +1,13 @@
+/*---------------------------------------
+*　calculation.cpp
+* 汎用的な計算関数群
+*@author：Okahara Taiki
+----------------------------------------*/
 #include "director.h"
 #include "gameobject.h"
-#include "InstanceObject.h"
+#include "instanceObject.h"
 #include "calculation.h"
 #include "collision.h"
-
-//FLOAT LenSegOnSeparateAxis(D3DXVECTOR3* Sep, D3DXVECTOR3* e1, D3DXVECTOR3* e2, D3DXVECTOR3* e3 = 0);
 
 //頂点3つとUV座標３つと法線をもとに接線を計算する。返す4次元ベクトルのwは左か右手系かの判断用フラグ。
 void CalcTangent(D3DXVECTOR3 v1, D3DXVECTOR3 v2, D3DXVECTOR3 v3,

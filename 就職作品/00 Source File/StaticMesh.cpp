@@ -46,7 +46,7 @@ void StaticMesh::LoadModel(const char* FileName)
 			ZeroMemory(&sd, sizeof(sd));
 			sd.pSysMem = vertex;
 
-			RENDERER::m_pDevice->CreateBuffer(&bd, &sd, &m_ppVertexBuffer[m]);
+			RENDERER::GetDevice()->CreateBuffer(&bd, &sd, &m_ppVertexBuffer[m]);
 
 			delete[] vertex;
 		}
@@ -77,7 +77,7 @@ void StaticMesh::LoadModel(const char* FileName)
 			ZeroMemory(&sd, sizeof(sd));
 			sd.pSysMem = index;
 
-			RENDERER::m_pDevice->CreateBuffer(&bd, &sd, &m_ppIndexBuffer[m]);
+			RENDERER::GetDevice()->CreateBuffer(&bd, &sd, &m_ppIndexBuffer[m]);
 
 			delete[] index;
 		}
@@ -107,9 +107,6 @@ void StaticMesh::Unload()
 	}
 	/*for (auto pair : m_Texture) でもいい*/
 
-
-	
-
 	aiReleaseImport(m_pAiScene);
 }
 
@@ -123,7 +120,7 @@ void StaticMesh::Update()
 void StaticMesh::Draw()
 {
 	//　プリミティブトポロジ設定
-	RENDERER::m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	RENDERER::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	
 
@@ -139,25 +136,25 @@ void StaticMesh::Draw()
 		//Diffuse
 		material->GetTexture(aiTextureType_DIFFUSE, 0, &path);
 		if (m_mapTexture[path.data]){
-			RENDERER::m_pDeviceContext->PSSetShaderResources(0, 1, &m_mapTexture[path.data]);
+			RENDERER::GetDeviceContext()->PSSetShaderResources(0, 1, &m_mapTexture[path.data]);
 		}
 		path.Clear();
 		//Normal
 		material->GetTexture(aiTextureType_NORMALS, 0, &path);
 		if (m_mapTexture[path.data]) {
-			RENDERER::m_pDeviceContext->PSSetShaderResources(1, 1, &m_mapTexture[path.data]);
+			RENDERER::GetDeviceContext()->PSSetShaderResources(1, 1, &m_mapTexture[path.data]);
 		}
 		path.Clear();
 		//Roughness
 		material->GetTexture(aiTextureType_SHININESS, 0, &path);
 		if (m_mapTexture[path.data]) {
-			RENDERER::m_pDeviceContext->PSSetShaderResources(2, 1, &m_mapTexture[path.data]);
+			RENDERER::GetDeviceContext()->PSSetShaderResources(2, 1, &m_mapTexture[path.data]);
 		}
 		path.Clear();
 		//metallic
 		material->GetTexture(aiTextureType_EMISSIVE, 0, &path);
 		if (m_mapTexture[path.data]) {
-			RENDERER::m_pDeviceContext->PSSetShaderResources(3, 1, &m_mapTexture[path.data]);
+			RENDERER::GetDeviceContext()->PSSetShaderResources(3, 1, &m_mapTexture[path.data]);
 		}
 		path.Clear();
 
@@ -165,21 +162,21 @@ void StaticMesh::Draw()
 		//　頂点バッファ設定
 		UINT stride = sizeof(VERTEX_3D);
 		UINT offset = 0;
-		RENDERER::m_pDeviceContext->IASetVertexBuffers(0, 1, &m_ppVertexBuffer[m], &stride, &offset);
+		RENDERER::GetDeviceContext()->IASetVertexBuffers(0, 1, &m_ppVertexBuffer[m], &stride, &offset);
 
 		//　インデックスバッファ設定
-		RENDERER::m_pDeviceContext->IASetIndexBuffer(m_ppIndexBuffer[m], DXGI_FORMAT_R32_UINT, 0);
+		RENDERER::GetDeviceContext()->IASetIndexBuffer(m_ppIndexBuffer[m], DXGI_FORMAT_R32_UINT, 0);
 
 
 		//　ポリゴン描画
-		RENDERER::m_pDeviceContext->DrawIndexed(mesh->mNumFaces * 3, 0, 0);
+		RENDERER::GetDeviceContext()->DrawIndexed(mesh->mNumFaces * 3, 0, 0);
 	}
 }
 
 void StaticMesh::DrawInstanced(UINT instanceCount)
 {
 	//　プリミティブトポロジ設定
-	RENDERER::m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	RENDERER::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 
 	for (unsigned int m = 0; m < m_pAiScene->mNumMeshes; m++)
@@ -194,36 +191,30 @@ void StaticMesh::DrawInstanced(UINT instanceCount)
 		//Diffuse
 		material->GetTexture(aiTextureType_DIFFUSE, 0, &path);
 		if (m_mapTexture[path.data]) {
-			RENDERER::m_pDeviceContext->PSSetShaderResources(0, 1, &m_mapTexture[path.data]);
+			RENDERER::GetDeviceContext()->PSSetShaderResources(0, 1, &m_mapTexture[path.data]);
 		}
 		path.Clear();
 		//Normal
 		material->GetTexture(aiTextureType_NORMALS, 0, &path);
 		if (m_mapTexture[path.data]) {
-			RENDERER::m_pDeviceContext->PSSetShaderResources(1, 1, &m_mapTexture[path.data]);
+			RENDERER::GetDeviceContext()->PSSetShaderResources(1, 1, &m_mapTexture[path.data]);
 		}
 		path.Clear();
 		
 		//MRA
 		material->GetTexture(aiTextureType_EMISSIVE, 0, &path);
 		if (m_mapTexture[path.data]) {
-			RENDERER::m_pDeviceContext->PSSetShaderResources(2, 1, &m_mapTexture[path.data]);
+			RENDERER::GetDeviceContext()->PSSetShaderResources(2, 1, &m_mapTexture[path.data]);
 		}
 		path.Clear();
 
 
-		//　頂点バッファ設定
 		UINT stride = sizeof(VERTEX_3D);
 		UINT offset = 0;
-		RENDERER::m_pDeviceContext->IASetVertexBuffers(0, 1, &m_ppVertexBuffer[m], &stride, &offset);
+		RENDERER::GetDeviceContext()->IASetVertexBuffers(0, 1, &m_ppVertexBuffer[m], &stride, &offset);
+		RENDERER::GetDeviceContext()->IASetIndexBuffer(m_ppIndexBuffer[m], DXGI_FORMAT_R32_UINT, 0);
 
-		//　インデックスバッファ設定
-		RENDERER::m_pDeviceContext->IASetIndexBuffer(m_ppIndexBuffer[m], DXGI_FORMAT_R32_UINT, 0);
-
-
-		//　ポリゴン描画
-		//RENDERER::m_pDeviceContext->DrawIndexed(mesh->mNumFaces * 3, 0, 0);
-		RENDERER::m_pDeviceContext->DrawIndexedInstanced(mesh->mNumFaces * 3, instanceCount,0, 0,0);
+		RENDERER::GetDeviceContext()->DrawIndexedInstanced(mesh->mNumFaces * 3, instanceCount,0, 0,0);
 	}
 }
 
@@ -258,7 +249,7 @@ void StaticMesh::LoadTexture(std::string file_name)
 						int id = atoi(&path.data[1]);
 
 						D3DX11CreateShaderResourceViewFromMemory(
-							RENDERER::m_pDevice,
+							RENDERER::GetDevice(),
 							(const unsigned char*)m_pAiScene->mTextures[id]->pcData,
 							m_pAiScene->mTextures[id]->mWidth,
 							NULL,
@@ -281,7 +272,7 @@ void StaticMesh::LoadTexture(std::string file_name)
 					tex_name += path.C_Str();
 
 					D3DX11CreateShaderResourceViewFromFile(
-						RENDERER::m_pDevice,
+						RENDERER::GetDevice(),
 						tex_name.c_str(),
 						NULL,
 						NULL,

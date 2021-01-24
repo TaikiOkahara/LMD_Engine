@@ -1,3 +1,8 @@
+/*---------------------------------------
+*@doorWay.cpp
+*
+*@authorFOkahara Taiki
+----------------------------------------*/
 #include "director.h"
 #include "renderer.h"
 #include "staticMesh.h"
@@ -5,9 +10,7 @@
 #include "Imgui11.h"
 #include "input.h"
 
-//
-//
-//
+
 void CDoorWay::Init()
 {
 	
@@ -18,10 +21,9 @@ void CDoorWay::Init()
 
 	m_Transform.position = D3DXVECTOR3(-2.5f, 0.0f, 0.0f);
 	m_Transform.rotation = D3DXVECTOR3(0.0f, D3DX_PI/2, 0.0f);
-	
 	m_Transform.scale = D3DXVECTOR3(1.5, 0.85f,1);
 
-	m_Collision.Init(D3DXVECTOR3(0.5, 5, 5), D3DXVECTOR3(0, 2.5, 0));
+	m_Collision.Set(D3DXVECTOR3(0.5, 5, 5), D3DXVECTOR3(0, 2.5, 0));
 	
 	
 	{
@@ -32,18 +34,13 @@ void CDoorWay::Init()
 	InitInstance();
 }
 
-
 void CDoorWay::Uninit()
 {
 	m_pMesh->Unload();
 	delete m_pMesh;
 
 	UninitInstance();
-
-	m_Collision.Uninit();
-
 }
-
 
 void CDoorWay::Update()
 {
@@ -51,16 +48,14 @@ void CDoorWay::Update()
 
 }
 
-
 void CDoorWay::Draw()
 {
 	DrawInstance();
 
 
-	
-	RENDERER::m_pDeviceContext->VSSetShader(m_pInstanceVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->PSSetShader(m_pCommonPixelShader, NULL, 0);
-	RENDERER::m_pDeviceContext->IASetInputLayout(m_pCommonVertexLayout);
+	RENDERER::GetDeviceContext()->VSSetShader(m_pInstanceVertexShader, NULL, 0);
+	RENDERER::GetDeviceContext()->PSSetShader(m_pCommonPixelShader, NULL, 0);
+	RENDERER::GetDeviceContext()->IASetInputLayout(m_pCommonVertexLayout);
 
 
 	m_pMesh->DrawInstanced(m_MeshCount);

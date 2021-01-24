@@ -1,3 +1,9 @@
+/*---------------------------------------
+*　game.h
+*
+* メインとなるシーン
+*@author：Okahara Taiki
+----------------------------------------*/
 #pragma once
 #include "scene.h"
 
@@ -15,7 +21,7 @@ private:
 	int  deferredType = 0;
 	bool frustumEnable = false;
 	float ambientOcclusionPower = 0.0f;
-
+	BOOL gBufferRenderEnable = false;
 	GAME_STAGE m_CurStage;
 public:
 

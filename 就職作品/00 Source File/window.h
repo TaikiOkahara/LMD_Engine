@@ -1,8 +1,12 @@
+/*---------------------------------------
+*　window.h
+* 
+* プロシージャ等のウィンドウ設定
+*@author：Okahara Taiki
+----------------------------------------*/
 #pragma once
 #include "director.h"
-//
-//
-//
+
 class WINDOW
 {
 public:

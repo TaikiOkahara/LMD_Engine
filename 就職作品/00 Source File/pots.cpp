@@ -1,3 +1,8 @@
+/*---------------------------------------
+*@pots.cpp
+*
+*@authorFOkahara Taiki
+----------------------------------------*/
 #include "director.h"
 #include "renderer.h"
 #include "staticMesh.h"
@@ -5,23 +10,16 @@
 #include "Imgui11.h"
 #include "input.h"
 
-//
-//
-//
+
 void CPots::Init()
 {
 	m_pMesh = new StaticMesh();
 	m_pMesh->LoadModel("../02 Visual File//Pots//PotBPBR_NoTex.fbx");
 	m_pMesh->LoadTexture("../02 Visual File//Pots");
 
-
-
-	m_Collision.Init(D3DXVECTOR3(0.5f,0.5f,0.5f),D3DXVECTOR3(0,0,0));
-
-	
+	m_Collision.Set(D3DXVECTOR3(0.5f,0.5f,0.5f),D3DXVECTOR3(0,0,0));
 
 	{
-
 		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-0.6f, 0.0f, -1.2f),D3DXVECTOR3(0.0f, 0.0f, 0.0f) ,D3DXVECTOR3(1.2, 1.5, 1.2) });
 		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-0.4f, 0.0f, -1.7f) ,D3DXVECTOR3(0.0f, 0.0f, 0.0f) ,D3DXVECTOR3(1, 1, 1) });
 		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-0.75f, 0.0f, 8.5f) ,D3DXVECTOR3(0.0f, 0.0f, 0.0f) ,D3DXVECTOR3(2.7, 3,2.7) });
@@ -40,7 +38,6 @@ void CPots::Uninit()
 	delete m_pMesh;
 
 	UninitInstance();
-	m_Collision.Uninit();
 }
 
 void CPots::Update()
@@ -53,10 +50,9 @@ void CPots::Draw()
 {
 	DrawInstance();
 
-	//RENDERER::m_pDeviceContext->VSSetShader(RENDERER::m_pInstanceVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->VSSetShader(m_pInstanceVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->PSSetShader(m_pCommonPixelShader, NULL, 0);
-	RENDERER::m_pDeviceContext->IASetInputLayout(m_pCommonVertexLayout);
+	RENDERER::GetDeviceContext()->VSSetShader(m_pInstanceVertexShader, NULL, 0);
+	RENDERER::GetDeviceContext()->PSSetShader(m_pCommonPixelShader, NULL, 0);
+	RENDERER::GetDeviceContext()->IASetInputLayout(m_pCommonVertexLayout);
 
 
 	m_pMesh->DrawInstanced(m_MeshCount);

@@ -24,19 +24,13 @@ void main(uint3 DTid : SV_DispatchThreadID)
     
     if (index > g_uInstanceCount - 1)//0からカウントするため
         return;
+
     
-    
-   
-   
-    
-    //視錐台カリングはここで行う
     matrix world = WorldMatrixBuffer[index];
-    
-    
-    
-    
+
    
     
+    //視錐台カリング
     for (uint i = 0; i < 8;i++)
     {
         
@@ -74,11 +68,5 @@ void main(uint3 DTid : SV_DispatchThreadID)
         
     }
     
-   
-    
-    
-    
-    
-    
-    
+
 }

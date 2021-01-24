@@ -2,6 +2,9 @@
 #define LIGHT_NUM (6)
 
 
+#ifndef CONSTANT_BUFFER
+#define CONSTANT_BUFFER
+
 
 
 cbuffer WorldBuffer : register(b0)
@@ -58,8 +61,8 @@ cbuffer PointLightBuffer : register(b5)
 
 cbuffer EffectBuffer : register(b6)
 {
-    float4 g_fDeferred;//xでレンダリングバッファ変更（セット番号と共通）
-    
+    float3 g_fDeferred;//xでレンダリングバッファ変更（セット番号と共通）
+    bool g_fGBufferEnable;//GBufferを表示するかどうか
     
     //Fog
     float4 g_fFogOffset; //フォグの揺らぎテクスチャーのテクセルのオフセット値 x 2 
@@ -82,3 +85,5 @@ cbuffer ToggleBuffer : register(b8)
     
     float3 dummy_b8;
 }
+
+#endif  // CONSTANT_BUFFER

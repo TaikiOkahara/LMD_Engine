@@ -1,21 +1,15 @@
+/*---------------------------------------
+*　struct.h
+*
+* 構造体定義群
+*@author：Okahara Taiki
+----------------------------------------*/
 #pragma once
-
 
 #define	LIGHT_MAX		(6)	//ライトの数を有限にする
 #define	ANIMATION_MATRIX_MAX	(64)
 
-enum PRIORITY_LEVEL
-{
-	LEVEL_0,
-	LEVEL_1,
-	LEVEL_2,
-	LEVEL_3,
-	LEVEL_4,
-	LEVEL_5,
-};
-
-
-
+//GameObjectクラスのコンポーネント
 struct TRANSFORM
 {
 	D3DXVECTOR3 position = D3DXVECTOR3(0, 0, 0);
@@ -23,6 +17,7 @@ struct TRANSFORM
 	D3DXVECTOR3 scale = D3DXVECTOR3(1, 1, 1);
 };
 
+//頂点構造体
 struct VERTEX_3D
 {
 	D3DXVECTOR3 Position;
@@ -33,13 +28,14 @@ struct VERTEX_3D
 	D3DXVECTOR3 Binormal;
 };
 
+//Deferred用ビルボード頂点構造体
 struct DEFERRED_VERTEX
 {
 	D3DXVECTOR3 Pos;
 	D3DXVECTOR2 TexturePos;
 };
 
-
+//アニメーション頂点構造体
 struct ANIMVERTEX_3D
 {
 	D3DXVECTOR3 Position;
@@ -49,7 +45,7 @@ struct ANIMVERTEX_3D
 	D3DXVECTOR3 Binormal;
 
 	UINT		BoneIndex[4]{
-		ANIMATION_MATRIX_MAX - 1,//エラー検知のため要素最大値代入
+		ANIMATION_MATRIX_MAX - 1,//エラー検知のため要素最大値代入(VertexShader側で検知)
 		ANIMATION_MATRIX_MAX - 1,
 		ANIMATION_MATRIX_MAX - 1,
 		ANIMATION_MATRIX_MAX - 1 };
@@ -58,11 +54,25 @@ struct ANIMVERTEX_3D
 };
 
 
+//GBuffer生成構造体
+struct GBuffer
+{
+	ID3D11Texture2D* m_pTexture = nullptr;
+	ID3D11RenderTargetView* m_pRenderTargetView = nullptr;
+	ID3D11ShaderResourceView* m_pShaderResourceView = nullptr;
+
+	void Release() {
+		SAFE_RELEASE(m_pTexture);
+		SAFE_RELEASE(m_pRenderTargetView);
+		SAFE_RELEASE(m_pShaderResourceView);
+	}
+};
+
+
 struct ANIMATIONMATRIX
 {
 	D3DXMATRIX Animation[ANIMATION_MATRIX_MAX];
 };
-
 
 struct POINTLIGHT
 {
@@ -73,9 +83,6 @@ struct POINTLIGHT
 	D3DXVECTOR3 pos;
 	UINT		index;//二進数に直すので少し複雑
 };
-
-
-
 
 struct EYE
 {
@@ -96,21 +103,6 @@ struct FOG
 	BOOL fogEnable;
 };
 
-
-
-
-struct GBuffer
-{
-	ID3D11Texture2D* m_pTexture = nullptr;
-	ID3D11RenderTargetView* m_pRenderTargetView = nullptr;
-	ID3D11ShaderResourceView* m_pShaderResourceView = nullptr;
-
-	void Release() {
-		SAFE_RELEASE(m_pTexture);
-		SAFE_RELEASE(m_pRenderTargetView);
-		SAFE_RELEASE(m_pShaderResourceView);
-	}
-};
 
 class ConstantBuffer 
 {
@@ -171,6 +163,9 @@ public:
 	};
 };
 
+//ConstantBuffer構造体---------------------------------------------------------------------------
+
+
 class ToggleBuffer : public ConstantBuffer
 {
 private:
@@ -221,7 +216,9 @@ class EffectBuffer : public ConstantBuffer
 private:
 	struct Struct
 	{
-		D3DXVECTOR4 deferred;
+		D3DXVECTOR3 deferred;
+		BOOL GBufferDrawEnable;
+
 		FOG	fog;
 
 		D3DXVECTOR4 ambientOcclusion;
@@ -231,8 +228,8 @@ public:
 	void Set();
 	void SetFog(FOG set) { str.fog = set; }
 	void SetAO(D3DXVECTOR4 set) { str.ambientOcclusion = set; }
-	void SetDeferredParam(D3DXVECTOR4 set) { str.deferred = set; }
-	D3DXVECTOR4 GetDeferredParam() { return str.deferred; }
+	void SetDeferredParam(D3DXVECTOR3 set, BOOL enable) { str.deferred = set; str.GBufferDrawEnable = enable; }
+	D3DXVECTOR3 GetDeferredParam() { return str.deferred; }
 
 	EffectBuffer()	{
 		m_StructSize = sizeof(Struct);
@@ -316,3 +313,7 @@ public:
 	ProjBuffer() { m_StructSize = sizeof(D3DXMATRIX) * 2; }
 	~ProjBuffer() {}
 };
+
+
+
+//ConstantBuffer構造体---------------------------------------------------------------------------

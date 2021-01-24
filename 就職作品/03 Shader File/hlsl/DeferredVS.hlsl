@@ -11,7 +11,5 @@ VS_OUT main(
     output.Pos = Pos;
     output.Tex = Tex;
 	
-	
-
     return output;
 }

@@ -1,16 +1,18 @@
+/*---------------------------------------
+*　gargoyle.h
+* ガーゴイルの銅像オブジェクトクラス
+*@author：Okahara Taiki
+----------------------------------------*/
 #pragma once
-#include "InstanceObject.h"
+#include "instanceObject.h"
 #include "StaticMesh.h"
 
 class CGargoyle : public CInstanceGameObject
 {
 private:
-	//Tile* m_pMesh = nullptr;
 	StaticMesh* m_pMesh = nullptr;
 
 public:
-	CGargoyle() {}
-	~CGargoyle() {}
 
 	void Init();
 	void Uninit();

@@ -1,3 +1,8 @@
+/*---------------------------------------
+*　fog.h
+*
+*@author：Okahara Taiki
+----------------------------------------*/
 #include "director.h"
 #include "renderer.h"
 #include "fog.h"
@@ -5,15 +10,13 @@
 #include "input.h"
 
 
-
 void CFogEffect::Init()
 {
-	//シェーダー作成
+	
 	RENDERER::CreateVertexShader(&m_pVertexShader, nullptr, nullptr, 0, "deferredVS.cso");
 	RENDERER::CreatePixelShader(&m_pPixelShader, "fogPS.cso");
 
-
-	D3DX11CreateShaderResourceViewFromFile(RENDERER::m_pDevice, "../02 Visual File//textures//fog.dds", NULL, NULL, &m_FogTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(RENDERER::GetDevice(), "../02 Visual File//textures//fog.dds", NULL, NULL, &m_FogTexture, NULL);
 	assert(m_FogTexture);
 
 
@@ -67,14 +70,14 @@ void CFogEffect::Draw()
 {
 
 
-	RENDERER::m_ConstantBufferList.GetStruct<EffectBuffer>()->SetFog(m_Fog);
+	RENDERER::GetConstantList().GetStruct<EffectBuffer>()->SetFog(m_Fog);
 
-	RENDERER::m_pDeviceContext->VSSetShader(m_pVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);
+	RENDERER::GetDeviceContext()->VSSetShader(m_pVertexShader, NULL, 0);
+	RENDERER::GetDeviceContext()->PSSetShader(m_pPixelShader, NULL, 0);
 
 
 	//フォグテクスチャのセット
-	RENDERER::m_pDeviceContext->PSSetShaderResources(7, 1, &m_FogTexture);
+	RENDERER::GetDeviceContext()->PSSetShaderResources(7, 1, &m_FogTexture);
 
 	RENDERER::SetBlendState_Lighting();
 
@@ -103,7 +106,7 @@ void CFogEffect::Imgui()
 
 			ImGui::Checkbox("EnableCollision", &m_Enable);
 
-			//static D3DXVECTOR2 fogoffset = m_Effect.fogOffset[0];
+			
 			static ImVec4 clear_color = ImVec4(m_Fog.color.x, m_Fog.color.y, m_Fog.color.z, 1.00f);
 
 			m_Fog.color.x = clear_color.x;

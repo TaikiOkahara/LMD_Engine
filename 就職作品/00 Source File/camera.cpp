@@ -1,6 +1,8 @@
-/*「CAMERA.cpp」=============================================
-　　製作者：岡原大起　	(-"-)
-=============================================================*/
+/*---------------------------------------
+*　camera.cpp
+*
+*@author：Okahara Taiki
+----------------------------------------*/
 #include "base.h"
 #include "director.h"
 #include "renderer.h"
@@ -14,7 +16,7 @@
 #include "ceiling.h"
 #include "floor.h"
 
-//　初期化
+
 void CCamera::Init()
 {
 	
@@ -25,15 +27,12 @@ void CCamera::Init()
 	m_Near = 0.1f;
 	m_Far = 1000.0f;
 }
-//
-//
-//
+
+
 void CCamera::Uninit()
 {
 }
-//
-//
-// 更新
+
 void CCamera::Update()
 {
 
@@ -62,6 +61,7 @@ void CCamera::Update()
 			m_Transform.rotation.x = (D3DX_PI / 180) * 70;
 	}
 
+	//注支店との距離更新
 	if (CInput::KeyPress(DIK_Q)) {
 		m_Distance.z -= 0.05f;
 	}
@@ -77,7 +77,7 @@ void CCamera::Update()
 	D3DXVec3TransformCoord(&offset, &offset, &rot);
 
 
-	//D3DXVECTOR3 pos;
+
 	m_Transform.position = offset + m_OffsetPosition;
 
 
@@ -111,7 +111,6 @@ void CCamera::Update()
 	}
 
 
-	//　マトリクス設定
 
 	D3DXMATRIX viewOldMatrix;
 	D3DXMATRIX projOldMatrix;
@@ -121,24 +120,25 @@ void CCamera::Update()
 
 
 	D3DXMatrixLookAtLH(&m_ViewMatrix, &m_Transform.position, &m_Target, &D3DXVECTOR3(0, 1, 0));
-	//RENDERER::SetViewMatrix(m_ViewMatrix);
-	RENDERER::m_ConstantBufferList.GetStruct<ViewBuffer>()->Set(m_ViewMatrix,viewOldMatrix);
+	RENDERER::GetConstantList().GetStruct<ViewBuffer>()->Set(m_ViewMatrix,viewOldMatrix);
 
 	D3DXMatrixPerspectiveFovLH(&m_ProjMatrix, m_Angle, m_Aspect, m_Near, m_Far);
-	RENDERER::m_ConstantBufferList.GetStruct<ProjBuffer>()->Set(m_ProjMatrix,projOldMatrix);
+	RENDERER::GetConstantList().GetStruct<ProjBuffer>()->Set(m_ProjMatrix,projOldMatrix);
 
 
 	EYE eye;
 	eye.eyePos = D3DXVECTOR4(m_Transform.position.x, m_Transform.position.y, m_Transform.position.z, 0);
-	
 	eye.worldCamera[0] = m_CullingWPos[0];
 	eye.worldCamera[1] = m_CullingWPos[1];
 	eye.worldCamera[2] = m_CullingWPos[2];
 	eye.worldCamera[3] = m_CullingWPos[3];
 	
 	
-	RENDERER::m_ConstantBufferList.GetStruct<EyeBuffer>()->Set(eye);
+	RENDERER::GetConstantList().GetStruct<EyeBuffer>()->Set(eye);
 
+
+
+	//視錐台カリング用視錐台頂点計算
 	D3DXMATRIX vp, invvp;
 
 	vp = m_ViewMatrix * m_ProjMatrix;
@@ -163,15 +163,11 @@ void CCamera::Update()
 	m_CullingWPos[2] = D3DXVECTOR4(wpos[2].x,wpos[2].y,wpos[2].z,0);
 	m_CullingWPos[3] = D3DXVECTOR4(wpos[3].x,wpos[3].y,wpos[3].z,0);
 }
-//
-//
-//
+
+
 void CCamera::Draw()
 {
 }
-
-
-
 
 D3DXVECTOR3 CCamera::CameraRayIntersect(CInstanceGameObject* object)
 {
@@ -198,8 +194,7 @@ D3DXVECTOR3 CCamera::CameraRayIntersect(CInstanceGameObject* object)
 	int count = object->GetMeshMax();
 	for (int objnum = 0; objnum < count; objnum++)
 	{
-		D3DXVECTOR3 vertex[8];
-		//マトリクス
+
 		D3DXMATRIX mWorld, mScale, mRot, mTrans;
 		D3DXMatrixScaling(&mScale, object->GetScale(objnum).x, object->GetScale(objnum).y, object->GetScale(objnum).z);
 		D3DXMatrixRotationYawPitchRoll(&mRot, object->GetRotation(objnum).y, object->GetRotation(objnum).x, object->GetRotation(objnum).z);
@@ -207,6 +202,7 @@ D3DXVECTOR3 CCamera::CameraRayIntersect(CInstanceGameObject* object)
 		mWorld = mScale * mRot * mTrans;
 
 		//頂点をワールド座標変換
+		D3DXVECTOR3 vertex[8];
 		for (int i = 0; i < 8; i++)
 		{
 			vertex[i] = offsetVertex[i];
@@ -345,8 +341,6 @@ D3DXVECTOR3 CCamera::CameraRayIntersect(CInstanceGameObject* object)
 						continue;
 					}
 				}
-				
-
 			}
 
 		}
@@ -374,8 +368,6 @@ void CCamera::Imgui()
 
 		ImGui::Begin("Camera", &lw_is_open, lw_flag);
 
-		/*if(hit)
-			ImGui::InputFloat3("hit!!", hitpos,1);*/
 		ImGui::Checkbox("CameraControl", &m_CameraControl);
 
 

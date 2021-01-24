@@ -1,7 +1,9 @@
-/*「DIRECT3D11.h」=============================================
-　・このプロジェクトの統括のようなクラス
-　　製作者：岡原大起　	(-"-)
-=============================================================*/
+/*---------------------------------------
+*　renderer.h
+* 
+* 描画周りを管理するクラス
+*@author：Okahara Taiki
+----------------------------------------*/
 #pragma once
 #include "struct.h"
 
@@ -10,10 +12,19 @@
 
 class RENDERER
 {
+	static ID3D11Device* m_pDevice;
+	static ID3D11DeviceContext* m_pDeviceContext;
+	static IDXGISwapChain* m_pSwapChain;
+
+	static ID3D11RasterizerState* m_pCommonRasterizerState;
+	static ID3D11SamplerState* m_pCommonSamplerState;
+
+	static ConstantBufferList m_ConstantBufferList;
+
+
 	static void CreateGBufferFormat(GBuffer* pGbuffer, DXGI_FORMAT dxgi_format);
 	static void CreateConstantBuffers();
 
-	static IDXGISwapChain* m_pSwapChain;
 	
 	//======================================================
 	//GBuffer
@@ -53,28 +64,21 @@ class RENDERER
 	static ID3D11DepthStencilState* m_pBuckBuffer_DSTexState;
 
 
+	
 public:
-	static ConstantBufferList m_ConstantBufferList;
 	
 
 
-	//通常
-	static ID3D11RasterizerState* m_pCommonRasterizerState;
-	static ID3D11SamplerState*	m_pCommonSamplerState;
-	
 
-
-	static ID3D11Device*		m_pDevice;			
-	static ID3D11DeviceContext*	m_pDeviceContext;	
-
-
-
-
-	//メンバ関数
 	static HRESULT Init(HWND hWnd);//　初期化
 	static void Uninit();
 	static void ShowFPS();			//　FPS表示
 	static void Clear();			//　クリア
+
+	static ID3D11Device* GetDevice() { return m_pDevice; }
+	static ID3D11DeviceContext* GetDeviceContext() { return m_pDeviceContext; }
+	static ConstantBufferList GetConstantList() { return m_ConstantBufferList; }
+
 
 
 	static void CreateVertexShader(ID3D11VertexShader**,ID3D11InputLayout**, D3D11_INPUT_ELEMENT_DESC* ,UINT , const char* );
@@ -83,15 +87,15 @@ public:
 	static void CreateStructuredBuffer(UINT elementSize,UINT count,void* pInitData,ID3D11Buffer** ppBufferOut);
 
 
-
+	//２D(UI)のマトリクス変換関数
 	static void SetWorldViewProjection2D();
 	
 	static void SetRasterizerState(D3D11_CULL_MODE cull, D3D11_FILL_MODE fill);
 	static void SetBlendState_Lighting();
 
-	//static ConstantBufferList GetConstantBufferList() { return m_ConstantBufferList; }
+	
 	static void Deferred();//ディファード
-	static void PointLighting();	//ポイントライト
+	static void PointLighting();//ポイントライト
 	static void CommonDraw();
 	static void PostProcessDraw();
 	static void ShadowDraw();

@@ -1,3 +1,8 @@
+/*---------------------------------------
+*　pillar.cpp
+*
+*@author：Okahara Taiki
+----------------------------------------*/
 #include "director.h"
 #include "renderer.h"
 #include "staticMesh.h"
@@ -5,28 +10,20 @@
 #include "Imgui11.h"
 #include "input.h"
 
-//
-//
-//
 void CPillar::Init()
 {
 	m_pMesh = new StaticMesh();
 	m_pMesh->LoadModel("../02 Visual File//Pillar//pillarPBR.fbx");
 	m_pMesh->LoadTexture("../02 Visual File//Pillar");
 
-
-
-	m_Collision.Init(D3DXVECTOR3(1.0f, 4.5f, 1.0f), D3DXVECTOR3(0, 2.25f, 0));
-
-
+	m_Collision.Set(D3DXVECTOR3(1.0f, 4.5f, 1.0f), D3DXVECTOR3(0, 2.25f, 0));
 
 
 	D3DXVECTOR3 scale, rot;
 	scale = m_Transform.scale;
 	rot = m_Transform.rotation;
 
-
-
+	//スタート地点前方
 	for (int i = 0; i < 6; i++)
 	{
 		//右柱
@@ -55,23 +52,20 @@ void CPillar::Uninit()
 	delete m_pMesh;
 
 	UninitInstance();
-	m_Collision.Uninit();
 }
 
 void CPillar::Update()
 {
 	UpdateInstance();
-
 }
 
 void CPillar::Draw()
 {
 	DrawInstance();
 
-	//RENDERER::m_pDeviceContext->VSSetShader(RENDERER::m_pInstanceVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->VSSetShader(m_pInstanceVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->PSSetShader(m_pCommonPixelShader, NULL, 0);
-	RENDERER::m_pDeviceContext->IASetInputLayout(m_pCommonVertexLayout);
+	RENDERER::GetDeviceContext()->VSSetShader(m_pInstanceVertexShader, NULL, 0);
+	RENDERER::GetDeviceContext()->PSSetShader(m_pCommonPixelShader, NULL, 0);
+	RENDERER::GetDeviceContext()->IASetInputLayout(m_pCommonVertexLayout);
 
 
 	m_pMesh->DrawInstanced(m_MeshCount);

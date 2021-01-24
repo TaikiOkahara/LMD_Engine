@@ -1,28 +1,24 @@
-/*「CAMERA.h」=============================================
-　　製作者：岡原大起　	(-"-)
-=============================================================*/
+/*---------------------------------------
+*　camera.h
+*
+*@author：Okahara Taiki
+----------------------------------------*/
 #pragma once
 #include "gameobject.h"
-#include "InstanceObject.h"
-//
-//
-//
+#include "instanceObject.h"
+
 class CCamera : public CGameObject
 {
 private:
 	
-	D3DXVECTOR3 m_Target;
+	D3DXVECTOR3 m_Target;//注視点
 	D3DXVECTOR3 m_Distance;
 	D3DXVECTOR3 m_OffsetPosition;
 
-	/*D3DXMATRIX m_ProjMatrix;
-	D3DXMATRIX m_ViewMatrix;
-	D3DXMATRIX m_OldViewMatrix;
-	D3DXMATRIX m_OldProjMatrix;*/
 	D3DXMATRIX m_ViewMatrix;
 	D3DXMATRIX m_ProjMatrix;
 
-
+	
 	float m_Angle;
 	float m_Aspect;
 	float m_Near;
@@ -32,9 +28,6 @@ private:
 	
 	D3DXVECTOR3 CameraRayIntersect(CInstanceGameObject* object);
 public:
-	CCamera(){}
-	~CCamera(){}
-
 
 	void Init();
 	void Update();

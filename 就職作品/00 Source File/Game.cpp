@@ -1,3 +1,9 @@
+/*---------------------------------------
+*　game.h
+*
+* メインとなるシーン
+*@author：Okahara Taiki
+----------------------------------------*/
 #include "base.h"
 #include "game.h"
 #include "title.h"
@@ -60,7 +66,7 @@ void Game::Init() {
 
 	AddPostProcess<CDirectionalLight>();
 	AddPostProcess<CFogEffect>();
-	//m_pPostProcess->Init();
+	
 }
 
 void Game::UnInit() {
@@ -77,12 +83,15 @@ void Game::Update() {
 	if (timeStop) return;
 	CScene::Update();
 
-	RENDERER::m_ConstantBufferList.GetStruct<EffectBuffer>()->SetDeferredParam(D3DXVECTOR4(deferredType * 1.0f, 0, 0, 0));
-	RENDERER::m_ConstantBufferList.GetStruct<EffectBuffer>()->SetAO(D3DXVECTOR4(ambientOcclusionPower,0,0,0));
+	//ポストプロセス情報をシェーダーにセット
+	RENDERER::GetConstantList().GetStruct<EffectBuffer>()->SetDeferredParam(D3DXVECTOR3(deferredType * 1.0f, 0, 0), gBufferRenderEnable);
+	RENDERER::GetConstantList().GetStruct<EffectBuffer>()->Set();
+	
+	RENDERER::GetConstantList().GetStruct<EffectBuffer>()->SetAO(D3DXVECTOR4(ambientOcclusionPower,0,0,0));
 
 
-	RENDERER::m_ConstantBufferList.GetStruct<ToggleBuffer>()->SetFrustumCullingEnable(frustumEnable);
-	RENDERER::m_ConstantBufferList.GetStruct<ToggleBuffer>()->Set();
+	RENDERER::GetConstantList().GetStruct<ToggleBuffer>()->SetFrustumCullingEnable(frustumEnable);
+	RENDERER::GetConstantList().GetStruct<ToggleBuffer>()->Set();
 
 
 	//タイトルScene移動
@@ -107,9 +116,10 @@ void Game::Imgui()
 	{
 		static float f1 = 0.0f;
 		static int counter1 = 0;
-		static bool gBuffer_render = false;
+		
 		static int render_radio = deferredType;
 		static int culling_radio = culling_radio;
+		static bool gBuffer_render = gBufferRenderEnable;
 
 		ImGuiWindowFlags flag = 0;
 		ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
@@ -122,13 +132,9 @@ void Game::Imgui()
 
 		ImGui::Checkbox("isStop", &timeStop);
 
-		//ImGui::Checkbox("DirectionalLight", &RENDERER::toggleDirectional);
-		//ImGui::Checkbox("PointLight", &RENDERER::togglePoint);
-		//ImGui::Checkbox("Trigger", &show_another_window);
-
-		//ImGui::SliderFloat("float", &f1, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		//ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+		
 		ImGui::Checkbox("GBuffer Render", &gBuffer_render);
+		gBufferRenderEnable = gBuffer_render;
 
 		if (gBuffer_render)
 		{
@@ -173,8 +179,5 @@ void Game::Imgui()
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();
 	}
-
-
-	
 
 }

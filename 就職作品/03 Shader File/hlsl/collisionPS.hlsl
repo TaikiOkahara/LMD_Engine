@@ -11,9 +11,8 @@ PS_OUT main(VS_OUT input)
 {
     PS_OUT Out = (PS_OUT) 0;
 
-	//カラーテクスチャーへ出力 
     Out.vColor = float4(0, 1, 0, 1);
-    Out.vNormal = float4(0,0,-1,2); //wが２ならライティングを行わない（天才）
+    Out.vNormal = float4(0,0,-1,2); //wが２ならライティングを行わない
     Out.vPosition = input.WorldPos;
     
     return Out;

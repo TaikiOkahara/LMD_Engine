@@ -42,7 +42,6 @@ VS_OUT main(
 	output.Tex = Tex;
 	
     output.Depth = output.Pos.z / output.Pos.w;
-    //output.Depth = mul(g_mView,output.WorldPos).z;
     
     float4 curPos = mul(Pos, wvp);
     float4 lastPos = mul(Pos, oldWvp);
@@ -50,13 +49,8 @@ VS_OUT main(
 	
     float2 velocity = (curPos.xy / curPos.w) - (lastPos.xy / lastPos.w);
 	
-	// The velocity is now between (-2,2) so divide by 2 to get it to (-1,1)
-    //velocity /= 2.0f;
-	
     output.Velocity = velocity;
-    //float3 motionDir = output.Pos.xyz - output.MotionDir;
-    //output.MotionDir = motionDir;
-
+ 
 	return output;
 
 }

@@ -1,3 +1,9 @@
+/*---------------------------------------
+*　title.cpp
+*
+* Sceneクラスを継承したタイトルクラス
+*@author：Okahara Taiki
+----------------------------------------*/
 #include "base.h"
 #include"game.h"
 #include "title.h"
@@ -10,7 +16,6 @@
 #include "player.h"
 #include "floor.h"
 #include "wall.h"
-#include "stage.h"
 #include "pillar.h"
 #include "pots.h"
 #include "trim.h"
@@ -28,15 +33,12 @@ void Title::Init() {
 
 
 	AddGameObject<CCamera>(LAYER::HIDE);
-
 	AddGameObject<CCubeMap>(LAYER::HIDE);
 
 
 	AddGameObject<CFloor>(LAYER::DRAW);
 
-
 	AddGameObject<CPlayer>(LAYER::DRAW);//プレイヤー
-
 
 
 	AddPostProcess<CDirectionalLight>();
@@ -56,7 +58,7 @@ void Title::Update() {
 
 	CScene::Update();
 
-	//タイトルScene移動
+	//ゲームScene移動
 	if (CInput::KeyTrigger(DIK_F8))
 		Base::SetScene<Game>();
 }
@@ -77,7 +79,6 @@ void Title::Imgui()
 
 		ImGui::Begin("TitleScene", &is_open, flag);
 
-		//ImGui::Text("Render Type");
 		
 		ImGui::End();
 	}

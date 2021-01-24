@@ -1,3 +1,8 @@
+/*---------------------------------------
+*　cubeMap.h
+*
+*@author：Okahara Taiki
+----------------------------------------*/
 #pragma once
 #include "gameobject.h"
 
@@ -7,6 +12,7 @@ private:
 
 	ID3D11Buffer* m_pVertexBuffer = nullptr;
 
+	//6面テクスチャー
 	ID3D11ShaderResourceView* m_pTexture_f = nullptr;
 	ID3D11ShaderResourceView* m_pTexture_b = nullptr;
 	ID3D11ShaderResourceView* m_pTexture_u = nullptr;
@@ -18,10 +24,6 @@ private:
 	ID3D11PixelShader* m_pPixelShader;
 	ID3D11InputLayout* m_pVertexLayout;
 public:
-	CCubeMap(){}
-	~CCubeMap (){}
-
-
 	void Init();
 	void Uninit();
 	void Update();

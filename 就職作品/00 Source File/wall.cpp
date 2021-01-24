@@ -1,19 +1,21 @@
+/*---------------------------------------
+*　wall.cpp
+*
+*@author：Okahara Taiki
+----------------------------------------*/
 #include "director.h"
 #include "renderer.h"
 #include "wall.h"
 #include "Imgui11.h"
 #include "input.h"
 
-//
-//
-//
 void CWall::Init()
 {
 	
 	m_pWall = new Tile();
 	m_pWall->Init("Wall//T_StoneWall_A.dds", "Wall//T_StoneWall_N.dds", "Wall//T_StoneWall_C.dds", 2,2, 2.5f);
 
-	m_Collision.Init(D3DXVECTOR3(5.5f, 0.5f, 5.5f), D3DXVECTOR3(0, 0, 0));
+	m_Collision.Set(D3DXVECTOR3(5.5f, 0.5f, 5.5f), D3DXVECTOR3(0, 0, 0));
 
 
 	m_Transform.rotation = D3DXVECTOR3(D3DX_PI/2,D3DX_PI/2, 0.0f);
@@ -21,18 +23,12 @@ void CWall::Init()
 	
 	//シェーダー作成
 	RENDERER::CreatePixelShader(&m_pPixelShader, "tilePS.cso");
-	
-	
-	
-
 
 			
 	D3DXVECTOR3 scale;
 	scale = m_Transform.scale;
 
-
 	D3DXVECTOR3 forwardRot, backRot, leftRot, rightRot,topRot;
-
 	forwardRot = m_Transform.rotation + D3DXVECTOR3(0,-D3DX_PI/2,0);
 	backRot = m_Transform.rotation + D3DXVECTOR3(0,D3DX_PI/2,0);
 	leftRot = m_Transform.rotation + D3DXVECTOR3(0,D3DX_PI,0);
@@ -59,18 +55,7 @@ void CWall::Init()
 			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(2.5f, 2.5f, -15.0f),forwardRot, scale });
 			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 2.5f, -15.0f),forwardRot, scale });
 			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-7.5f, 2.5f, -15.0f),forwardRot, scale });	
-		}
-		{//天井
-			
-			/*m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(2.5f, 5.0f, -12.5f),topRot, scale });
-			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(2.5f, 5.0f, -7.5f),topRot, scale });
-			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 5.0f, -12.5f),topRot, scale });
-			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 5.0f, -7.5f),topRot, scale });
-			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-7.5f, 5.0f, -12.5f),topRot, scale });
-			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-7.5f, 5.0f, -7.5f),topRot, scale });
-			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 5.0f, -2.5f),topRot, scale });*/
-		}
-		
+		}		
 	}
 	
 	//横の壁
@@ -96,37 +81,28 @@ void CWall::Init()
 	InitInstance();
 	
 }
-//
-//
-//
+
 void CWall::Uninit()
 {
 	m_pWall->Uninit();
 	delete m_pWall;
 
 	UninitInstance();
-	m_Collision.Uninit();
 	SAFE_RELEASE(m_pPixelShader);
 }
-//
-//
-//
+
 void CWall::Update()
 {
 	UpdateInstance();
 }
-//
-//
-//
+
 void CWall::Draw()
 {
 	DrawInstance();
 	
-
-	//RENDERER::m_pDeviceContext->VSSetShader(RENDERER::m_pInstanceVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->VSSetShader(m_pInstanceVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);
-	RENDERER::m_pDeviceContext->IASetInputLayout(m_pCommonVertexLayout);
+	RENDERER::GetDeviceContext()->VSSetShader(m_pInstanceVertexShader, NULL, 0);
+	RENDERER::GetDeviceContext()->PSSetShader(m_pPixelShader, NULL, 0);
+	RENDERER::GetDeviceContext()->IASetInputLayout(m_pCommonVertexLayout);
 
 	m_pWall->DrawInstanced(m_MeshCount);
 

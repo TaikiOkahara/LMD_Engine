@@ -32,10 +32,7 @@ struct VS_PL_OUT
 {
     float4 Pos			: SV_POSITION;
     float2 Tex          : TEXCOORD0;
-    //float3 LightPos		: TEXCOORD1;
-    //float  LightRange	: TEXCOORD2;
-    //int    LightIndex	: TEXCOORD3;
-    //float4 WorldPos		: POSITION;
+    
     float3 WorldNormal	: NORMAL;
 };
 struct PS_PL_OUT
@@ -67,7 +64,7 @@ struct VS_DLIGHT_OUT
 {
     float4 Pos : SV_POSITION;
     float2 Tex : TEXCOORD0;
-    //float4 
+
 };
 
 //正規化Lambert
@@ -105,7 +102,6 @@ float G_Smith(float a, float NoV, float NoL)
     return ggx0 * ggx1;
 }
 
-//マイクロファセットを考慮
 //鏡面反射BRDF
 float3 BRDF(float3 albedo, float metallic, float roughness, float3 N, float3 V, float3 L, float3 H)
 {

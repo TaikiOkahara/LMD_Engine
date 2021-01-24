@@ -1,3 +1,11 @@
+/*---------------------------------------
+*　instanceObject.h
+*
+*　GameObjectクラスを継承した大量描画可能なオブジェクトクラス
+*　DrawInstacedやGPU視錐台カリングを実装
+*  
+*@author：Okahara Taiki
+----------------------------------------*/
 #pragma once
 #include "gameobject.h"
 #include "tile.h"
@@ -29,8 +37,7 @@ protected:
 
 	UINT m_MeshCount = 0;
 	UINT m_MeshMax = 0;
-	//CULLING culling;
-
+	
 	UINT m_CullingCount;
 	D3DXVECTOR4 m_CullingPos[8];
 
@@ -42,8 +49,6 @@ protected:
 	static ID3D11VertexShader* m_pInstanceVertexShader;
 
 public:
-	/*CInstanceGameObject()
-	{}*/
 	~CInstanceGameObject()
 	{
 		for (int i = 0; i < m_TransformList.size(); i++)
@@ -53,7 +58,7 @@ public:
 		}
 	}
 
-	//オーバーロード
+	//GameObjectクラスを引数付きでオーバーロード
 	D3DXVECTOR3  GetPosition(int index) { return m_TransformList[index].position; }
 	D3DXVECTOR3  GetRotation(int index) { return m_TransformList[index].rotation; }
 	D3DXVECTOR3  GetScale(int index) { return m_TransformList[index].scale; }
@@ -107,6 +112,7 @@ public:
 	int GetMeshCount() { return m_MeshCount; }
 	int GetMeshMax() { return m_MeshMax; }
 
+	//参照するシェーダーファイルが一緒なのでシーンクラス内で一回だけLoadする
 	static void Load();
 	static void Unload();
 };

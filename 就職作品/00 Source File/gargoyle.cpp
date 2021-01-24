@@ -1,3 +1,8 @@
+/*---------------------------------------
+*@gargoyle.cpp
+*
+*@authorFOkahara Taiki
+----------------------------------------*/
 #include "director.h"
 #include "renderer.h"
 #include "staticMesh.h"
@@ -5,9 +10,7 @@
 #include "Imgui11.h"
 #include "input.h"
 
-//
-//
-//
+
 void CGargoyle::Init()
 {
 	
@@ -16,8 +19,7 @@ void CGargoyle::Init()
 	m_pMesh->LoadTexture("../02 Visual File//Gargoyle");
 
 
-
-	m_Collision.Init(D3DXVECTOR3(0.6, 2, 0.6), D3DXVECTOR3(0, 1, 0));
+	m_Collision.Set(D3DXVECTOR3(0.6, 2, 0.6), D3DXVECTOR3(0, 1, 0));
 	
 	{
 		m_TransformList.push_back(TRANSFORM{D3DXVECTOR3(-2.5f,0,34.5f),m_Transform.rotation,m_Transform.scale});
@@ -26,25 +28,18 @@ void CGargoyle::Init()
 	InitInstance();
 }
 
-
 void CGargoyle::Uninit()
 {
 	m_pMesh->Unload();
 	delete m_pMesh;
 
 	UninitInstance();
-
-	m_Collision.Uninit();
-
 }
-
 
 void CGargoyle::Update()
 {
 	UpdateInstance();
-
 }
-
 
 void CGargoyle::Draw()
 {
@@ -52,9 +47,9 @@ void CGargoyle::Draw()
 
 
 	
-	RENDERER::m_pDeviceContext->VSSetShader(m_pInstanceVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->PSSetShader(m_pCommonPixelShader, NULL, 0);
-	RENDERER::m_pDeviceContext->IASetInputLayout(m_pCommonVertexLayout);
+	RENDERER::GetDeviceContext()->VSSetShader(m_pInstanceVertexShader, NULL, 0);
+	RENDERER::GetDeviceContext()->PSSetShader(m_pCommonPixelShader, NULL, 0);
+	RENDERER::GetDeviceContext()->IASetInputLayout(m_pCommonVertexLayout);
 
 
 	m_pMesh->DrawInstanced(m_MeshCount);

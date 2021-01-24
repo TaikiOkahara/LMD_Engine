@@ -1,3 +1,8 @@
+/*---------------------------------------
+*　trim.cpp
+*
+*@author：Okahara Taiki
+----------------------------------------*/
 #include "director.h"
 #include "renderer.h"
 #include "staticMesh.h"
@@ -5,30 +10,24 @@
 #include "Imgui11.h"
 #include "input.h"
 
-//
-//
-//
+
 void CTrim::Init()
 {
 	m_pMesh = new StaticMesh();
-
-
 	m_pMesh->LoadModel("../02 Visual File//Trim//trimPBR_NoTex.fbx");
 	m_pMesh->LoadTexture("../02 Visual File//Trim");
 
-
-	m_Collision.Init(D3DXVECTOR3(5.0f, 0.5f, 0.5f), D3DXVECTOR3(0 ,0, 0));
+	m_Collision.Set(D3DXVECTOR3(5.0f, 0.5f, 0.5f), D3DXVECTOR3(0 ,0, 0));
 
 	
 
 	D3DXVECTOR3 scale, verticalRot, horizonalRot;
-
 	scale = m_Transform.scale;
 	verticalRot = D3DXVECTOR3(0.0f, D3DX_PI / 2, 0.0f);;
-	horizonalRot = m_Transform.rotation;//D3DXVECTOR3(0,D3DX_PI,0);
+	horizonalRot = m_Transform.rotation;
 
 
-
+	//スタート地点前方
 	for (int i = 0; i < 6; i++)
 	{
 		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(0,0,i * 5.0f + 2.5f),verticalRot, scale });
@@ -68,25 +67,20 @@ void CTrim::Uninit()
 	delete m_pMesh;
 
 	UninitInstance();
-
-	m_Collision.Uninit();
-
 }
 
 void CTrim::Update()
 {
 	UpdateInstance();
-
 }
 
 void CTrim::Draw()
 {
 	DrawInstance();
 
-	//RENDERER::m_pDeviceContext->VSSetShader(RENDERER::m_pInstanceVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->VSSetShader(m_pInstanceVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->PSSetShader(m_pCommonPixelShader, NULL, 0);
-	RENDERER::m_pDeviceContext->IASetInputLayout(m_pCommonVertexLayout);
+	RENDERER::GetDeviceContext()->VSSetShader(m_pInstanceVertexShader, NULL, 0);
+	RENDERER::GetDeviceContext()->PSSetShader(m_pCommonPixelShader, NULL, 0);
+	RENDERER::GetDeviceContext()->IASetInputLayout(m_pCommonVertexLayout);
 
 
 	m_pMesh->DrawInstanced(m_MeshCount);

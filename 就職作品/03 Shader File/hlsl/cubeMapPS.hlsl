@@ -17,6 +17,7 @@ PS_OUT main(VS_CUBEMAP_OUT input)
 {
     PS_OUT Out = (PS_OUT) 0;
 
+    Out.vNormal = float4(0, 0, 0, 2);
     
     
     if (input.TexNum == 0)
@@ -48,35 +49,6 @@ PS_OUT main(VS_CUBEMAP_OUT input)
     
     
     
-    
-    
-    Out.vNormal = float4(0, 0, 0, 2);
-    
-    
-	//座標テクスチャ―へ出力
-   // Out.vPosition = input.WorldPos;
-	
-	////ワールド法線テクスチャーへ出力
-
- //   float4 bump;
- //   bump = g_texNor.Sample(g_samLinear, input.Tex);
- //   bump = (bump * 2.0f) - 1.0f;
-	
- //   float3 bumpNormal;
- //   bumpNormal = (-bump.x * input.WorldTangent) + (-bump.y * input.WorldBinormal) + (-bump.z * input.WorldNormal);
- //   bumpNormal = normalize(bumpNormal);
-    
-    
- //   Out.vNormal = float4(bumpNormal, 0);
-	
- //   Out.vMotion = input.Velocity;
-    
-    
- //   float metallic = g_texMRA.Sample(g_samLinear, input.Tex).r;
- //   float roughness = g_texMRA.Sample(g_samLinear, input.Tex).g;
- //   float ambientOcclusion = g_texMRA.Sample(g_samLinear, input.Tex).b;
-    
- //   Out.vDepthPBR = float4(input.Depth, roughness, metallic, ambientOcclusion);
     
     return Out;
 }

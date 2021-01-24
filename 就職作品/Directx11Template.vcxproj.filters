@@ -25,9 +25,6 @@
     <Filter Include="Components----------------\skeletalMesh">
       <UniqueIdentifier>{d2e29390-cee8-4641-8e88-0635d2f34e49}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Components----------------\sound">
-      <UniqueIdentifier>{1f280500-ed22-464a-9c29-be3efab2f85a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Components----------------\staticMesh">
       <UniqueIdentifier>{07fe6679-952d-4053-9b63-cebb80ba4b63}</UniqueIdentifier>
     </Filter>
@@ -151,9 +148,6 @@
     <Filter Include="Manager --------------------\thirdparty\cereal">
       <UniqueIdentifier>{ee3037e9-b691-470d-bae2-2a58e8e09cc7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="PostProcess-----------------\projectionShadow">
-      <UniqueIdentifier>{5b525e70-9b4a-44a2-88f0-c29e6a76844c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shader-----------------------\projectionTextureMappingShadow">
       <UniqueIdentifier>{596abc37-b938-4932-ba8b-aa506f949858}</UniqueIdentifier>
     </Filter>
@@ -169,6 +163,15 @@
     <Filter Include="GameObjects----------------\gargoyle">
       <UniqueIdentifier>{373ae7ea-6213-45af-9f0a-ab5e6c6d00aa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader-----------------------\fade">
+      <UniqueIdentifier>{06e7cdae-2ee9-4768-8f45-4067232a3dee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PostProcess-----------------\fade">
+      <UniqueIdentifier>{83b4c06e-8ec4-4a60-9f62-38491631b923}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects----------------\projectionShadow">
+      <UniqueIdentifier>{5b525e70-9b4a-44a2-88f0-c29e6a76844c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="00 Source File\Entry.cpp">
@@ -176,9 +179,6 @@
     </ClCompile>
     <ClCompile Include="00 Source File\camera.cpp">
       <Filter>GameObjects----------------\camera</Filter>
-    </ClCompile>
-    <ClCompile Include="00 Source File\sound.cpp">
-      <Filter>Components----------------\sound</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\floor.cpp">
       <Filter>GameObjects----------------\floor</Filter>
@@ -200,9 +200,6 @@
     </ClCompile>
     <ClCompile Include="00 Source File\tile.cpp">
       <Filter>Components----------------\tile</Filter>
-    </ClCompile>
-    <ClCompile Include="00 Source File\InstanceObject.cpp">
-      <Filter>GameObjects----------------\instance</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\Imgui11.cpp">
       <Filter>Manager --------------------\thirdparty\Imgui</Filter>
@@ -283,7 +280,7 @@
       <Filter>GameObjects----------------</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\projectionShadow.cpp">
-      <Filter>PostProcess-----------------\projectionShadow</Filter>
+      <Filter>GameObjects----------------\projectionShadow</Filter>
     </ClCompile>
     <ClCompile Include="00 Source File\title.cpp">
       <Filter>Scene -----------------------</Filter>
@@ -300,13 +297,13 @@
     <ClCompile Include="00 Source File\gargoyle.cpp">
       <Filter>GameObjects----------------\gargoyle</Filter>
     </ClCompile>
+    <ClCompile Include="00 Source File\instanceObject.cpp">
+      <Filter>GameObjects----------------\instance</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="00 Source File\camera.h">
       <Filter>GameObjects----------------\camera</Filter>
-    </ClInclude>
-    <ClInclude Include="00 Source File\sound.h">
-      <Filter>Components----------------\sound</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\floor.h">
       <Filter>GameObjects----------------\floor</Filter>
@@ -331,9 +328,6 @@
     </ClInclude>
     <ClInclude Include="00 Source File\tile.h">
       <Filter>Components----------------\tile</Filter>
-    </ClInclude>
-    <ClInclude Include="00 Source File\InstanceObject.h">
-      <Filter>GameObjects----------------\instance</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\Imgui11.h">
       <Filter>Manager --------------------\thirdparty\Imgui</Filter>
@@ -426,7 +420,7 @@
       <Filter>Manager --------------------\thirdparty\cereal</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\projectionShadow.h">
-      <Filter>PostProcess-----------------\projectionShadow</Filter>
+      <Filter>GameObjects----------------\projectionShadow</Filter>
     </ClInclude>
     <ClInclude Include="00 Source File\title.h">
       <Filter>Scene -----------------------</Filter>
@@ -442,6 +436,12 @@
     </ClInclude>
     <ClInclude Include="00 Source File\gargoyle.h">
       <Filter>GameObjects----------------\gargoyle</Filter>
+    </ClInclude>
+    <ClInclude Include="fade.h">
+      <Filter>PostProcess-----------------\fade</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\instanceObject.h">
+      <Filter>GameObjects----------------\instance</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -523,10 +523,18 @@
     <FxCompile Include="03 Shader File\hlsl\playerShadowVS.hlsl">
       <Filter>Shader-----------------------\playerShadow</Filter>
     </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\fadePS.hlsl">
+      <Filter>Shader-----------------------\fade</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Manual.txt">
       <Filter>Manager --------------------\thirdparty</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="03 Shader File\hlsl\lighting.hlsli">
+      <Filter>Shader-----------------------\directionalLight</Filter>
+    </None>
   </ItemGroup>
 </Project>

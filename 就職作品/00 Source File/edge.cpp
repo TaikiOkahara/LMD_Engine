@@ -1,3 +1,8 @@
+/*---------------------------------------
+*@edge.cpp
+*
+*@authorFOkahara Taiki
+----------------------------------------*/
 #include "director.h"
 #include "renderer.h"
 #include "staticMesh.h"
@@ -5,9 +10,6 @@
 #include "Imgui11.h"
 #include "input.h"
 
-//
-//
-//
 void CEdge::Init()
 {
 	
@@ -15,13 +17,9 @@ void CEdge::Init()
 	m_pMesh->LoadModel("../02 Visual File//Edge//edge_PBR_NoTex.fbx");
 	m_pMesh->LoadTexture("../02 Visual File//Edge");
 
-
-	//m_Transform.position = D3DXVECTOR3(-2.5f, 0.0f, 0.0f);
-	//m_Transform.rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	
 	m_Transform.scale = D3DXVECTOR3(0.85f, 0.85f, 0.85f);
 
-	m_Collision.Init(D3DXVECTOR3(5, 0.65, 0.65), D3DXVECTOR3(0, 0, 0));
+	m_Collision.Set(D3DXVECTOR3(5, 0.65, 0.65), D3DXVECTOR3(0, 0, 0));
 	
 	D3DXVECTOR3 vertical = D3DXVECTOR3(0, D3DX_PI/2, 0);
 	D3DXVECTOR3 horizonal = D3DXVECTOR3(0, 0, 0);
@@ -60,9 +58,6 @@ void CEdge::Uninit()
 	delete m_pMesh;
 
 	UninitInstance();
-
-	m_Collision.Uninit();
-
 }
 
 
@@ -79,9 +74,9 @@ void CEdge::Draw()
 
 
 	
-	RENDERER::m_pDeviceContext->VSSetShader(m_pInstanceVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->PSSetShader(m_pCommonPixelShader, NULL, 0);
-	RENDERER::m_pDeviceContext->IASetInputLayout(m_pCommonVertexLayout);
+	RENDERER::GetDeviceContext()->VSSetShader(m_pInstanceVertexShader, NULL, 0);
+	RENDERER::GetDeviceContext()->PSSetShader(m_pCommonPixelShader, NULL, 0);
+	RENDERER::GetDeviceContext()->IASetInputLayout(m_pCommonVertexLayout);
 
 
 	m_pMesh->DrawInstanced(m_MeshCount);

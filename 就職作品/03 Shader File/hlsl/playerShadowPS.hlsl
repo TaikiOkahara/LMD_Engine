@@ -17,19 +17,21 @@ float4 main(VS_SHADOW_OUT input) : SV_Target
 
     float projectTex = g_texPointLight.Sample(g_samDeferredLinear, uv).a;
     
-    
-    // // カメラの範囲外には適用しない
-    //float3 isOut = step((input.ProjectorSpacePos - 0.5) * sign(input.ProjectorSpacePos), 0.5);
-    //float alpha = isOut.x * isOut.y * isOut.z;
-    //            // プロジェクターから見て裏側の面には適用しない
-    //alpha *= step(-dot(lerp(-g_vDirectionalLightPos.xyz, g_vDirectionalLightPos.xyz - input.WorldPos, g_vDirectionalLightPos.w), i.worldNormal), 0);
-    //return lerp(1, projectorTex, alpha);
-    
-    //return g_texPointLight.Sample(g_samLinear, input.Tex);
-    
-    //float shadow = 1.0f - projectTex.a;
-    
-    //projectTex.w = 1;
+    // カメラの範囲外を適用しない処理
+    {
+        //float3 isOut = step((input.ProjectorSpacePos - 0.5) * sign(input.ProjectorSpacePos), 0.5);
+        //float alpha = isOut.x * isOut.y * isOut.z;
+        //            // プロジェクターから見て裏側の面には適用しない
+        //alpha *= step(-dot(lerp(-g_vDirectionalLightPos.xyz, g_vDirectionalLightPos.xyz - input.WorldPos, g_vDirectionalLightPos.w), i.worldNormal), 0);
+        //return lerp(1, projectorTex, alpha);
+        
+        //return g_texPointLight.Sample(g_samLinear, input.Tex);
+        
+        //float shadow = 1.0f - projectTex.a;
+        
+        //projectTex.w = 1;
+    }
+   
     
     float dist = 1 - (distance(input.WorldPos, input.CenterPos) / 2);
     

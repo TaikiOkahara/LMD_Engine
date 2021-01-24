@@ -1,16 +1,18 @@
+/*---------------------------------------
+*　edge.h
+* 壁上の石囲いオブジェクトのクラス
+*@author：Okahara Taiki
+----------------------------------------*/
 #pragma once
-#include "InstanceObject.h"
+#include "instanceObject.h"
 #include "StaticMesh.h"
 
 class CEdge : public CInstanceGameObject
 {
 private:
-	//Tile* m_pMesh = nullptr;
 	StaticMesh* m_pMesh = nullptr;
 
 public:
-	CEdge() {}
-	~CEdge() {}
 
 	void Init();
 	void Uninit();

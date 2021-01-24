@@ -1,3 +1,8 @@
+/*---------------------------------------
+*@window.cpp
+*
+*@authorFOkahara Taiki
+----------------------------------------*/
 #include "director.h"
 #include "window.h"
 
@@ -8,16 +13,12 @@ const char* CLASS_NAME = "AppClass";
 const char* WINDOW_NAME = "DX11Tempate";
 
 LRESULT CALLBACK WndProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam);
-//
-//
-//
+
 LRESULT CALLBACK WndProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 {
 	return g_pWindow->MsgProc(hWnd,uMsg,wParam,lParam);
 }
-//
-//
-//
+
 HRESULT WINDOW::InitWindow(HINSTANCE hInstance,
 		INT iX,INT iY,INT iWidth,INT iHeight,LPCSTR WindowName)
 {

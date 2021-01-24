@@ -21,8 +21,6 @@ float4 main(VS_OUT input) : SV_Target
 {
     int3 sampleIndices = int3(input.Pos.xy, 0);
 
-    //float4 tex_color = Texture.Sample(Sampler, input.texture_pos);
-    //float4 vDiferredColor = g_texDeferred.Load(sampleIndices);
 	//テクスチャーから情報を取り出す
     float4 diffuse = g_texColor.Load(sampleIndices);
     float4 normal = g_texNormal.Load(sampleIndices);
@@ -50,7 +48,7 @@ float4 main(VS_OUT input) : SV_Target
     
     //AO設定
     float ao = g_fAmbientOcclusion.x;
-    Color.rgb += PBR.w * ao;
+    Color.rgb -= PBR.w * ao;
     
     //Color.rgb *= diffuse.xyz * NL * color.xyz;
     Color.rgb *= (normal.w == 2.0f) ? diffuse.xyz : diffuse.xyz * NL * color.xyz; //ライティングを行か
@@ -62,26 +60,7 @@ float4 main(VS_OUT input) : SV_Target
     //Rim = pow(Rim, 2) * 0.6;
     //Color.rgb += Rim;
     //---------------------------------------------------------------
-	
-    float3 L = -g_vDirectionalLightDir.xyz;
-    L = normalize(L);
-   
-    float3 V = worldPos.xyz - g_vEyePos.xyz;
-    V = normalize(V);
-    float3 H = normalize(L + V);
-    
-    //Color.rgb = BRDF(diffuse.xyz, PBR.z, PBR.y, normal.xyz, V, L, H) * color.xyz;
-    //Color.rgb = NormalizedLambert(diffuse.xyz) * color.xyz;
-    //Color.rgb += SpecularBRDF(diffuse.xyz, PBR.z, PBR.y, normal.xyz, V, L, H);
-    
-  
-    
-    
-    
-    
-    
-   
-    
+
     //ポイントライトを加算
     Color.rgb += pointLight;
     
@@ -94,5 +73,4 @@ float4 main(VS_OUT input) : SV_Target
     Color.rgb *= shadowTex;
     
     return Color;
-    //return finalColor;
 }

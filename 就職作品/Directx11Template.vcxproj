@@ -33,7 +33,7 @@
     <ClCompile Include="00 Source File\gargoyle.cpp" />
     <ClCompile Include="00 Source File\Imgui11.cpp" />
     <ClCompile Include="00 Source File\input.cpp" />
-    <ClCompile Include="00 Source File\InstanceObject.cpp" />
+    <ClCompile Include="00 Source File\instanceObject.cpp" />
     <ClCompile Include="00 Source File\pillar.cpp" />
     <ClCompile Include="00 Source File\pointLight.cpp" />
     <ClCompile Include="00 Source File\pots.cpp" />
@@ -51,7 +51,6 @@
     <ClCompile Include="00 Source File\calculation.cpp" />
     <ClCompile Include="00 Source File\player.cpp" />
     <ClCompile Include="00 Source File\directionalLight.cpp" />
-    <ClCompile Include="00 Source File\sound.cpp" />
     <ClCompile Include="00 Source File\title.cpp" />
     <ClCompile Include="00 Source File\trim.cpp" />
     <ClCompile Include="00 Source File\wall.cpp" />
@@ -78,7 +77,7 @@
     <ClInclude Include="00 Source File\game.h" />
     <ClInclude Include="00 Source File\gargoyle.h" />
     <ClInclude Include="00 Source File\input.h" />
-    <ClInclude Include="00 Source File\InstanceObject.h" />
+    <ClInclude Include="00 Source File\instanceObject.h" />
     <ClInclude Include="00 Source File\calculation.h" />
     <ClInclude Include="00 Source File\pillar.h" />
     <ClInclude Include="00 Source File\pointLight.h" />
@@ -98,7 +97,6 @@
     <ClInclude Include="00 Source File\player.h" />
     <ClInclude Include="00 Source File\scene.h" />
     <ClInclude Include="00 Source File\directionalLight.h" />
-    <ClInclude Include="00 Source File\sound.h" />
     <ClInclude Include="00 Source File\title.h" />
     <ClInclude Include="00 Source File\trim.h" />
     <ClInclude Include="00 Source File\wall.h" />
@@ -111,6 +109,7 @@
     <ClInclude Include="05 Resource File\imgui\imstb_rectpack.h" />
     <ClInclude Include="05 Resource File\imgui\imstb_textedit.h" />
     <ClInclude Include="05 Resource File\imgui\imstb_truetype.h" />
+    <ClInclude Include="fade.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Manual.txt" />
@@ -217,6 +216,14 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)\03 Shader File\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\directionalLightPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)\03 Shader File\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)\03 Shader File\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="03 Shader File\hlsl\fadePS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
@@ -356,6 +363,14 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)\03 Shader File\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)\03 Shader File\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="03 Shader File\hlsl\lighting.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </ExcludedFromBuild>
+    </None>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

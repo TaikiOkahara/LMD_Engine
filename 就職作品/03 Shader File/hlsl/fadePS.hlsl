@@ -18,9 +18,7 @@ SamplerState g_samDeferredLinear : register(s1);
 
 float4 main(VS_OUT input) : SV_Target
 {
-    //フォグの揺らぎテクスチャーのテクセルはワールド行列を適応した頂点座標の[ X, Z ]を使用する。
-   //またテクセル座標をm_Texel変数値によって移動させ、２つの色情報の平均値を最終的なフォグカラーとする
-    
+  
     
     if(g_fFogEnable == 0) 
         discard;
@@ -29,7 +27,6 @@ float4 main(VS_OUT input) : SV_Target
     if(normal.w == 2)
         discard;
     
-
     float4 position = g_texPosition.Sample(g_samLinear, input.Tex);
    
     float texScale = g_fFogData.x;

@@ -1,7 +1,9 @@
-/*「DIRECT3D11.cpp」=============================================
-　・このプロジェクトの統括のようなクラス
-　　製作者：岡原大起　	(-"-)
-=============================================================*/
+/*---------------------------------------
+*　renderer.cpp
+*
+* 描画周りを管理するクラス
+*@author：Okahara Taiki
+----------------------------------------*/
 #include "window.h"
 #include "director.h"
 #include "renderer.h"
@@ -26,7 +28,7 @@ ID3D11SamplerState* RENDERER::m_pDeferredSamplerState = NULL;
 ID3D11RasterizerState* RENDERER::m_pPointLightingRasterizerState = NULL;
 ID3D11BlendState* RENDERER::m_pPointLightBlendState = NULL;
 
-//通常
+
 ID3D11SamplerState* RENDERER::m_pCommonSamplerState = NULL;
 ID3D11RasterizerState* RENDERER::m_pCommonRasterizerState = NULL;
 
@@ -52,14 +54,10 @@ ID3D11Texture2D* RENDERER::m_pDepthStencil = NULL;
 ID3D11Buffer* RENDERER::m_pScreenPolyVB = NULL;
 ID3D11VertexShader* RENDERER::m_pDeferredVertexShader = NULL;
 ID3D11PixelShader* RENDERER::m_pDeferredPixelShader = NULL;
-//ディレクショナルライト
-//ID3D11PixelShader* RENDERER::m_pDirectionalPixelShader = NULL;
 
 
 
-//
-//
-//　初期化
+
 HRESULT RENDERER::Init(HWND phWnd)
 {
 
@@ -157,20 +155,14 @@ HRESULT RENDERER::Init(HWND phWnd)
 	ZeroMemory(&dc,sizeof(dc));
 	dc.DepthEnable=true;
 	dc.DepthWriteMask= D3D11_DEPTH_WRITE_MASK_ZERO;
-	//dc.DepthWriteMask=D3D11_DEPTH_WRITE_MASK_ALL;
 	dc.DepthFunc= D3D11_COMPARISON_LESS_EQUAL;
-	//dc.DepthFunc=D3D11_COMPARISON_LESS;
-	//dc.StencilEnable=false;
 	if(FAILED(m_pDevice->CreateDepthStencilState(&dc,&m_pBuckBuffer_DSTexState)))
 	{
 		return E_FAIL;
 	}
-	//深度ステンシルステートを適用
-	//m_pDeviceContext->OMSetDepthStencilState(m_pBuckBuffer_DSTexState,NULL);
 	
 
 	//ビューポートの設定
-	
 	m_Vp.Width = WINDOW_WIDTH;
 	m_Vp.Height = WINDOW_HEIGHT;
 	m_Vp.MinDepth = 0.0f;
@@ -184,9 +176,7 @@ HRESULT RENDERER::Init(HWND phWnd)
 	ZeroMemory(&rdc,sizeof(rdc));
 	rdc.CullMode= D3D11_CULL_MODE::D3D11_CULL_BACK;
 	rdc.FillMode= D3D11_FILL_MODE::D3D11_FILL_SOLID;
-	//rdc.FrontCounterClockwise = FALSE;//デフォルト
 	rdc.DepthClipEnable = FALSE;
-	//rdc.MultisampleEnable = FALSE;
 	m_pDevice->CreateRasterizerState(&rdc,&m_pDeferredRasterizerState);
 
 
@@ -194,21 +184,13 @@ HRESULT RENDERER::Init(HWND phWnd)
 	ZeroMemory(&rdc, sizeof(rdc));
 	rdc.CullMode = D3D11_CULL_MODE::D3D11_CULL_BACK;
 	rdc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-	//rdc.FrontCounterClockwise = FALSE;//デフォルト
 	rdc.DepthClipEnable = FALSE;
-
-	//rdc.MultisampleEnable = FALSE;
-
 	m_pDevice->CreateRasterizerState(&rdc, &m_pCommonRasterizerState);
 
 	//ポイントライト用バックカリングラスタライズ設定
 	ZeroMemory(&rdc, sizeof(rdc));
 	rdc.CullMode = D3D11_CULL_MODE::D3D11_CULL_FRONT;
 	rdc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-	//rdc.FrontCounterClockwise = FALSE;
-	//rdc.DepthClipEnable = FALSE;
-	//rdc.MultisampleEnable = FALSE;
-
 	m_pDevice->CreateRasterizerState(&rdc, &m_pPointLightingRasterizerState);
 
 
@@ -282,8 +264,6 @@ HRESULT RENDERER::Init(HWND phWnd)
 
 
 	//==================================================================
-	//GBuffer作成
-
 	CreateGBufferFormat(&m_Diffuse_GBuffer,DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM);
 	CreateGBufferFormat(&m_Normal_GBuffer,DXGI_FORMAT::DXGI_FORMAT_R32G32B32A32_FLOAT);
 	CreateGBufferFormat(&m_Position_GBuffer,DXGI_FORMAT::DXGI_FORMAT_R32G32B32A32_FLOAT);
@@ -338,9 +318,7 @@ HRESULT RENDERER::Init(HWND phWnd)
 
 	return S_OK;
 }
-//
-//
-//
+
 void RENDERER::Uninit()
 {
 	m_ConstantBufferList.Uninit();
@@ -362,7 +340,6 @@ void RENDERER::Uninit()
 	SAFE_RELEASE(m_pBuckBuffer_DSTexState);
 
 	//GBuffer
-	
 	m_Diffuse_GBuffer.Release();
 	m_Normal_GBuffer.Release();
 	m_Position_GBuffer.Release();
@@ -380,16 +357,13 @@ void RENDERER::Uninit()
 	SAFE_RELEASE(m_pDeviceContext);
 	SAFE_RELEASE(m_pDevice);
 }
-//
-//
-//
+
 void RENDERER::Clear()
 {
 	
 	m_pDeviceContext->RSSetViewports(1, &m_Vp);
 	m_pDeviceContext->RSSetState(m_pCommonRasterizerState);
-	//m_pDeviceContext->PSSetSamplers(0, 1, &m_pCommonSamplerState);
-
+	
 
 	//全てのテクスチャーをレンダーターゲットにセット
 	ID3D11RenderTargetView* pViews[6];
@@ -422,8 +396,7 @@ void RENDERER::Clear()
 
 
 }
-//
-//
+
 //ディファード
 void RENDERER::Deferred()
 {

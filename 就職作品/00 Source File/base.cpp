@@ -1,7 +1,8 @@
-/*「DIRECTOR.cpp」=============================================
-　・全てのシーンを統括するクラス
-　　製作者：岡原大起　	(-"-)
-=============================================================*/
+/*---------------------------------------
+*　base.cpp
+* メインループを実現し、すべてのシーンを統括するクラス
+*@author：Okahara Taiki
+----------------------------------------*/
 #include <string>
 #include "base.h"
 #include "renderer.h"
@@ -20,9 +21,7 @@ static HWND			m_hWnd;
 
 
 CScene* Base::m_Scene = nullptr;
-//
-//　メインループ
-//
+
 void Base::MainLoop()
 {
 	CInput::Update();
@@ -31,20 +30,15 @@ void Base::MainLoop()
 
 	RENDERER::Clear();//　画面塗りつぶし
 	
-	
 	m_Scene->Draw();
-	
 	
 	RENDERER::Deferred();
 	
-	
-	m_Scene->PostProcessDraw();
 
 	// IMGUI　Frame start
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
-
 
 	m_Scene->Imgui();
 
@@ -54,32 +48,9 @@ void Base::MainLoop()
 	// IMGUI　Frame end
 
 
-
 	RENDERER::Present();
 }
-//
-//
-//　FPS表示関数
-void Base::FixFPS60()
-{
-	static INT Frames=0,FPS=0;
-	static LARGE_INTEGER Frq={0},PreviousTime={0},CurrentTime={0};
-	DOUBLE Time=0;
-	char sz[11]={0};
 
-	while(Time<16.6666)//1100ms / 60frame=16.6666 
-	{
-		QueryPerformanceFrequency(&Frq);
-		
-		QueryPerformanceCounter(&CurrentTime);
-		Time=(DOUBLE)CurrentTime.QuadPart-PreviousTime.QuadPart;
-		Time *=(DOUBLE)1100.0 / (DOUBLE)Frq.QuadPart;		
-	}
-	PreviousTime=CurrentTime;
-}
-//
-//
-//　初期化
 HRESULT Base::Init(HINSTANCE phInstance)
 {
 	m_hInstance = phInstance;
@@ -94,18 +65,15 @@ HRESULT Base::Init(HINSTANCE phInstance)
 	//window
 	m_pWindow = new WINDOW;
 	if (!m_pWindow)
-	{
 		return E_FAIL;
-	}
+
+
 	MFAIL(m_pWindow->InitWindow(m_hInstance, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, APP_NAME), "ウィンドウ作成失敗");
 	m_hWnd = m_pWindow->m_hWnd;
 	
 
-	
 
 	RENDERER::Init(m_hWnd);
-
-	
 
 	SetScene<Game>();
 
@@ -126,9 +94,6 @@ HRESULT Base::Init(HINSTANCE phInstance)
 
 	return S_OK;
 }
-//
-//
-//
 
 HRESULT Base::Uninit()
 {
@@ -138,20 +103,17 @@ HRESULT Base::Uninit()
 	IMGUI_Uninit();
 
 	m_Scene->UnInit();
-	delete m_Scene;
+	SAFE_DELETE(m_Scene);
 
 
 	RENDERER::Uninit();
-
 
 	DestroyWindow(m_pWindow->m_hWnd);
 	SAFE_DELETE(m_pWindow);
 
 	return S_OK;
 }
-//
-//
-//
+
 HRESULT Base::Run()
 {
 
@@ -167,7 +129,6 @@ HRESULT Base::Run()
 		}
 		else
 		{
-			//FixFPS60();
 			MainLoop();
 		}
 	}

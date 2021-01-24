@@ -1,7 +1,8 @@
-/*「INPUT.h」=============================================
-　・キーボード入力等のインプットクラス
-　　製作者：岡原大起　	(-"-)
-=============================================================*/
+/*---------------------------------------
+*　input.h
+* キーボード、マウス、コントローラー対応
+*@author：Okahara Taiki
+----------------------------------------*/
 #pragma once
 #include "director.h"
 #define DIRECTINPUT_VERSION (0x0800)
@@ -24,11 +25,9 @@
 #define BUTTON_M		0x00002000l	// Ｍボタン(.rgbButtons[9]&0x80)
 #define GAMEPADMAX		4			// 同時に接続するジョイパッドの最大数をセット
 
-//
-//
+
 //　マクロ
 #define	NUM_KEY_MAX			(256)
-
 #define NUM_MOUSE_MAX		(3)	//右、左、真ん中の３つ
 
 // game pad用設定値
@@ -45,12 +44,12 @@ public:
 	static void Uninit();
 	static void Update();
 	
-	//　キーボードプロトタイプ
+
 	static bool KeyPress(int nKey);
 	static bool KeyTrigger(int nKey);
 	static bool KeyRelease(int nKey);
 
-	//　ゲームパッドプロトタイプ
+
 	static BOOL PadPress(int padNo, DWORD button);
 	static BOOL PadTrigger(int padNo, DWORD button);
 

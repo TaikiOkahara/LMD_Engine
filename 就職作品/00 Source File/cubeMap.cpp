@@ -1,3 +1,8 @@
+/*---------------------------------------
+*　cubeMap.cpp
+*
+*@author：Okahara Taiki
+----------------------------------------*/
 #include "base.h"
 #include "renderer.h"
 #include "camera.h"
@@ -7,7 +12,7 @@
 void CCubeMap::Init()
 {
 	
-
+	//法線は立方体内側方向
 
 	VERTEX_3D vertex[36];
 
@@ -210,27 +215,22 @@ void CCubeMap::Init()
 	ZeroMemory(&sd, sizeof(sd));
 	sd.pSysMem = vertex;
 
-	RENDERER::m_pDevice->CreateBuffer(&bd, &sd, &m_pVertexBuffer);
+	RENDERER::GetDevice()->CreateBuffer(&bd, &sd, &m_pVertexBuffer);
 
 
 	//テクスチャ読み込み
 	SetVisualDirectory();
-	D3DX11CreateShaderResourceViewFromFile(RENDERER::m_pDevice, "Sky//DarkStorm4K_f.dds", NULL,NULL, &m_pTexture_f, NULL);//Front
+	D3DX11CreateShaderResourceViewFromFile(RENDERER::GetDevice(), "Sky//DarkStorm4K_f.dds", NULL,NULL, &m_pTexture_f, NULL);//Front
 	assert(m_pTexture_f);
-	SetVisualDirectory();
-	D3DX11CreateShaderResourceViewFromFile(RENDERER::m_pDevice, "Sky//DarkStorm4K_b.dds", NULL,NULL, &m_pTexture_b, NULL);//Back
+	D3DX11CreateShaderResourceViewFromFile(RENDERER::GetDevice(), "Sky//DarkStorm4K_b.dds", NULL,NULL, &m_pTexture_b, NULL);//Back
 	assert(m_pTexture_b);
-	SetVisualDirectory();
-	D3DX11CreateShaderResourceViewFromFile(RENDERER::m_pDevice, "Sky//DarkStorm4K_u.dds", NULL,NULL, &m_pTexture_u, NULL);//Up
+	D3DX11CreateShaderResourceViewFromFile(RENDERER::GetDevice(), "Sky//DarkStorm4K_u.dds", NULL,NULL, &m_pTexture_u, NULL);//Up
 	assert(m_pTexture_u);
-	SetVisualDirectory();
-	D3DX11CreateShaderResourceViewFromFile(RENDERER::m_pDevice, "Sky//DarkStorm4K_d.dds", NULL,NULL, &m_pTexture_d, NULL);//Down
+	D3DX11CreateShaderResourceViewFromFile(RENDERER::GetDevice(), "Sky//DarkStorm4K_d.dds", NULL,NULL, &m_pTexture_d, NULL);//Down
 	assert(m_pTexture_d);
-	SetVisualDirectory();
-	D3DX11CreateShaderResourceViewFromFile(RENDERER::m_pDevice, "Sky//DarkStorm4K_r.dds", NULL,NULL, &m_pTexture_r, NULL);//Right
+	D3DX11CreateShaderResourceViewFromFile(RENDERER::GetDevice(), "Sky//DarkStorm4K_r.dds", NULL,NULL, &m_pTexture_r, NULL);//Right
 	assert(m_pTexture_r);
-	SetVisualDirectory();
-	D3DX11CreateShaderResourceViewFromFile(RENDERER::m_pDevice, "Sky//DarkStorm4K_l.dds", NULL,NULL, &m_pTexture_l, NULL);//Left
+	D3DX11CreateShaderResourceViewFromFile(RENDERER::GetDevice(), "Sky//DarkStorm4K_l.dds", NULL,NULL, &m_pTexture_l, NULL);//Left
 	assert(m_pTexture_l);
 
 
@@ -249,7 +249,7 @@ void CCubeMap::Init()
 	RENDERER::CreatePixelShader(&m_pPixelShader, "cubeMapPS.cso");
 
 
-	m_Transform.position = D3DXVECTOR3(-1, 2, 0);
+	m_Transform.position = D3DXVECTOR3(0, 0, 0);
 	m_Transform.scale = D3DXVECTOR3(500, 500, 500);
 }
 
@@ -271,37 +271,32 @@ void CCubeMap::Uninit()
 
 void CCubeMap::Update()
 {
-	CPlayer* player = Base::GetScene()->GetGameObject<CPlayer>();
-
-
-	m_Transform.position = player->GetPosition();
 }
 
 void CCubeMap::Draw()
 {
-	//頂点バッファ設定
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
-	RENDERER::m_pDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
+	RENDERER::GetDeviceContext()->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
 
-	//マトリクス設定
+
 	SetWorldMatrix();
 
 
-	RENDERER::m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	RENDERER::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	RENDERER::m_pDeviceContext->VSSetShader(m_pVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);
-	RENDERER::m_pDeviceContext->IASetInputLayout(m_pVertexLayout);
+	RENDERER::GetDeviceContext()->VSSetShader(m_pVertexShader, NULL, 0);
+	RENDERER::GetDeviceContext()->PSSetShader(m_pPixelShader, NULL, 0);
+	RENDERER::GetDeviceContext()->IASetInputLayout(m_pVertexLayout);
 
 	//テクスチャ設定
-	RENDERER::m_pDeviceContext->PSSetShaderResources(0, 1, &m_pTexture_f);
-	RENDERER::m_pDeviceContext->PSSetShaderResources(1, 1, &m_pTexture_b);
-	RENDERER::m_pDeviceContext->PSSetShaderResources(2, 1, &m_pTexture_u);
-	RENDERER::m_pDeviceContext->PSSetShaderResources(3, 1, &m_pTexture_d);
-	RENDERER::m_pDeviceContext->PSSetShaderResources(4, 1, &m_pTexture_r);
-	RENDERER::m_pDeviceContext->PSSetShaderResources(5, 1, &m_pTexture_l);
+	RENDERER::GetDeviceContext()->PSSetShaderResources(0, 1, &m_pTexture_f);
+	RENDERER::GetDeviceContext()->PSSetShaderResources(1, 1, &m_pTexture_b);
+	RENDERER::GetDeviceContext()->PSSetShaderResources(2, 1, &m_pTexture_u);
+	RENDERER::GetDeviceContext()->PSSetShaderResources(3, 1, &m_pTexture_d);
+	RENDERER::GetDeviceContext()->PSSetShaderResources(4, 1, &m_pTexture_r);
+	RENDERER::GetDeviceContext()->PSSetShaderResources(5, 1, &m_pTexture_l);
 
 
-	RENDERER::m_pDeviceContext->Draw(36, 0);
+	RENDERER::GetDeviceContext()->Draw(36, 0);
 }

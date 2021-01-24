@@ -4,7 +4,6 @@
 #include "calculation.h"
 
 
-// 頂点の作成
 void Tile::MakeVertexField()
 {
 
@@ -17,34 +16,16 @@ void Tile::MakeVertexField()
 	}
 
 
-	const float offset_x = m_iXCount * m_fTileSize / 2;
-	const float offset_y = m_iYCount * m_fTileSize / 2;
+	const float offset_x = m_iXCount * m_fTileSize / 2;//中心点
+	const float offset_y = m_iYCount * m_fTileSize / 2;//中心点
 
-
-	// 頂点座標の設定
-	//for (int z = 0; z <= m_iYCount; z++) {
-
-	//	for (int x = 0; x <= m_iXCount; x++) {
-
-	//		pVtx[z * (m_iXCount + 1) + x].Position = D3DXVECTOR3((x - (m_iXCount/2)) * m_fTileSize, x * 0.1f, (z - (m_iYCount/2)) * m_fTileSize);
-	//		//pVtx[z * (m_iXCount + 1) + x].Position = D3DXVECTOR3(-x * (m_fTileSize) + offset_x, 0, z * (m_fTileSize) - offset_y);
-	//		m_Vtx[z][x] = pVtx[z * (m_iXCount + 1) + x].Position;// 3DXVECTOR3(-x * (m_fTileSize)+offset_x, 0, z * (m_fTileSize)-offset_y);
-
-
-	//		pVtx[z * (m_iXCount + 1) + x].TexturePos.x = (float)x;
-	//		pVtx[z * (m_iXCount + 1) + x].TexturePos.y = (float)z;
-	//		pVtx[z * (m_iXCount + 1) + x].Normal = D3DXVECTOR3(0, 1, 0);
-	//		pVtx[z * (m_iXCount + 1) + x].Tangent = D3DXVECTOR3(1, 0, 0);
-	//		pVtx[z * (m_iXCount + 1) + x].Binormal = D3DXVECTOR3(0, 0, 1);
-	//	}
-	//}
+	//バーテックス
 	for (int x = 0; x <= m_iXCount; x++) {
 
 		for (int z = 0; z <= m_iYCount; z++) {
 
 			pVtx[x * (m_iYCount + 1) + z].Position = D3DXVECTOR3((x - (m_iXCount / 2)) * m_fTileSize, 0, (z - (m_iYCount / 2)) * m_fTileSize);
-			//pVtx[z * (m_iXCount + 1) + x].Position = D3DXVECTOR3(-x * (m_fTileSize) + offset_x, 0, z * (m_fTileSize) - offset_y);
-			m_Vtx[x][z] = pVtx[x * (m_iYCount + 1) + z].Position;// 3DXVECTOR3(-x * (m_fTileSize)+offset_x, 0, z * (m_fTileSize)-offset_y);
+			m_Vtx[x][z] = pVtx[x * (m_iYCount + 1) + z].Position;
 
 
 			pVtx[x * (m_iYCount + 1) + z].TexturePos.x = (float)m_iXCount - x;
@@ -59,23 +40,6 @@ void Tile::MakeVertexField()
 	//インデックス
 	WORD* pIdx = new WORD[m_iNumIndex];
 	int idx_cnt = 0;
-	/*for (int y = 0; y < m_iYCount; y++)
-	{
-		for (int x = 0; x < (m_iXCount + 1); x++)
-		{
-			pIdx[idx_cnt] = (m_iXCount + 1) * y + (m_iXCount + 1) + x;
-			idx_cnt++;
-			pIdx[idx_cnt] = (m_iXCount + 1) * y + x;
-			idx_cnt++;
-		}
-		if (y < (m_iYCount - 1))
-		{
-			pIdx[idx_cnt] = (m_iXCount + 1)*y + m_iXCount;
-			idx_cnt++;
-			pIdx[idx_cnt] = (m_iXCount + 1)*(y + 2);
-			idx_cnt++;
-		}
-	}*/
 	for (int x = 0; x < m_iXCount; x++)
 	{
 		for (int z = 0; z < (m_iYCount + 1); z++)
@@ -104,7 +68,7 @@ void Tile::MakeVertexField()
 	bd.MiscFlags = 0;
 	D3D11_SUBRESOURCE_DATA vrData;
 	vrData.pSysMem = pVtx;
-	RENDERER::m_pDevice->CreateBuffer(&bd, &vrData, &m_pVertexBuffer);
+	RENDERER::GetDevice()->CreateBuffer(&bd, &vrData, &m_pVertexBuffer);
 	
 
 	ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
@@ -115,7 +79,7 @@ void Tile::MakeVertexField()
 	bd.MiscFlags = 0;
 	D3D11_SUBRESOURCE_DATA idData;
 	idData.pSysMem = pIdx;
-	RENDERER::m_pDevice->CreateBuffer(&bd, &idData, &m_pIndexBuffer);
+	RENDERER::GetDevice()->CreateBuffer(&bd, &idData, &m_pIndexBuffer);
 
 	
 	delete[] pVtx;
@@ -125,16 +89,15 @@ void Tile::MakeVertexField()
 	
 	//　カラーテクスチャ―作成
 	SetVisualDirectory();
-	D3DX11CreateShaderResourceViewFromFileA(RENDERER::m_pDevice, m_sTexture_Name.c_str(), NULL, NULL, &m_pTextureSRV, NULL);
+	D3DX11CreateShaderResourceViewFromFileA(RENDERER::GetDevice(), m_sTexture_Name.c_str(), NULL, NULL, &m_pTextureSRV, NULL);
 
-	
 	//　ノーマルテクスチャ―作成
 	SetVisualDirectory();
-	D3DX11CreateShaderResourceViewFromFileA(RENDERER::m_pDevice, m_sNormalTexture_Name.c_str(), NULL, NULL, &m_pNormalTextureSRV, NULL);
+	D3DX11CreateShaderResourceViewFromFileA(RENDERER::GetDevice(), m_sNormalTexture_Name.c_str(), NULL, NULL, &m_pNormalTextureSRV, NULL);
 
-	//　RMクスチャ―作成
+	//　RMAクスチャ―作成
 	SetVisualDirectory();
-	D3DX11CreateShaderResourceViewFromFileA(RENDERER::m_pDevice, m_sMRATexture_Name.c_str(), NULL, NULL, &m_pMRATextureSRV, NULL);
+	D3DX11CreateShaderResourceViewFromFileA(RENDERER::GetDevice(), m_sMRATexture_Name.c_str(), NULL, NULL, &m_pMRATextureSRV, NULL);
 
 
 }
@@ -175,45 +138,46 @@ void Tile::Update(){}
 void Tile::Draw()
 {
 
-	RENDERER::m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	RENDERER::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	RENDERER::m_pDeviceContext->PSSetShaderResources(0, 1, &m_pTextureSRV);
-	RENDERER::m_pDeviceContext->PSSetShaderResources(1, 1, &m_pNormalTextureSRV);
-	RENDERER::m_pDeviceContext->PSSetShaderResources(2, 1, &m_pMRATextureSRV);
+	RENDERER::GetDeviceContext()->PSSetShaderResources(0, 1, &m_pTextureSRV);
+	RENDERER::GetDeviceContext()->PSSetShaderResources(1, 1, &m_pNormalTextureSRV);
+	RENDERER::GetDeviceContext()->PSSetShaderResources(2, 1, &m_pMRATextureSRV);
 
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
-	RENDERER::m_pDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
-	RENDERER::m_pDeviceContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+	RENDERER::GetDeviceContext()->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
+	RENDERER::GetDeviceContext()->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
 
-	RENDERER::m_pDeviceContext->DrawIndexed(m_iNumIndex,0, 0);
+	RENDERER::GetDeviceContext()->DrawIndexed(m_iNumIndex,0, 0);
 }
 
 void Tile::DrawInstanced(const unsigned int instanceCount)
 {
 
-	RENDERER::m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	RENDERER::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	RENDERER::m_pDeviceContext->PSSetShaderResources(0, 1, &m_pTextureSRV);
-	RENDERER::m_pDeviceContext->PSSetShaderResources(1, 1, &m_pNormalTextureSRV);
-	RENDERER::m_pDeviceContext->PSSetShaderResources(2, 1, &m_pMRATextureSRV);
+	RENDERER::GetDeviceContext()->PSSetShaderResources(0, 1, &m_pTextureSRV);
+	RENDERER::GetDeviceContext()->PSSetShaderResources(1, 1, &m_pNormalTextureSRV);
+	RENDERER::GetDeviceContext()->PSSetShaderResources(2, 1, &m_pMRATextureSRV);
 
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
-	RENDERER::m_pDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
-	RENDERER::m_pDeviceContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+	RENDERER::GetDeviceContext()->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
+	RENDERER::GetDeviceContext()->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
-	RENDERER::m_pDeviceContext->DrawIndexedInstanced(m_iNumIndex, instanceCount, 0, 0, 0);
+	RENDERER::GetDeviceContext()->DrawIndexedInstanced(m_iNumIndex, instanceCount, 0, 0, 0);
 }
 
+//高さ取得関数(任意の座標のtileの高さを計算)
 float Tile::GetHeight(D3DXVECTOR3 Position)
 {
 	int x, z;
 
 	//ブロック番号算出
-	x = Position.x / m_fTileSize + (m_iXCount * m_fTileSize)/2;
-	z = Position.z / -m_fTileSize + (m_iYCount * m_fTileSize)/2;
+	x = (int)(Position.x / m_fTileSize + (m_iXCount * m_fTileSize)/2);
+	z = (int)(Position.z / -m_fTileSize + (m_iYCount * m_fTileSize)/2);
 
 	D3DXVECTOR3 pos0, pos1, pos2, pos3;
 

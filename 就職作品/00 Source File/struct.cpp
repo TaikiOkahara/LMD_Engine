@@ -1,3 +1,9 @@
+/*---------------------------------------
+*　struct.cpp
+*
+* 構造体定義群
+*@author：Okahara Taiki
+----------------------------------------*/
 #include "director.h"
 #include "struct.h"
 #include "renderer.h"
@@ -11,23 +17,23 @@ void ConstantBuffer::CreateBuffer(unsigned int slot)
 
 	//　コンスタントバッファ生成
 	D3D11_BUFFER_DESC buffer_desc;
-
+	ZeroMemory(&buffer_desc, sizeof(buffer_desc));
 	buffer_desc.Usage = D3D11_USAGE_DEFAULT;
 	buffer_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	buffer_desc.CPUAccessFlags = 0;
 	buffer_desc.MiscFlags = 0;
 
 	buffer_desc.ByteWidth = m_StructSize;
-	RENDERER::m_pDevice->CreateBuffer(&buffer_desc, NULL, &m_pBuffer);
-	RENDERER::m_pDeviceContext->VSSetConstantBuffers(m_slotNum, 1, &m_pBuffer);
-	RENDERER::m_pDeviceContext->PSSetConstantBuffers(m_slotNum, 1, &m_pBuffer);
-	RENDERER::m_pDeviceContext->CSSetConstantBuffers(m_slotNum, 1, &m_pBuffer);
+	RENDERER::GetDevice()->CreateBuffer(&buffer_desc, NULL, &m_pBuffer);
+	RENDERER::GetDeviceContext()->VSSetConstantBuffers(m_slotNum, 1, &m_pBuffer);
+	RENDERER::GetDeviceContext()->PSSetConstantBuffers(m_slotNum, 1, &m_pBuffer);
+	RENDERER::GetDeviceContext()->CSSetConstantBuffers(m_slotNum, 1, &m_pBuffer);
 
 }
 
 void ToggleBuffer::Set()
 {
-	RENDERER::m_pDeviceContext->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
+	RENDERER::GetDeviceContext()->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
 }
 
 void CullingBuffer::Set(UINT count, D3DXVECTOR4* pos) {
@@ -38,24 +44,24 @@ void CullingBuffer::Set(UINT count, D3DXVECTOR4* pos) {
 	{
 		str.cullingPos[i] = pos[i];
 	}
-	RENDERER::m_pDeviceContext->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
+	RENDERER::GetDeviceContext()->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
 }
 
 void EffectBuffer::Set()
 {
-	RENDERER::m_pDeviceContext->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
+	RENDERER::GetDeviceContext()->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
 }
 
 
 void AnimationBuffer::Set(ANIMATIONMATRIX set)
 {
-	RENDERER::m_pDeviceContext->UpdateSubresource(m_pBuffer, 0, NULL, &set, 0, 0);
+	RENDERER::GetDeviceContext()->UpdateSubresource(m_pBuffer, 0, NULL, &set, 0, 0);
 }
 
 void EyeBuffer::Set(EYE set)
 {
 	
-	RENDERER::m_pDeviceContext->UpdateSubresource(m_pBuffer, 0, NULL, &set, 0, 0);
+	RENDERER::GetDeviceContext()->UpdateSubresource(m_pBuffer, 0, NULL, &set, 0, 0);
 }
 
 void DirectionalLightBuffer::SetDirectinalLight(D3DXVECTOR4 setDir, D3DXVECTOR4 setPos, D3DXVECTOR4 setCol)
@@ -64,26 +70,26 @@ void DirectionalLightBuffer::SetDirectinalLight(D3DXVECTOR4 setDir, D3DXVECTOR4 
 	str.pos = setPos;
 	str.col = setCol;
 
-	RENDERER::m_pDeviceContext->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
+	RENDERER::GetDeviceContext()->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
 }
 
 void DirectionalLightBuffer::SetMatrix(D3DXMATRIX set)
 {
 	str.projView = set;
-	RENDERER::m_pDeviceContext->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
+	RENDERER::GetDeviceContext()->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
 
 }
 
 void PointLightBuffer::Set(POINTLIGHT set)
 {
 	str = set;
-	RENDERER::m_pDeviceContext->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
+	RENDERER::GetDeviceContext()->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
 }
 
 void PointLightBuffer::SetIndex(int index)
 {
 	str.index = index;
-	RENDERER::m_pDeviceContext->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
+	RENDERER::GetDeviceContext()->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
 }
 
 void WorldBuffer::Set(D3DXMATRIX mat)
@@ -98,7 +104,7 @@ void WorldBuffer::Set(D3DXMATRIX mat)
 	set[1] = mat;
 
 
-	RENDERER::m_pDeviceContext->UpdateSubresource(m_pBuffer, 0, NULL, set, 0, 0);
+	RENDERER::GetDeviceContext()->UpdateSubresource(m_pBuffer, 0, NULL, set, 0, 0);
 }
 
 void ViewBuffer::Set(D3DXMATRIX mat, D3DXMATRIX old)
@@ -109,7 +115,7 @@ void ViewBuffer::Set(D3DXMATRIX mat, D3DXMATRIX old)
 
 	set[0] = mat;
 	set[1] = old;
-	RENDERER::m_pDeviceContext->UpdateSubresource(m_pBuffer, 0, NULL, set, 0, 0);
+	RENDERER::GetDeviceContext()->UpdateSubresource(m_pBuffer, 0, NULL, set, 0, 0);
 }
 
 void ProjBuffer::Set(D3DXMATRIX mat, D3DXMATRIX old)
@@ -121,6 +127,6 @@ void ProjBuffer::Set(D3DXMATRIX mat, D3DXMATRIX old)
 	set[0] = mat;
 	set[1] = old;
 	
-	RENDERER::m_pDeviceContext->UpdateSubresource(m_pBuffer, 0, NULL, set, 0, 0);
+	RENDERER::GetDeviceContext()->UpdateSubresource(m_pBuffer, 0, NULL, set, 0, 0);
 
 }

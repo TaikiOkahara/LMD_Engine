@@ -1,3 +1,10 @@
+/*---------------------------------------
+*　gameobject.h
+*
+* 画面に表示される全てのオブジェクト箱のクラスを継承(camera、pointlightを含む)
+* 現在のシーンを取得してからお互いのオブジェクトクラスを取得する(GatGameObject関数)
+*@author：Okahara Taiki
+----------------------------------------*/
 #pragma once
 #include "director.h"
 #include "renderer.h"
@@ -7,24 +14,28 @@ class CGameObject
 {
 protected:
 
-	TRANSFORM m_Transform;
-
+	TRANSFORM		m_Transform;
+	D3DXMATRIX		m_WorldMatrix;
 
 	D3DXQUATERNION  m_Quaternion;
 	bool			m_Destroy = false;
-	D3DXMATRIX		m_WorldMatrix;
 	bool			m_EnableCollision = false;
 
-	Collision m_Collision;
+	Collision		m_Collision;
 	
 	static ID3D11VertexShader* m_pCommonVertexShader;
 	static ID3D11PixelShader* m_pCommonPixelShader;
 	static ID3D11InputLayout* m_pCommonVertexLayout;
+
+	//マトリクス設定を省略する関数
+	void SetWorldMatrix();
 public:
 	CGameObject() {}
 	virtual ~CGameObject() {}
 
 
+	static void Load();
+	static void Unload();
 	virtual void Init() = 0;
 	virtual void Uninit() = 0;
 	virtual void Update() = 0;
@@ -99,20 +110,5 @@ public:
 			return false;
 		}
 	}
-	//マトリクス設定を省略する関数
-	void SetWorldMatrix()
-	{
-		//　マトリクス設定
-		D3DXMATRIX world, scale, rot, trans;
-		D3DXMatrixScaling(&scale, m_Transform.scale.x, m_Transform.scale.y, m_Transform.scale.z);
-		D3DXMatrixRotationYawPitchRoll(&rot, m_Transform.rotation.y, m_Transform.rotation.x, m_Transform.rotation.z);
-		D3DXMatrixTranslation(&trans, m_Transform.position.x, m_Transform.position.y, m_Transform.position.z);
-		world = scale * rot * trans;
-		
-		RENDERER::m_ConstantBufferList.GetStruct<WorldBuffer>()->Set(world);
-	}
-
-	static void Load();
-	static void Unload();
 };
 

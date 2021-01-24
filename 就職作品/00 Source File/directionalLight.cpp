@@ -1,3 +1,8 @@
+/*---------------------------------------
+*　directionalLight.cpp
+*
+*@author：Okahara Taiki
+----------------------------------------*/
 #include "base.h"
 #include "director.h"
 #include "renderer.h"
@@ -17,10 +22,7 @@ void CDirectionalLight::Init()
 
 	m_DLightCol = D3DXVECTOR4(1, 1, 1, 1);
 
-	////シェーダー作成
-	//RENDERER::CreatePixelShader(&m_PixelShader, "cursorPS.cso");
-
-	//シェーダー作成
+	
 	RENDERER::CreateVertexShader(&m_pVertexShader, nullptr, nullptr, 0, "deferredVS.cso");
 	RENDERER::CreatePixelShader(&m_pPixelShader, "directionalLightPS.cso");
 
@@ -28,11 +30,6 @@ void CDirectionalLight::Init()
 
 void CDirectionalLight::Uninit()
 {
-	/*m_VertexShader->Release();
-	m_PixelShader->Release();*/
-
-
-
 	m_pVertexShader->Release();
 	m_pPixelShader->Release();
 }
@@ -56,18 +53,6 @@ void CDirectionalLight::Update()
 		m_Transform.rotation.x += 0.1f;
 	}
 
-
-	RENDERER::m_ConstantBufferList.GetStruct<DirectionalLightBuffer>()->SetDirectinalLight(m_DLightDir, m_DLightPos, m_DLightCol);
-}
-
-void CDirectionalLight::Draw()
-{
-	if (!m_Enable) return;
-
-	//D3DXMATRIX LightView;
-	//D3DXMatrixInverse(&LightView, NULL, &LightView);
-
-
 	D3DXMATRIX lrot;
 
 	D3DXMatrixRotationYawPitchRoll(&lrot, m_Transform.rotation.y, m_Transform.rotation.x, m_Transform.rotation.z);
@@ -79,9 +64,16 @@ void CDirectionalLight::Draw()
 	m_DLightDir.w = 1.0f;
 
 
-	RENDERER::m_pDeviceContext->VSSetShader(m_pVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);
-	//RENDERER::m_pDeviceContext->IASetInputLayout(RENDERER::m_pCommonVertexLayout);
+	RENDERER::GetConstantList().GetStruct<DirectionalLightBuffer>()->SetDirectinalLight(m_DLightDir, m_DLightPos, m_DLightCol);
+}
+
+void CDirectionalLight::Draw()
+{
+	if (!m_Enable) return;
+
+
+	RENDERER::GetDeviceContext()->VSSetShader(m_pVertexShader, NULL, 0);
+	RENDERER::GetDeviceContext()->PSSetShader(m_pPixelShader, NULL, 0);
 
 	RENDERER::PostProcessDraw();
 }

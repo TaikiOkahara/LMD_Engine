@@ -1,3 +1,8 @@
+/*---------------------------------------
+*　pointlight.cpp
+*
+*@author：Okahara Taiki
+----------------------------------------*/
 #include "base.h"
 #include "director.h"
 #include "renderer.h"
@@ -12,9 +17,9 @@
 void CPointLight::Init()
 {
 	m_pMesh = new StaticMesh();
-	m_pMesh->LoadModel("../02 Visual File//UV.fbx");
+	m_pMesh->LoadModel("../02 Visual File//PointLight//UV.fbx");
 	
-	m_Collision.Init(D3DXVECTOR3(1, 1, 1), D3DXVECTOR3(0, 0, 0));
+	m_Collision.Set(D3DXVECTOR3(1, 1, 1), D3DXVECTOR3(0, 0, 0));
 	
 	{
 
@@ -23,15 +28,11 @@ void CPointLight::Init()
 		scale = D3DXVECTOR3(12.0f, 12.0f, 12.0f);
 
 	
-
+		//スタート地点前方
 		for (int i = 0; i < 3; i++)
 		{
 			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 2.0f, 10.0f * i + 5.0f),rot, scale });
 			m_PointLight[i] = POINTLIGHT{ D3DXVECTOR3(1.0f, 0.5f, 0.0f) ,100,D3DXVECTOR3(0.1f, 0.25f, 0.1f) ,scale.x,m_TransformList[i].position,(UINT)pow(2,i)};
-			/*UINT tmp =(UINT)pow(2,0);
-			tmp = (UINT)pow(2,1);
-			tmp = (UINT)pow(2,2);
-			tmp = tmp;*/
 		}
 
 
@@ -48,9 +49,6 @@ void CPointLight::Init()
 		
 	}
 
-	
-	//シェーダー作成
-	
 	RENDERER::CreateVertexShader(&m_pVertexShader, &m_pCommonVertexLayout,nullptr, 0, "pointLightVS.cso");
 	RENDERER::CreatePixelShader(&m_pPixelShader, "pointLightPS.cso");
 
@@ -59,16 +57,11 @@ void CPointLight::Init()
 
 void CPointLight::Uninit()
 {
-
 	m_pMesh->Unload();
 	delete m_pMesh;
 
-	m_Collision.Uninit();
-
-	
 	SAFE_RELEASE(m_pVertexShader);
 	SAFE_RELEASE(m_pPixelShader);
-	
 }
 
 void CPointLight::Update()
@@ -84,7 +77,6 @@ void CPointLight::Update()
 	//ロウソクのように光をゆらゆらさせる
 	for (int i = 0; i < 4; i++)
 	{
-		
 		m_PointLight[i].calc.x = 0.1f + (rand() % 10 -5) * 0.02f;
 	}
 	
@@ -95,41 +87,30 @@ void CPointLight::Draw()
 	RENDERER::PointLighting();
 
 
-
-
-	RENDERER::m_pDeviceContext->VSSetShader(m_pVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);
-	RENDERER::m_pDeviceContext->IASetInputLayout(m_pCommonVertexLayout);
+	RENDERER::GetDeviceContext()->VSSetShader(m_pVertexShader, NULL, 0);
+	RENDERER::GetDeviceContext()->PSSetShader(m_pPixelShader, NULL, 0);
+	RENDERER::GetDeviceContext()->IASetInputLayout(m_pCommonVertexLayout);
 
 	
-	
-	//　マトリクス設定
 	D3DXMATRIX world, scale, rot, trans;
 	D3DXMatrixRotationYawPitchRoll(&rot, m_Transform.rotation.y, m_Transform.rotation.x, m_Transform.rotation.z);
 
 
 	for (int i = 0; i < m_TransformList.size() && LIGHT_MAX; i++)
 	{
-		
-		
+	
 		if (i == 4 && !m_EnablePlayerPointLight)
 			continue;
 
 		D3DXMatrixScaling(&scale, m_TransformList[i].scale.x, m_TransformList[i].scale.y, m_TransformList[i].scale.z);
 		D3DXMatrixTranslation(&trans, m_TransformList[i].position.x, m_TransformList[i].position.y, m_TransformList[i].position.z);
-		world = scale * rot * trans;
-		
-		
+		world = scale * rot * trans;	
 
-		RENDERER::m_ConstantBufferList.GetStruct<WorldBuffer>()->Set(world);
-		RENDERER::m_ConstantBufferList.GetStruct<PointLightBuffer>()->Set(m_PointLight[i]);
+		RENDERER::GetConstantList().GetStruct<WorldBuffer>()->Set(world);
+		RENDERER::GetConstantList().GetStruct<PointLightBuffer>()->Set(m_PointLight[i]);
 
-		
 		m_pMesh->Draw();
 	}
-
-
-	
 }
 
 void CPointLight::Imgui()

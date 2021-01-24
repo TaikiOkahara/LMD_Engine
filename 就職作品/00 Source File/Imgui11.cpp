@@ -10,7 +10,7 @@ void IMGUI_Init(HWND m_hWnd)
 
 	//　プラットフォーム　セットアップ　Renderer 構築
 	ImGui_ImplWin32_Init(m_hWnd);
-	ImGui_ImplDX11_Init(RENDERER::m_pDevice, RENDERER::m_pDeviceContext);
+	ImGui_ImplDX11_Init(RENDERER::GetDevice(), RENDERER::GetDeviceContext());
 	//IMGUI 　スタイル　セットアップ
 	ImGui::StyleColorsDark();
 

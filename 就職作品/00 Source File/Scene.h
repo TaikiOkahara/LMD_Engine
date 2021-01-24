@@ -1,5 +1,11 @@
+/*---------------------------------------
+*　scene.h
+*
+* 全てのゲームオブジェクトを管理するクラス
+* GameObjectをstd::listで管理
+*@author：Okahara Taiki
+----------------------------------------*/
 #pragma once
-
 #include "director.h"
 #include "gameobject.h"
 #include "Imgui11.h"
@@ -9,7 +15,7 @@ class CScene
 {
 protected:
 
-	enum LAYER
+	enum LAYER	//GameObjectインスタンス生成時に決定
 	{
 		HIDE = 0,//非描画レイヤー
 		DRAW = 1,//一般的なオブジェクトレイヤー

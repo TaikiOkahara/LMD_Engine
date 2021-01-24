@@ -1,9 +1,10 @@
-/*「INPUT.cpp」=============================================
-　・キーボード入力等のインプットクラス
-　　製作者：岡原大起　	(-"-)
-=============================================================*/
-#include "input.h"
+/*---------------------------------------
+*　input.h
+* キーボード、マウス、コントローラー対応
+*@author：Okahara Taiki
+----------------------------------------*/
 
+#include "input.h"
 
 
 
@@ -72,8 +73,6 @@ void CInput::Update()
 	Mouse_Update();
 }
 
-//
-//
 //　コールバック
 BOOL CALLBACK CInput::SearchGamePadCallback(LPDIDEVICEINSTANCE lpddi, LPVOID)
 {
@@ -84,27 +83,24 @@ BOOL CALLBACK CInput::SearchGamePadCallback(LPDIDEVICEINSTANCE lpddi, LPVOID)
 }
 
 
-//
-//
-//　キーボード初期化
 bool CInput::Keyboard_Initialize(HWND hWnd)
 {
 
 	if(FAILED(g_pInput->CreateDevice(GUID_SysKeyboard, &g_pDevKeyboard, NULL)))
 	{
-		MessageBox(hWnd, "キーボードが那須！", "警告！", MB_ICONWARNING);
+		MessageBox(hWnd, "キーボードが接続されていません。", "警告", MB_ICONWARNING);
 		return false;
 	}
 
 	if(FAILED(g_pDevKeyboard->SetDataFormat(&c_dfDIKeyboard)))
 	{
-		MessageBox(hWnd, "キーボードのデータフォーマットを設定でき那須。", "警告！", MB_ICONWARNING);
+		MessageBox(hWnd, "キーボードのデータフォーマットを設定できません。", "警告", MB_ICONWARNING);
 		return false;
 	}
-	//													 DISCL_BACKGROUND | DISCL_EXCLUSIVE	
+								
 	if(FAILED(g_pDevKeyboard->SetCooperativeLevel(hWnd, (DISCL_FOREGROUND | DISCL_NONEXCLUSIVE))))
 	{
-		MessageBox(hWnd, "キーボードの協調モードを設定でき那須。", "警告！", MB_ICONWARNING);
+		MessageBox(hWnd, "キーボードの協調モードを設定できません。", "警告", MB_ICONWARNING);
 		return false;
 	}
 
@@ -112,9 +108,7 @@ bool CInput::Keyboard_Initialize(HWND hWnd)
 
 	return true;
 }
-//
-//
-//　キーボード終了
+
 void CInput::Keyboard_Finalize(void)
 {
 	if(g_pDevKeyboard != NULL)
@@ -125,9 +119,7 @@ void CInput::Keyboard_Finalize(void)
 		g_pDevKeyboard = NULL;
 	}
 }
-//
-//
-//　キーボード更新
+
 void CInput::Keyboard_Update(void)
 {
 	BYTE aKeyState[NUM_KEY_MAX];
@@ -148,23 +140,17 @@ void CInput::Keyboard_Update(void)
 	}
 }
 
-//
-//
-//　キー入力
+
 bool CInput::KeyPress(int nKey)
 {
 	return (g_aKeyState[nKey] & 0x80) ? true : false;
 }
-//
-//
-//　キー入力
+
 bool CInput::KeyTrigger(int nKey)
 {
 	return (g_aKeyStateTrigger[nKey] & 0x80) ? true: false;
 }
-//
-//
-//　キー離す
+
 bool CInput::KeyRelease(int nKey)
 {
 	return (g_aKeyStateRelease[nKey] & 0x80) ? true: false;
@@ -172,9 +158,7 @@ bool CInput::KeyRelease(int nKey)
 
 //===================================================================================
 
-//
-//
-//　ゲームパッド初期化
+
 bool CInput::GamePad_Initialize(HWND hWnd)
 {
 
@@ -237,9 +221,7 @@ bool CInput::GamePad_Initialize(HWND hWnd)
 
 	return true;
 }
-//
-//
-//　ゲームパッド終了
+
 void CInput::GamePad_Finalize(void)
 {
 	for (int i = 0; i<GAMEPADMAX; i++) {
@@ -250,9 +232,7 @@ void CInput::GamePad_Finalize(void)
 		}
 	}
 }
-//
-//
-//　ゲームパッド更新
+
 void CInput::GamePad_Update(void)
 {
 	HRESULT			result;
@@ -315,16 +295,13 @@ void CInput::GamePad_Update(void)
 
 	}
 }
-//
-//
-//　ゲームパッド入力（ずっと）
+
+
 BOOL CInput::PadPress(int padNo, DWORD button)
 {
 	return (button & g_padState[padNo]);
 }
-//
-//
-//　ゲームパッド入力（一度）
+
 BOOL CInput::PadTrigger(int padNo, DWORD button)
 {
 	return (button & g_padTrigger[padNo]);
@@ -342,21 +319,18 @@ bool CInput::Mouse_Initialize(HWND hWnd)
 	// マウス用にデバイスオブジェクトを作成
 	ret = g_pInput->CreateDevice(GUID_SysMouse, &g_pDIMouse, NULL);
 	if (FAILED(ret)) {
-		// デバイスの作成に失敗
 		return false;
 	}
 
 	// データフォーマットを設定
 	ret = g_pDIMouse->SetDataFormat(&c_dfDIMouse);	// マウス用のデータ・フォーマットを設定
 	if (FAILED(ret)) {
-		// データフォーマットに失敗
 		return false;
 	}
 
 	// モードを設定（フォアグラウンド＆非排他モード）
 	ret = g_pDIMouse->SetCooperativeLevel(hWnd, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
 	if (FAILED(ret)) {
-		// モードの設定に失敗
 		return false;
 	}
 
@@ -370,7 +344,6 @@ bool CInput::Mouse_Initialize(HWND hWnd)
 
 	ret = g_pDIMouse->SetProperty(DIPROP_AXISMODE, &diprop.diph);
 	if (FAILED(ret)) {
-		// デバイスの設定に失敗
 		return false;
 	}
 
@@ -379,9 +352,7 @@ bool CInput::Mouse_Initialize(HWND hWnd)
 
 	return true;
 }
-//
-//
-//
+
 void CInput::Mouse_Finalize()
 {
 	// DirectInputのデバイスを開放
@@ -390,9 +361,7 @@ void CInput::Mouse_Finalize()
 		g_pDIMouse = NULL;
 	}
 }
-//
-//
-//
+
 void CInput::Mouse_Update()
 {
 	DIMOUSESTATE zdiMouseState;
@@ -417,9 +386,8 @@ void CInput::Mouse_Update()
 		g_pDIMouse->Acquire();
 	}
 }
-//
-//
-//
+
+
 D3DXVECTOR2 CInput::Mouse_Cursor_Pos() {
 
 	POINT poi;
@@ -431,9 +399,7 @@ D3DXVECTOR2 CInput::Mouse_Cursor_Pos() {
 
 	return pos;
 }
-//
-//
-//
+
 bool CInput::Mouse_On_Window() {
 	
 	RECT w_rec;
@@ -482,12 +448,9 @@ bool CInput::GetMouseState(int state_num) {
 
 	return (g_zdiMouseState[state_num] & 0x80) ? true : false;
 }
-//
-//
+
 D3DXVECTOR2 CInput::GetCurDirect(int nMouse)
 {
-	//static D3DXVECTOR2	cursor_direct[2];	//x,yの二次元座標
-
 	static D3DXVECTOR2 cursor_direct = D3DXVECTOR2(0, 0);
 	static D3DXVECTOR2 cursor_start = D3DXVECTOR2(0, 0);
 	static bool Once[NUM_MOUSE_MAX] = { false };

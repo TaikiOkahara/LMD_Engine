@@ -1,3 +1,9 @@
+/*---------------------------------------
+*　projectionShadow.cpp
+*
+* 投影テクスチャをもとにプレイヤーの足元に影を描画するクラス
+*@author：Okahara Taiki
+----------------------------------------*/
 #include "base.h"
 #include "director.h"
 #include "renderer.h"
@@ -34,26 +40,23 @@ void CProjShadow::Uninit()
 
 void CProjShadow::Update()
 {
-
-
 }
 
 void CProjShadow::Draw()
 {
+	//ライトからプレイヤー方向に向けたワールド変換行列を作成
+
 	CPlayer* player = Base::GetScene()->GetGameObject<CPlayer>();
+	CPointLight* pointLight = Base::GetScene()->GetGameObject<CPointLight>();
 
 
 
 	D3DXMATRIX Lightproj, Lightview, LightVP;
-
-	//CDirectionalLight* camera = Base::GetScene()->GetGameObject<CCamera>();
-	CPointLight* pointLight = Base::GetScene()->GetGameObject<CPointLight>();
-
+	D3DXVECTOR3 pos,target;
 	D3DXVECTOR3 lPos = pointLight->GetPosition(1);
 
-	D3DXVECTOR3 pos,target;
 
-	pos = lPos + D3DXVECTOR3(0,2,0);// D3DXVECTOR3(2, 3, 2) + player->GetPosition();
+	pos = lPos + D3DXVECTOR3(0,2,0);
 	target = player->GetPosition();
 
 	D3DXMatrixLookAtLH(&Lightview, &pos, &target, &D3DXVECTOR3(0, 1, 0));
@@ -62,7 +65,7 @@ void CProjShadow::Draw()
 
 	D3DXMatrixTranspose(&LightVP,&LightVP);
 
-	RENDERER::m_ConstantBufferList.GetStruct<DirectionalLightBuffer>()->SetMatrix(LightVP);
+	RENDERER::GetConstantList().GetStruct<DirectionalLightBuffer>()->SetMatrix(LightVP);
 
 
 
@@ -71,14 +74,13 @@ void CProjShadow::Draw()
 
 	RENDERER::SetRasterizerState(D3D11_CULL_MODE::D3D11_CULL_NONE,D3D11_FILL_MODE::D3D11_FILL_SOLID);
 
-	RENDERER::m_pDeviceContext->VSSetShader(m_pVertexShader, NULL, 0);
-	RENDERER::m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);
-	RENDERER::m_pDeviceContext->IASetInputLayout(m_pVertexLayout);
+	RENDERER::GetDeviceContext()->VSSetShader(m_pVertexShader, NULL, 0);
+	RENDERER::GetDeviceContext()->PSSetShader(m_pPixelShader, NULL, 0);
+	RENDERER::GetDeviceContext()->IASetInputLayout(m_pVertexLayout);
 
 
 	
 	//プレイヤー影描画
-
 	player->DrawShadow();
 
 	RENDERER::CommonDraw();

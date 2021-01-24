@@ -24,7 +24,7 @@ VS_SHADOW_OUT main(
 	
     output.ProjectorSpacePos = mul(Pos,mul(g_mWorld, g_vDirectionalLightVP));
     
-     //射影テクスチャマッピング
+    //射影テクスチャマッピング
     matrix mt;
     mt._11_12_13_14 = float4(0.5f, 0.0f, 0.0f, 0.0f);
     mt._21_22_23_24 = float4(0.0f, -0.5f, 0.0f, 0.0f);

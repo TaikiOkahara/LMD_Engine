@@ -1,5 +1,10 @@
+/*---------------------------------------
+*Å@ceilingArch.h
+*
+*@authorÅFOkahara Taiki
+----------------------------------------*/
 #pragma once
-#include "InstanceObject.h"
+#include "instanceObject.h"
 
 class CCeilingArch : public CInstanceGameObject
 {
@@ -7,9 +12,6 @@ private:
 	StaticMesh* m_pMesh = nullptr;
 
 public:
-	CCeilingArch() {}
-	~CCeilingArch() {}
-
 	void Init();
 	void Uninit();
 	void Update();

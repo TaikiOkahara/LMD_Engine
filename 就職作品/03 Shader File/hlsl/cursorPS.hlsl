@@ -13,18 +13,11 @@ PS_OUT main(VS_OUT input)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	//カラーテクスチャーへ出力 
     Out.vColor = g_texDif.Sample(g_samLinear, input.Tex);
-  
-	
-	//座標テクスチャ―へ出力
     Out.vPosition = input.WorldPos;
 	
-	//ワールド法線テクスチャーへ出力
-
     float3 normal = input.WorldNormal;
-    
-    
+       
     Out.vNormal = float4(normal,2);
     
     

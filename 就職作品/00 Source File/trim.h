@@ -1,14 +1,16 @@
+/*---------------------------------------
+*Å@trim.h
+*
+*@authorÅFOkahara Taiki
+----------------------------------------*/
 #pragma once
-#include "InstanceObject.h"
+#include "instanceObject.h"
 
 class CTrim : public CInstanceGameObject
 {
 private:
 	StaticMesh* m_pMesh = nullptr;
-
 public:
-	CTrim() {}
-	~CTrim() {}
 
 	void Init();
 	void Uninit();

@@ -77,7 +77,7 @@ void CAnimationModel::LoadModel(const char* FileName, D3DXVECTOR3 pos)
 			ZeroMemory(&sd, sizeof(sd));
 			sd.pSysMem = index;
 
-			RENDERER::m_pDevice->CreateBuffer(&bd, &sd, &m_pIndexBuffer[m]);
+			RENDERER::GetDevice()->CreateBuffer(&bd, &sd, &m_pIndexBuffer[m]);
 
 			delete[] index;
 		}
@@ -156,7 +156,7 @@ void CAnimationModel::LoadModel(const char* FileName, D3DXVECTOR3 pos)
 		ZeroMemory(&sd, sizeof(sd));
 		sd.pSysMem = vertex;
 
-		RENDERER::m_pDevice->CreateBuffer(&bd, &sd, &m_pVertexBuffer[m]);
+		RENDERER::GetDevice()->CreateBuffer(&bd, &sd, &m_pVertexBuffer[m]);
 
 		delete[] vertex;
 
@@ -220,25 +220,11 @@ void CAnimationModel::LoadAnimation(const char* FileName, const char* AnimationN
 	m_mapAnimation[AnimationName] = new Animation(aiImportFile(FileName, aiProcess_ConvertToLeftHanded), maxFrame, rigidity,speed);
 	assert(m_mapAnimation[AnimationName]->GetScene());
 
-
-	//m_mapAnimation[AnimationName].scene = aiImportFile(FileName, aiProcess_ConvertToLeftHanded);
-	
-	
-
-	/*m_mapAnimation[AnimationName].maxFrame = maxFrame;
-	m_mapAnimation[AnimationName].curFrame = 1;
-	m_mapAnimation[AnimationName].level = level;
-	m_mapAnimation[AnimationName].rigidity = rigidity;*/
-
-
 	m_sCurAnimationName = m_sNexAnimationName = AnimationName;
 }
 
 void CAnimationModel::Update()
 {
-	//m_iFrame++;
-	
-
 	const int curFrame = (int)m_mapAnimation[m_sCurAnimationName]->GetCurFrame();
 	const int nexFrame = (int)m_mapAnimation[m_sNexAnimationName]->GetCurFrame();
 	const int curMaxFrame = m_mapAnimation[m_sCurAnimationName]->GetMaxFrame();
@@ -286,8 +272,6 @@ void CAnimationModel::Update()
 			else
 				m_CurRigidity = false;
 		}
-
-		//m_fBlendTime = 0.0f;
 	}
 	//通常→通常　もしくは　通常→硬直　ブレンディング
 	else if (!m_mapAnimation[m_sCurAnimationName]->GetRigidity())
@@ -458,122 +442,36 @@ void CAnimationModel::Update()
 
 void CAnimationModel::SetAnimation(const char* AnimationName)
 {
-	
-
-
-	/*if (m_sCurAnimationName != AnimationName)
-	{
-		m_fBlendTime -= 0.1f;
-		if (m_fBlendTime <= 0)
-		{
-			m_fBlendTime = 1.0f;
-			m_sCurAnimationName = AnimationName;
-		}
-	}*/
-
 	//終わるまで入力できない攻撃
 	if (m_CurRigidity)
-	{
-		//m_sNexAnimationName = m_sCurAnimationName;
 		return;
-	}
+
 
 	//同じアニメーションなら、継続更新するので、セットは必要ない。
 	if (m_sNexAnimationName == AnimationName)
 	{
-
 		m_sNexAnimationName = AnimationName;
 		return;
 	}
 
 
-
 	m_fBlendTime = 0.0f;
 	m_sNexAnimationName = AnimationName;
 	m_mapAnimation[m_sNexAnimationName]->FrameReset();
-	//m_CurRigidity = m_mapAnimation[m_sNexAnimationName]->GetRigidity();
 }
 
-//void CAnimationModel::SetAnimation(unsigned int curAnimTime, unsigned int nexAnimTime, std::string curAnimName, std::string nexAnimName,float blendTime)
-//{
-//
-//	const aiScene* scene0 = m_mapAnimation[curAnimName.c_str()];
-//	const aiScene* scene1 = m_mapAnimation[nexAnimName.c_str()];
-//
-//	if (!scene0->HasAnimations()) { return; }
-//	if (!scene1->HasAnimations()) { return; }
-//
-//	//アニメーションデータからボーンマトリクス算出
-//	aiAnimation* animation0 = scene0->mAnimations[0];
-//	aiAnimation* animation1 = scene1->mAnimations[0];
-//
-//	for (unsigned int c = 0; c < animation0->mNumChannels; c++)
-//	{
-//		aiNodeAnim* nodeAnim0 = animation0->mChannels[c];
-//		aiNodeAnim* nodeAnim1 = animation1->mChannels[c];
-//		BONE* bone = &m_mapBone[nodeAnim0->mNodeName.C_Str()];
-//
-//		//if (m_isLock && LockLowerBody(nodeAnim0->mNodeName))
-//		//{
-//		//	if (m_mapAnimation[m_sCurAnimationName] == m_LockAnimation)
-//
-//		//	{
-//
-//		//		aiAnimation* lockAnimation = m_LockAnimation->mAnimations[0];
-//		//		aiNodeAnim* lockNodeAnim = lockAnimation->mChannels[c];
-//
-//
-//		//		int frot, fpos;
-//
-//		//		frot = m_iFrame % lockNodeAnim->mNumRotationKeys;//簡易実装
-//		//		fpos = m_iFrame % lockNodeAnim->mNumPositionKeys;//簡易実装
-//
-//
-//		//		aiQuaternion rot = lockNodeAnim->mRotationKeys[frot].mValue;
-//		//		aiVector3D pos = lockNodeAnim->mPositionKeys[fpos].mValue;
-//
-//
-//		//		bone->AnimationMatrix = aiMatrix4x4(aiVector3D(1.0f, 1.0f, 1.0f), rot, pos);
-//
-//		//	}
-//		//}
-//		//else
-//		{
-//
-//			int f0, f1;
-//			f0 = curAnimTime % nodeAnim0->mNumRotationKeys;//簡易実装
-//			f1 = curAnimTime % nodeAnim1->mNumRotationKeys;//簡易実装
-//
-//			aiQuaternion rot;
-//			aiQuaternion::Interpolate(rot, nodeAnim1->mRotationKeys[f1].mValue, nodeAnim0->mRotationKeys[f0].mValue, blendTime);
-//
-//			f0 = nexAnimTime % nodeAnim0->mNumPositionKeys;//簡易実装
-//			f1 = nexAnimTime % nodeAnim1->mNumPositionKeys;//簡易実装
-//
-//			aiVector3D pos;
-//
-//			pos = nodeAnim0->mPositionKeys[f0].mValue * blendTime + nodeAnim1->mPositionKeys[f1].mValue * (1.0f - blendTime);
-//
-//			bone->AnimationMatrix = aiMatrix4x4(aiVector3D(1.0f, 1.0f, 1.0f), rot, pos);
-//		}
-//
-//
-//
-//
-//	}
-//}
 
 void CAnimationModel::Draw()
 {
 	//　プリミティブトポロジ設定
-	RENDERER::m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	RENDERER::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	
 
 	for (unsigned int m = 0; m < m_pAiScene->mNumMeshes; m++)
 	{
 
-		RENDERER::m_ConstantBufferList.GetStruct<AnimationBuffer>()->Set(m_AnimationMatrix[m]);
+		RENDERER::GetConstantList().GetStruct<AnimationBuffer>()->Set(m_AnimationMatrix[m]);
 
 		aiMesh* mesh = m_pAiScene->mMeshes[m];
 
@@ -585,19 +483,19 @@ void CAnimationModel::Draw()
 		//Diffuse
 		material->GetTexture(aiTextureType_DIFFUSE, 0, &path);
 		if (m_mapTexture[path.data]) {
-			RENDERER::m_pDeviceContext->PSSetShaderResources(0, 1, &m_mapTexture[path.data]);
+			RENDERER::GetDeviceContext()->PSSetShaderResources(0, 1, &m_mapTexture[path.data]);
 		}
 		path.Clear();
 		//Normal
 		material->GetTexture(aiTextureType_NORMALS, 0, &path);
 		if (m_mapTexture[path.data]) {
-			RENDERER::m_pDeviceContext->PSSetShaderResources(1, 1, &m_mapTexture[path.data]);
+			RENDERER::GetDeviceContext()->PSSetShaderResources(1, 1, &m_mapTexture[path.data]);
 		}
 		path.Clear();
 		//MRA
 		material->GetTexture(aiTextureType_EMISSIVE, 0, &path);
 		if (m_mapTexture[path.data]) {
-			RENDERER::m_pDeviceContext->PSSetShaderResources(2, 1, &m_mapTexture[path.data]);
+			RENDERER::GetDeviceContext()->PSSetShaderResources(2, 1, &m_mapTexture[path.data]);
 		}
 		path.Clear();
 
@@ -606,21 +504,21 @@ void CAnimationModel::Draw()
 		//　頂点バッファ設定
 		UINT stride = sizeof(ANIMVERTEX_3D);
 		UINT offset = 0;
-		RENDERER::m_pDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer[m], &stride, &offset);
+		RENDERER::GetDeviceContext()->IASetVertexBuffers(0, 1, &m_pVertexBuffer[m], &stride, &offset);
 
 		//　インデックスバッファ設定
-		RENDERER::m_pDeviceContext->IASetIndexBuffer(m_pIndexBuffer[m], DXGI_FORMAT_R32_UINT, 0);
+		RENDERER::GetDeviceContext()->IASetIndexBuffer(m_pIndexBuffer[m], DXGI_FORMAT_R32_UINT, 0);
 
 
 		//　ポリゴン描画
-		RENDERER::m_pDeviceContext->DrawIndexed(mesh->mNumFaces * 3, 0, 0);
+		RENDERER::GetDeviceContext()->DrawIndexed(mesh->mNumFaces * 3, 0, 0);
 	}
 }
 
 void CAnimationModel::DrawInstance()
 {
 	//　プリミティブトポロジ設定
-	RENDERER::m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	RENDERER::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	
 
@@ -633,20 +531,20 @@ void CAnimationModel::DrawInstance()
 		//テクスチャ設定
 		aiString path;
 		material->GetTexture(aiTextureType_DIFFUSE, 0, &path);
-		RENDERER::m_pDeviceContext->PSSetShaderResources(0, 1, &m_mapTexture[path.data]);
+		RENDERER::GetDeviceContext()->PSSetShaderResources(0, 1, &m_mapTexture[path.data]);
 
 
 		//　頂点バッファ設定
 		UINT stride = sizeof(ANIMVERTEX_3D);
 		UINT offset = 0;
-		RENDERER::m_pDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer[m], &stride, &offset);
+		RENDERER::GetDeviceContext()->IASetVertexBuffers(0, 1, &m_pVertexBuffer[m], &stride, &offset);
 
 		//　インデックスバッファ設定
-		RENDERER::m_pDeviceContext->IASetIndexBuffer(m_pIndexBuffer[m], DXGI_FORMAT_R32_UINT, 0);
+		RENDERER::GetDeviceContext()->IASetIndexBuffer(m_pIndexBuffer[m], DXGI_FORMAT_R32_UINT, 0);
 
 
 		//　ポリゴン描画
-		RENDERER::m_pDeviceContext->DrawIndexed(mesh->mNumFaces * 3, 0, 0);
+		RENDERER::GetDeviceContext()->DrawIndexed(mesh->mNumFaces * 3, 0, 0);
 	}
 }
 
@@ -714,7 +612,7 @@ void CAnimationModel::LoadTexture(std::string file_name)
 						int id = atoi(&path.data[1]);
 
 						D3DX11CreateShaderResourceViewFromMemory(
-							RENDERER::m_pDevice,
+							RENDERER::GetDevice(),
 							(const unsigned char*)m_pAiScene->mTextures[id]->pcData,
 							m_pAiScene->mTextures[id]->mWidth,
 							NULL,
@@ -737,7 +635,7 @@ void CAnimationModel::LoadTexture(std::string file_name)
 					tex_name += path.C_Str();
 
 					D3DX11CreateShaderResourceViewFromFile(
-						RENDERER::m_pDevice,
+						RENDERER::GetDevice(),
 						tex_name.c_str(),
 						NULL,
 						NULL,
