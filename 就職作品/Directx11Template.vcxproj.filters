@@ -172,6 +172,18 @@
     <Filter Include="GameObjects----------------\projectionShadow">
       <UniqueIdentifier>{5b525e70-9b4a-44a2-88f0-c29e6a76844c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObjects----------------\stairs">
+      <UniqueIdentifier>{e124121d-2e13-4206-809d-a4cdd7fce8ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects----------------\halfArch">
+      <UniqueIdentifier>{5f811eab-497a-4406-8ffd-7dc4dff3b5c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene -----------------------\CullingDemo">
+      <UniqueIdentifier>{821ac12f-b540-4761-a80e-c950587d5578}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects----------------\demoCamera">
+      <UniqueIdentifier>{c6cff585-2b89-48a6-80a9-b1baf30443d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="00 Source File\Entry.cpp">
@@ -299,6 +311,18 @@
     </ClCompile>
     <ClCompile Include="00 Source File\instanceObject.cpp">
       <Filter>GameObjects----------------\instance</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\stairs.cpp">
+      <Filter>GameObjects----------------\stairs</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\halfArch.cpp">
+      <Filter>GameObjects----------------\halfArch</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\cullingDemo.cpp">
+      <Filter>Scene -----------------------\CullingDemo</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\demoCamera.cpp">
+      <Filter>GameObjects----------------\demoCamera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -442,6 +466,18 @@
     </ClInclude>
     <ClInclude Include="00 Source File\instanceObject.h">
       <Filter>GameObjects----------------\instance</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\stairs.h">
+      <Filter>GameObjects----------------\stairs</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\halfArch.h">
+      <Filter>GameObjects----------------\halfArch</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\cullingDemo.h">
+      <Filter>Scene -----------------------\CullingDemo</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\demoCamera.h">
+      <Filter>GameObjects----------------\demoCamera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

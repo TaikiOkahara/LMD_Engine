@@ -27,6 +27,7 @@ private:
 	bool m_CameraControl = true;
 	
 	D3DXVECTOR3 CameraRayIntersect(CInstanceGameObject* object);
+	D3DXVECTOR3 CameraRayIntersect(CGameObject* object);
 public:
 
 	void Init();

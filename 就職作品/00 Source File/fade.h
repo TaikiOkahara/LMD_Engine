@@ -1,0 +1,16 @@
+/*---------------------------------------
+*Å@fade.h
+*
+*@authorÅFOkahara Taiki
+----------------------------------------*/
+#pragma once
+
+class CFade
+{
+public:
+	CFade(){}
+	~CFade(){}
+
+private:
+
+};

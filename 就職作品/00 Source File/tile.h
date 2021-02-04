@@ -2,11 +2,17 @@
 #include "director.h"
 #include "renderer.h"
 
+struct HeightMask
+{
+	int vertexNumX;
+	int vertexNumY;
+	float height;
+};
 
 class Tile
 {
 private:
-	void MakeVertexField();
+	void MakeVertexField(const HeightMask pMask[]);
 
 
 	std::string m_sTexture_Name;
@@ -31,7 +37,7 @@ private:
 	int m_iYCount;
 	float m_fTileSize;
 public:
-	void Init(std::string Tex_name, std::string Nor_name, std::string RM_name, int tile_X_count, int tile_Y_count,float tile_Xsize);
+	void Init(std::string Tex_name, std::string Nor_name, std::string RM_name, int tile_X_count, int tile_Y_count,float tile_Xsize,const  HeightMask pMask[]);
 	void Uninit();
 	void Update();
 	void Draw();
@@ -40,4 +46,5 @@ public:
 	//‚‚³æ“¾ŠÖ”(”CˆÓ‚ÌÀ•W‚Ìtile‚Ì‚‚³‚ğŒvZ)
 	float GetHeight(D3DXVECTOR3 Position);
 
+	void SetHeight(HeightMask);
 };

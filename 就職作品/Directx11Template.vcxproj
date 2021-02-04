@@ -24,6 +24,8 @@
     <ClCompile Include="00 Source File\chandelier.cpp" />
     <ClCompile Include="00 Source File\collision.cpp" />
     <ClCompile Include="00 Source File\cubeMap.cpp" />
+    <ClCompile Include="00 Source File\cullingDemo.cpp" />
+    <ClCompile Include="00 Source File\demoCamera.cpp" />
     <ClCompile Include="00 Source File\director.cpp" />
     <ClCompile Include="00 Source File\camera.cpp" />
     <ClCompile Include="00 Source File\edge.cpp" />
@@ -31,6 +33,7 @@
     <ClCompile Include="00 Source File\game.cpp" />
     <ClCompile Include="00 Source File\gameobject.cpp" />
     <ClCompile Include="00 Source File\gargoyle.cpp" />
+    <ClCompile Include="00 Source File\halfArch.cpp" />
     <ClCompile Include="00 Source File\Imgui11.cpp" />
     <ClCompile Include="00 Source File\input.cpp" />
     <ClCompile Include="00 Source File\instanceObject.cpp" />
@@ -43,6 +46,7 @@
     <ClCompile Include="00 Source File\base.cpp" />
     <ClCompile Include="00 Source File\Entry.cpp" />
     <ClCompile Include="00 Source File\doorWay.cpp" />
+    <ClCompile Include="00 Source File\stairs.cpp" />
     <ClCompile Include="00 Source File\staticMesh.cpp" />
     <ClCompile Include="00 Source File\struct.cpp" />
     <ClCompile Include="00 Source File\table.cpp" />
@@ -68,7 +72,9 @@
     <ClInclude Include="00 Source File\chandelier.h" />
     <ClInclude Include="00 Source File\collision.h" />
     <ClInclude Include="00 Source File\cubeMap.h" />
+    <ClInclude Include="00 Source File\cullingDemo.h" />
     <ClInclude Include="00 Source File\data_IO.h" />
+    <ClInclude Include="00 Source File\demoCamera.h" />
     <ClInclude Include="00 Source File\director.h" />
     <ClInclude Include="00 Source File\camera.h" />
     <ClInclude Include="00 Source File\edge.h" />
@@ -76,6 +82,7 @@
     <ClInclude Include="00 Source File\fog.h" />
     <ClInclude Include="00 Source File\game.h" />
     <ClInclude Include="00 Source File\gargoyle.h" />
+    <ClInclude Include="00 Source File\halfArch.h" />
     <ClInclude Include="00 Source File\input.h" />
     <ClInclude Include="00 Source File\instanceObject.h" />
     <ClInclude Include="00 Source File\calculation.h" />
@@ -87,6 +94,7 @@
     <ClInclude Include="00 Source File\renderer.h" />
     <ClInclude Include="00 Source File\base.h" />
     <ClInclude Include="00 Source File\doorWay.h" />
+    <ClInclude Include="00 Source File\stairs.h" />
     <ClInclude Include="00 Source File\staticMesh.h" />
     <ClInclude Include="00 Source File\struct.h" />
     <ClInclude Include="00 Source File\table.h" />

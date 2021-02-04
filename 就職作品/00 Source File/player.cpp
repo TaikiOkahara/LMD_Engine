@@ -70,7 +70,7 @@ void CPlayer::Init()
 
 	m_pTile = new Tile();
 
-	m_pTile->Init("Wall//T_StoneWall_A.dds", "Wall//T_StoneWall_N.dds", "Wall//T_StoneWall_C.dds", 2, 2, 2.5);
+	m_pTile->Init("Wall//T_StoneWall_A.dds", "Wall//T_StoneWall_N.dds", "Wall//T_StoneWall_C.dds", 2, 2, 2.5,NULL);
 	RENDERER::CreateVertexShader(&m_TileVertexShader,nullptr, nullptr,0,"playerShadowVS.cso");
 	RENDERER::CreatePixelShader(&m_TilePixelShader, "playerShadowPS.cso");
 }
@@ -170,7 +170,7 @@ void CPlayer::Update()
 			m_Transform.rotation.y = rotation;
 		}
 
-		m_OldPosition = m_Transform.position;
+		
 	}
 	
 	//ƒvƒŒƒCƒ„[“–‚½‚è”»’èˆ—-------------------------------
@@ -245,6 +245,7 @@ void CPlayer::Update()
 		}
 	}	
 	//-------------------------------------------------------
+	m_OldPosition = m_Transform.position;
 
 	m_Collision.Update();
 	m_AnimModel->Update();
@@ -266,7 +267,7 @@ void CPlayer::Draw()
 	RENDERER::GetDeviceContext()->PSSetShader(m_TilePixelShader, NULL, 0);
 	RENDERER::GetDeviceContext()->IASetInputLayout(m_pCommonVertexLayout);
 
-	m_pTile->Draw();
+	//m_pTile->Draw();
 
 	RENDERER::CommonDraw();
 

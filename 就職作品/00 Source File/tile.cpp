@@ -4,7 +4,7 @@
 #include "calculation.h"
 
 
-void Tile::MakeVertexField()
+void Tile::MakeVertexField(const HeightMask pMask[])
 {
 
 	VERTEX_3D* pVtx = new VERTEX_3D[m_iNumVertex];
@@ -19,20 +19,42 @@ void Tile::MakeVertexField()
 	const float offset_x = m_iXCount * m_fTileSize / 2;//中心点
 	const float offset_y = m_iYCount * m_fTileSize / 2;//中心点
 
+	
+
 	//バーテックス
 	for (int x = 0; x <= m_iXCount; x++) {
 
 		for (int z = 0; z <= m_iYCount; z++) {
 
-			pVtx[x * (m_iYCount + 1) + z].Position = D3DXVECTOR3((x - (m_iXCount / 2)) * m_fTileSize, 0, (z - (m_iYCount / 2)) * m_fTileSize);
+			
+			pVtx[x * (m_iYCount + 1) + z].Position = D3DXVECTOR3((x - (m_iXCount / 2)) * m_fTileSize, 0, (z - (m_iYCount / 2)) * -m_fTileSize);
 			m_Vtx[x][z] = pVtx[x * (m_iYCount + 1) + z].Position;
 
 
 			pVtx[x * (m_iYCount + 1) + z].TexturePos.x = (float)m_iXCount - x;
-			pVtx[x * (m_iYCount + 1) + z].TexturePos.y = (float)z;
+			pVtx[x * (m_iYCount + 1) + z].TexturePos.y = (float)m_iYCount - z;
 			pVtx[x * (m_iYCount + 1) + z].Normal = D3DXVECTOR3(0, 1, 0);
 			pVtx[x * (m_iYCount + 1) + z].Tangent = D3DXVECTOR3(1, 0, 0);
 			pVtx[x * (m_iYCount + 1) + z].Binormal = D3DXVECTOR3(0, 0, 1);
+
+
+			//高さ設定
+			float height = 0;
+			if (pMask == NULL)
+				continue;
+			for (int i = 0;pMask[i].height != NULL; i++)
+			{
+				if (x == pMask[i].vertexNumX
+					&& z == pMask[i].vertexNumY)
+				{
+					height = pMask[i].height;
+
+					pVtx[x * (m_iYCount + 1) + z].Position.y = height;
+					m_Vtx[x][z].y = height;
+				}
+			}
+
+			
 		}
 	}
 	
@@ -61,10 +83,10 @@ void Tile::MakeVertexField()
 
 	
 	D3D11_BUFFER_DESC bd;
-	bd.Usage = D3D11_USAGE_DYNAMIC;
+	bd.Usage = D3D11_USAGE_DEFAULT;
 	bd.ByteWidth = sizeof(VERTEX_3D) * 	m_iNumVertex;
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;
 	D3D11_SUBRESOURCE_DATA vrData;
 	vrData.pSysMem = pVtx;
@@ -102,7 +124,7 @@ void Tile::MakeVertexField()
 
 }
 
-void Tile::Init(std::string Tex_name,std::string Nor_name,std::string RM_name, int tile_X_count, int tile_Y_count, float tile_size)
+void Tile::Init(std::string Tex_name,std::string Nor_name,std::string RM_name, int tile_X_count, int tile_Y_count, float tile_size,const HeightMask pMask[])
 {
 
 	m_sTexture_Name = Tex_name;
@@ -117,7 +139,7 @@ void Tile::Init(std::string Tex_name,std::string Nor_name,std::string RM_name, i
 
 
 	// 頂点情報の作成
-	MakeVertexField();
+	MakeVertexField(pMask);
 }
 
 void Tile::Uninit()
@@ -176,8 +198,8 @@ float Tile::GetHeight(D3DXVECTOR3 Position)
 	int x, z;
 
 	//ブロック番号算出
-	x = (int)(Position.x / m_fTileSize + (m_iXCount * m_fTileSize)/2);
-	z = (int)(Position.z / -m_fTileSize + (m_iYCount * m_fTileSize)/2);
+	x = (Position.x / m_fTileSize) + (m_iXCount)/2;
+	z = (Position.z / -m_fTileSize) + (m_iYCount)/2;
 
 	D3DXVECTOR3 pos0, pos1, pos2, pos3;
 
@@ -212,5 +234,16 @@ float Tile::GetHeight(D3DXVECTOR3 Position)
 	//高さ取得
 	py = -((Position.x - pos1.x) * n.x + (Position.z - pos1.z) * n.z) / n.y + pos1.y;
 
+	if (abs(Position.y - py) > 10)//変化が急なとき
+	{
+		int a = 0;
+	}
+
 	return py;
+}
+
+void Tile::SetHeight(HeightMask mask)
+{
+
+	m_Vtx[mask.vertexNumX][mask.vertexNumY].y = mask.height;
 }

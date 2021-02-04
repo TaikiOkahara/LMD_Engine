@@ -13,7 +13,7 @@ void CWall::Init()
 {
 	
 	m_pWall = new Tile();
-	m_pWall->Init("Wall//T_StoneWall_A.dds", "Wall//T_StoneWall_N.dds", "Wall//T_StoneWall_C.dds", 2,2, 2.5f);
+	m_pWall->Init("Wall//T_StoneWall_A.dds", "Wall//T_StoneWall_N.dds", "Wall//T_StoneWall_C.dds", 2,2, 2.5f,NULL);
 
 	m_Collision.Set(D3DXVECTOR3(5.5f, 0.5f, 5.5f), D3DXVECTOR3(0, 0, 0));
 
@@ -28,12 +28,13 @@ void CWall::Init()
 	D3DXVECTOR3 scale;
 	scale = m_Transform.scale;
 
-	D3DXVECTOR3 forwardRot, backRot, leftRot, rightRot,topRot;
-	forwardRot = m_Transform.rotation + D3DXVECTOR3(0,-D3DX_PI/2,0);
+	D3DXVECTOR3 frontRot, backRot, leftRot, rightRot,topRot,downRot;
+	frontRot = m_Transform.rotation + D3DXVECTOR3(0,-D3DX_PI/2,0);
 	backRot = m_Transform.rotation + D3DXVECTOR3(0,D3DX_PI/2,0);
 	leftRot = m_Transform.rotation + D3DXVECTOR3(0,D3DX_PI,0);
 	rightRot = m_Transform.rotation + D3DXVECTOR3(0,0,0);
 	topRot = m_Transform.rotation + D3DXVECTOR3(D3DX_PI / 2, 0, 0);
+	downRot = m_Transform.rotation + D3DXVECTOR3(-D3DX_PI / 2, 0, 0);
 
 
 	{//スタート地点囲い壁
@@ -52,9 +53,9 @@ void CWall::Init()
 		}
 		{//スタート地点後ろ壁
 
-			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(2.5f, 2.5f, -15.0f),forwardRot, scale });
-			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 2.5f, -15.0f),forwardRot, scale });
-			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-7.5f, 2.5f, -15.0f),forwardRot, scale });	
+			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(2.5f, 2.5f, -15.0f),frontRot, scale });
+			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 2.5f, -15.0f),frontRot, scale });
+			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-7.5f, 2.5f, -15.0f),frontRot, scale });
 		}		
 	}
 	
@@ -67,7 +68,7 @@ void CWall::Init()
 	{
 		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-5.0f, 2.5f, -2.5f + i * 5.0f),rightRot, scale });
 	}
-	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-7.5f,2.5f,30.0f),forwardRot,scale });
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-7.5f,2.5f,30.0f),frontRot,scale });
 
 
 	//奥の壁
@@ -76,6 +77,20 @@ void CWall::Init()
 		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(0.0f - i * 5.0f, 2.5f, 35.0f),backRot, scale });
 	}
 
+	//階段前
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(- 5.25f, 7.0f, 32.5f),leftRot, scale });
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-10.0f, 8.5f, 32.5f),downRot, scale });
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-7.5f, 8.5f, 32.5f),downRot, scale });
+	//階段脇
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(- 7.5f, 7.5f, 35.0f),backRot, scale });
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-10.0f, 7.5f, 35.0f),backRot, scale });
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(- 7.5f, 2.5f, 30.0f),frontRot, scale });
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-10.0f, 2.5f, 30.0f),frontRot, scale });
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(- 7.5f, 7.5f, 30.0f),frontRot, scale });
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-10.0f, 7.5f, 30.0f),frontRot, scale });
+
+	//階段外
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-15.5f, 4.0f, 32.5f),topRot, scale });
 
 
 	InitInstance();

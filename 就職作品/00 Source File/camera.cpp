@@ -40,7 +40,6 @@ void CCamera::Update()
 
 	
 	m_OffsetPosition = player->GetPosition();
-	m_OffsetPosition.y = 0.0f;
 
 	m_Target = player->GetPosition() +D3DXVECTOR3(0, 1, 0);
 
@@ -101,11 +100,11 @@ void CCamera::Update()
 		{
 			m_Transform.position = CameraRayIntersect(ceiling);
 		}
-		/*CFloor* floor = Base::GetScene()->GetGameObject<CFloor>();
+		CFloor* floor = Base::GetScene()->GetGameObject<CFloor>();
 		if (floor != NULL)
 		{
 			m_Transform.position = CameraRayIntersect(floor);
-		}*/
+		}
 
 		
 	}
@@ -348,6 +347,180 @@ D3DXVECTOR3 CCamera::CameraRayIntersect(CInstanceGameObject* object)
 	}
 	return returnPos;
 	
+}
+
+D3DXVECTOR3 CCamera::CameraRayIntersect(CGameObject* object)
+{
+	CPlayer* player = Base::GetScene()->GetGameObject<CPlayer>();
+
+
+	D3DXVECTOR3 playerPos = player->GetPosition() + D3DXVECTOR3(0, 1, 0);//プレイヤーの中心
+	D3DXVECTOR3 cameraPos = m_Transform.position;
+	D3DXVECTOR3 origin = m_Transform.position;
+	D3DXVECTOR3 ray = playerPos - cameraPos;
+	D3DXVec3Normalize(&ray, &ray);
+
+	D3DXVECTOR3 returnPos = m_Transform.position;
+
+	D3DXVECTOR3 offsetVertex[8];
+
+	//オフセットを取得
+	for (int i = 0; i < 8; i++)
+	{
+		offsetVertex[i] = object->GetCollision()->GetVertex()[i];
+	}
+
+	D3DXMATRIX mWorld, mScale, mRot, mTrans;
+	D3DXMatrixScaling(&mScale, object->GetScale().x, object->GetScale().y, object->GetScale().z);
+	D3DXMatrixRotationYawPitchRoll(&mRot, object->GetRotation().y, object->GetRotation().x, object->GetRotation().z);
+	D3DXMatrixTranslation(&mTrans, object->GetPosition().x, object->GetPosition().y, object->GetPosition().z);
+	mWorld = mScale * mRot * mTrans;
+
+	//頂点をワールド座標変換
+	D3DXVECTOR3 vertex[8];
+	for (int i = 0; i < 8; i++)
+	{
+		vertex[i] = offsetVertex[i];
+		D3DXVec3TransformCoord(&vertex[i], &vertex[i], &mWorld);
+	}
+	//平面を生成
+	D3DXPLANE plane[6];
+
+	D3DXPlaneFromPoints(&plane[0], &vertex[0], &vertex[1], &vertex[2]);
+	D3DXPlaneFromPoints(&plane[1], &vertex[5], &vertex[4], &vertex[7]);
+	D3DXPlaneFromPoints(&plane[2], &vertex[4], &vertex[5], &vertex[1]);
+	D3DXPlaneFromPoints(&plane[3], &vertex[6], &vertex[7], &vertex[3]);
+	D3DXPlaneFromPoints(&plane[4], &vertex[4], &vertex[0], &vertex[3]);
+	D3DXPlaneFromPoints(&plane[5], &vertex[1], &vertex[5], &vertex[6]);
+
+
+
+	//平面との衝突を取得
+	for (int face = 0; face < 6; face++)
+	{
+
+		//面の法線側にプレイヤーがいない場合は省く
+		float nor = D3DXPlaneDotCoord(&plane[face], &playerPos);
+		if (nor < 0) continue;
+
+		D3DXVECTOR3 hit;
+		D3DXPlaneIntersectLine(&hit, &plane[face], &cameraPos, &playerPos);
+
+		if (hit != NULL)
+		{
+
+			D3DXVECTOR3	v1, v2, v3, v4, v5, v6;
+			switch (face)
+			{
+			case 0:
+
+				v1 = vertex[0];
+				v2 = vertex[1];
+				v3 = vertex[2];
+
+				v4 = vertex[0];
+				v5 = vertex[2];
+				v6 = vertex[3];
+
+				break;
+			case 1:
+
+				v1 = vertex[5];
+				v2 = vertex[4];
+				v3 = vertex[7];
+
+				v4 = vertex[5];
+				v5 = vertex[7];
+				v6 = vertex[6];
+
+				break;
+			case 2:
+
+				v1 = vertex[4];
+				v2 = vertex[5];
+				v3 = vertex[1];
+
+				v4 = vertex[4];
+				v5 = vertex[1];
+				v6 = vertex[0];
+
+				break;
+			case 3:
+
+				v1 = vertex[3];
+				v2 = vertex[2];
+				v3 = vertex[6];
+
+				v4 = vertex[3];
+				v5 = vertex[6];
+				v6 = vertex[7];
+
+				break;
+			case 4:
+
+				v1 = vertex[4];
+				v2 = vertex[0];
+				v3 = vertex[3];
+
+				v4 = vertex[4];
+				v5 = vertex[3];
+				v6 = vertex[7];
+
+				break;
+			case 5:
+
+				v1 = vertex[1];
+				v2 = vertex[5];
+				v3 = vertex[6];
+
+				v4 = vertex[1];
+				v5 = vertex[6];
+				v6 = vertex[2];
+
+				break;
+			default:
+
+				break;
+			}
+
+			D3DXVECTOR3 edge1, edge2;
+
+			edge1 = v2 - v1;
+			edge2 = v3 - v1;
+
+
+			if (CulcRay(origin, ray, v1, edge1, edge2))
+			{
+
+				D3DXVECTOR3 hitdistance = playerPos - hit;
+				D3DXVECTOR3 returndistance = playerPos - returnPos;
+				if (D3DXVec3Length(&returndistance) > D3DXVec3Length(&hitdistance))
+				{
+					returnPos = hit;
+					continue;
+				}
+
+
+			}
+
+			edge1 = v5 - v4;
+			edge2 = v6 - v4;
+
+			if (CulcRay(origin, ray, v4, edge1, edge2))
+			{
+				D3DXVECTOR3 hitdistance = playerPos - hit;
+				D3DXVECTOR3 returndistance = playerPos - returnPos;
+				if (D3DXVec3Length(&returndistance) > D3DXVec3Length(&hitdistance))
+				{
+					returnPos = hit;
+					continue;
+				}
+			}
+		}
+
+	}
+	
+	return returnPos;
 }
 
 void CCamera::Imgui()

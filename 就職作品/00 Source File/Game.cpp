@@ -7,6 +7,7 @@
 #include "base.h"
 #include "game.h"
 #include "title.h"
+#include "cullingDemo.h"
 #include "Imgui11.h"
 #include "input.h"
 
@@ -19,10 +20,12 @@
 #include "wall.h"
 #include "doorWay.h"
 #include "pillar.h"
+#include "halfArch.h"
 #include "edge.h"
 #include "pots.h"
 #include "trim.h"
 #include "gargoyle.h"
+#include "stairs.h"
 #include "ceiling.h"
 #include "ceilingArch.h"
 #include "chandelier.h"
@@ -57,7 +60,8 @@ void Game::Init() {
 	AddGameObject<CCeilingArch>(LAYER::DRAW);
 	AddGameObject<CPots>(LAYER::DRAW);
 	AddGameObject<CChandelier>(LAYER::DRAW);
-
+	AddGameObject<CStairs>(LAYER::DRAW);
+	AddGameObject<CHalfArch>(LAYER::DRAW);
 
 	AddGameObject<CProjShadow>(LAYER::DRAW);
 
@@ -97,6 +101,10 @@ void Game::Update() {
 	//ƒ^ƒCƒgƒ‹SceneˆÚ“®
 	if (CInput::KeyTrigger(DIK_F8))
 		Base::SetScene<Title>();
+
+	//DemoSceneˆÚ“®
+	if (CInput::KeyTrigger(DIK_F9))
+		Base::SetScene<CullingDemo>();
 }
 
 void Game::Imgui()
