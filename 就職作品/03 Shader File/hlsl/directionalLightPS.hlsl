@@ -8,7 +8,7 @@ Texture2D g_texNormal	: register(t1);
 Texture2D g_texPosition	: register(t2);
 Texture2D g_texPointLight: register(t3);
 Texture2D g_texVelocity  : register(t4);
-Texture2D g_texDepthPBR: register(t5);
+Texture2D g_texPBR: register(t5);
 Texture2D g_texShadow: register(t6);
 
 
@@ -26,7 +26,7 @@ float4 main(VS_OUT input) : SV_Target
     float4 normal = g_texNormal.Load(sampleIndices);
     float3 worldPos = g_texPosition.Load(sampleIndices).xyz;
     float3 pointLight = g_texPointLight.Load(sampleIndices);
-    float4 PBR = g_texDepthPBR.Load(sampleIndices);
+    float4 PBR = g_texPBR.Load(sampleIndices);
     
     float3 vLightVector = normalize(g_vDirectionalLightDir).xyz;
     float NL = saturate(-dot(normal.xyz, vLightVector));
@@ -35,7 +35,7 @@ float4 main(VS_OUT input) : SV_Target
     float3 color = g_vLightColor.xyz;
     
     
-    float3 Eye = g_vEyePos.xyz - worldPos;
+    float3 Eye = g_vCameraPos.xyz - worldPos;
     Eye = normalize(Eye);
 
     float3 Reflect = reflect(vLightVector, normal.xyz);
@@ -48,9 +48,8 @@ float4 main(VS_OUT input) : SV_Target
     
     //AO設定
     float ao = g_fAmbientOcclusion.x;
-    Color.rgb -= PBR.w * ao;
+    Color.rgb -= PBR.b * ao;
     
-    //Color.rgb *= diffuse.xyz * NL * color.xyz;
     Color.rgb *= (normal.w == 2.0f) ? diffuse.xyz : diffuse.xyz * NL * color.xyz; //ライティングを行か
     Color.a = diffuse.a;
     
@@ -67,7 +66,6 @@ float4 main(VS_OUT input) : SV_Target
     
     
     //投影テクスチャマッピング
-    
     float shadowTex =1.0f -  g_texShadow.Sample(g_samDeferredLinear, input.Tex).r;
     
     Color.rgb *= shadowTex;

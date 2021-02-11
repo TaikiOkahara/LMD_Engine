@@ -59,7 +59,8 @@
 #define APP_NAME "LMD Engine ：　Okahara Taiki"//アプリ名
 #define WINDOW_WIDTH 1920	//　サイズ横
 #define WINDOW_HEIGHT 1080	//　サイズ縦
-
+#define CAMERA_NEAR 0.1f
+#define CAMERA_FAR 1000.0f
 
 //動的確保の解放
 #define SAFE_DELETE(p) { if(p) { delete (p); (p)=NULL; } }

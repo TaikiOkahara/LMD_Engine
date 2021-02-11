@@ -1,12 +1,12 @@
-#include "Geometry.hlsl"
-#include "ConstantBuffer.hlsl"
-
+#include "geometry.hlsl"
+#include "constantBuffer.hlsl"
+#include "lighting.hlsli"
 
 //GBuffer
 Texture2D g_texColor : register(t0);
 Texture2D g_texNormal : register(t1);
 Texture2D g_texPosition : register(t2);
-Texture2D g_texDepthPBR : register(t3);
+Texture2D g_texPBR : register(t3);
 
 
 PS_PL_OUT main(VS_PL_OUT input)
@@ -19,7 +19,7 @@ PS_PL_OUT main(VS_PL_OUT input)
 
     float4 position = g_texPosition.Load(sampleIndices);
     float3 diffuse = g_texColor.Load(sampleIndices).xyz;
-    float4 PBR = g_texDepthPBR.Load(sampleIndices);
+    float4 PBR = g_texPBR.Load(sampleIndices);
 
    
 
@@ -28,9 +28,6 @@ PS_PL_OUT main(VS_PL_OUT input)
     float dist = length(L);
     dist = abs(dist);
     
-  
-        
-    //点光源の方向を正規化
     L = normalize(L);
     
     
@@ -42,11 +39,6 @@ PS_PL_OUT main(VS_PL_OUT input)
     att = 1/att;
     
    
-    
-    
-    
-    
-   /// float vanish = 1.0f - dist / input.LightRange;//中心から遠くなると暗くなる
     float lightAmount = max(dot(normal.xyz, L),0);
     
     float3 lightColor = g_vPointLight.color;
@@ -54,7 +46,7 @@ PS_PL_OUT main(VS_PL_OUT input)
    
     
     //Specular calc
-    float3 V = position.xyz - g_vEyePos.xyz;
+    float3 V = position.xyz - g_vCameraPos.xyz;
     V = normalize(V);
     float3 H = normalize(L + V);
   
@@ -64,8 +56,8 @@ PS_PL_OUT main(VS_PL_OUT input)
     float3 irradiance = attenuation * g_vPointLight.color * (g_vPointLight.intensity / (4.0 * PI)) * max(dot(normal.xyz, L), 0);
    
     
-    Out.PointLight.rgb = BRDF(diffuse.xyz, PBR.z, PBR.y, normal.xyz, V, L, H) * irradiance + finalDiffuse;
-    Out.PointLight.w = 0;//wは投影テクスチャシャドウマップで利用する
+    Out.PointLight.rgb = BRDF(diffuse.xyz, PBR.g, PBR.r, normal.xyz, V, L, H) * irradiance + finalDiffuse;
+    Out.PointLight.w = 0;
     
     
     

@@ -50,18 +50,13 @@ void CFogEffect::Update()
 	m_Fog.fogOffset[1].x += fogSpeed1;
 
 	if (m_Fog.fogOffset[0].x >= 1)
-	{
 		m_Fog.fogOffset[0].x = 0;
-	}
+
 	if (m_Fog.fogOffset[0].y >= 1)
-	{
 		m_Fog.fogOffset[0].y = 0;
-	}
 
 	if (m_Fog.fogOffset[1].x >= 1)
-	{
 		m_Fog.fogOffset[1].x = 0;
-	}
 
 	m_Fog.fogEnable = m_Enable;
 }

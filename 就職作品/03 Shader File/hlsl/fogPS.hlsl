@@ -1,14 +1,10 @@
 #include "Geometry.hlsl"
 #include "ConstantBuffer.hlsl"
 
-Texture2D g_texColor : register(t0);
+
 Texture2D g_texNormal : register(t1);
 Texture2D g_texPosition : register(t2);
-Texture2D g_texPointLight : register(t3);
-Texture2D g_texMotion : register(t4);
 
-Texture2D g_texPBR : register(t5);
-Texture2D g_teShadow : register(t6);
 Texture2D g_texFog : register(t7);
 
 
@@ -42,7 +38,7 @@ float4 main(VS_OUT input) : SV_Target
     
         
         
-    float FogColor = (g_texFog.Sample(g_samLinear, position.xz * texScale + g_fFogOffset.xy).r +
+    float fogColor = (g_texFog.Sample(g_samLinear, position.xz * texScale + g_fFogOffset.xy).r +
                       g_texFog.Sample(g_samLinear, position.xz * texScale + g_fFogOffset.zw).r * 0.2f) * 0.5f; //0.2fはフォグに隙間を持たせる閾値
     
     
@@ -52,16 +48,16 @@ float4 main(VS_OUT input) : SV_Target
     
    //頂点の高さによってα値を計算
   
-    float Alpha = saturate((position.y + randomHeight - minHeight) / (maxHeight - minHeight));
+    float alpha = saturate((position.y + randomHeight - minHeight) / (maxHeight - minHeight));
     
     
    
    //フォグの揺らぎ情報によりα値を調整
-    Alpha = 1.0f - (1.0f - Alpha) * FogColor;
+    alpha = 1.0f - (1.0f - alpha) * fogColor;
    
    //オブジェクトの色情報とフォグカラーを線形合成
-    float4 fogColor = float4(g_fFogColor, 1);
-    float4 Out = fogColor * (1.0f - Alpha);
+    float4 Out = float4(g_fFogColor, 1);
+    Out = Out * (1.0f - alpha);
 
     
     

@@ -22,7 +22,10 @@ VS_SHADOW_OUT main(
     output.CenterPos = float3(g_mWorld._41, g_mWorld._42, g_mWorld._43);
     output.Tex = Tex;
 	
-    output.ProjectorSpacePos = mul(Pos,mul(g_mWorld, g_vDirectionalLightVP));
+    int index = g_vPointLight.index;
+    output.ProjectorSpacePos_1 = mul(Pos, mul(g_mWorld, g_vPointLightViewProj[0]));
+    output.ProjectorSpacePos_2 = mul(Pos, mul(g_mWorld, g_vPointLightViewProj[1]));
+    output.ProjectorSpacePos_3 = mul(Pos, mul(g_mWorld, g_vPointLightViewProj[2]));
     
     //射影テクスチャマッピング
     matrix mt;
@@ -31,7 +34,9 @@ VS_SHADOW_OUT main(
     mt._31_32_33_34 = float4(0.0f, 0.0f, 1.0f, 0.0f);
     mt._41_42_43_44 = float4(0.5f, 0.5f, 0.0f, 1.0f);
     
-    output.ProjectorSpacePos = mul(output.ProjectorSpacePos, mt);
+    output.ProjectorSpacePos_1 = mul(output.ProjectorSpacePos_1, mt);
+    output.ProjectorSpacePos_2 = mul(output.ProjectorSpacePos_2, mt);
+    output.ProjectorSpacePos_3 = mul(output.ProjectorSpacePos_3, mt);
     
     return output;
 

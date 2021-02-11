@@ -45,8 +45,9 @@ VS_OUT main(
     position += mul(Pos, mat) * weight.w;
     
     
+    int lightIndex = g_vPointLight.index;
     matrix wlvp;
-    wlvp = mul(g_mWorld, g_vDirectionalLightVP);
+    wlvp = mul(g_mWorld, g_vPointLightViewProj[lightIndex]);
     
     
     output.Pos = mul(position,wlvp);

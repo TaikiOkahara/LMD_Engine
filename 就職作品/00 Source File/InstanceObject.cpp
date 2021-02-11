@@ -148,7 +148,7 @@ void CInstanceGameObject::UpdateInstance()
         return;
     }
 
-    RENDERER::GetConstantList().GetStruct<CullingBuffer>()->Set(m_CullingCount,m_CullingPos);
+    RENDERER::GetConstantList().GetStruct<CullingBuffer>()->SetCulling(m_CullingCount,m_CullingPos);
 
 
     //視錐台カリング用コンピュートシェーディング

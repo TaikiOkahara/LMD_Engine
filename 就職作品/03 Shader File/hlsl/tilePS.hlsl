@@ -36,16 +36,15 @@ PS_OUT main(VS_OUT input)
     
     Out.vNormal = float4(bumpNormal,0);
 	
-    Out.vMotion = input.Velocity;
+    Out.vMotionDepth.xy = input.Velocity;
+    Out.vMotionDepth.zw = input.DepthZW;
     
     float metallic = g_texMRA.Sample(g_samLinear, input.Tex).r;
     float roughness = g_texMRA.Sample(g_samLinear, input.Tex).g;
     float ambientOcclusion = g_texMRA.Sample(g_samLinear, input.Tex).b;
     
     
-    //Out.vColor *= Out.vColor * ambientOcclusion;
-    
-    Out.vDepthPBR = float4(input.Depth, roughness, metallic, ambientOcclusion);
+    Out.vPBR = float4(roughness, metallic, ambientOcclusion,0);
     
 	return Out;
 }

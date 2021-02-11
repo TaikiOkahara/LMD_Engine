@@ -8,9 +8,11 @@ cbuffer CullingBuffer : register(b9)
 {
     uint g_uInstanceCount;
     
-    float3 dummy_b0;
+    float3 g_fCulldummy;
     
     float4 g_fCullingPos[8];
+    
+    float4 g_vCullingCameraPoint[4];//ワールド座標の画面端4頂点、視錐台カリングで利用
 }
 
 
@@ -22,19 +24,19 @@ void main(uint3 DTid : SV_DispatchThreadID)
     
     uint index = DTid.x;
     
-    if (index > g_uInstanceCount - 1)//0からカウントするため
+    if (index > g_uInstanceCount - 1)
         return;
 
     
     matrix world = WorldMatrixBuffer[index];
 
    
+    float3 pos = float3(world._41, world._42, world._43);
     
     //視錐台カリング
     for (uint i = 0; i < 8;i++)
     {
         
-        float3 pos = float3(world._41, world._42, world._43);
         
         float3 cullpos = mul(g_fCullingPos[i].xyz, (float3x3)world);
 
@@ -42,20 +44,20 @@ void main(uint3 DTid : SV_DispatchThreadID)
         
         float3 v, v1, v2,v3,v4, n1,n2;
     
-        v = pos - g_vEyePos.xyz;
+        v = pos - g_vCullingCameraPos.xyz;
         v = normalize(v);
     
         //左面
-        v1 = g_vWordldCameraPos[0].xyz - g_vEyePos.xyz;
-        v2 = g_vWordldCameraPos[2].xyz - g_vEyePos.xyz;
+        v1 = g_vCullingCameraPoint[0].xyz - g_vCullingCameraPos.xyz;
+        v2 = g_vCullingCameraPoint[2].xyz - g_vCullingCameraPos.xyz;
         n1 = cross(v1, v2);
         n1 = normalize(n1);
     
             
     
         //右面
-        v3 = g_vWordldCameraPos[3].xyz - g_vEyePos.xyz;
-        v4 = g_vWordldCameraPos[1].xyz - g_vEyePos.xyz;
+        v3 = g_vCullingCameraPoint[3].xyz - g_vCullingCameraPos.xyz;
+        v4 = g_vCullingCameraPoint[1].xyz - g_vCullingCameraPos.xyz;
         n2 = cross(v3, v4);
         n2 = normalize(n2);
     

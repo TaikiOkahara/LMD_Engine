@@ -30,7 +30,7 @@ VS_OUT main(
     output.WorldBinormal = normalize(mul(Binormal.xyz, (float3x3) g_mWorld));
 	output.Tex = Tex;
 	
-    output.Depth = output.Pos.z / output.Pos.w;
+    output.DepthZW = output.Pos.zw;
 	
 	
     float4 curPos = mul(Pos, wvp);

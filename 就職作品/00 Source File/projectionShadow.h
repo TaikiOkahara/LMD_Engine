@@ -16,6 +16,9 @@ private:
 	ID3D11InputLayout* m_pVertexLayout = nullptr;
 
 	bool m_Enable = true;
+
+	ID3D11Texture2D* m_pShadowTexture = nullptr;
+	ID3D11ShaderResourceView* m_pShadowShaderResourceView = nullptr;
 public:
 	
 	void Init();

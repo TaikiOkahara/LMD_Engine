@@ -36,16 +36,29 @@ void ToggleBuffer::Set()
 	RENDERER::GetDeviceContext()->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
 }
 
-void CullingBuffer::Set(UINT count, D3DXVECTOR4* pos) {
-	
+void CullingBuffer::SetCulling(UINT count, D3DXVECTOR4* pos)
+{
 	str.cullingCount = count;
-
 	for (int i = 0; i < 8; i++)
 	{
 		str.cullingPos[i] = pos[i];
 	}
+
+	
+
 	RENDERER::GetDeviceContext()->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
 }
+
+void CullingBuffer::SetWorldCamera(D3DXVECTOR4* worldCamera)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		str.worldCamera[i] = worldCamera[i];
+	}
+
+	RENDERER::GetDeviceContext()->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
+}
+
 
 void EffectBuffer::Set()
 {
@@ -58,10 +71,17 @@ void AnimationBuffer::Set(ANIMATIONMATRIX set)
 	RENDERER::GetDeviceContext()->UpdateSubresource(m_pBuffer, 0, NULL, &set, 0, 0);
 }
 
-void EyeBuffer::Set(EYE set)
+void CameraBuffer::SetCamera(D3DXVECTOR4 cameraPos)
 {
+	str.cameraPosition = cameraPos;
 	
-	RENDERER::GetDeviceContext()->UpdateSubresource(m_pBuffer, 0, NULL, &set, 0, 0);
+	RENDERER::GetDeviceContext()->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
+}
+
+void CameraBuffer::SetCullingCameraPos(D3DXVECTOR4 cullCamera)
+{
+	str.cullingCameraPosition = cullCamera;
+	RENDERER::GetDeviceContext()->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
 }
 
 void DirectionalLightBuffer::SetDirectinalLight(D3DXVECTOR4 setDir, D3DXVECTOR4 setPos, D3DXVECTOR4 setCol)
@@ -82,13 +102,27 @@ void DirectionalLightBuffer::SetMatrix(D3DXMATRIX set)
 
 void PointLightBuffer::Set(POINTLIGHT set)
 {
-	str = set;
+	str.pointlight = set;
 	RENDERER::GetDeviceContext()->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
 }
 
 void PointLightBuffer::SetIndex(int index)
 {
-	str.index = index;
+	str.pointlight.index = index;
+	RENDERER::GetDeviceContext()->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
+}
+
+void PointLightBuffer::SetLightVP(D3DXMATRIX mat, int num)
+{
+	D3DXMATRIX set = mat;
+	D3DXMatrixTranspose(&set, &set);
+	str.lightVP[num] = set;
+	RENDERER::GetDeviceContext()->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
+}
+
+void PointLightBuffer::SetPlayerPos(D3DXVECTOR4 pos)
+{
+	str.playerPos = pos;
 	RENDERER::GetDeviceContext()->UpdateSubresource(m_pBuffer, 0, NULL, &str, 0, 0);
 }
 
@@ -120,13 +154,14 @@ void ViewBuffer::Set(D3DXMATRIX mat, D3DXMATRIX old)
 
 void ProjBuffer::Set(D3DXMATRIX mat, D3DXMATRIX old)
 {
-	D3DXMATRIX set[2];
-	D3DXMatrixTranspose(&mat, &mat);
-	D3DXMatrixTranspose(&old, &old);
+	D3DXMATRIX set[3];
+	D3DXMatrixTranspose(&set[0], &mat);
+	D3DXMatrixTranspose(&set[1], &old);
 
-	set[0] = mat;
-	set[1] = old;
-	
+
+	D3DXMatrixInverse(&set[2], NULL, &mat);
+	D3DXMatrixTranspose(&set[2], &set[2]);
+
 	RENDERER::GetDeviceContext()->UpdateSubresource(m_pBuffer, 0, NULL, set, 0, 0);
 
 }

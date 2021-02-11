@@ -44,8 +44,8 @@ GBuffer RENDERER::m_Diffuse_GBuffer;
 GBuffer RENDERER::m_Normal_GBuffer;
 GBuffer RENDERER::m_Position_GBuffer;
 GBuffer RENDERER::m_Lighting_GBuffer;
-GBuffer RENDERER::m_Velocity_GBuffer;
-GBuffer RENDERER::m_DepthPBR_GBuffer;
+GBuffer RENDERER::m_VelocityDepth_GBuffer;
+GBuffer RENDERER::m_PBR_GBuffer;
 GBuffer RENDERER::m_Shadow_GBuffer;
 //===============================================
 ID3D11InputLayout* RENDERER::m_pDeferredVertexLayout = NULL;
@@ -268,8 +268,8 @@ HRESULT RENDERER::Init(HWND phWnd)
 	CreateGBufferFormat(&m_Normal_GBuffer,DXGI_FORMAT::DXGI_FORMAT_R32G32B32A32_FLOAT);
 	CreateGBufferFormat(&m_Position_GBuffer,DXGI_FORMAT::DXGI_FORMAT_R32G32B32A32_FLOAT);
 	CreateGBufferFormat(&m_Lighting_GBuffer,DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM);
-	CreateGBufferFormat(&m_Velocity_GBuffer,DXGI_FORMAT::DXGI_FORMAT_R16G16_FLOAT);
-	CreateGBufferFormat(&m_DepthPBR_GBuffer,DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM);
+	CreateGBufferFormat(&m_VelocityDepth_GBuffer,DXGI_FORMAT::DXGI_FORMAT_R32G32B32A32_FLOAT);
+	CreateGBufferFormat(&m_PBR_GBuffer,DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM);
 	CreateGBufferFormat(&m_Shadow_GBuffer, DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM);
 
 
@@ -344,8 +344,8 @@ void RENDERER::Uninit()
 	m_Normal_GBuffer.Release();
 	m_Position_GBuffer.Release();
 	m_Lighting_GBuffer.Release();
-	m_Velocity_GBuffer.Release();
-	m_DepthPBR_GBuffer.Release();
+	m_VelocityDepth_GBuffer.Release();
+	m_PBR_GBuffer.Release();
 	m_Shadow_GBuffer.Release();
 
 
@@ -373,8 +373,8 @@ void RENDERER::Clear()
 	pViews[1] = m_Normal_GBuffer.m_pRenderTargetView;
 	pViews[2] = m_Position_GBuffer.m_pRenderTargetView;
 	pViews[3] = m_Lighting_GBuffer.m_pRenderTargetView;
-	pViews[4] = m_Velocity_GBuffer.m_pRenderTargetView;
-	pViews[5] = m_DepthPBR_GBuffer.m_pRenderTargetView;
+	pViews[4] = m_VelocityDepth_GBuffer.m_pRenderTargetView;
+	pViews[5] = m_PBR_GBuffer.m_pRenderTargetView;
 	m_pDeviceContext->OMSetRenderTargets(6, pViews, m_pDeferred_DSTexDSV);//深度ステンシルビューは全てに共通の1つだけを使う
 	
 	
@@ -387,8 +387,8 @@ void RENDERER::Clear()
 	m_pDeviceContext->ClearRenderTargetView(m_Normal_GBuffer.m_pRenderTargetView, ClearColor);
 	m_pDeviceContext->ClearRenderTargetView(m_Position_GBuffer.m_pRenderTargetView, ClearColor);
 	m_pDeviceContext->ClearRenderTargetView(m_Lighting_GBuffer.m_pRenderTargetView, ClearColor);
-	m_pDeviceContext->ClearRenderTargetView(m_Velocity_GBuffer.m_pRenderTargetView, ClearColor);
-	m_pDeviceContext->ClearRenderTargetView(m_DepthPBR_GBuffer.m_pRenderTargetView, ClearColor);
+	m_pDeviceContext->ClearRenderTargetView(m_VelocityDepth_GBuffer.m_pRenderTargetView, ClearColor);
+	m_pDeviceContext->ClearRenderTargetView(m_PBR_GBuffer.m_pRenderTargetView, ClearColor);
 	m_pDeviceContext->ClearRenderTargetView(m_Shadow_GBuffer.m_pRenderTargetView, ClearColor);
 	
 
@@ -424,8 +424,8 @@ void RENDERER::Deferred()
 	m_pDeviceContext->PSSetShaderResources(1, 1, &m_Normal_GBuffer.m_pShaderResourceView);
 	m_pDeviceContext->PSSetShaderResources(2, 1, &m_Position_GBuffer.m_pShaderResourceView);
 	m_pDeviceContext->PSSetShaderResources(3, 1, &m_Lighting_GBuffer.m_pShaderResourceView);
-	m_pDeviceContext->PSSetShaderResources(4, 1, &m_Velocity_GBuffer.m_pShaderResourceView);
-	m_pDeviceContext->PSSetShaderResources(5, 1, &m_DepthPBR_GBuffer.m_pShaderResourceView);
+	m_pDeviceContext->PSSetShaderResources(4, 1, &m_VelocityDepth_GBuffer.m_pShaderResourceView);
+	m_pDeviceContext->PSSetShaderResources(5, 1, &m_PBR_GBuffer.m_pShaderResourceView);
 	m_pDeviceContext->PSSetShaderResources(6, 1, &m_Shadow_GBuffer.m_pShaderResourceView);
 	
 
@@ -470,7 +470,7 @@ void RENDERER::PointLighting()
 	m_pDeviceContext->PSSetShaderResources(0, 1, &m_Diffuse_GBuffer.m_pShaderResourceView);
 	m_pDeviceContext->PSSetShaderResources(1, 1, &m_Normal_GBuffer.m_pShaderResourceView);
 	m_pDeviceContext->PSSetShaderResources(2, 1, &m_Position_GBuffer.m_pShaderResourceView);
-	m_pDeviceContext->PSSetShaderResources(3, 1, &m_DepthPBR_GBuffer.m_pShaderResourceView);
+	m_pDeviceContext->PSSetShaderResources(3, 1, &m_PBR_GBuffer.m_pShaderResourceView);
 
 
 }
@@ -485,8 +485,8 @@ void RENDERER::CommonDraw()
 	pViews[1] = m_Normal_GBuffer.m_pRenderTargetView;
 	pViews[2] = m_Position_GBuffer.m_pRenderTargetView;
 	pViews[3] = m_Lighting_GBuffer.m_pRenderTargetView;
-	pViews[4] = m_Velocity_GBuffer.m_pRenderTargetView;
-	pViews[5] = m_DepthPBR_GBuffer.m_pRenderTargetView;
+	pViews[4] = m_VelocityDepth_GBuffer.m_pRenderTargetView;
+	pViews[5] = m_PBR_GBuffer.m_pRenderTargetView;
 	pViews[6] = m_Shadow_GBuffer.m_pRenderTargetView;
 	m_pDeviceContext->OMSetRenderTargets(7, pViews, m_pDeferred_DSTexDSV);//深度ステンシルビューは全てに共通の1つだけを使う
 
@@ -503,17 +503,15 @@ void RENDERER::CommonDraw()
 
 void RENDERER::PostProcessDraw()
 {
-	//仮-------------------------------------------
-	//SetEffect();
+	
 	m_ConstantBufferList.GetStruct<EffectBuffer>()->Set();
 	m_pDeviceContext->OMSetRenderTargets(1, &m_pDeferred_TexRTV, m_pDeferred_DSTexDSV);
 	m_pDeviceContext->OMSetDepthStencilState(m_pBuckBuffer_DSTexState, NULL);
 	m_pDeviceContext->IASetInputLayout(m_pDeferredVertexLayout);
 	m_pDeviceContext->RSSetState(m_pDeferredRasterizerState);
-	//---------------------------------------------
 
 
-	//SetEffect();
+
 	m_ConstantBufferList.GetStruct<EffectBuffer>()->Set();
 
 	
@@ -522,8 +520,8 @@ void RENDERER::PostProcessDraw()
 	m_pDeviceContext->PSSetShaderResources(1, 1, &m_Normal_GBuffer.m_pShaderResourceView);
 	m_pDeviceContext->PSSetShaderResources(2, 1, &m_Position_GBuffer.m_pShaderResourceView);
 	m_pDeviceContext->PSSetShaderResources(3, 1, &m_Lighting_GBuffer.m_pShaderResourceView);
-	m_pDeviceContext->PSSetShaderResources(4, 1, &m_Velocity_GBuffer.m_pShaderResourceView);
-	m_pDeviceContext->PSSetShaderResources(5, 1, &m_DepthPBR_GBuffer.m_pShaderResourceView);
+	m_pDeviceContext->PSSetShaderResources(4, 1, &m_VelocityDepth_GBuffer.m_pShaderResourceView);
+	m_pDeviceContext->PSSetShaderResources(5, 1, &m_PBR_GBuffer.m_pShaderResourceView);
 	m_pDeviceContext->PSSetShaderResources(6, 1, &m_Shadow_GBuffer.m_pShaderResourceView);
 
 
@@ -546,11 +544,38 @@ void RENDERER::PostProcessDraw()
 
 void RENDERER::ShadowDraw()
 {
-
+	
 	//レンダーターゲット
+	m_pDeviceContext->OMSetRenderTargets(1, &m_Lighting_GBuffer.m_pRenderTargetView, m_pDeferred_DSTexDSV);
+
+	m_pDeviceContext->PSSetShaderResources(3, 1, &m_Shadow_GBuffer.m_pShaderResourceView);
+
+}
+
+void RENDERER::ShadowBegin()
+{
+	float ClearColor[4] = { 0,0,0,1 };
+	m_pDeviceContext->ClearRenderTargetView(m_Shadow_GBuffer.m_pRenderTargetView, ClearColor);
 	m_pDeviceContext->OMSetRenderTargets(1, &m_Shadow_GBuffer.m_pRenderTargetView, m_pDeferred_DSTexDSV);
 
-	m_pDeviceContext->PSSetShaderResources(3, 1, &m_Lighting_GBuffer.m_pShaderResourceView);
+	ID3D11DepthStencilState* stencil = NULL;
+	D3D11_DEPTH_STENCIL_DESC dc;
+	ZeroMemory(&dc, sizeof(dc));
+	dc.DepthEnable = false;
+	dc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+
+	dc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+	m_pDevice->CreateDepthStencilState(&dc, &stencil);
+	//深度ステンシルステートを適用
+	m_pDeviceContext->OMSetDepthStencilState(stencil, NULL);
+
+
+
+	//バックカリング
+	m_pDeviceContext->RSSetState(m_pPointLightingRasterizerState);
+	//ブレンドステート
+	float blend[4] = { 1,1,1,1 };
+	m_pDeviceContext->OMSetBlendState(m_pPointLightBlendState, blend, 0xffffffff);
 
 }
 
@@ -779,7 +804,7 @@ void RENDERER::CreateConstantBuffers()
 
 	m_ConstantBufferList.AddConstantBuffer<ProjBuffer>(2);
 
-	m_ConstantBufferList.AddConstantBuffer<EyeBuffer>(3);
+	m_ConstantBufferList.AddConstantBuffer<CameraBuffer>(3);
 
 	m_ConstantBufferList.AddConstantBuffer<DirectionalLightBuffer>(4);
 

@@ -7,7 +7,7 @@
 #include "base.h"
 #include "game.h"
 #include "title.h"
-#include "cullingDemo.h"
+#include "demoScene.h"
 #include "Imgui11.h"
 #include "input.h"
 
@@ -43,7 +43,6 @@ void Game::Init() {
 
 
 	AddGameObject<CCamera>(LAYER::HIDE);
-	AddGameObject<CPointLight>(LAYER::LIGHT);//一番最後に描画
 
 	AddGameObject<CCubeMap>(LAYER::HIDE);
 
@@ -68,6 +67,10 @@ void Game::Init() {
 	AddGameObject<CPlayer>(LAYER::DRAW);//プレイヤー
 
 
+	AddGameObject<CPointLight>(LAYER::LIGHT);//一番最後に描画
+	
+	
+	
 	AddPostProcess<CDirectionalLight>();
 	AddPostProcess<CFogEffect>();
 	
@@ -84,27 +87,23 @@ void Game::UnInit() {
 
 void Game::Update() {
 
-	if (timeStop) return;
+	if (m_TimeStop) return;
 	CScene::Update();
 
 	//ポストプロセス情報をシェーダーにセット
-	RENDERER::GetConstantList().GetStruct<EffectBuffer>()->SetDeferredParam(D3DXVECTOR3(deferredType * 1.0f, 0, 0), gBufferRenderEnable);
+
+	//Deferred
+	RENDERER::GetConstantList().GetStruct<EffectBuffer>()->SetDeferredParam(m_DeferredType * 1.0f, m_ShadowEnable, m_GBufferRenderEnable);
 	RENDERER::GetConstantList().GetStruct<EffectBuffer>()->Set();
 	
-	RENDERER::GetConstantList().GetStruct<EffectBuffer>()->SetAO(D3DXVECTOR4(ambientOcclusionPower,0,0,0));
+	//SSAO
+	RENDERER::GetConstantList().GetStruct<EffectBuffer>()->SetAO(m_aoEnable,m_aoHemRedius,m_aoZfar,m_aoPower);
 
-
-	RENDERER::GetConstantList().GetStruct<ToggleBuffer>()->SetFrustumCullingEnable(frustumEnable);
+	//Culling
+	RENDERER::GetConstantList().GetStruct<ToggleBuffer>()->SetFrustumCullingEnable(m_EnableCulling);
 	RENDERER::GetConstantList().GetStruct<ToggleBuffer>()->Set();
 
 
-	//タイトルScene移動
-	if (CInput::KeyTrigger(DIK_F8))
-		Base::SetScene<Title>();
-
-	//DemoScene移動
-	if (CInput::KeyTrigger(DIK_F9))
-		Base::SetScene<CullingDemo>();
 }
 
 void Game::Imgui()
@@ -125,9 +124,10 @@ void Game::Imgui()
 		static float f1 = 0.0f;
 		static int counter1 = 0;
 		
-		static int render_radio = deferredType;
-		static int culling_radio = culling_radio;
-		static bool gBuffer_render = gBufferRenderEnable;
+		static int static_render_radio = m_DeferredType;
+		static int static_culling_radio = m_EnableCulling;
+		static bool static_aoEnable = m_aoEnable;
+		static bool static_shEnable = m_ShadowEnable;
 
 		ImGuiWindowFlags flag = 0;
 		ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
@@ -136,55 +136,66 @@ void Game::Imgui()
 		static bool is_open = true;
 
 		ImGui::Begin("Scene", &is_open, flag);
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
 
-		ImGui::Checkbox("isStop", &timeStop);
+		ImGui::Checkbox("isStop", &m_TimeStop);
 
-		
-		ImGui::Checkbox("GBuffer Render", &gBuffer_render);
-		gBufferRenderEnable = gBuffer_render;
+		ImGui::Separator();
 
-		if (gBuffer_render)
+		ImGui::Checkbox("Enable Shadow", &static_shEnable);
+		m_ShadowEnable = static_shEnable;
+
+		ImGui::Separator();
+
+
+		if (ImGui::TreeNode("Ambient Occlusion"))
 		{
-			ImGui::Text("Render Type");
-			ImGui::RadioButton("Color", &render_radio, 0);
-			ImGui::RadioButton("Normal", &render_radio, 1);
-			ImGui::RadioButton("Position", &render_radio, 2);
-			ImGui::RadioButton("Lighting(tmp)", &render_radio, 3);
-			ImGui::RadioButton("Motion", &render_radio, 4);
-			ImGui::RadioButton("Depth", &render_radio, 5);
-			ImGui::RadioButton("Roughness", &render_radio, 6);
-			ImGui::RadioButton("Metallic", &render_radio, 7);
-			ImGui::RadioButton("AmbientOcclusion", &render_radio, 8);
-			ImGui::RadioButton("ProjectionShadowMapping", &render_radio, 9);
-			ImGui::RadioButton("Shadow", &render_radio, 10);
-			deferredType = render_radio;
+			ImGui::Checkbox("Enable AO", &static_aoEnable);
+			m_aoEnable = static_aoEnable;
+
+
+			ImGui::SliderFloat("HemRedius", &m_aoHemRedius, 0.01f, 1.0f);
+			ImGui::SliderFloat("Power", &m_aoPower, 0.0f, 100.0f);
+			ImGui::TreePop();
 		}
+
 		
-		ImGui::SliderFloat("Ambient Occlusion", &ambientOcclusionPower, 0.0f, 1.0f);
+		ImGui::Separator();
+
+
+		
+		if (ImGui::TreeNode("GBuffer Render"))
+		{
+			m_GBufferRenderEnable = true;
+
+			ImGui::RadioButton("Albedo", &static_render_radio, 0);
+			ImGui::RadioButton("Normal", &static_render_radio, 1);
+			ImGui::RadioButton("Position", &static_render_radio, 2);
+			ImGui::RadioButton("Lighting", &static_render_radio, 3);
+			ImGui::RadioButton("Motion", &static_render_radio, 4);
+			ImGui::RadioButton("Depth", &static_render_radio, 5);
+			ImGui::RadioButton("Roughness", &static_render_radio, 6);
+			ImGui::RadioButton("Metallic", &static_render_radio, 7);
+			ImGui::RadioButton("AO", &static_render_radio, 8);
+			ImGui::RadioButton("ProjectionShadowMapping", &static_render_radio, 9);
+			ImGui::RadioButton("Shadow", &static_render_radio, 10);
+			m_DeferredType = static_render_radio;
+			ImGui::TreePop();
+		}
+		else
+		{
+			m_GBufferRenderEnable = false;
+		}
+
 
 		ImGui::Text("Culling Mode");
-		ImGui::RadioButton("None", &culling_radio, 0);
+		ImGui::RadioButton("None", &static_culling_radio, 0);
 		ImGui::SameLine();
-		ImGui::RadioButton("FrustumCulling", &culling_radio, 1);
-		frustumEnable =  culling_radio;
-
-		//if (ImGui::Button("Button"))	// "Button"が押されるとtrueになる
-		//	counter1++;
+		ImGui::RadioButton("FrustumCulling", &static_culling_radio, 1);
+		m_EnableCulling = static_culling_radio;
 
 
-		/*
-			"##1" や "##2" のような文字列を入れることで互いを区別できるようになり、チェックボックスをクリックしても別のウィンドウの開閉ができるようになります。
-			"##"以降の文字列は描画されません。"Open/Close" と描画されます。"##"を使うのはあくまでコード内で区別するための作法です。
-			"##"以降の文字列は1や2でなくても構いません。
-
-		*/
-
-		//ImGui::SameLine(); // 次に書くUIパーツを現在と同じ行に配置します。
-
-		//ImGui::Text("counter = %d", counter1);
-
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();
 	}
 

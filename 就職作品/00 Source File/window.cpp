@@ -85,9 +85,7 @@ HRESULT WINDOW::InitWindow(HINSTANCE hInstance,
 	
 	return S_OK;
 }
-//
-//
-//
+
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
  LRESULT WINDOW::MsgProc(HWND hWnd,UINT iMsg,WPARAM wParam,LPARAM lParam)
 {

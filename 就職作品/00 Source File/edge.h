@@ -11,7 +11,6 @@ class CEdge : public CInstanceGameObject
 {
 private:
 	StaticMesh* m_pMesh = nullptr;
-
 public:
 
 	void Init();

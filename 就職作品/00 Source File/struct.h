@@ -81,15 +81,15 @@ struct POINTLIGHT
 	D3DXVECTOR3 calc;
 	FLOAT		size;
 	D3DXVECTOR3 pos;
-	UINT		index;//二進数に直すので少し複雑
+	UINT		index;
 };
 
-struct EYE
-{
-	D3DXVECTOR4 eyePos;
-
-	D3DXVECTOR4 worldCamera[4];
-};
+//struct CAMERA
+//{
+//	D3DXVECTOR4 eyePos;
+//
+//	D3DXVECTOR4 worldCamera[4];
+//};
 
 struct FOG
 {
@@ -197,13 +197,15 @@ private:
 		D3DXVECTOR3 dummy;
 
 		D3DXVECTOR4 cullingPos[8];
+
+		D3DXVECTOR4 worldCamera[4];
 	};
 
 	Struct str;
 public:
 	
-	void Set(UINT count, D3DXVECTOR4* pos);
-
+	void SetCulling(UINT count, D3DXVECTOR4* pos);
+	void SetWorldCamera(D3DXVECTOR4* worldCamera);
 	CullingBuffer()
 	{
 		m_StructSize = sizeof(Struct);
@@ -216,20 +218,34 @@ class EffectBuffer : public ConstantBuffer
 private:
 	struct Struct
 	{
-		D3DXVECTOR3 deferred;
+		FLOAT deferred;
+		BOOL shadow;
+		FLOAT dummy;
 		BOOL GBufferDrawEnable;
 
 		FOG	fog;
 
-		D3DXVECTOR4 ambientOcclusion;
+		FLOAT aoEnable;
+		FLOAT aoHemRedius;
+		FLOAT aoZfar;
+		FLOAT aoPower;
 	};
 	Struct str;
 public:
 	void Set();
 	void SetFog(FOG set) { str.fog = set; }
-	void SetAO(D3DXVECTOR4 set) { str.ambientOcclusion = set; }
-	void SetDeferredParam(D3DXVECTOR3 set, BOOL enable) { str.deferred = set; str.GBufferDrawEnable = enable; }
-	D3DXVECTOR3 GetDeferredParam() { return str.deferred; }
+	void SetAO(FLOAT enable,FLOAT redius,FLOAT zfar, FLOAT power) 
+	{ 
+		str.aoEnable = enable;
+		str.aoHemRedius = redius;
+		str.aoZfar = zfar;
+		str.aoPower = power;
+	}
+	void SetDeferredParam(FLOAT setDefferd,BOOL shadow, BOOL enable) { 
+		str.deferred = setDefferd;
+		str.shadow = shadow;
+		str.GBufferDrawEnable = enable; }
+	FLOAT GetDeferredParam() { return str.deferred; }
 
 	EffectBuffer()	{
 		m_StructSize = sizeof(Struct);
@@ -246,13 +262,20 @@ public:
 	~AnimationBuffer() {}
 };
 
-class EyeBuffer : public ConstantBuffer
+class CameraBuffer : public ConstantBuffer
 {
+	struct Struct
+	{
+		D3DXVECTOR4 cameraPosition;
+		D3DXVECTOR4 cullingCameraPosition;//デモ用仮想カメラ
+	};
+	Struct str;
 public:
-	void Set(EYE set);
+	void SetCamera(D3DXVECTOR4 cameraPos);
+	void SetCullingCameraPos(D3DXVECTOR4 cullCamera);
 
-	EyeBuffer() { m_StructSize = sizeof(EYE); }
-	~EyeBuffer() {}
+	CameraBuffer() { m_StructSize = sizeof(Struct); }
+	~CameraBuffer() {}
 };
 
 class DirectionalLightBuffer : public ConstantBuffer
@@ -277,11 +300,19 @@ public:
 
 class PointLightBuffer : public ConstantBuffer
 {
-	POINTLIGHT str;
+	struct Struct
+	{
+		POINTLIGHT pointlight;
+		D3DXMATRIX lightVP[8];
+		D3DXVECTOR4 playerPos;
+	};
+	Struct str;
 public:
 	void Set(POINTLIGHT set);
 	void SetIndex(int index);
-	PointLightBuffer() { m_StructSize = sizeof(POINTLIGHT); }
+	void SetLightVP(D3DXMATRIX mat, int num);
+	void SetPlayerPos(D3DXVECTOR4 pos);
+	PointLightBuffer() { m_StructSize = sizeof(Struct); }
 	~PointLightBuffer() {}
 };
 
@@ -310,7 +341,7 @@ public:
 	void Set(D3DXMATRIX mat, D3DXMATRIX old);
 	ID3D11Buffer* GetBuffer() { return m_pBuffer; }
 
-	ProjBuffer() { m_StructSize = sizeof(D3DXMATRIX) * 2; }
+	ProjBuffer() { m_StructSize = sizeof(D3DXMATRIX) * 3; }
 	~ProjBuffer() {}
 };
 

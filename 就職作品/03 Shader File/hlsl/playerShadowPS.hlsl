@@ -4,38 +4,36 @@
 Texture2D g_texCol : register(t0);
 Texture2D g_Nor : register(t1);
 Texture2D g_MRA : register(t2);
-Texture2D g_texPointLight : register(t3);
+Texture2D g_texShadow : register(t3);
 
 SamplerState g_samLinear : register(s0);
 SamplerState g_samDeferredLinear : register(s1);
 
 float4 main(VS_SHADOW_OUT input) : SV_Target
 {
-    input.ProjectorSpacePos.xyz /= input.ProjectorSpacePos.w;
-    float2 uv = input.ProjectorSpacePos.xy;
+    input.ProjectorSpacePos_1.xyz /= input.ProjectorSpacePos_1.w;
+    input.ProjectorSpacePos_2.xyz /= input.ProjectorSpacePos_2.w;
+    input.ProjectorSpacePos_3.xyz /= input.ProjectorSpacePos_3.w;
     
-
-    float projectTex = g_texPointLight.Sample(g_samDeferredLinear, uv).a;
+    float2 uv_1 = input.ProjectorSpacePos_1.xy;
+    float2 uv_2 = input.ProjectorSpacePos_2.xy;
+    float2 uv_3 = input.ProjectorSpacePos_3.xy;
     
-    // カメラの範囲外を適用しない処理
-    {
-        //float3 isOut = step((input.ProjectorSpacePos - 0.5) * sign(input.ProjectorSpacePos), 0.5);
-        //float alpha = isOut.x * isOut.y * isOut.z;
-        //            // プロジェクターから見て裏側の面には適用しない
-        //alpha *= step(-dot(lerp(-g_vDirectionalLightPos.xyz, g_vDirectionalLightPos.xyz - input.WorldPos, g_vDirectionalLightPos.w), i.worldNormal), 0);
-        //return lerp(1, projectorTex, alpha);
-        
-        //return g_texPointLight.Sample(g_samLinear, input.Tex);
-        
-        //float shadow = 1.0f - projectTex.a;
-        
-        //projectTex.w = 1;
-    }
+    
+    float shadow;
+    shadow = g_texShadow.Sample(g_samDeferredLinear, uv_1).r;
+    shadow += g_texShadow.Sample(g_samDeferredLinear, uv_2).g;
+    shadow += g_texShadow.Sample(g_samDeferredLinear, uv_3).b;
+    
    
+    float dist =(distance(input.WorldPos, g_vPointLightPlayerPos.xyz));
     
-    float dist = 1 - (distance(input.WorldPos, input.CenterPos) / 2);
+    if (dist > 1.0f)
+        return float4(0, 0, 0, 0);
     
-    projectTex *= dist;
-    return float4(projectTex, 0, 0, 1); //float4(1, 1, 1, 1);
-
+    dist = 1 - clamp(dist, 0, 1);
+    
+    shadow *= dist;
+    
+    return float4(0,0,0,shadow);
 }

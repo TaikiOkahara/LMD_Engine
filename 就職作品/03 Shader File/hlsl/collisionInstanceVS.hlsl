@@ -1,5 +1,5 @@
-#include "Geometry.hlsl"
-#include "ConstantBuffer.hlsl"
+#include "geometry.hlsl"
+#include "constantBuffer.hlsl"
 
 StructuredBuffer<matrix> WorldMatrixBuffer : register(t0);
 StructuredBuffer<uint> IndexBuffer : register(t1);

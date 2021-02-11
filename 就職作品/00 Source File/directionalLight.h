@@ -11,9 +11,9 @@
 class CDirectionalLight : public CEffect
 {
 private:
-	D3DXVECTOR4 m_DLightDir;
-	D3DXVECTOR4 m_DLightPos;
-	D3DXVECTOR4 m_DLightCol;
+	D3DXVECTOR4 m_Direction;
+	D3DXVECTOR4 m_Position;
+	D3DXVECTOR4 m_Color;
 
 	TRANSFORM m_Transform;
 

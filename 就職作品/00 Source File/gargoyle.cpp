@@ -22,7 +22,7 @@ void CGargoyle::Init()
 	m_Collision.Set(D3DXVECTOR3(0.6, 2, 0.6), D3DXVECTOR3(0, 1, 0));
 	
 	{
-		m_TransformList.push_back(TRANSFORM{D3DXVECTOR3(-2.5f,0,34.5f),m_Transform.rotation,m_Transform.scale});
+		m_TransformList.push_back(TRANSFORM{D3DXVECTOR3(-2.5f,0,33.0f),m_Transform.rotation,m_Transform.scale});
 	}
 
 	InitInstance();

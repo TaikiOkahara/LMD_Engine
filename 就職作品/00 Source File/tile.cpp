@@ -198,8 +198,8 @@ float Tile::GetHeight(D3DXVECTOR3 Position)
 	int x, z;
 
 	//ブロック番号算出
-	x = (Position.x / m_fTileSize) + (m_iXCount)/2;
-	z = (Position.z / -m_fTileSize) + (m_iYCount)/2;
+	x = (int)(Position.x / m_fTileSize) + (m_iXCount)/2;
+	z = (int)(Position.z / -m_fTileSize) + (m_iYCount)/2;
 
 	D3DXVECTOR3 pos0, pos1, pos2, pos3;
 

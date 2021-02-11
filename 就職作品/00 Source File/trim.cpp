@@ -28,7 +28,7 @@ void CTrim::Init()
 
 
 	//スタート地点前方
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 7; i++)
 	{
 		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(0,0,i * 5.0f + 2.5f),verticalRot, scale });
 	}
@@ -36,6 +36,11 @@ void CTrim::Init()
 	{
 		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-5.0f,0,i * 5.0f + 2.5f),verticalRot, scale });
 	}
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(0,0,35.0f),horizonalRot, scale });
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-5.0f,0,35.0f),horizonalRot, scale });
+	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-7.5f,0,30.0f),horizonalRot, scale });
+
+
 
 	//スタート地点横
 	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-6.3f, 0, 0),horizonalRot, scale });

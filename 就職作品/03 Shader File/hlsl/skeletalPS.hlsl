@@ -1,5 +1,5 @@
-#include "Geometry.hlsl"
-#include "ConstantBuffer.hlsl"
+#include "geometry.hlsl"
+#include "constantBuffer.hlsl"
 
 Texture2D g_texDif : register(t0);
 Texture2D g_texNor : register(t1);
@@ -31,15 +31,14 @@ PS_OUT main(VS_OUT input)
    
     
     Out.vNormal = float4(bumpNormal, 0);
-    Out.vMotion = input.Velocity;
-
-    
+    Out.vMotionDepth.xy = input.Velocity;
+    Out.vMotionDepth.zw = input.DepthZW;
     
     float ambientOcclusion = g_texMRA.Sample(g_samLinear, input.Tex).r;
     float roughness = g_texMRA.Sample(g_samLinear, input.Tex).g;
     float metallic = g_texMRA.Sample(g_samLinear, input.Tex).b;
 
-    Out.vDepthPBR = float4(input.Depth, roughness, metallic, ambientOcclusion);
+    Out.vPBR = float4(roughness, metallic, ambientOcclusion,0);
     
     return Out;
 }

@@ -17,12 +17,19 @@ enum GAME_STAGE
 class Game : public CScene
 {
 private:
-	bool timeStop = false;
-	int  deferredType = 0;
-	bool frustumEnable = false;
-	float ambientOcclusionPower = 0.0f;
-	BOOL gBufferRenderEnable = false;
+	bool m_TimeStop = false;
+	int  m_DeferredType = 0;
+	bool m_EnableCulling = false;
+	BOOL m_GBufferRenderEnable = false;
+	BOOL m_ShadowEnable = true;
 	GAME_STAGE m_CurStage;
+
+	FLOAT m_aoEnable = 1;
+	FLOAT m_aoHemRedius = 0.03f;
+	FLOAT m_aoZfar = 1000.0f;
+	FLOAT m_aoPower = 10.0f;
+
+
 public:
 
 	void Init();

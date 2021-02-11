@@ -142,7 +142,7 @@ public:
 		{
 			for (CGameObject* object : m_GameObject[i])
 			{
-				if (typeid(*object) == typeid(T))//@Œ^‚ğ’²‚×‚é
+				if (typeid(*object) == typeid(T))
 				{
 					return (T*)object;
 				}
@@ -166,7 +166,7 @@ public:
 	{
 		for (CEffect* effect : m_pPostProcessList)
 		{
-			if (typeid(*effect) == typeid(T))//@Œ^‚ğ’²‚×‚é
+			if (typeid(*effect) == typeid(T))
 			{
 				return (T*)effect;
 			}

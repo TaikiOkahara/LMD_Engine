@@ -41,7 +41,7 @@ VS_OUT main(
 	
 	output.Tex = Tex;
 	
-    output.Depth = output.Pos.z / output.Pos.w;
+    output.DepthZW = output.Pos.zw;
     
     float4 curPos = mul(Pos, wvp);
     float4 lastPos = mul(Pos, oldWvp);

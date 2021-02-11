@@ -16,7 +16,7 @@ void CPillar::Init()
 	m_pMesh->LoadModel("../02 Visual File//Pillar//pillarPBR.fbx");
 	m_pMesh->LoadTexture("../02 Visual File//Pillar");
 
-	m_Collision.Set(D3DXVECTOR3(1.0f, 4.5f, 1.0f), D3DXVECTOR3(0, 2.25f, 0));
+	m_Collision.Set(D3DXVECTOR3(1.25f, 4.5f, 1.25f), D3DXVECTOR3(0, 2.25f, 0));
 
 
 	D3DXVECTOR3 scale, rot;

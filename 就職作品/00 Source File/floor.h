@@ -15,9 +15,6 @@ class CFloor : public CGameObject
 private:
 	Tile* m_pField = nullptr;
 
-	/*ID3D11VertexShader* m_VertexShader = nullptr;
-	ID3D11PixelShader* m_PixelShader = nullptr;*/
-
 public:
 	
 	void Init();
@@ -30,11 +27,21 @@ public:
 	float GetHeight(D3DXVECTOR3 pos) { return m_pField->GetHeight(pos); }
 };
 
-
-
-
+//ŠK’i‚Ì‚‚³İ’è
 static const HeightMask g_FloorMask[] =
 {
+	HeightMask{35,15,4},
+	HeightMask{35,16,4},
+	HeightMask{35,17,4},
+	HeightMask{35,18,4},
+	HeightMask{35,19,4},
+	HeightMask{35,20,4},
+	HeightMask{36,15,4},
+	HeightMask{36,16,4},
+	HeightMask{36,17,4},
+	HeightMask{36,18,4},
+	HeightMask{36,19,4},
+	HeightMask{36,20,4},
 	HeightMask{37,15,4},
 	HeightMask{37,16,4},
 	HeightMask{37,17,4},

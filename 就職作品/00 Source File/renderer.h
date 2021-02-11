@@ -19,11 +19,14 @@ class RENDERER
 	static ID3D11RasterizerState* m_pCommonRasterizerState;
 	static ID3D11SamplerState* m_pCommonSamplerState;
 
+	//ビューポート
+	static D3D11_VIEWPORT m_Vp;
+	//デプスステンシルステート
+	static ID3D11DepthStencilState* m_pBuckBuffer_DSTexState;
+
+
 	static ConstantBufferList m_ConstantBufferList;
 
-
-	static void CreateGBufferFormat(GBuffer* pGbuffer, DXGI_FORMAT dxgi_format);
-	static void CreateConstantBuffers();
 
 	
 	//======================================================
@@ -32,12 +35,10 @@ class RENDERER
 	static GBuffer m_Normal_GBuffer;
 	static GBuffer m_Position_GBuffer;
 	static GBuffer m_Lighting_GBuffer;
-	static GBuffer m_Velocity_GBuffer;
-	static GBuffer m_DepthPBR_GBuffer;
+	static GBuffer m_VelocityDepth_GBuffer;
+	static GBuffer m_PBR_GBuffer;
 	static GBuffer m_Shadow_GBuffer;
 	//======================================================
-
-
 
 
 	//ディファード
@@ -58,22 +59,18 @@ class RENDERER
 	static ID3D11RasterizerState* m_pPointLightingRasterizerState;
 	
 
-	//ビューポート
-	static D3D11_VIEWPORT m_Vp;
-	//デプスステンシルステート
-	static ID3D11DepthStencilState* m_pBuckBuffer_DSTexState;
 
-
-	
+	static void CreateGBufferFormat(GBuffer* pGbuffer, DXGI_FORMAT dxgi_format);
+	static void CreateConstantBuffers();
 public:
 	
 
 
 
-	static HRESULT Init(HWND hWnd);//　初期化
+	static HRESULT Init(HWND hWnd);
 	static void Uninit();
-	static void ShowFPS();			//　FPS表示
-	static void Clear();			//　クリア
+	static void ShowFPS();//　FPS表示
+	static void Clear();
 
 	static ID3D11Device* GetDevice() { return m_pDevice; }
 	static ID3D11DeviceContext* GetDeviceContext() { return m_pDeviceContext; }
@@ -93,11 +90,13 @@ public:
 	static void SetRasterizerState(D3D11_CULL_MODE cull, D3D11_FILL_MODE fill);
 	static void SetBlendState_Lighting();
 
+	static GBuffer GetShadowGBuffer() { return m_Shadow_GBuffer; }
 	
-	static void Deferred();//ディファード
-	static void PointLighting();//ポイントライト
+	static void Deferred();//ディファード開始
+	static void PointLighting();//ポイントライト開始
 	static void CommonDraw();
 	static void PostProcessDraw();
 	static void ShadowDraw();
-	static void Present();		//　画面更新
+	static void ShadowBegin();
+	static void Present();//　画面更新
 };

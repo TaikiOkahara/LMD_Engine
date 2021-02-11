@@ -16,7 +16,8 @@
 #include "calculation.h"
 #include "pointLight.h"
 #include "floor.h"
-
+#include "gargoyle.h"
+#include "pots.h"
 
 void CPlayer::Init()
 {
@@ -99,17 +100,23 @@ void CPlayer::Uninit()
 
 void CPlayer::Update()
 {
+	D3DXVECTOR3 cameraright;
+	D3DXVECTOR3 cameraforward;
+	D3DXVECTOR3 camerarotation;
 
 	CCamera* camera = Base::GetScene()->GetGameObject<CCamera>();
+	if (camera)
+	{
+		cameraright = camera->GetRight();
+		cameraright.y = 0;
+		cameraforward = camera->GetForward();
+		cameraforward.y = 0;
+		camerarotation = camera->GetRotation();
+		camerarotation.x = 0;
+		camerarotation.z = 0;
+	}
 
-
-	D3DXVECTOR3 cameraright = camera->GetRight();
-	cameraright.y = 0;
-	D3DXVECTOR3 cameraforward = camera->GetForward();
-	cameraforward.y = 0;
-	D3DXVECTOR3 camerarotation = camera->GetRotation();
-	camerarotation.x = 0;
-	camerarotation.z = 0;
+	
 	
 
 	//プレイヤー移動処理-------------------------------------
@@ -176,18 +183,29 @@ void CPlayer::Update()
 	//プレイヤー当たり判定処理-------------------------------
 	{
 		//オブジェクト当たり判定
-		if (m_EnableHit)
+		if (m_EnableCollision)
 		{
 
-			CWall* wall = Base::GetScene()->GetGameObject<CWall>();
-			if (wall != NULL)
-			{
-				m_Transform.position = LenOBBToPoint(*wall, m_Transform.position, 7.0f);
-			}
 			CPillar* pillar = Base::GetScene()->GetGameObject<CPillar>();
 			if (pillar != NULL)
 			{
 				m_Transform.position = LenOBBToPoint(*pillar, m_Transform.position, 5.0f);
+			}
+			CPots* pots = Base::GetScene()->GetGameObject<CPots>();
+			if (pots != NULL)
+			{
+				m_Transform.position = LenOBBToPoint(*pots, m_Transform.position, 4.0f);
+			}
+
+			CGargoyle* gargoyle = Base::GetScene()->GetGameObject<CGargoyle>();
+			if (gargoyle != NULL)
+			{
+				m_Transform.position = LenOBBToPoint(*gargoyle, m_Transform.position, 3.0f);
+			}
+			CWall* wall = Base::GetScene()->GetGameObject<CWall>();
+			if (wall != NULL)
+			{
+				m_Transform.position = LenOBBToPoint(*wall, m_Transform.position, 7.0f);
 			}
 
 		}
@@ -267,7 +285,7 @@ void CPlayer::Draw()
 	RENDERER::GetDeviceContext()->PSSetShader(m_TilePixelShader, NULL, 0);
 	RENDERER::GetDeviceContext()->IASetInputLayout(m_pCommonVertexLayout);
 
-	//m_pTile->Draw();
+	m_pTile->Draw();
 
 	RENDERER::CommonDraw();
 
@@ -290,13 +308,13 @@ void CPlayer::Draw()
 
 	//コリジョン描画--------------------------------------------------------------
 
-	if (m_EnableCollision)
+	/*if (m_EnableCollision)
 	{
 		D3DXMatrixScaling(&scale, m_Transform.scale.x, m_Transform.scale.y, m_Transform.scale.z);
 		world = scale * rot * trans;
 		RENDERER::GetConstantList().GetStruct<WorldBuffer>()->Set(world);
 		m_Collision.Draw();
-	}
+	}*/
 }
 
 void CPlayer::DrawShadow()
@@ -331,7 +349,7 @@ void CPlayer::Imgui()
 		ImGui::Begin("Player", &lw_is_open, lw_flag);
 
 		ImGui::Checkbox("EnableCollision", &m_EnableCollision);
-		ImGui::Checkbox("EnableHit", &m_EnableHit);
+		ImGui::Checkbox("EnableHit", &m_EnableCollision);
 	
 
 		ImGui::Text("Position : %f,%f,%f", m_Transform.position.x,m_Transform.position.y,m_Transform.position.z);

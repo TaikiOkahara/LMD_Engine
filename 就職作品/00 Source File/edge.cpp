@@ -12,7 +12,6 @@
 
 void CEdge::Init()
 {
-	
 	m_pMesh = new StaticMesh();
 	m_pMesh->LoadModel("../02 Visual File//Edge//edge_PBR_NoTex.fbx");
 	m_pMesh->LoadTexture("../02 Visual File//Edge");

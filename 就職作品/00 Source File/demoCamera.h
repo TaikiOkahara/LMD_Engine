@@ -26,7 +26,31 @@ private:
 
 	bool m_CameraControl = true;
 	
-	
+	//âºëzÉJÉÅÉâèÓïÒ
+
+	TRANSFORM m_virtualTransform;
+
+	D3DXVECTOR3 m_virtualCameraTarget;
+	ID3D11Buffer* m_pVertexBuffer = nullptr;
+	ID3D11VertexShader* m_VertexShader = nullptr;
+	ID3D11PixelShader* m_PixelShader = nullptr;
+	ID3D11InputLayout* m_VertexLayout = nullptr;
+
+	D3DXVECTOR3 GetVirtualCameraForward()
+	{
+		D3DXMATRIX rot;
+		D3DXMatrixRotationYawPitchRoll(&rot,
+			m_virtualTransform.rotation.y,
+			m_virtualTransform.rotation.x,
+			m_virtualTransform.rotation.z);
+
+		D3DXVECTOR3 forward;
+		forward.x = rot._31;
+		forward.y = rot._32;
+		forward.z = rot._33;
+
+		return forward;
+	}
 public:
 
 	void Init();

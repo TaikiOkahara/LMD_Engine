@@ -21,7 +21,6 @@ void CStairs::Init()
 
 	m_Transform.position = D3DXVECTOR3(-7.0f, 0.0f, 32.5f);
 	m_Transform.rotation = D3DXVECTOR3(0.0f, -D3DX_PI/2, 0.0f);
-	//m_Transform.scale = D3DXVECTOR3(1, 1,1);
 
 	m_Collision.Set(D3DXVECTOR3(1, 1, 1), D3DXVECTOR3(0, 0, 0));
 	

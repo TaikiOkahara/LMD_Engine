@@ -32,21 +32,19 @@ void CPointLight::Init()
 		for (int i = 0; i < 3; i++)
 		{
 			m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 2.0f, 10.0f * i + 5.0f),rot, scale });
-			m_PointLight[i] = POINTLIGHT{ D3DXVECTOR3(1.0f, 0.5f, 0.0f) ,100,D3DXVECTOR3(0.1f, 0.25f, 0.1f) ,scale.x,m_TransformList[i].position,(UINT)pow(2,i)};
+			m_PointLight[i] = POINTLIGHT{ D3DXVECTOR3(1.0f, 0.5f, 0.0f) ,100,D3DXVECTOR3(0.1f, 0.25f, 0.1f) ,scale.x,m_TransformList[i].position,(UINT)i};
 		}
 
 
 		//ˆê”Ô‰œ‚Ì•Ç‚Ìƒ‰ƒCƒg
 		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-2.5f, 2.0f, 32.5f),rot, scale });
-		m_PointLight[3] = POINTLIGHT{ D3DXVECTOR3(1.0f, 0.5f, 0.0f) ,100,D3DXVECTOR3(0.1f, 0.15f, 0.1f) ,scale.x ,m_TransformList[3].position,(UINT)pow(2,3) };
+		m_PointLight[3] = POINTLIGHT{ D3DXVECTOR3(1.0f, 0.5f, 0.0f) ,100,D3DXVECTOR3(0.1f, 0.15f, 0.1f) ,scale.x ,m_TransformList[3].position,0 };
 
 
 		//Playerlight
 		m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(5.0f, 5.0f, 1.0f),rot, scale });
 		m_PointLight[4] = POINTLIGHT{ D3DXVECTOR3(1.0f, 1.0f, 1.0f) ,10,D3DXVECTOR3(3.0f, 0.1f, 10.0f) ,scale.x ,m_TransformList[4].position,0 };
 
-
-		
 	}
 
 	RENDERER::CreateVertexShader(&m_pVertexShader, &m_pCommonVertexLayout,nullptr, 0, "pointLightVS.cso");
@@ -66,6 +64,7 @@ void CPointLight::Uninit()
 
 void CPointLight::Update()
 {
+
 	CPlayer* player = Base::GetScene()->GetGameObject<CPlayer>();
 	m_TransformList[4].position = player->GetPosition();
 	m_PointLight[4].pos = m_TransformList[4].position + D3DXVECTOR3(0,1,0);

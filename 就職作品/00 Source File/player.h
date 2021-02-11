@@ -27,7 +27,7 @@ private:
 	D3DXVECTOR3 m_OldPosition;
 	D3DXVECTOR3 m_OldForward;
 
-	bool m_EnableHit = false;//“–‚½‚è”»’èÀs‰Â”Û
+	bool m_EnableCollision = true;//“–‚½‚è”»’èÀs‰Â”Û
 
 
 	//‰eî•ñ------------------------------

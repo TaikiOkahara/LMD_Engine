@@ -90,7 +90,7 @@ void CWall::Init()
 	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-10.0f, 7.5f, 30.0f),frontRot, scale });
 
 	//ŠK’iŠO
-	m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-15.5f, 4.0f, 32.5f),topRot, scale });
+	//m_TransformList.push_back(TRANSFORM{ D3DXVECTOR3(-15.5f, 4.0f, 32.5f),topRot, scale });
 
 
 	InitInstance();

@@ -24,8 +24,8 @@ void CCamera::Init()
 
 	m_Angle = D3DX_PI / 4;
 	m_Aspect = (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT;
-	m_Near = 0.1f;
-	m_Far = 1000.0f;
+	m_Near = CAMERA_NEAR;
+	m_Far = CAMERA_FAR;
 }
 
 
@@ -125,15 +125,11 @@ void CCamera::Update()
 	RENDERER::GetConstantList().GetStruct<ProjBuffer>()->Set(m_ProjMatrix,projOldMatrix);
 
 
-	EYE eye;
-	eye.eyePos = D3DXVECTOR4(m_Transform.position.x, m_Transform.position.y, m_Transform.position.z, 0);
-	eye.worldCamera[0] = m_CullingWPos[0];
-	eye.worldCamera[1] = m_CullingWPos[1];
-	eye.worldCamera[2] = m_CullingWPos[2];
-	eye.worldCamera[3] = m_CullingWPos[3];
+	D3DXVECTOR4 setCameraPos;
+	setCameraPos = D3DXVECTOR4(m_Transform.position.x, m_Transform.position.y, m_Transform.position.z, 0);
 	
-	
-	RENDERER::GetConstantList().GetStruct<EyeBuffer>()->Set(eye);
+	RENDERER::GetConstantList().GetStruct<CameraBuffer>()->SetCamera(setCameraPos);
+	RENDERER::GetConstantList().GetStruct<CameraBuffer>()->SetCullingCameraPos(setCameraPos);
 
 
 
@@ -161,6 +157,9 @@ void CCamera::Update()
 	m_CullingWPos[1] = D3DXVECTOR4(wpos[1].x,wpos[1].y,wpos[1].z,0);
 	m_CullingWPos[2] = D3DXVECTOR4(wpos[2].x,wpos[2].y,wpos[2].z,0);
 	m_CullingWPos[3] = D3DXVECTOR4(wpos[3].x,wpos[3].y,wpos[3].z,0);
+
+	RENDERER::GetConstantList().GetStruct<CullingBuffer>()->SetWorldCamera(&m_CullingWPos[0]);
+
 }
 
 

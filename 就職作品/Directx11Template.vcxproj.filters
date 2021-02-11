@@ -163,12 +163,6 @@
     <Filter Include="GameObjects----------------\gargoyle">
       <UniqueIdentifier>{373ae7ea-6213-45af-9f0a-ab5e6c6d00aa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shader-----------------------\fade">
-      <UniqueIdentifier>{06e7cdae-2ee9-4768-8f45-4067232a3dee}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="PostProcess-----------------\fade">
-      <UniqueIdentifier>{83b4c06e-8ec4-4a60-9f62-38491631b923}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameObjects----------------\projectionShadow">
       <UniqueIdentifier>{5b525e70-9b4a-44a2-88f0-c29e6a76844c}</UniqueIdentifier>
     </Filter>
@@ -178,11 +172,29 @@
     <Filter Include="GameObjects----------------\halfArch">
       <UniqueIdentifier>{5f811eab-497a-4406-8ffd-7dc4dff3b5c5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scene -----------------------\CullingDemo">
-      <UniqueIdentifier>{821ac12f-b540-4761-a80e-c950587d5578}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameObjects----------------\demoCamera">
       <UniqueIdentifier>{c6cff585-2b89-48a6-80a9-b1baf30443d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects----------------\demoGargoyle">
+      <UniqueIdentifier>{dfdea5c5-31fb-4af4-b915-f15102312fd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects----------------\demoCubeMap">
+      <UniqueIdentifier>{4ba93d31-01a3-419d-9fa0-e6f8cf6131d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects----------------\Moss">
+      <UniqueIdentifier>{ab9453b1-19db-411f-872c-c5477f8ba148}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects----------------\demoDirectionalLight">
+      <UniqueIdentifier>{e1d1b512-ba3d-429a-b36f-0b6518c91f59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene -----------------------\demoScene">
+      <UniqueIdentifier>{821ac12f-b540-4761-a80e-c950587d5578}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene -----------------------\gameScene">
+      <UniqueIdentifier>{13c19779-915b-4469-9217-72fc83f75ba2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene -----------------------\titleScene">
+      <UniqueIdentifier>{e548b943-acdd-4a47-995f-29fb96ce801f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -252,9 +264,6 @@
     <ClCompile Include="00 Source File\calculation.cpp">
       <Filter>Manager --------------------\calculation</Filter>
     </ClCompile>
-    <ClCompile Include="00 Source File\game.cpp">
-      <Filter>Scene -----------------------</Filter>
-    </ClCompile>
     <ClCompile Include="00 Source File\chandelier.cpp">
       <Filter>GameObjects----------------\chandelier</Filter>
     </ClCompile>
@@ -294,9 +303,6 @@
     <ClCompile Include="00 Source File\projectionShadow.cpp">
       <Filter>GameObjects----------------\projectionShadow</Filter>
     </ClCompile>
-    <ClCompile Include="00 Source File\title.cpp">
-      <Filter>Scene -----------------------</Filter>
-    </ClCompile>
     <ClCompile Include="00 Source File\doorWay.cpp">
       <Filter>GameObjects----------------\doorWay</Filter>
     </ClCompile>
@@ -318,11 +324,29 @@
     <ClCompile Include="00 Source File\halfArch.cpp">
       <Filter>GameObjects----------------\halfArch</Filter>
     </ClCompile>
-    <ClCompile Include="00 Source File\cullingDemo.cpp">
-      <Filter>Scene -----------------------\CullingDemo</Filter>
-    </ClCompile>
     <ClCompile Include="00 Source File\demoCamera.cpp">
       <Filter>GameObjects----------------\demoCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\demoGargoyle.cpp">
+      <Filter>GameObjects----------------\demoGargoyle</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\demoScene.cpp">
+      <Filter>Scene -----------------------\demoScene</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\demoCubeMap.cpp">
+      <Filter>GameObjects----------------\demoCubeMap</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\moss.cpp">
+      <Filter>GameObjects----------------\Moss</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\demoDirectionalLight.cpp">
+      <Filter>GameObjects----------------\demoDirectionalLight</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\game.cpp">
+      <Filter>Scene -----------------------\gameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="00 Source File\title.cpp">
+      <Filter>Scene -----------------------\titleScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -401,9 +425,6 @@
     <ClInclude Include="00 Source File\scene.h">
       <Filter>Scene -----------------------</Filter>
     </ClInclude>
-    <ClInclude Include="00 Source File\game.h">
-      <Filter>Scene -----------------------</Filter>
-    </ClInclude>
     <ClInclude Include="00 Source File\chandelier.h">
       <Filter>GameObjects----------------\chandelier</Filter>
     </ClInclude>
@@ -446,9 +467,6 @@
     <ClInclude Include="00 Source File\projectionShadow.h">
       <Filter>GameObjects----------------\projectionShadow</Filter>
     </ClInclude>
-    <ClInclude Include="00 Source File\title.h">
-      <Filter>Scene -----------------------</Filter>
-    </ClInclude>
     <ClInclude Include="00 Source File\doorWay.h">
       <Filter>GameObjects----------------\doorWay</Filter>
     </ClInclude>
@@ -461,9 +479,6 @@
     <ClInclude Include="00 Source File\gargoyle.h">
       <Filter>GameObjects----------------\gargoyle</Filter>
     </ClInclude>
-    <ClInclude Include="fade.h">
-      <Filter>PostProcess-----------------\fade</Filter>
-    </ClInclude>
     <ClInclude Include="00 Source File\instanceObject.h">
       <Filter>GameObjects----------------\instance</Filter>
     </ClInclude>
@@ -473,20 +488,32 @@
     <ClInclude Include="00 Source File\halfArch.h">
       <Filter>GameObjects----------------\halfArch</Filter>
     </ClInclude>
-    <ClInclude Include="00 Source File\cullingDemo.h">
-      <Filter>Scene -----------------------\CullingDemo</Filter>
-    </ClInclude>
     <ClInclude Include="00 Source File\demoCamera.h">
       <Filter>GameObjects----------------\demoCamera</Filter>
     </ClInclude>
+    <ClInclude Include="00 Source File\demoGargoyle.h">
+      <Filter>GameObjects----------------\demoGargoyle</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\demoScene.h">
+      <Filter>Scene -----------------------\demoScene</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\demoCubeMap.h">
+      <Filter>GameObjects----------------\demoCubeMap</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\moss.h">
+      <Filter>GameObjects----------------\Moss</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\demoDirectionalLight.h">
+      <Filter>GameObjects----------------\demoDirectionalLight</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\game.h">
+      <Filter>Scene -----------------------\gameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="00 Source File\title.h">
+      <Filter>Scene -----------------------\titleScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="03 Shader File\hlsl\ConstantBuffer.hlsl">
-      <Filter>Shader-----------------------\resource</Filter>
-    </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\Geometry.hlsl">
-      <Filter>Shader-----------------------\resource</Filter>
-    </FxCompile>
     <FxCompile Include="03 Shader File\hlsl\cubeMapPS.hlsl">
       <Filter>Shader-----------------------\cubeMap</Filter>
     </FxCompile>
@@ -559,14 +586,12 @@
     <FxCompile Include="03 Shader File\hlsl\playerShadowVS.hlsl">
       <Filter>Shader-----------------------\playerShadow</Filter>
     </FxCompile>
-    <FxCompile Include="03 Shader File\hlsl\fadePS.hlsl">
-      <Filter>Shader-----------------------\fade</Filter>
+    <FxCompile Include="03 Shader File\hlsl\constantBuffer.hlsl">
+      <Filter>Shader-----------------------\resource</Filter>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Manual.txt">
-      <Filter>Manager --------------------\thirdparty</Filter>
-    </Text>
+    <FxCompile Include="03 Shader File\hlsl\geometry.hlsl">
+      <Filter>Shader-----------------------\resource</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="03 Shader File\hlsl\lighting.hlsli">

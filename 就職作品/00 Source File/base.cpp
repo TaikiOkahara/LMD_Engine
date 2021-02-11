@@ -11,6 +11,7 @@
 
 #include "scene.h"
 #include "game.h"
+#include "demoScene.h"
 
 
 static HINSTANCE	m_hInstance;
@@ -34,6 +35,7 @@ void Base::MainLoop()
 	
 	RENDERER::Deferred();
 	
+	m_Scene->PostProcessDraw();
 
 	// IMGUIÅ@Frame start
 	ImGui_ImplDX11_NewFrame();
